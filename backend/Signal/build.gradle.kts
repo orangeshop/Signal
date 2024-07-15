@@ -38,6 +38,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation('io.springfox:springfox-boot-starter:3.0.0')
+	implementation('io.springfox:springfox-swagger-ui:3.0.0')
 }
 
 tasks.withType<Test> {
