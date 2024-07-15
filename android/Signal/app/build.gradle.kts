@@ -58,5 +58,15 @@ dependencies {
     //viewmodel
     implementation(libs.viewmodel)
     implementation(libs.activity.ktx)
-
+    //navigation
+    implementation(libs.navigation)
+    //coroutine
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    //fragment
+    implementation(libs.fragment.ktx)
+    //glide
+    implementation(libs.glide)
+    //timber
+    implementation(libs.timber)
 }
