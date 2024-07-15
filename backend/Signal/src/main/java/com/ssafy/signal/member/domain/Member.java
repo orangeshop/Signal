@@ -13,11 +13,11 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "user_id")
+    private Long user_id;
 
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+    @Column(name = "login_id", nullable = false)
+    private String login_id;
 
     @Column(name = "password", nullable = false)
     private String password;
