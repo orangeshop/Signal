@@ -60,7 +60,9 @@ dependencies {
     implementation(libs.viewmodel)
     implementation(libs.activity.ktx)
     //navigation
-    implementation(libs.navigation)
+    implementation(libs.navigation.ktx)
+    implementation(libs.navigation.ui)
+    //implementation(libs.navigation.safe.args)
     //coroutine
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)

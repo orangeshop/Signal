@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import dagger.hilt.android.AndroidEntryPoint
 
 
 abstract class BaseActivity<B : ViewDataBinding>(private val layoutResId: Int) :

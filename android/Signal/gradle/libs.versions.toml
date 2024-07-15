@@ -41,7 +41,9 @@ gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref 
 viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "viewmodel"}
 activity-ktx = {group = "androidx.activity", name = "activity-ktx", version.ref = "activityktx"}
 #navigation
-navigation = {group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation"}
+navigation-ktx = {group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation"}
+navigation-ui = {group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation"}
+#navigation-safe-args = {group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigation"}
 #coroutine
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
