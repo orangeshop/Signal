@@ -10,7 +10,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
 abstract class BaseFragment<B : ViewDataBinding>(private val layoutResId: Int) : Fragment() {
     protected lateinit var binding: B
         private set

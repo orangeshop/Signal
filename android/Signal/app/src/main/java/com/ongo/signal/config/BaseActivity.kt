@@ -7,7 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
 abstract class BaseActivity<B : ViewDataBinding>(private val layoutResId: Int) :
     AppCompatActivity() {
     protected lateinit var binding: B

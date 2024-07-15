@@ -2,10 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="mint">#F64FFCE</color>
-    <color name="yellow">#FFFCC00</color>
-    <color name="gray">#FD9D9D9</color>
-    <color name="textBlack">#F373737</color>
-    <color name="MyPageTextColor">#FA1A1A1</color>
+
 
 </resources>
