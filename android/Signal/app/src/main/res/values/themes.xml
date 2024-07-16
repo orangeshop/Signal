@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Signal" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/backgroundColor</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.Signal" parent="Base.Theme.Signal" />
