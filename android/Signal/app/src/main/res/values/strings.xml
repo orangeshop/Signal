@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Signal</string>
+    <string name="id">아이디</string>
+    <string name="logo_message">우리들을 연결하는 신호</string>
+    <string name="password">비밀번호</string>
+    <string name="login">로그인</string>
+    <string name="signup">회원 가입</string>
 </resources>
