@@ -6,6 +6,8 @@ import com.ongo.signal.databinding.FragmentMatchBinding
 
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
     override fun init() {
+        binding.apply {
 
+        }
     }
 }
