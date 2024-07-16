@@ -6,5 +6,7 @@
     <color name="yellow">#FFCC00</color>
     <color name="gray">#D9D9D9</color>
     <color name="textBlack">#373737</color>
-    <color name="MyPageTextColor">#A1A1A1</color>
+    <color name="EditTextColor">#A1A1A1</color>
+    <color name="red">#FF0000</color>
+    <color name="backgroundColor">#121212</color>
 </resources>
