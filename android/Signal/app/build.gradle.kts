@@ -72,4 +72,6 @@ dependencies {
     implementation(libs.glide)
     //timber
     implementation(libs.timber)
+    //lottie
+    implementation(libs.lottie)
 }
