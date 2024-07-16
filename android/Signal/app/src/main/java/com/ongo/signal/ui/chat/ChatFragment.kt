@@ -1,5 +1,6 @@
-package com.ongo.signal
+package com.ongo.signal.ui.chat
 
+import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentChatBinding
 import dagger.hilt.android.AndroidEntryPoint

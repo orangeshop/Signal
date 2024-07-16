@@ -1,4 +1,4 @@
-package com.ongo.signal
+package com.ongo.signal.config
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

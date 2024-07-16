@@ -1,4 +1,4 @@
-package com.ongo.signal
+package com.ongo.signal.ui
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -6,6 +6,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.ongo.signal.R
 import com.ongo.signal.config.BaseActivity
 import com.ongo.signal.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
