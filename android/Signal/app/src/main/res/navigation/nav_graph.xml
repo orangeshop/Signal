@@ -10,7 +10,7 @@
         android:label="ChatFragment" />
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.ongo.signal.ui.Match.MatchFragment"
+        android:name="com.ongo.signal.ui.match.MatchFragment"
         android:label="MapFragment" />
     <fragment
         android:id="@+id/mainFragment"
