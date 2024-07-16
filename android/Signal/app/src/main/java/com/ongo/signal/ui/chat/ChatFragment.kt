@@ -29,12 +29,12 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 //            )
 
             chatHomeAdapter = ChatHomeAdapter(
-                chatListClickListener = {
+                chatItemClick = {
 
 
 
             },
-                chatListLongClickListener = {
+                chatItemLongClick = {
 
                     true
                 }
