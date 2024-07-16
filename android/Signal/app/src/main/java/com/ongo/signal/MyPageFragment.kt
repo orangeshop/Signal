@@ -6,7 +6,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_mypage) {
-    override fun setupBinding(binding: FragmentMypageBinding) {
+    override fun init() {
 
     }
 }
