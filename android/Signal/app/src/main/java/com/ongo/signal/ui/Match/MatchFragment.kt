@@ -2,10 +2,12 @@ package com.ongo.signal.ui.Match
 
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.databinding.FragmentMapBinding
+import com.ongo.signal.databinding.FragmentMatchBinding
 
-class MatchFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_match) {
+class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
     override fun init() {
+        binding.apply {
 
+        }
     }
 }

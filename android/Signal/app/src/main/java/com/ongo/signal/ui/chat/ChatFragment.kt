@@ -10,4 +10,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
     override fun init() {
 
     }
+
+
 }
