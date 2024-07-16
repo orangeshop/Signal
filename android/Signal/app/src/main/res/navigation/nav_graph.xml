@@ -20,4 +20,10 @@
         android:id="@+id/myPageFragment"
         android:name="com.ongo.signal.ui.my.MyPageFragment"
         android:label="MyPageFragment" />
+
+    <fragment
+        android:id="@+id/chatDetailFragment"
+        android:name="com.ongo.signal.ui.chat.ChatDetailFragment"
+        android:label="chatDetailFragment"
+        />
 </navigation>

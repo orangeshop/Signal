@@ -15,20 +15,30 @@ private const val TAG = "ChatFragment_싸피"
 @AndroidEntryPoint
 class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
-    private lateinit var chatHomeAdapter : ChatHomeAdapter
+    private lateinit var chatHomeAdapter: ChatHomeAdapter
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
 
     override fun init() {
         binding.apply {
+//            삭제 예쩡
+//            val newItem =
+//                ChatHomeDTO(1, mutableListOf(ChatHomeChildDto(1, "11111", "1111", "20:30", 0)))
+//            chatViewModel.addLiveList(newItem)
+//            chatViewModel.addLiveList(
+//                ChatHomeDTO(2, mutableListOf(ChatHomeChildDto(2, "22222", "22222", "20:30", 0)))
+//            )
 
-            val newItem = ChatHomeDTO(1, mutableListOf(ChatHomeChildDto(1,"11111", "1111", "20:30", 0)))
-            chatViewModel.addLiveList(newItem)
-            chatViewModel.addLiveList(ChatHomeDTO(2, mutableListOf(ChatHomeChildDto(2,"22222", "22222","20:30", 0)))
+            chatHomeAdapter = ChatHomeAdapter(
+                chatListClickListener = {
+
+
+
+            },
+                chatListLongClickListener = {
+
+                    true
+                }
             )
-
-            chatHomeAdapter = ChatHomeAdapter(chatListClickListner = {
-                Log.d(TAG, "init: asdasdasda")
-            })
             binding.chatHomeList.adapter = chatHomeAdapter
 
             lifecycleOwner?.let {

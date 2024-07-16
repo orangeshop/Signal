@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.chat
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.ChatHomeDTO
 import com.ongo.signal.databinding.ChatItemListBinding
 
-
+private const val TAG = "ChatHomeAdapter"
 class ChatHomeAdapter(
-    private val chatListClickListner: () -> Unit
+    private val chatListClickListener: () -> Unit,
+    private val chatListLongClickListener: () -> Boolean
 ): ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
@@ -19,7 +21,11 @@ class ChatHomeAdapter(
             binding.Time.text = item.list.get(0).time
 //            binding.Alarm.text = item.list.get(0).alarm.toString()
             binding.chatHomeCl.setOnClickListener {
-                chatListClickListner()
+                chatListClickListener()
+            }
+
+            binding.chatHomeCl.setOnLongClickListener {
+                chatListLongClickListener()
             }
         }
     }
