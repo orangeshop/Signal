@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
-    @RequiresApi(Build.VERSION_CODES.R)
+
     override fun setupBinding(binding: ActivityMainBinding) {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
