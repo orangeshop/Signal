@@ -1,6 +1,7 @@
 package com.ssafy.signal.member.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,27 +17,23 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long user_id;
+    private Long userId;
 
     @Column(name = "login_id", nullable = false, length = 50, unique = true)
-    private String login_id;
+    @NotBlank(message = "로그인은 필수 입력값입니다.")
+    private String loginId;
 
     @Column(name = "password", nullable = false, length = 50, unique = true)
+    @NotBlank(message = "비밀번호는 필수 입력값입니다.")
     private String password;
 
     @Column(name = "type", length = 20)
     private String type;
 
     @Column(name = "name", length = 50)
+    @NotBlank(message = "이름은 필수 입력값입니다.")
     private String name;
 
-    @Column(name = "REFRESH_TOKEN")
-    private String refreshToken;
-
-    // refreshToken 재설정
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
     // 비밀번호 암호화
     public void passwordEncode(PasswordEncoder passwordEncoder) {
