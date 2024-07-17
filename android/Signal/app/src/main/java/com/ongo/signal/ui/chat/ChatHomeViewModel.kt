@@ -1,9 +1,8 @@
 package com.ongo.signal.ui.chat
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ongo.signal.data.model.ChatHomeDTO
+import com.ongo.signal.data.model.chat.ChatHomeDTO
 
 class ChatHomeViewModel:ViewModel() {
 

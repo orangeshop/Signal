@@ -1,12 +1,9 @@
 package com.ongo.signal.ui.chat
 
-import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.ChatHomeChildDto
-import com.ongo.signal.data.model.ChatHomeDTO
 import com.ongo.signal.databinding.FragmentChatBinding
 import dagger.hilt.android.AndroidEntryPoint
 
