@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Signal" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/backgroundColor</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="floatingActionButtonStyle">@style/RoundFloatingActionButton</item>
         <item name="colorPrimary">@color/mint</item>
     </style>
