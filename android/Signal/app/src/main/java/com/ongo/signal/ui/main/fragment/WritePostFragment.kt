@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.main.fragment
 
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
@@ -10,7 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragment_write_post) {
 
-    private lateinit var mainViewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun init() {
         binding.fragment = this
