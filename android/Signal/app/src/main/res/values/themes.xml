@@ -19,6 +19,7 @@
         <item name="android:textColor">@color/mint</item>
     </style>
 
+    <!-- Round FAB style -->
     <style name="ShapeAppearanceOverlay.CustomChip" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">35dp</item>
@@ -32,6 +33,10 @@
 
     <style name="FabRoundShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/mint</item>
     </style>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.main
+package com.ongo.signal.ui.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,12 +18,12 @@ class CommentAdapter : ListAdapter<CommentDTO, CommentAdapter.ViewHolder>(DiffUt
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CommentAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
         val binding = ItemCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CommentAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 

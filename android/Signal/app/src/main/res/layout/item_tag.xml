@@ -8,6 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:padding="4dp"
         android:text="# 취미"
         android:textColor="@color/mint"
