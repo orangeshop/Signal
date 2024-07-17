@@ -8,4 +8,10 @@
     <string name="password_check">비밀번호 확인</string>
     <string name="name">이름</string>
     <string name="complete">완료</string>
+    <string name="my_page">마이 페이지</string>
+    <string name="edit_profile">프로필 편집</string>
+    <string name="my_signal">내가 쓴 시그널</string>
+    <string name="my_heart_signal">내가 댓글을 남긴 시그널</string>
+    <string name="info">정보</string>
+    <string name="logout">로그아웃</string>
 </resources>
