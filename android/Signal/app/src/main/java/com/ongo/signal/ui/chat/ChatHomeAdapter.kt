@@ -15,10 +15,12 @@ class ChatHomeAdapter(
 ): ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
-            binding.chatItemTitle.text = item.list.get(0).name
-            binding.content.text = item.list.get(0).content
-            binding.Time.text = item.list.get(0).time
+            if(item.list.size > 0) {
+                binding.chatItemTitle.text = item.list[0].name
+                binding.content.text = item.list[0].content
+                binding.Time.text = item.list[0].time
 //            binding.Alarm.text = item.list.get(0).alarm.toString()
+            }
             binding.chatHomeCl.setOnClickListener {
                 chatItemClick()
             }
