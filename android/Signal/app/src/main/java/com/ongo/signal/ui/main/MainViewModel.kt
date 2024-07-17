@@ -23,6 +23,7 @@ class MainViewModel @Inject constructor(
 
 
     private var currentPage = 1
+    private val pageSize = 5
 
     init {
         loadPosts()
@@ -30,7 +31,7 @@ class MainViewModel @Inject constructor(
 
     fun loadPosts() {
         viewModelScope.launch {
-            val newPosts = repository.getPosts(currentPage)
+            val newPosts = repository.getPosts(currentPage, pageSize)
             _posts.value = _posts.value.toMutableList().apply { addAll(newPosts) }
             currentPage++
         }
