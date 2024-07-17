@@ -10,7 +10,7 @@ data class PostDTO(
     val name: String,
     val date: Date,
     val image: String? = null,
-    val tags: List<String>,
+    val tags: List<TagDTO>,
     val likeCount: Int,
     val commentCount: Int,
     val comment: List<String>
