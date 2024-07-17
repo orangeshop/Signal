@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.main
+package com.ongo.signal.ui.main.fragment
 
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMainBinding
+import com.ongo.signal.ui.main.MainViewModel
+import com.ongo.signal.ui.main.adapter.TodayPostAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,6 +27,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             viewModel.posts.collectLatest { newPosts ->
                 todayPostAdapter.submitList(newPosts)
             }
+        }
+
+        binding.fabWrite.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_writePostFragment)
         }
     }
 

@@ -8,4 +8,9 @@
     <string name="password_check">비밀번호 확인</string>
     <string name="name">이름</string>
     <string name="complete">완료</string>
+    <string name="title">제목</string>
+    <string name="hint_content">내용을 입력해주세요</string>
+    <string name="senior">시니어</string>
+    <string name="junior">주니어</string>
+    <string name="regist">등록</string>
 </resources>

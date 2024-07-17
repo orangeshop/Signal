@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.main
+package com.ongo.signal.ui.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

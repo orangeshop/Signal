@@ -14,11 +14,14 @@
         android:label="MapFragment" />
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.ongo.signal.ui.main.MainFragment"
+        android:name="com.ongo.signal.ui.main.fragment.MainFragment"
         android:label="MainFragment" >
         <action
             android:id="@+id/action_mainFragment_to_postFragment"
             app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_writePostFragment"
+            app:destination="@id/writePostFragment" />
     </fragment>
     <fragment
         android:id="@+id/myPageFragment"
@@ -32,6 +35,14 @@
         />
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.ongo.signal.ui.main.PostFragment"
+        android:name="com.ongo.signal.ui.main.fragment.PostFragment"
         android:label="PostFragment" />
+    <fragment
+        android:id="@+id/writePostFragment"
+        android:name="com.ongo.signal.ui.main.fragment.WritePostFragment"
+        android:label="WritePostFragment" >
+        <action
+            android:id="@+id/action_writePostFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
 </navigation>
