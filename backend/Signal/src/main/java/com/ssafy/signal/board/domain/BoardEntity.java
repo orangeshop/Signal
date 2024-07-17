@@ -29,4 +29,10 @@ public class BoardEntity extends TimeEntity{
         this.title = title;
         this.content = content;
     }
+
+    // 엔티티의 상태를 변경하는 메서드 추가
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

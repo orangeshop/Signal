@@ -3,7 +3,9 @@ package com.ssafy.signal.board.service;
 import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.repository.BoardRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
+@Setter
 public class BoardService {
 
     @Autowired
@@ -50,10 +53,38 @@ public class BoardService {
     }
 
     @Transactional
-    public Long savePost(BoardDto boardDto) { return boardRepository.save(boardDto.toEntity()).getId();}
+    public BoardDto savePost(BoardDto boardDto) {
+        BoardEntity savedEntity = boardRepository.save(boardDto.toEntity());
+        return convertEntityToDto(savedEntity);
+    }
 
     @Transactional
-    public void deletePost(Long id) { boardRepository.deleteById(id);}
+    public BoardDto updatePost(Long id, BoardDto boardDto) {
+        // 1. 업데이트할 게시물 엔티티 조회
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findById(id);
+        if (!boardEntityOptional.isPresent()) {
+            throw new EntityNotFoundException("Board not found with id: " + id);
+        }
+        BoardEntity boardEntity = boardEntityOptional.get();
+
+        // 2. 엔티티의 업데이트 메서드 호출
+        boardEntity.update(boardDto.getTitle(), boardDto.getContent());
+        // 필요에 따라 다른 필드들도 업데이트
+
+        // 3. 엔티티 저장 (업데이트된 엔티티를 저장하면 JPA가 자동으로 업데이트 처리)
+        boardRepository.save(boardEntity);
+
+        // 업데이트된 엔티티를 DTO로 변환하여 반환
+        return convertEntityToDto(boardEntity);
+    }
+    @Transactional
+    public void deletePost(Long id) {
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findById(id);
+        if (!boardEntityOptional.isPresent()) {
+            throw new EntityNotFoundException("Board not found with id: " + id);
+        }
+        boardRepository.deleteById(id);
+    }
 
     @Transactional
     public List<BoardDto> searchPosts(String keyword) {
@@ -100,6 +131,7 @@ public class BoardService {
                 .content(boardEntity.getContent())
                 .writer(boardEntity.getWriter())
                 .createdDate(boardEntity.getCreatedDate())
+                .modifiedDate(boardEntity.getModifiedDate())
                 .build();
     }
 }
