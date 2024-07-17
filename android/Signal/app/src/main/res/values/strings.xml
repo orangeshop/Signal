@@ -13,4 +13,10 @@
     <string name="senior">시니어</string>
     <string name="junior">주니어</string>
     <string name="regist">등록</string>
+    <string name="my_page">마이 페이지</string>
+    <string name="edit_profile">프로필 편집</string>
+    <string name="my_signal">내가 쓴 시그널</string>
+    <string name="my_heart_signal">내가 댓글을 남긴 시그널</string>
+    <string name="info">정보</string>
+    <string name="logout">로그아웃</string>
 </resources>
