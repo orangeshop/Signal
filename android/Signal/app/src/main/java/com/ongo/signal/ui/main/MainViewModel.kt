@@ -18,6 +18,10 @@ class MainViewModel @Inject constructor(
     private val _posts = MutableStateFlow<List<PostDTO>>(emptyList())
     val posts: StateFlow<List<PostDTO>> = _posts
 
+    private val _selectedPost = MutableStateFlow<PostDTO?>(null)
+    val selectedPost: StateFlow<PostDTO?> = _selectedPost
+
+
     private var currentPage = 1
 
     init {
@@ -30,5 +34,13 @@ class MainViewModel @Inject constructor(
             _posts.value = _posts.value.toMutableList().apply { addAll(newPosts) }
             currentPage++
         }
+    }
+
+    fun selectPost(post: PostDTO) {
+        _selectedPost.value = post
+    }
+
+    fun clearPost() {
+        _selectedPost.value = null
     }
 }

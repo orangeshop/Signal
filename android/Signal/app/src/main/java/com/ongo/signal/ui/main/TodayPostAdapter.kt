@@ -9,14 +9,18 @@ import com.ongo.signal.data.model.main.PostDTO
 import com.ongo.signal.databinding.ItemPostBinding
 
 class TodayPostAdapter(
-    private val onEndReached: () -> Unit
-) : ListAdapter<PostDTO, TodayPostAdapter.ViewHolder>(diffUtil) {
+    private val onEndReached: () -> Unit,
+    private val onItemClicked: (PostDTO) -> Unit
+) : ListAdapter<PostDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(post: PostDTO) {
             binding.post = post
             binding.executePendingBindings()
+            binding.root.setOnClickListener {
+                onItemClicked(post)
+            }
         }
     }
 
@@ -32,15 +36,13 @@ class TodayPostAdapter(
         return ViewHolder(binding)
     }
 
-    companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<PostDTO>() {
-            override fun areItemsTheSame(oldItem: PostDTO, newItem: PostDTO): Boolean {
-                return oldItem.postId == newItem.postId
-            }
+    class DiffUtilCallback : DiffUtil.ItemCallback<PostDTO>() {
+        override fun areItemsTheSame(p0: PostDTO, p1: PostDTO): Boolean {
+            return p0.postId == p1.postId
+        }
 
-            override fun areContentsTheSame(oldItem: PostDTO, newItem: PostDTO): Boolean {
-                return oldItem == newItem
-            }
+        override fun areContentsTheSame(p0: PostDTO, p1: PostDTO): Boolean {
+            return p0 == p1
         }
     }
 }

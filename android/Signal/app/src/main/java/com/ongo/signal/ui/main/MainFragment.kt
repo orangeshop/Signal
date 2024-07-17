@@ -1,7 +1,8 @@
 package com.ongo.signal.ui.main
 
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     private lateinit var todayPostAdapter: TodayPostAdapter
 
     override fun init() {
@@ -28,11 +29,17 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     private fun setUpAdapter() {
-        todayPostAdapter = TodayPostAdapter {
-            viewModel.loadPosts()
-        }
+        todayPostAdapter = TodayPostAdapter(
+            onEndReached = {
+                viewModel.loadPosts()
+            },
+            onItemClicked = { post ->
+                viewModel.selectPost(post)
+                findNavController().navigate(R.id.action_mainFragment_to_postFragment)
+            }
+        )
         binding.rvPost.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = todayPostAdapter
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {

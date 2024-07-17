@@ -33,6 +33,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginTop="15dp"
+            app:imageUrl="@{post.profile}"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             tools:src="@drawable/baseline_more_vert_mint_24" />
