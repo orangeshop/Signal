@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Signal" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="floatingActionButtonStyle">@style/RoundFloatingActionButton</item>
+        <item name="colorPrimary">@color/mint</item>
     </style>
 
     <style name="Theme.Signal" parent="Base.Theme.Signal" />
@@ -18,6 +20,16 @@
     <style name="ShapeAppearanceOverlay.CustomChip" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">35dp</item>
+    </style>
+
+    <style name="RoundFloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="shapeAppearanceOverlay">@style/FabRoundShape</item>
+        <item name="strokeColor">@color/mint</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+
+    <style name="FabRoundShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">50%</item>
     </style>
 
 </resources>

@@ -74,4 +74,7 @@ dependencies {
     implementation(libs.timber)
     //lottie
     implementation(libs.lottie)
+    //
+    implementation(libs.paging)
+
 }
