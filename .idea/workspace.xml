@@ -4,7 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : 유저 전체 설계" />
+    <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
+      <change afterPath="$PROJECT_DIR$/.idea/S11P12D211.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/39f88bbd-8821-4795-a4e8-e009598a8476.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/39f88bbd-8821-4795-a4e8-e009598a8476/storage_v2/_src_/schema/s11p12d211.zNd2ew.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/a615cbf4-7397-410c-9e4d-b85334ba677d.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/a615cbf4-7397-410c-9e4d-b85334ba677d/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/a615cbf4-7397-410c-9e4d-b85334ba677d/storage_v2/_src_/schema/s11p12d211.zNd2ew.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/TokenProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/TokenStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/TokenType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/dto/TokenInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/dto/TokenValidationResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/principle/UserPrinciple.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/test/java/com/ssafy/signal/MemberControllerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/test/java/com/ssafy/signal/member/jwt/token/TokenProviderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/repository/MemberRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/repository/MemberRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/resources/application.properties" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,16 +77,18 @@
       <list>
         <option value="Interface" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="member" />
+        <entry key="$PROJECT_DIR$" value="S11P12D211-85-member-model" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/backend/Signal" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -74,18 +103,46 @@
   "keyToString": {
     "Application.SignalApplication.executor": "Run",
     "Gradle.Signal [:SignalApplication.main()].executor": "Run",
+    "JUnit.MemberControllerTest.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.SignalApplication.executor": "Run",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S11P12D211/backend/Signal/build.gradle.kts",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S11P12D211",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mariadb"
+    ]
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.ssafy.signal.member.jwt.token" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.SignalApplication">
     <configuration name="SignalApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.SignalApplication" />
       <module name="Signal.main" />
@@ -99,11 +156,42 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MemberControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Signal.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ssafy.signal.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.ssafy.signal" />
+      <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.MemberControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SignalApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Signal.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssafy.signal.SignalApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.MemberControllerTest" />
         <item itemvalue="Application.SignalApplication" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -113,6 +201,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1721012707404</updated>
+      <workItem from="1721178036953" duration="22104000" />
     </task>
     <task id="LOCAL-00001" summary="⭐feat : member model">
       <option name="closed" value="true" />
@@ -146,8 +235,19 @@
       <option name="project" value="LOCAL" />
       <updated>1721116744842</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="⭐feat : 유저 전체 설계">
+      <option name="closed" value="true" />
+      <created>1721116847378</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1721116847378</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="RECENT_FILTERS">
@@ -201,6 +301,7 @@
     <MESSAGE value="⭐feat : backend" />
     <MESSAGE value="⭐feat : member model" />
     <MESSAGE value="⭐feat : 유저 전체 설계" />
-    <option name="LAST_COMMIT_MESSAGE" value="⭐feat : 유저 전체 설계" />
+    <MESSAGE value="⭐feat : access token" />
+    <option name="LAST_COMMIT_MESSAGE" value="⭐feat : access token" />
   </component>
 </project>

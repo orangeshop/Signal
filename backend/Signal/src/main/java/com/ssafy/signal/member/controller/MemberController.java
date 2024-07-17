@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/user")
@@ -41,22 +42,31 @@ public class MemberController {
 
 
     @GetMapping("/{id}")
-    public Member getMemberById(@PathVariable Long id) {
-        return memberService.getMemberById(id);
+    public ResponseEntity<Member> getMemberById(@PathVariable("id") Long id) {
+        try {
+            Member member = memberService.getMemberById(id);
+            return ResponseEntity.ok(member);
+        } catch (NoSuchElementException e) {
+            // 예외가 발생한 경우 적절한 응답을 반환합니다.
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            // 그 외의 예외에 대해 500 에러를 반환합니다.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Member createMember(@RequestBody Member member) {
         return memberService.saveMember(member);
     }
 
-    @PutMapping
-    public Member updateMember(@RequestBody Member member) {
-        return memberService.updateMember(member);
+    @PutMapping("/{id}")
+    public Member updateMember(@RequestBody Member member, @PathVariable("id") Long id) {
+        return memberService.updateMember(id, member);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteMember(@PathVariable Long id) {
+    public String deleteMember(@PathVariable("id") Long id) {
         memberService.deleteMember(id);
         return "Delete successful";
     }

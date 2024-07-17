@@ -3,7 +3,6 @@ package com.ssafy.signal.member.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "user")
@@ -23,11 +22,11 @@ public class Member {
     @NotBlank(message = "로그인은 필수 입력값입니다.")
     private String loginId;
 
-    @Column(name = "password", nullable = false, length = 50, unique = true)
+    @Column(name = "password", nullable = false, length = 50)
     @NotBlank(message = "비밀번호는 필수 입력값입니다.")
     private String password;
 
-    @Column(name = "type", length = 20)
+    @Column(name = "type", length = 20, nullable = false)
     private String type;
 
     @Column(name = "name", length = 50)
@@ -35,10 +34,10 @@ public class Member {
     private String name;
 
 
-    // 비밀번호 암호화
-    public void passwordEncode(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
+//    // 비밀번호 암호화
+//    public void passwordEncode(PasswordEncoder passwordEncoder) {
+//        this.password = passwordEncoder.encode(this.password);
+//    }
 
 
 }
