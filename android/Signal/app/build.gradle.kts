@@ -74,4 +74,8 @@ dependencies {
     implementation(libs.timber)
     //lottie
     implementation(libs.lottie)
+    //room
+    implementation(libs.bundles.room)
+    kapt (libs.room.compiler)
+
 }

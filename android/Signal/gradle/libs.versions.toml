@@ -20,6 +20,7 @@ fragment = "1.8.1"
 glide = "4.16.0"
 timber = "5.0.1"
 lottie = "5.2.0"
+room = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,9 +57,14 @@ glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "gli
 timber = {group = "com.jakewharton.timber", name = "timber", version.ref = "timber"}
 #lottie
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+#room
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room"}
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room"}
+room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 
 [bundles]
 network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
+room = ["room-ktx", "room-runtime"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
