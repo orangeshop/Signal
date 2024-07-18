@@ -11,6 +11,13 @@ import java.time.LocalDateTime;
 @Table(name = "comment")
 public class CommentEntity extends TimeEntity {
 
+    public void updateFromDto(CommentDto commentDto) {
+        // 필요한 필드만 업데이트
+        if (commentDto.getContent() != null) {
+            this.content = commentDto.getContent();
+        }
+        // 다른 필드도 필요에 따라 업데이트
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
