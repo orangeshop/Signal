@@ -7,15 +7,17 @@
     </data>
 
     <FrameLayout
+        android:id="@+id/chat_add_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.chat.fragment.ChatDetailFragment">
+        tools:context=".ui.chat.fragment.ChatAddFragment">
 
         <!-- TODO: Update blank fragment layout -->
         <TextView
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="hello_blank_fragment" />
+            android:text="asdasdasdasdasdsadasdas" />
 
     </FrameLayout>
 </layout>
