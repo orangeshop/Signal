@@ -10,7 +10,8 @@ import com.ongo.signal.databinding.ItemPostBinding
 
 class TodayPostAdapter(
     private val onEndReached: () -> Unit,
-    private val onItemClicked: (PostDTO) -> Unit
+    private val onItemClicked: (PostDTO) -> Unit,
+    private val onTTSClicked: (String) -> Unit
 ) : ListAdapter<PostDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemPostBinding) :
@@ -20,6 +21,10 @@ class TodayPostAdapter(
             binding.executePendingBindings()
             binding.root.setOnClickListener {
                 onItemClicked(post)
+            }
+
+            binding.ivTts.setOnClickListener {
+                onTTSClicked(post.content)
             }
         }
     }
