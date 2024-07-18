@@ -5,6 +5,13 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.ongo.signal.ui.main.MainViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.ongo.signal.ui.main.fragment.MainFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -294,11 +301,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:backgroundTint="@color/mint"
+            android:onClick="@{()->fragment.onFABClicked()}"
             android:src="@drawable/baseline_edit__mint_24"
             app:borderWidth="1dp"
-            app:tint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/black" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
