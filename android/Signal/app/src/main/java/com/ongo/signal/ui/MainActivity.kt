@@ -1,6 +1,7 @@
 package com.ongo.signal.ui
 
 import androidx.activity.OnBackPressedCallback
+import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -49,5 +50,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             navController.popBackStack()
         }
     }
+
+    fun hideBottomNavigation() {
+        binding.bottomNavigation.visibility = View.GONE
+    }
+
+    fun showBottomNavigation(){
+        binding.bottomNavigation.visibility = View.VISIBLE
+    }
+
 
 }
