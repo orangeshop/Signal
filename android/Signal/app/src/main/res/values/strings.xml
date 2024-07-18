@@ -19,4 +19,6 @@
     <string name="my_heart_signal">내가 댓글을 남긴 시그널</string>
     <string name="info">정보</string>
     <string name="logout">로그아웃</string>
+    <string name="edit">수정</string>
+    <string name="delete">삭제</string>
 </resources>
