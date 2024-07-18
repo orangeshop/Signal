@@ -19,7 +19,7 @@ class PostRepository @Inject constructor() {
         TagDTO(tagId = "10", tag = "Entertainment")
     )
 
-    private val mockData = List(100) { index ->
+    private val mockData = List(3) { index ->
         PostDTO(
             postId = index.toString(),
             title = "Title $index",

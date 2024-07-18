@@ -5,6 +5,7 @@ import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.databinding.FragmentSignupBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_signup) {
@@ -16,5 +17,6 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
     }
 }

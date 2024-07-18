@@ -14,8 +14,8 @@
     <!-- Custom Chip style -->
     <style name="CustomChip" parent="Widget.MaterialComponents.Chip.Action">
         <item name="chipBackgroundColor">@android:color/black</item>
-        <item name="chipStrokeColor">@android:color/darker_gray</item>
-        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/mint</item>
+        <item name="chipStrokeWidth">0.5dp</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.CustomChip</item>
         <item name="android:textColor">@color/mint</item>
     </style>
