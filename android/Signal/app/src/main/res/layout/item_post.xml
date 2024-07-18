@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="post"
             type="com.ongo.signal.data.model.main.PostDTO" />
@@ -11,22 +12,21 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/black">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:text="@{post.title}"
             android:textColor="@color/white"
             android:textSize="36sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Sample Title"
-            android:text="@{post.title}" />
+            tools:text="Sample Title" />
 
         <ImageView
             android:id="@+id/iv_profile"
@@ -42,35 +42,36 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{post.name}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
             app:layout_constraintStart_toEndOf="@id/iv_profile"
             app:layout_constraintTop_toTopOf="@id/iv_profile"
-            tools:text="User Name"
-            android:text="@{post.name}" />
+            tools:text="User Name" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
             android:textColor="@color/white"
+            app:dateText="@{post.date}"
             app:layout_constraintBottom_toBottomOf="@id/tv_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="2024-07-16"
-            app:dateText="@{post.date}" />
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
+            tools:text="2024-07-16" />
 
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:text="@{post.content}"
             android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/iv_profile"
-            tools:text="Sample content goes here."
-            android:text="@{post.content}" />
+            tools:text="Sample content goes here." />
 
         <LinearLayout
             android:id="@+id/ll_images"
@@ -108,13 +109,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:text="@{String.valueOf(post.likeCount)}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
             app:layout_constraintStart_toEndOf="@id/iv_thumb"
-            app:layout_constraintTop_toTopOf="@id/iv_thumb"
-            tools:text="10"
-            android:text="@{String.valueOf(post.likeCount)}" />
+            app:layout_constraintTop_toTopOf="@id/iv_thumb" />
 
         <ImageView
             android:id="@+id/iv_comment"
@@ -132,13 +132,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:text="@{String.valueOf(post.commentCount)}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
             app:layout_constraintStart_toEndOf="@id/iv_comment"
-            app:layout_constraintTop_toTopOf="@id/iv_comment"
-            tools:text="10"
-            android:text="@{String.valueOf(post.commentCount)}" />
+            app:layout_constraintTop_toTopOf="@id/iv_comment" />
 
         <View
             android:id="@+id/view_line"

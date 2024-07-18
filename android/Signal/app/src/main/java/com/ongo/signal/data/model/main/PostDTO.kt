@@ -13,5 +13,5 @@ data class PostDTO(
     val tags: List<TagDTO>,
     val likeCount: Int,
     val commentCount: Int,
-    val comment: List<String>
+    val comment: List<CommentDTO>
 )

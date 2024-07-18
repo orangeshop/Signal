@@ -6,6 +6,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="floatingActionButtonStyle">@style/RoundFloatingActionButton</item>
         <item name="colorPrimary">@color/mint</item>
+        <item name="android:windowBackground">@color/backgroundColor</item>
     </style>
 
     <style name="Theme.Signal" parent="Base.Theme.Signal" />
@@ -39,4 +40,11 @@
         <item name="android:color">@color/mint</item>
     </style>
 
+    <style name="CustomTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="CustomEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="fontFamily">@font/inter_regular</item>
+    </style>
 </resources>
