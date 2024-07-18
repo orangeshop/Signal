@@ -2,7 +2,11 @@ package com.ongo.signal.ui.main.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.speech.RecognizerIntent
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
@@ -49,6 +53,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 }
             }
         setUpAdapter()
+        setUpSpannableText()
 
         lifecycleScope.launch {
             viewModel.posts.collectLatest { newPosts ->
@@ -131,6 +136,27 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 }
             })
         }
+    }
+
+    private fun getSpannableString(fullText: String, highlightText: String, highlightColor: String): SpannableString {
+        val spannableString = SpannableString(fullText)
+        val start = fullText.indexOf(highlightText)
+        val end = start + highlightText.length
+        spannableString.setSpan(
+            ForegroundColorSpan(Color.parseColor(highlightColor)),
+            start,
+            end,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return spannableString
+    }
+
+    private fun setUpSpannableText() {
+        val hotSpannable = getSpannableString("화제의 시그널", "시그널", "#64FFCE")
+        val todaySpannable = getSpannableString("오늘의 시그널", "시그널", "#64FFCE")
+
+        binding.tvHotSignal.text = hotSpannable
+        binding.tvTodaySignal.text = todaySpannable
     }
 
     override fun onDestroyView() {
