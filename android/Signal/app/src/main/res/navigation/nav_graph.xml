@@ -26,7 +26,11 @@
     <fragment
         android:id="@+id/myPageFragment"
         android:name="com.ongo.signal.ui.my.MyPageFragment"
-        android:label="MyPageFragment" />
+        android:label="MyPageFragment" >
+        <action
+            android:id="@+id/action_myPageFragment_to_profileEditFragment"
+            app:destination="@id/profileEditFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/chatDetailFragment"
@@ -45,4 +49,8 @@
             android:id="@+id/action_writePostFragment_to_postFragment"
             app:destination="@id/postFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileEditFragment"
+        android:name="com.ongo.signal.ui.my.ProfileEditFragment"
+        android:label="ProfileEditFragment" />
 </navigation>
