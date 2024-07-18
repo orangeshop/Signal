@@ -51,6 +51,7 @@
             tools:text="User Name" />
 
         <TextView
+            android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -138,6 +139,16 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
             app:layout_constraintStart_toEndOf="@id/iv_comment"
             app:layout_constraintTop_toTopOf="@id/iv_comment" />
+
+        <ImageView
+            android:id="@+id/iv_tts"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/baseline_headset_mint_24"
+            app:layout_constraintBottom_toBottomOf="@id/iv_comment"
+            app:layout_constraintEnd_toEndOf="@id/tv_date"
+            app:layout_constraintTop_toTopOf="@id/iv_comment" />
+
 
         <View
             android:id="@+id/view_line"
