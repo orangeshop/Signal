@@ -6,6 +6,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="floatingActionButtonStyle">@style/RoundFloatingActionButton</item>
         <item name="colorPrimary">@color/mint</item>
+        <item name="android:windowBackground">@color/backgroundColor</item>
     </style>
 
     <style name="Theme.Signal" parent="Base.Theme.Signal" />
