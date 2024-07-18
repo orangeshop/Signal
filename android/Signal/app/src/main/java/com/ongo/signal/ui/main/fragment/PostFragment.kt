@@ -43,4 +43,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.clearPost()
+    }
+
 }
