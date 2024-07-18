@@ -22,7 +22,7 @@ public class Member {
     @NotBlank(message = "로그인은 필수 입력값입니다.")
     private String loginId;
 
-    @Column(name = "password", nullable = false, length = 50)
+    @Column(name = "password", nullable = false, length = 100)
     @NotBlank(message = "비밀번호는 필수 입력값입니다.")
     private String password;
 

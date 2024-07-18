@@ -2,12 +2,14 @@ package com.ssafy.signal.member.controller;
 
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.jwt.JwtUtil;
+import com.ssafy.signal.member.jwt.json.ApiResponseJson;
 import com.ssafy.signal.member.service.MemberService;
 
-import com.ssafy.signal.member.service.TokenBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +17,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -56,8 +61,18 @@ public class MemberController {
     }
 
     @PostMapping("/create")
-    public Member createMember(@RequestBody Member member) {
-        return memberService.saveMember(member);
+    public ApiResponseJson createMember(@Valid @RequestBody Member member, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new IllegalArgumentException("잘못된 요청입니다.");
+        }
+
+        Member member1 = memberService.saveMember(member);
+        log.info("Account successfully created: {}", member1);
+
+        return new ApiResponseJson(HttpStatus.OK, Map.of(
+                "loginId", member1.getLoginId(),
+                "name", member1.getName()
+        ));
     }
 
     @PutMapping("/{id}")

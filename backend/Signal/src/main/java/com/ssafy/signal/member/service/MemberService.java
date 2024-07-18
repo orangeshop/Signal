@@ -4,6 +4,7 @@ import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,16 +15,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
+@Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
 
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$";
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
+
     private final MemberRepository memberRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public Member saveMember(Member member) {
-        return memberRepository.save(member);
+        checkPasswordStrength(member.getPassword());
+
+        if (memberRepository.existsByLoginId(member.getLoginId())) {
+            log.info("이미 등록된 아이디 = {}", member.getLoginId());
+            throw new IllegalStateException("이미 등록된 아이디입니다.");
+        }
+        Member member1 = Member.builder()
+                .userId(member.getUserId())
+                .loginId(member.getLoginId())
+                .password(passwordEncoder.encode(member.getPassword()))
+                .type(member.getType())
+                .name(member.getName())
+                .build();
+
+        return memberRepository.save(member1);
     }
 
     @Transactional
@@ -60,6 +81,15 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with loginId: " + loginId));
         return new org.springframework.security.core.userdetails.User(member.getLoginId(), member.getPassword(), new ArrayList<>());
+    }
+
+    private void checkPasswordStrength(String password) {
+        if (PASSWORD_PATTERN.matcher(password).matches()) {
+            return;
+        }
+
+        log.info("비밀번호 정책 미달");
+        throw new IllegalArgumentException("비밀번호는 최소 8자리에 영어, 숫자, 특수문자를 포함해야 합니다.");
     }
 
 }

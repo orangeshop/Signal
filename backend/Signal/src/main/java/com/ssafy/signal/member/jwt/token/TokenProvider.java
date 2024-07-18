@@ -3,15 +3,23 @@ package com.ssafy.signal.member.jwt.token;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.jwt.token.dto.TokenValidationResult;
+import com.ssafy.signal.member.principle.UserPrinciple;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class TokenProvider {
@@ -29,7 +37,7 @@ public class TokenProvider {
     }
 
     public TokenInfo createToken(Member member) {
-        Long currentTime = (new Date()).getTime();
+        long currentTime = (new Date()).getTime();
         Date accessTokenExpirationTime = new Date(currentTime + this.accessTokenValidationInMilliseconds);
         String tokenId = UUID.randomUUID().toString();
 
@@ -77,4 +85,14 @@ public class TokenProvider {
         return new TokenValidationResult(TokenStatus.TOKEN_EXPIRED, TokenType.ACCESS, claims.get(TOKEN_ID_KEY, String.class), null);
     }
 
+    public Authentication getAuthentication(String token, Claims claims) {
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        UserPrinciple principle = new UserPrinciple(claims.getSubject(), claims.get(USERNAME_KEY, String.class), authorities);
+
+        return new UsernamePasswordAuthenticationToken(principle, token, authorities);
+    }
 }

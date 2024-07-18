@@ -1,6 +1,8 @@
 package com.ssafy.signal.member.config;
 
-import com.ssafy.signal.member.jwt.JwtRequestFilter;
+import com.ssafy.signal.member.jwt.JwtAccessDeniedHandler;
+import com.ssafy.signal.member.jwt.JwtAuthenticationEntryPoint;
+import com.ssafy.signal.member.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,20 +23,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
-    private final JwtRequestFilter jwtRequestFilter;
+//    private final JwtRequestFilter jwtRequestFilter;
+    private final JwtFilter jwtFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+//    private final String[] adminUrl = {"/admin/**"};
+    private final String[] permitAllUrl = {"/error", "/user/login" };
+    private final String[] anonymousUrl = {"/user/create"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(handle -> handle
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**", "/user/**").permitAll()
+                        .requestMatchers(permitAllUrl).permitAll()
+                        .requestMatchers(anonymousUrl).anonymous()
                         .anyRequest().authenticated()
                 );
-
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
