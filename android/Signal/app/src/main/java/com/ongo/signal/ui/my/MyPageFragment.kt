@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMypageBinding
+import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,6 +25,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
 
     private fun goToProfileEdit() {
         parentFragmentManager.commit {
+            (requireActivity() as MainActivity).hideBottomNavigation()
             findNavController().navigate(R.id.action_myPageFragment_to_profileEditFragment)
         }
     }

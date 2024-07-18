@@ -1,12 +1,8 @@
 package com.ongo.signal.ui
 
-import android.os.Build
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
+import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.ongo.signal.R
@@ -30,6 +26,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
+    }
+
+    fun hideBottomNavigation() {
+        binding.bottomNavigation.visibility = View.GONE
+    }
+
+    fun showBottomNavigation(){
+        binding.bottomNavigation.visibility = View.VISIBLE
     }
 
 
