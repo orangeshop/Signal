@@ -7,8 +7,8 @@ import com.ongo.signal.databinding.FragmentProfileEditBinding
 
 class ProfileEditFragment :
     BaseFragment<FragmentProfileEditBinding>(R.layout.fragment_profile_edit) {
+
     override fun init() {
-        
     }
 
 }
