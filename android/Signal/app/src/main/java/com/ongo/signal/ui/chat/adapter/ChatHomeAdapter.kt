@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.chat
+package com.ongo.signal.ui.chat.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
