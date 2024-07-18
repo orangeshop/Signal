@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MemberLoginDto.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/JwtAccessDeniedHandler.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/JwtAuthenticationEntryPoint.java" afterDir="false" />
@@ -256,7 +255,7 @@
       <option name="presentableId" value="Default" />
       <updated>1721012707404</updated>
       <workItem from="1721178036953" duration="24608000" />
-      <workItem from="1721260417880" duration="15471000" />
+      <workItem from="1721260417880" duration="22507000" />
     </task>
     <task id="LOCAL-00001" summary="⭐feat : member model">
       <option name="closed" value="true" />

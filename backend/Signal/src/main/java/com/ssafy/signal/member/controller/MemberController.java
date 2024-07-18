@@ -1,8 +1,11 @@
 package com.ssafy.signal.member.controller;
 
 import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.dto.MemberLoginDto;
 import com.ssafy.signal.member.jwt.JwtUtil;
 import com.ssafy.signal.member.jwt.json.ApiResponseJson;
+import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
+import com.ssafy.signal.member.principle.UserPrinciple;
 import com.ssafy.signal.member.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -75,6 +79,15 @@ public class MemberController {
         ));
     }
 
+    @GetMapping("/userinfo")
+    public ApiResponseJson getUserInfo(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+        log.info("요청 아이디 : {}", userPrinciple.getLoginId());
+
+        Member foundMember = memberService.getUserInfo(userPrinciple.getLoginId());
+
+        return new ApiResponseJson(HttpStatus.OK, foundMember);
+    }
+
     @PutMapping("/{id}")
     public Member updateMember(@RequestBody Member member, @PathVariable("id") Long id) {
         return memberService.updateMember(id, member);
@@ -87,14 +100,16 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Member member) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(member.getLoginId(), member.getPassword())
-        );
+    public ApiResponseJson authenticateAccountAndIssueToken(@Valid @RequestBody MemberLoginDto memberLoginDto,
+                                                            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new IllegalArgumentException("잘못된 요청입니다.");
+        }
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String jwt = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(jwt);
+        TokenInfo tokenInfoDto = memberService.loginMember(memberLoginDto.getLoginId(), memberLoginDto.getPassword());
+        log.info("Token issued for account: {}", tokenInfoDto.getTokenId());
+
+        return new ApiResponseJson(HttpStatus.OK, tokenInfoDto);
     }
 
     @PostMapping("/logout")
