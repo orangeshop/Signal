@@ -1,5 +1,9 @@
 package com.ongo.signal.ui.main.fragment
 
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,6 +49,30 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 }
             }
         }
+
+        binding.fragment = this
+    }
+
+    fun showPopupMenu(view: View) {
+        val popup = PopupMenu(requireContext(), view)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.popup_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.action_edit -> {
+                    makeToast("수정")
+                    true
+                }
+
+                R.id.action_delete -> {
+                    makeToast("삭제")
+                    true
+                }
+
+                else -> false
+            }
+        }
+        popup.show()
     }
 
     override fun onDestroyView() {
