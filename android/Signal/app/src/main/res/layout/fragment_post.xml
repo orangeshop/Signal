@@ -6,14 +6,17 @@
     <data>
 
         <variable
+            name="fragment"
+            type="com.ongo.signal.ui.main.fragment.PostFragment" />
+
+        <variable
             name="post"
             type="com.ongo.signal.data.model.main.PostDTO" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/tv_title"
@@ -32,6 +35,7 @@
             android:id="@+id/iv_more"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:onClick="@{(view) -> fragment.showPopupMenu(view)}"
             android:src="@drawable/baseline_more_vert_mint_24"
             app:layout_constraintBottom_toBottomOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
