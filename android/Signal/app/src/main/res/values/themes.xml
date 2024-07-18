@@ -39,4 +39,11 @@
         <item name="android:color">@color/mint</item>
     </style>
 
+    <style name="CustomTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="CustomEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="fontFamily">@font/inter_regular</item>
+    </style>
 </resources>
