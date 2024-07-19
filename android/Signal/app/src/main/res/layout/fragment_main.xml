@@ -5,6 +5,9 @@
 
     <data>
 
+
+    </data>
+
         <variable
             name="viewModel"
             type="com.ongo.signal.ui.main.MainViewModel" />

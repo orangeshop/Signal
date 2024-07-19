@@ -1,5 +1,10 @@
 package com.ongo.signal.ui
 
+
+import android.os.Bundle
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.OnBackPressedCallback
 import android.view.View
 import androidx.core.view.ViewCompat
@@ -51,6 +56,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
     }
 
+<<<<<<< android/Signal/app/src/main/java/com/ongo/signal/ui/MainActivity.kt
+    fun hideBottomNavigationView() {
+        val navi = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)
+        navi.visibility = GONE
+    }
+
+    fun showBottomNavigationView() {
+        val navi = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)
+        navi.visibility = VISIBLE
+    }
+
+=======
     fun hideBottomNavigation() {
         binding.bottomNavigation.visibility = View.GONE
     }
@@ -60,4 +77,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
 
+>>>>>>> android/Signal/app/src/main/java/com/ongo/signal/ui/MainActivity.kt
 }
