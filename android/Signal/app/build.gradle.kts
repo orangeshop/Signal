@@ -81,5 +81,7 @@ dependencies {
     //
     implementation(libs.paging)
 
+    implementation(libs.bundles.squareup)
+    implementation(libs.bundles.krossbow)
 
 }
