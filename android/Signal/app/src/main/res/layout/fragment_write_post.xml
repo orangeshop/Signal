@@ -33,6 +33,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"
+            android:onClick="@{() -> fragment.setupListeners()}"
             android:src="@drawable/baseline_mic__white_24"
             app:layout_constraintBottom_toBottomOf="@id/et_title"
             app:layout_constraintStart_toEndOf="@id/et_title"
@@ -57,6 +58,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_margin="8dp"
+            android:onClick="@{() -> fragment.setupListeners()}"
             android:src="@drawable/baseline_mic__white_24"
             app:layout_constraintBottom_toBottomOf="@id/et_content"
             app:layout_constraintStart_toEndOf="@id/et_content" />
