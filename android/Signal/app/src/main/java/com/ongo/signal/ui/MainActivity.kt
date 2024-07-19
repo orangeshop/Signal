@@ -14,7 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseActivity
 import com.ongo.signal.databinding.ActivityMainBinding
-import com.ongo.signal.ui.chat.ChatFragment
+import com.ongo.signal.ui.chat.fragment.ChatFragment
 import com.ongo.signal.ui.main.fragment.MainFragment
 import com.ongo.signal.ui.match.MatchFragment
 import com.ongo.signal.ui.my.MyPageFragment
@@ -56,18 +56,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
     }
 
-<<<<<<< android/Signal/app/src/main/java/com/ongo/signal/ui/MainActivity.kt
-    fun hideBottomNavigationView() {
-        val navi = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)
-        navi.visibility = GONE
-    }
-
-    fun showBottomNavigationView() {
-        val navi = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)
-        navi.visibility = VISIBLE
-    }
-
-=======
     fun hideBottomNavigation() {
         binding.bottomNavigation.visibility = View.GONE
     }
@@ -77,5 +65,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
 
->>>>>>> android/Signal/app/src/main/java/com/ongo/signal/ui/MainActivity.kt
 }

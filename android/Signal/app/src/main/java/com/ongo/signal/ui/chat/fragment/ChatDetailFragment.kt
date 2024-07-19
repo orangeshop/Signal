@@ -10,7 +10,7 @@ import com.ongo.signal.ui.MainActivity
 class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.fragment_chat_detail) {
 
     override fun init() {
-        (activity as? MainActivity)?.hideBottomNavigationView()
+        (activity as? MainActivity)?.hideBottomNavigation()
         binding.apply {
 
         }
@@ -18,6 +18,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun onDestroy() {
         super.onDestroy()
-        (activity as? MainActivity)?.showBottomNavigationView()
+        (activity as? MainActivity)?.showBottomNavigation()
     }
 }

@@ -64,16 +64,15 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room"}
 room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 
-[bundles]
-network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
-room = ["room-ktx", "room-runtime"]
-
 #paging
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 
 
 [bundles]
-network = ["retrofit2", "okhttp3", "okhttp3-logging", "gson"]
+network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
+room = ["room-ktx", "room-runtime"]
+
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

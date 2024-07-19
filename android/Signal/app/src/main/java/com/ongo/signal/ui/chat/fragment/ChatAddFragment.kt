@@ -9,7 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ChatAddFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat_add) {
     override fun init() {
-        (activity as? MainActivity)?.hideBottomNavigationView()
+        (requireActivity() as? MainActivity)?.hideBottomNavigation()
         binding.apply {
 
         }
@@ -17,6 +17,6 @@ class ChatAddFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat
 
     override fun onDestroy() {
         super.onDestroy()
-        (activity as? MainActivity)?.showBottomNavigationView()
+        (requireActivity() as? MainActivity)?.showBottomNavigation()
     }
 }
