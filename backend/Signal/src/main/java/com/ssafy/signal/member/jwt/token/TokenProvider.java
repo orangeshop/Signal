@@ -44,6 +44,7 @@ public class TokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(member.getLoginId())
                 .claim(USERNAME_KEY, member.getName())
+                .claim(AUTHORITIES_KEY, member.getType())
                 .claim(TOKEN_ID_KEY, tokenId)
                 .signWith(hashKey, SignatureAlgorithm.HS512)
                 .setExpiration(accessTokenExpirationTime)
@@ -64,6 +65,7 @@ public class TokenProvider {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
+            log.debug("Claims: {}", claims);
             return new TokenValidationResult(TokenStatus.TOKEN_VALID, TokenType.ACCESS, claims.get(TOKEN_ID_KEY, String.class), claims);
         } catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰");
@@ -86,6 +88,12 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String token, Claims claims) {
+        log.debug("Claims: {}", claims);
+        Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
+        if (authoritiesClaim == null) {
+            throw new IllegalArgumentException("Claims does not contain authorities key");
+        }
+
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
@@ -94,5 +102,21 @@ public class TokenProvider {
         UserPrinciple principle = new UserPrinciple(claims.getSubject(), claims.get(USERNAME_KEY, String.class), authorities);
 
         return new UsernamePasswordAuthenticationToken(principle, token, authorities);
+    }
+
+    public String resolveToken(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            return token.substring(7);
+        }
+        return null;
+    }
+
+    public Date getExpiration(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(hashKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getExpiration();
     }
 }

@@ -1,9 +1,11 @@
 package com.ssafy.signal.member.service;
 
 import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.domain.TokenBlacklist;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.repository.MemberRepository;
+import com.ssafy.signal.member.repository.TokenBlacklistRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,6 +35,7 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
 
     public Member saveMember(Member member) {
         checkPasswordStrength(member.getPassword());
@@ -49,6 +53,15 @@ public class MemberService implements UserDetailsService {
                 .build();
 
         return memberRepository.save(member1);
+    }
+
+    public void blacklistToken(String token, LocalDateTime expirationTime) {
+        TokenBlacklist tokenBlacklist = new TokenBlacklist(token, expirationTime);
+        tokenBlacklistRepository.save(tokenBlacklist);
+    }
+
+    public boolean isTokenBlacklisted(String token) {
+        return tokenBlacklistRepository.findByToken(token).isPresent();
     }
 
     public TokenInfo loginMember(String loginId, String password) {
@@ -124,6 +137,10 @@ public class MemberService implements UserDetailsService {
 
         log.info("비밀번호 정책 미달");
         throw new IllegalArgumentException("비밀번호는 최소 8자리에 영어, 숫자, 특수문자를 포함해야 합니다.");
+    }
+
+    public void deleteMemberByLoginId(String loginId) {
+        memberRepository.deleteByLoginId(loginId);
     }
 
 }

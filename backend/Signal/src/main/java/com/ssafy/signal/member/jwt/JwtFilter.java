@@ -1,8 +1,10 @@
 package com.ssafy.signal.member.jwt;
 
+import com.ssafy.signal.member.domain.TokenBlacklist;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.TokenStatus;
 import com.ssafy.signal.member.jwt.token.dto.TokenValidationResult;
+import com.ssafy.signal.member.service.TokenBlacklistService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -25,15 +28,18 @@ import java.util.regex.Pattern;
 public class JwtFilter extends OncePerRequestFilter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ([a-zA-Z0-9_\\\\-\\\\+\\\\/=]+)\\\\.([a-zA-Z0-9_\\\\-\\\\+\\\\/=]+)\\\\.([a-zA-Z0-9_.\\\\-\\\\+\\\\/=]*)";
+    private static final String BEARER_PREFIX = "Bearer ([a-zA-Z0-9_\\-\\+\\/=]+)\\.([a-zA-Z0-9_\\-\\+\\/=]+)\\.([a-zA-Z0-9_\\.\\-\\+\\/=]*)";
+
+//    private static final String BEARER_PREFIX = "Bearer ([a-zA-Z0-9_\\\\-\\\\+\\\\/=]+)\\\\.([a-zA-Z0-9_\\\\-\\\\+\\\\/=]+)\\\\.([a-zA-Z0-9_.\\\\-\\\\+\\\\/=]*)";
     private static final Pattern BEAER_PATTERN = Pattern.compile(BEARER_PREFIX);
     private final TokenProvider tokenProvider;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
 
-        if (!StringUtils.hasText(token)) {
+        if (!StringUtils.hasText(token) || tokenBlacklistService.isTokenBlacklisted(token)) {
             handleMissingToken(request, response, filterChain);
             return;
         }
@@ -67,8 +73,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (bearerToken != null && BEAER_PATTERN.matcher(bearerToken).matches()) {
-            return bearerToken.substring(7);
+        log.debug("Authorization Header: {}", bearerToken);
+        if (bearerToken != null) {
+            Matcher matcher = BEAER_PATTERN.matcher(bearerToken);
+            if (matcher.matches()) {
+                String token = matcher.group(0).substring(7);
+                log.debug("Extracted Token: {}", token);
+                return token;
+            }
         }
         return null;
     }

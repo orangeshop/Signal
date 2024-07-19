@@ -33,11 +33,4 @@ public class Member {
     @NotBlank(message = "이름은 필수 입력값입니다.")
     private String name;
 
-
-//    // 비밀번호 암호화
-//    public void passwordEncode(PasswordEncoder passwordEncoder) {
-//        this.password = passwordEncoder.encode(this.password);
-//    }
-
-
 }

@@ -4,10 +4,12 @@ import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberLoginDto;
 import com.ssafy.signal.member.jwt.JwtUtil;
 import com.ssafy.signal.member.jwt.json.ApiResponseJson;
+import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.principle.UserPrinciple;
 import com.ssafy.signal.member.service.MemberService;
 
+import com.ssafy.signal.member.service.TokenBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +21,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -38,6 +44,8 @@ public class MemberController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final TokenProvider tokenProvider;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @GetMapping("/test")
     public ResponseEntity<String> testEndpoint() {
@@ -93,10 +101,35 @@ public class MemberController {
         return memberService.updateMember(id, member);
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteMember(@PathVariable("id") Long id) {
-        memberService.deleteMember(id);
-        return "Delete successful";
+//    @DeleteMapping("/{id}")
+//    public String deleteMember(@PathVariable("id") Long id) {
+//        memberService.deleteMember(id);
+//        return "Delete successful";
+//    }
+
+    @DeleteMapping("/drop")
+    public ResponseEntity<String> deleteMember(@RequestHeader("Authorization") String bearerToken) {
+        String token = tokenProvider.resolveToken(bearerToken);
+        if (token != null) {
+            // 현재 로그인한 사용자를 확인하고 회원 탈퇴 처리
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()) {
+                String loginId = authentication.getName();
+
+                // 회원 탈퇴 처리
+                memberService.deleteMemberByLoginId(loginId);
+
+                // 토큰 블랙리스트에 추가하여 로그아웃 처리
+                Instant expirationInstant = tokenProvider.getExpiration(token).toInstant();
+                LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
+                tokenBlacklistService.blacklistToken(token, expirationTime);
+
+                return ResponseEntity.ok("Delete successful");
+            } else {
+                return ResponseEntity.status(403).body("Unauthorized access");
+            }
+        }
+        return ResponseEntity.status(400).body("Invalid token");
     }
 
     @PostMapping("/login")
@@ -113,13 +146,15 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String jwt = authHeader.substring(7);
-            // JWT를 블랙리스트에 추가하는 등의 로그아웃 처리
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String bearerToken) {
+        String token = tokenProvider.resolveToken(bearerToken);
+        log.debug("Extracted token for logout: {}", token);
+        if (token != null) {
+            Instant expirationInstant = tokenProvider.getExpiration(token).toInstant();
+            LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
+            tokenBlacklistService.blacklistToken(token, expirationTime);
         }
-        return ResponseEntity.ok("Logout successful");
+        return ResponseEntity.ok().build();
     }
 }
 
