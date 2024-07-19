@@ -29,8 +29,8 @@ public class BoardService {
     private static final int PAGE_POST_COUNT = 4;           // 한 페이지에 존재하는 게시글 수
 
     @Transactional
-    public List<BoardDto> getBoardList(Integer pageNum) {
-        Page<BoardEntity> page = boardRepository.findAll(PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate")));
+    public List<BoardDto> getBoardList(Integer pageNum, int limit) {
+        Page<BoardEntity> page = boardRepository.findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "createdDate")));
 
         List<BoardEntity> boardEntities = page.getContent();
         List<BoardDto> boardDtoList = new ArrayList<>();
