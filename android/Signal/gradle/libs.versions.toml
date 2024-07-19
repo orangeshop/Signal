@@ -21,6 +21,7 @@ glide = "4.16.0"
 timber = "5.0.1"
 lottie = "5.2.0"
 room = "2.6.1"
+paging = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,23 +41,24 @@ okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okht
 okhttp3-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2" }
 #viewmodel
-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "viewmodel"}
-activity-ktx = {group = "androidx.activity", name = "activity-ktx", version.ref = "activityktx"}
+viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "viewmodel" }
+activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityktx" }
 #navigation
-navigation-ktx = {group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation"}
-navigation-ui = {group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation"}
+navigation-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 #navigation-safe-args = {group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigation"}
 #coroutine
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 #fragment
-fragment-ktx = {group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment"}
+fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
 #glide
-glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 #timber
-timber = {group = "com.jakewharton.timber", name = "timber", version.ref = "timber"}
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 #lottie
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+
 #room
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room"}
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room"}
@@ -65,6 +67,13 @@ room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 [bundles]
 network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
 room = ["room-ktx", "room-runtime"]
+
+#paging
+paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+
+
+[bundles]
+network = ["retrofit2", "okhttp3", "okhttp3-logging", "gson"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

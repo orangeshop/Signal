@@ -21,12 +21,23 @@
         android:label="MapFragment" />
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.ongo.signal.ui.main.MainFragment"
-        android:label="MainFragment" />
+        android:name="com.ongo.signal.ui.main.fragment.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_writePostFragment"
+            app:destination="@id/writePostFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myPageFragment"
         android:name="com.ongo.signal.ui.my.MyPageFragment"
-        android:label="MyPageFragment" />
+        android:label="MyPageFragment" >
+        <action
+            android:id="@+id/action_myPageFragment_to_profileEditFragment"
+            app:destination="@id/profileEditFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/chatDetailFragment"
@@ -36,4 +47,24 @@
         android:id="@+id/chatAddFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatAddFragment"
         android:label="ChatAddFragment" />
+        android:name="com.ongo.signal.ui.chat.ChatDetailFragment"
+        android:label="chatDetailFragment"
+        />
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="com.ongo.signal.ui.main.fragment.PostFragment"
+        android:label="PostFragment" />
+    <fragment
+        android:id="@+id/writePostFragment"
+        android:name="com.ongo.signal.ui.main.fragment.WritePostFragment"
+        android:label="WritePostFragment" >
+        <action
+            android:id="@+id/action_writePostFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileEditFragment"
+        android:name="com.ongo.signal.ui.my.ProfileEditFragment"
+        android:label="ProfileEditFragment" />
+
 </navigation>

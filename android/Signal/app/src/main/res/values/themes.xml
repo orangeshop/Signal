@@ -2,6 +2,11 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Signal" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@color/backgroundColor</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="floatingActionButtonStyle">@style/RoundFloatingActionButton</item>
+        <item name="colorPrimary">@color/mint</item>
+        <item name="android:windowBackground">@color/backgroundColor</item>
     </style>
 
     <style name="Theme.Signal" parent="Base.Theme.Signal" />
@@ -9,15 +14,37 @@
     <!-- Custom Chip style -->
     <style name="CustomChip" parent="Widget.MaterialComponents.Chip.Action">
         <item name="chipBackgroundColor">@android:color/black</item>
-        <item name="chipStrokeColor">@android:color/darker_gray</item>
-        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/mint</item>
+        <item name="chipStrokeWidth">0.5dp</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.CustomChip</item>
         <item name="android:textColor">@color/mint</item>
     </style>
 
+    <!-- Round FAB style -->
     <style name="ShapeAppearanceOverlay.CustomChip" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">35dp</item>
     </style>
 
+    <style name="RoundFloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="shapeAppearanceOverlay">@style/FabRoundShape</item>
+        <item name="strokeColor">@color/mint</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+
+    <style name="FabRoundShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/mint</item>
+    </style>
+
+    <style name="CustomTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/inter_regular</item>
+    </style>
+
+    <style name="CustomEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="fontFamily">@font/inter_regular</item>
+    </style>
 </resources>
