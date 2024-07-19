@@ -103,6 +103,9 @@ public class MemberService implements UserDetailsService {
         if (updatedMember.getName() != null && !updatedMember.getName().isEmpty()) {
             existingMember.setName(updatedMember.getName());
         }
+        if (updatedMember.getComment() != null && !updatedMember.getComment().isEmpty()) {
+            existingMember.setComment(updatedMember.getComment());
+        }
 
         return memberRepository.save(existingMember);
     }

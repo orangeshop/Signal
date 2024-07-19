@@ -101,11 +101,6 @@ public class MemberController {
         return memberService.updateMember(id, member);
     }
 
-//    @DeleteMapping("/{id}")
-//    public String deleteMember(@PathVariable("id") Long id) {
-//        memberService.deleteMember(id);
-//        return "Delete successful";
-//    }
 
     @DeleteMapping("/drop")
     public ResponseEntity<String> deleteMember(@RequestHeader("Authorization") String bearerToken) {

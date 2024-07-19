@@ -33,4 +33,6 @@ public class Member {
     @NotBlank(message = "이름은 필수 입력값입니다.")
     private String name;
 
+    @Column(name = "comment", nullable = true)
+    private String comment;
 }
