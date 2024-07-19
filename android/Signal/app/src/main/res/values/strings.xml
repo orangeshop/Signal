@@ -31,4 +31,6 @@
     <string name="drink_coffee">커피 마시기</string>
     <string name="matching">매칭</string>
     <string name="registration">등록</string>
+    <string name="user">사용자</string>
+    <string name="go_matching">를 클릭해서 매칭해보세요!</string>
 </resources>
