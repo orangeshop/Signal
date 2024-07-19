@@ -1,6 +1,12 @@
 package com.ongo.signal.ui
 
+
+import android.os.Bundle
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.OnBackPressedCallback
+import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -8,7 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseActivity
 import com.ongo.signal.databinding.ActivityMainBinding
-import com.ongo.signal.ui.chat.ChatFragment
+import com.ongo.signal.ui.chat.fragment.ChatFragment
 import com.ongo.signal.ui.main.fragment.MainFragment
 import com.ongo.signal.ui.match.MatchFragment
 import com.ongo.signal.ui.my.MyPageFragment
@@ -49,5 +55,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             navController.popBackStack()
         }
     }
+
+    fun hideBottomNavigation() {
+        binding.bottomNavigation.visibility = View.GONE
+    }
+
+    fun showBottomNavigation(){
+        binding.bottomNavigation.visibility = View.VISIBLE
+    }
+
 
 }
