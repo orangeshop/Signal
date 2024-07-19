@@ -21,7 +21,16 @@
     <string name="logout">로그아웃</string>
     <string name="edit">수정</string>
     <string name="delete">삭제</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="type">타입</string>
+    <string name="chat">채팅하기</string>
+
+    <string-array name="tag_array">
+        <item>자유</item>
+        <item>생활</item>
+        <item>건강</item>
+        <item>교육</item>
+        <item>뉴스</item>
+        <item>여행</item>
+        <item>음식</item>
+        <item>스포츠</item>
+    </string-array>
 </resources>
