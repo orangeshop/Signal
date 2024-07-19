@@ -1,0 +1,23 @@
+Index: backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ssafy.signal.member.domain;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.*;\r\nimport org.springframework.security.crypto.password.PasswordEncoder;\r\n\r\n@Entity\r\n@NoArgsConstructor\r\n@Getter\r\n@Builder\r\n@AllArgsConstructor\r\npublic class Member {\r\n\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"id\")\r\n    private Long id;\r\n\r\n    @Column(name = \"user_id\", nullable = false)\r\n    private String userId;\r\n\r\n    @Column(name = \"password\", nullable = false)\r\n    private String password;\r\n\r\n    @Column(name = \"type\")\r\n    private int type;\r\n\r\n    @Column(name = \"name\")\r\n    private String name;\r\n\r\n    @Column(name = \"x\")\r\n    private float x;\r\n\r\n    @Column(name = \"y\")\r\n    private float y;\r\n\r\n    @Column(name = \"REFRESH_TOKEN\")\r\n    private String refreshToken;\r\n\r\n    // refreshToken 재설정\r\n    public void updateRefreshToken(String refreshToken) {\r\n        this.refreshToken = refreshToken;\r\n    }\r\n\r\n    // 비밀번호 암호화\r\n    public void passwordEncode(PasswordEncoder passwordEncoder) {\r\n        this.password = passwordEncoder.encode(this.password);\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java b/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java
+--- a/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java	(revision 8550a28c91e3e3782f8db5e3bec1d8efc0e6f944)
++++ b/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java	(date 1721016816443)
+@@ -28,12 +28,6 @@
+     @Column(name = "name")
+     private String name;
+ 
+-    @Column(name = "x")
+-    private float x;
+-
+-    @Column(name = "y")
+-    private float y;
+-
+     @Column(name = "REFRESH_TOKEN")
+     private String refreshToken;
+ 
