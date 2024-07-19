@@ -1,6 +1,5 @@
-package com.ssafy.signal.member.jwt;
+package com.ssafy.signal.member.jwt.filter;
 
-import com.ssafy.signal.member.domain.TokenBlacklist;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.TokenStatus;
 import com.ssafy.signal.member.jwt.token.dto.TokenValidationResult;

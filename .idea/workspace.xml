@@ -9,8 +9,8 @@
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MemberLoginDto.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/JwtAccessDeniedHandler.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/JwtAuthenticationEntryPoint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/JwtFilter.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/config/JwtConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/filter/JwtFilter.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/json/ApiResponseJson.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/json/ResponseStatusCode.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/TokenProvider.java" afterDir="false" />
@@ -22,11 +22,11 @@
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/repository/TokenBlacklistRepository.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/test/java/com/ssafy/signal/MemberControllerTest.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/test/java/com/ssafy/signal/member/jwt/token/TokenProviderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MemberRequestDto.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/JwtRequestFilter.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/repository/MemberRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/repository/MemberRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" afterDir="false" />
@@ -180,7 +180,7 @@
       <module name="Signal.test" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.member.jwt.*" />
+          <option name="PATTERN" value="com.ssafy.signal.member.jwt.filter.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -196,7 +196,7 @@
       <module name="Signal.test" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.member.jwt.*" />
+          <option name="PATTERN" value="com.ssafy.signal.member.jwt.filter.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -212,7 +212,7 @@
       <module name="Signal.test" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.member.jwt.*" />
+          <option name="PATTERN" value="com.ssafy.signal.member.jwt.filter.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -259,7 +259,7 @@
       <updated>1721012707404</updated>
       <workItem from="1721178036953" duration="24608000" />
       <workItem from="1721260417880" duration="25130000" />
-      <workItem from="1721346757460" duration="19915000" />
+      <workItem from="1721346757460" duration="20583000" />
     </task>
     <task id="LOCAL-00001" summary="⭐feat : member model">
       <option name="closed" value="true" />
