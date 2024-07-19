@@ -21,6 +21,17 @@
     <string name="logout">로그아웃</string>
     <string name="edit">수정</string>
     <string name="delete">삭제</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="type">타입</string>
+    <string name="tv_want">을 원하시나요?</string>
+    <string name="mission">미션</string>
+    <string name="what">어떤</string>
+    <string name="eating">밥 먹기</string>
+    <string name="drink_coffee">커피 마시기</string>
+    <string name="matching">매칭</string>
+    <string name="registration">등록</string>
+    <string name="user">사용자</string>
+    <string name="go_matching">를 클릭해서 매칭해보세요!</string>
     <string name="chat">채팅하기</string>
 
     <string-array name="tag_array">
@@ -33,4 +44,5 @@
         <item>음식</item>
         <item>스포츠</item>
     </string-array>
+
 </resources>

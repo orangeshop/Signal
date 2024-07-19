@@ -22,6 +22,7 @@ timber = "5.0.1"
 lottie = "5.2.0"
 room = "2.6.1"
 paging = "3.3.0"
+radarview = "1.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -66,7 +67,6 @@ room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 
 #paging
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
-
 
 [bundles]
 network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
