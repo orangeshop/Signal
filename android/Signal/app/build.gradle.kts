@@ -74,6 +74,12 @@ dependencies {
     implementation(libs.timber)
     //lottie
     implementation(libs.lottie)
-    //paging
+
+    //room
+    implementation(libs.bundles.room)
+    kapt (libs.room.compiler)
+    //
     implementation(libs.paging)
+
+
 }

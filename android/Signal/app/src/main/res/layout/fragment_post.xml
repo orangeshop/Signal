@@ -29,7 +29,8 @@
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
 
         <ImageView
             android:id="@+id/iv_more"
@@ -46,6 +47,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginTop="15dp"
+            android:onClick="@{(view) -> fragment.showUserPopupMenu(view, post)}"
             app:imageUrl="@{post.profile}"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
@@ -55,12 +57,14 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{(view) -> fragment.showUserPopupMenu(view, post)}"
             android:text="@{post.name}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
             app:layout_constraintStart_toEndOf="@id/iv_profile"
-            app:layout_constraintTop_toTopOf="@id/iv_profile" />
+            app:layout_constraintTop_toTopOf="@id/iv_profile"
+            tools:text="UserName" />
 
         <TextView
             android:layout_width="wrap_content"

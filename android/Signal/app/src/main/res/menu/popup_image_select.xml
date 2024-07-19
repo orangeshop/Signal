@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_take_photo"
+        android:title="카메라로 찍기" />
+    <item
+        android:id="@+id/menu_choose_from_gallery"
+        android:title="갤러리에서 선택" />
+</menu>

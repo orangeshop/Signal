@@ -24,7 +24,7 @@ class TodayPostAdapter(
             }
 
             binding.ivTts.setOnClickListener {
-                onTTSClicked(post.content)
+                onTTSClicked(post.title)
             }
         }
     }
