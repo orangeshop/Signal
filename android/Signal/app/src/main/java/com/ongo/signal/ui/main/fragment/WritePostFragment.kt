@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.main.fragment
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -15,11 +16,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentWritePostBinding
 import com.ongo.signal.ui.main.MainViewModel
+import com.ongo.signal.ui.main.adapter.ImageAdapter
+import com.ongo.signal.util.PermissionUtil
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -35,10 +40,17 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
     private var currentPhotoPath: String? = null
     private var currentTarget: Int = 0
+    private lateinit var imageAdapter: ImageAdapter
 
     override fun init() {
         binding.fragment = this
         setUpSpinner()
+
+        imageAdapter = ImageAdapter { uri -> onRemoveImageClick(uri) }
+        binding.rvImage.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = imageAdapter
+        }
 
         sttLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -58,7 +70,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                 currentPhotoPath?.let { path ->
                     val file = File(path)
                     val uri = Uri.fromFile(file)
-                    binding.etContent.setText(uri.toString())
+                    imageAdapter.addImage(uri)
                 }
             }
         }
@@ -67,11 +79,23 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                 val uri = result.data!!.data
                 uri?.let {
-                    binding.etContent.setText(it.toString())
+                    imageAdapter.addImage(uri)
                 }
             }
         }
 
+        checkAndRequestPermissions()
+    }
+
+    private fun checkAndRequestPermissions() {
+        val permissions = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        if (!PermissionUtil.checkAndRequestPermissions(this, permissions)) {
+            makeToast("권한이 필요합니다.")
+        }
     }
 
     private fun setUpSpinner() {
@@ -129,12 +153,44 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     }
 
     private fun takePictureFromCamera() {
-        // 카메라로 사진찍기 구현해야 함
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            val photoFile: File? = try {
+                createImageFile()
+            } catch (ex: IOException) {
+                null
+            }
+            photoFile?.also {
+                val photoURI: Uri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.ongo.signal.fileprovider",
+                    it
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                cameraLauncher.launch(intent)
+            }
+        }
+    }
+
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        ).apply {
+            currentPhotoPath = absolutePath
+        }
     }
 
     private fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryLauncher.launch(intent)
+    }
+
+    fun onRemoveImageClick(uri: Uri) {
+        imageAdapter.removeImage(uri)
     }
 
     fun onRegisterButtonClick() {
