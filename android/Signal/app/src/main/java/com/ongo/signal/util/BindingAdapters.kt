@@ -1,5 +1,6 @@
 package com.ongo.signal.util
 
+import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -29,5 +30,15 @@ object BindingAdapters {
             val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             textView.text = formatter.format(date)
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("imageUri")
+    fun loadImage(view: ImageView, uri: Uri?) {
+        Glide.with(view.context)
+            .load(uri)
+            .apply(RequestOptions.centerCropTransform())
+            .placeholder(R.drawable.baseline_person_24)
+            .into(view)
     }
 }
