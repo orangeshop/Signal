@@ -1,8 +1,10 @@
 package com.ongo.signal.ui.main.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.main.PostDTO
@@ -16,6 +18,23 @@ class TodayPostAdapter(
 
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        private val chipAdapter = ChipAdapter()
+        private val imageAdapter = ImageAdapter({ }, false)
+
+        init {
+            binding.rvChips.apply {
+                layoutManager =
+                    LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = chipAdapter
+            }
+            binding.rvImages.apply {
+                layoutManager =
+                    LinearLayoutManager(binding.root.context, LinearLayoutManager.VERTICAL, false)
+                adapter = imageAdapter
+            }
+        }
+
         fun bind(post: PostDTO) {
             binding.post = post
             binding.executePendingBindings()
@@ -26,6 +45,9 @@ class TodayPostAdapter(
             binding.ivTts.setOnClickListener {
                 onTTSClicked(post.title)
             }
+
+            chipAdapter.submitList(post.tags)
+            imageAdapter.submitList(post.image?.map { Uri.parse(it.toString()) })
         }
     }
 
