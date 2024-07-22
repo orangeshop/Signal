@@ -7,7 +7,7 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.Converters
 import com.ongo.signal.data.repository.main.chat.ChatHomeDao
 
-@Database(entities = [ChatHomeDTO::class], version = 1)
+@Database(entities = [ChatHomeDTO::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun chatHomeDao() : ChatHomeDao

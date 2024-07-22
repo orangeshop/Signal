@@ -5,6 +5,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.chat.ChatHomeChildDto
+import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.FragmentChatBinding
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
 import com.ongo.signal.ui.chat.ChatHomeViewModel
@@ -25,9 +27,12 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             var cnt = 0
             chatHomeFab.setOnClickListener {
                     findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
-//                chatViewModel.saveChat(ChatHomeDTO(cnt, mutableListOf(ChatHomeChildDto(1,"123", "123", "123", 123))))
-//                chatViewModel.loadChats()
-//                cnt += 1
+
+                chatViewModel.saveChat(ChatHomeDTO(cnt, list = arrayListOf(ChatHomeChildDto(1, "123", "123" , "123", 123))))
+
+
+
+                cnt += 1
             }
 
             chatHomeAdapter = ChatHomeAdapter(
@@ -46,7 +51,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     chatHomeAdapter.submitList(chatList)
                 })
             }
-
 
 
             // Example: Add a new chat item

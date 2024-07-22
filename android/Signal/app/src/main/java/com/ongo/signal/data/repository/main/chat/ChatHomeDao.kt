@@ -16,4 +16,9 @@ interface ChatHomeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg chatHomeDTOs: ChatHomeDTO)
+
+    @Query("SELECT * FROM chat_home_room WHERE id = :ID")
+    suspend fun getList(ID:Int): ChatHomeDTO
+
+
 }
