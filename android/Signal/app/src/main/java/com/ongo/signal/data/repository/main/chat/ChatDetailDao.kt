@@ -1,6 +1,5 @@
 package com.ongo.signal.data.repository.main.chat
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,10 +9,12 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 
 
 @Dao
-interface ChatHomeDao {
-    @Query("SELECT * FROM chat_home_table")
-    suspend fun getAll(): List<ChatHomeDTO>
+interface ChatDetailDao {
+    @Query("SELECT * FROM chat_detail_table where chat_id = :id limit 100")
+    suspend fun getAll(id : Int): List<ChatHomeChildDto>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg chatHomeDTOs: ChatHomeDTO)
+    @Insert()
+    suspend fun insertMessage(ChatHomeChildDtos: ChatHomeChildDto)
+
+
 }

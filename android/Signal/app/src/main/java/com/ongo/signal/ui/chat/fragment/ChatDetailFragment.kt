@@ -13,6 +13,7 @@ import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import timber.log.Timber
 
 private const val TAG = "ChatDetailFragment_싸피"
+
 class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.fragment_chat_detail) {
 
     private lateinit var chatDetailAdapter: ChatDetailAdapter
@@ -21,7 +22,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     override fun init() {
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
 
-        chatViewModel.getList(1)
+        chatViewModel.LoadDetailList(2)
+
         binding.apply {
             chatDetailAdapter = ChatDetailAdapter()
             binding.chatDetailRv.adapter = chatDetailAdapter
@@ -35,7 +37,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             binding.chatDetailBtn.setOnClickListener {
                 Log.d(TAG, "init: ")
-                chatViewModel.addList(ChatHomeChildDto(1,"22222", "2222", "3333", 333))
+                chatViewModel.SaveDetailList(ChatHomeChildDto(0,2,1,1, false, "222222222222", false, ""), 2)
             }
         }
     }

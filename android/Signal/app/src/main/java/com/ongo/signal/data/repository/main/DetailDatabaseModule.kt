@@ -2,8 +2,8 @@ package com.ongo.signal.data.repository.main
 
 import android.content.Context
 import androidx.room.Room
-import com.ongo.signal.data.repository.main.chat.ChatHomeDao
-import com.ongo.signal.data.repository.main.chat.ChatHomeDatabase
+import com.ongo.signal.data.repository.main.chat.ChatDetailDao
+import com.ongo.signal.data.repository.main.chat.ChatDetailDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,20 +13,19 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
-
+object DetailDatabaseModule {
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext appContext: Context): ChatHomeDatabase {
+    fun provideChatDetailDatabase(@ApplicationContext appContext: Context): ChatDetailDatabase {
         return Room.databaseBuilder(
             appContext,
-            ChatHomeDatabase::class.java,
-            "chat_home_database"
+            ChatDetailDatabase::class.java,
+            "chat_detail_database"
         ).build()
     }
 
     @Provides
-    fun provideChatHomeDao(database: ChatHomeDatabase):ChatHomeDao{
-        return database.chatHomeDao()
+    fun provideChatDetailDao(database: ChatDetailDatabase): ChatDetailDao {
+        return database.chatDetailDao()
     }
 }

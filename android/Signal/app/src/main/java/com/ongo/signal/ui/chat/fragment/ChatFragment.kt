@@ -24,20 +24,22 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
         binding.apply {
 
             chatViewModel.loadChats()
-            var cnt = 0
+
+
             chatHomeFab.setOnClickListener {
-                    findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
+                findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
 
-                chatViewModel.saveChat(ChatHomeDTO(cnt, list = arrayListOf(ChatHomeChildDto(1, "123", "123" , "123", 123))))
-
-
-
-                cnt += 1
+                chatViewModel.saveChat(
+                    ChatHomeDTO(
+                        0, 1, 2, "last", "status"
+                    )
+                )
             }
 
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
+
                 },
                 chatItemLongClick = {
 

@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.data.model.chat.ChatHomeDTO
+import com.ongo.signal.data.repository.main.chat.ChatDetailDao
+import com.ongo.signal.data.repository.main.chat.ChatDetailDatabase
 import com.ongo.signal.data.repository.main.chat.ChatHomeDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +19,8 @@ private const val TAG = "ChatHomeViewModel_싸피"
 
 @HiltViewModel
 class ChatHomeViewModel @Inject constructor(
-    private val chatHomeDao: ChatHomeDao
+    private val chatHomeDao: ChatHomeDao,
+    private val chatDetailDao: ChatDetailDao
 ):ViewModel() {
 
     private val _liveList = MutableLiveData<List<ChatHomeDTO>>()
@@ -26,39 +29,60 @@ class ChatHomeViewModel @Inject constructor(
     private val _listDetailList = MutableLiveData<List<ChatHomeChildDto>>()
     val listDetailList: LiveData<List<ChatHomeChildDto>> = _listDetailList
 
+    private val _chatRoomNumber = MutableLiveData<Int>()
+    val chatRoomNumber : LiveData<Int> = _chatRoomNumber
+
+
+    fun chattingNumber(){
+
+    }
+
     fun loadChats() {
         viewModelScope.launch {
             _liveList.value = chatHomeDao.getAll()
         }
     }
 
-    fun saveChat(chat: ChatHomeDTO) {
+    fun saveChat(room: ChatHomeDTO) {
         viewModelScope.launch {
-            chatHomeDao.insertAll(chat)
+            chatHomeDao.insertAll(room)
             loadChats() // Refresh the list after saving a new chat
         }
     }
 
-    fun getList(ID : Int){
+    fun LoadDetailList(ID : Int){
         viewModelScope.launch {
-            _listDetailList.value = chatHomeDao.getList(ID).list
-            Log.d(TAG, "getList: ${listDetailList.value?.get(0)?.content}")
+            _listDetailList.value = chatDetailDao.getAll(ID)
+        }
+        
+        for(i in 0 ..<(listDetailList.value?.size ?: 0)){
+            Log.d(TAG, "LoadDetailList: ${listDetailList.value?.get(i)}")
         }
     }
 
-    fun addList(item : ChatHomeChildDto){
-        val current = _listDetailList.value ?: mutableListOf()
+    fun SaveDetailList(message : ChatHomeChildDto, id : Int){
+        viewModelScope.launch {
 
-        val update = current.toMutableList().apply {
-            add(item)
-        }
-
-        _listDetailList.value = update
-//        Log.d(TAG, "addList: ${item} ${_listDetailList.value?.get(1)?.content}")
-        for(item in 0 ..<(listDetailList.value?.size ?: 0)){
-            Log.d(TAG, "${_listDetailList.value?.get(item)?.content}")
+            chatDetailDao.insertMessage(message)
+            LoadDetailList(id)
         }
     }
+
+
+//
+//    fun addList(item : ChatHomeChildDto){
+//        val current = _listDetailList.value ?: mutableListOf()
+//
+//        val update = current.toMutableList().apply {
+//            add(item)
+//        }
+//
+//        _listDetailList.value = update
+////        Log.d(TAG, "addList: ${item} ${_listDetailList.value?.get(1)?.content}")
+//        for(item in 0 ..<(listDetailList.value?.size ?: 0)){
+//            Log.d(TAG, "${_listDetailList.value?.get(item)?.content}")
+//        }
+//    }
 
 
 }

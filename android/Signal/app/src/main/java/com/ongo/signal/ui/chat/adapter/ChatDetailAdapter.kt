@@ -34,7 +34,7 @@ class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, ChatDetailAdapter.Chat
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<ChatHomeChildDto>() {
             override fun areItemsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.chat_id == newItem.chat_id
             }
 
             override fun areContentsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
