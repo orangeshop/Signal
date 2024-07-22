@@ -1,6 +1,5 @@
 package com.ongo.signal.ui.match
 
-import android.graphics.Color
 import android.view.View
 import android.view.animation.AnimationUtils
 import com.ongo.signal.R
@@ -33,7 +32,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
     }
 
-    private fun hideRequestMatchingWidget(){
+    private fun hideRequestMatchingWidget() {
         with(binding) {
             tvWhat.visibility = View.GONE
             tvWant.visibility = View.GONE
@@ -44,8 +43,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         }
     }
 
-    private fun showRadarWidget(){
-        with(binding){
+    private fun showRadarWidget() {
+        with(binding) {
             rvRadar.visibility = View.VISIBLE
             tvUser.visibility = View.VISIBLE
             tvClickGuide.visibility = View.VISIBLE
