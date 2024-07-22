@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.chat.fragment
 
+import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -26,6 +27,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             chatViewModel.loadChats()
 
 
+
             chatHomeFab.setOnClickListener {
                 findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
 
@@ -38,8 +40,9 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
+                    chatViewModel.chatRoomNumber = it.chat_id
+                    chatViewModel.LoadDetailList(it.chat_id)
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
-
                 },
                 chatItemLongClick = {
 
@@ -58,5 +61,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             // Example: Add a new chat item
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        chatViewModel.claerMessageList()
     }
 }

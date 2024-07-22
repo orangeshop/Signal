@@ -8,11 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.repository.main.chat.ChatDetailDao
-import com.ongo.signal.data.repository.main.chat.ChatDetailDatabase
 import com.ongo.signal.data.repository.main.chat.ChatHomeDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 private const val TAG = "ChatHomeViewModel_싸피"
@@ -26,15 +24,14 @@ class ChatHomeViewModel @Inject constructor(
     private val _liveList = MutableLiveData<List<ChatHomeDTO>>()
     val liveList: LiveData<List<ChatHomeDTO>> = _liveList
 
-    private val _listDetailList = MutableLiveData<List<ChatHomeChildDto>>()
-    val listDetailList: LiveData<List<ChatHomeChildDto>> = _listDetailList
+    private val _messageList = MutableLiveData<List<ChatHomeChildDto>>()
+    val messageList: LiveData<List<ChatHomeChildDto>> = _messageList
 
-    private val _chatRoomNumber = MutableLiveData<Int>()
-    val chatRoomNumber : LiveData<Int> = _chatRoomNumber
+    var chatRoomNumber = 0
 
 
-    fun chattingNumber(){
-
+    fun claerMessageList(){
+        _messageList.value = mutableListOf()
     }
 
     fun loadChats() {
@@ -52,11 +49,11 @@ class ChatHomeViewModel @Inject constructor(
 
     fun LoadDetailList(ID : Int){
         viewModelScope.launch {
-            _listDetailList.value = chatDetailDao.getAll(ID)
+            _messageList.value = chatDetailDao.getAll(ID)
         }
         
-        for(i in 0 ..<(listDetailList.value?.size ?: 0)){
-            Log.d(TAG, "LoadDetailList: ${listDetailList.value?.get(i)}")
+        for(i in 0 ..<(messageList.value?.size ?: 0)){
+            Log.d(TAG, "LoadDetailList: ${messageList.value?.get(i)}")
         }
     }
 

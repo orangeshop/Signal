@@ -22,14 +22,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     override fun init() {
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
 
-        chatViewModel.LoadDetailList(2)
+
 
         binding.apply {
             chatDetailAdapter = ChatDetailAdapter()
             binding.chatDetailRv.adapter = chatDetailAdapter
 
             lifecycleOwner?.let {
-                chatViewModel.listDetailList.observe(it, Observer { chatList ->
+                chatViewModel.messageList.observe(it, Observer { chatList ->
                     Timber.d("확인 ${chatList}")
                     chatDetailAdapter.submitList(chatList)
                 })
@@ -37,7 +37,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             binding.chatDetailBtn.setOnClickListener {
                 Log.d(TAG, "init: ")
-                chatViewModel.SaveDetailList(ChatHomeChildDto(0,2,1,1, false, "222222222222", false, ""), 2)
+                chatViewModel.SaveDetailList(ChatHomeChildDto(0,chatViewModel.chatRoomNumber,1,1, false, "222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222", false, ""), chatViewModel.chatRoomNumber)
             }
         }
     }
