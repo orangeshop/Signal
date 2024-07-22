@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.Match
+package com.ongo.signal.ui.match
 
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
