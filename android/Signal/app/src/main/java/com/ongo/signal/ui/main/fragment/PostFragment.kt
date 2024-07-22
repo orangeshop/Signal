@@ -9,12 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.main.CommentDTO
 import com.ongo.signal.data.model.main.PostDTO
 import com.ongo.signal.databinding.FragmentPostBinding
-import com.ongo.signal.ui.main.adapter.CommentAdapter
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.ChipAdapter
+import com.ongo.signal.ui.main.adapter.CommentAdapter
 import com.ongo.signal.util.UserPopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
