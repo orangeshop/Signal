@@ -7,13 +7,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.databinding.ItemImageBinding
-import timber.log.Timber
 
-class ImageAdapter(private val onRemoveClick: (Uri) -> Unit) : ListAdapter<Uri, ImageAdapter.ViewHolder>(DiffCallback()) {
+class ImageAdapter(
+    private val onRemoveClick: (Uri) -> Unit,
+    private val showRemove: Boolean
+) :
+    ListAdapter<Uri, ImageAdapter.ViewHolder>(DiffCallback()) {
 
-    inner class ViewHolder(private val binding: ItemImageBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemImageBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(uri: Uri) {
             binding.uri = uri
+            binding.showRemove = showRemove
             binding.executePendingBindings()
             binding.ivRemove.setOnClickListener {
                 onRemoveClick(uri)
