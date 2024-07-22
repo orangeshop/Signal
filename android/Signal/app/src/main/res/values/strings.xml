@@ -33,6 +33,8 @@
     <string name="user">사용자</string>
     <string name="go_matching">를 클릭해서 매칭해보세요!</string>
     <string name="chat">채팅하기</string>
+    <string name="hotSignal">화제의 시그널</string>
+    <string name="realtime_signal">실시간 시그널</string>
 
     <string-array name="tag_array">
         <item>자유</item>
