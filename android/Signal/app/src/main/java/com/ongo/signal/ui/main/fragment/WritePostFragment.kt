@@ -24,7 +24,6 @@ import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.ImageAdapter
 import com.ongo.signal.util.PermissionUtil
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -46,7 +45,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         binding.fragment = this
         setUpSpinner()
 
-        imageAdapter = ImageAdapter { uri -> onRemoveImageClick(uri) }
+        imageAdapter = ImageAdapter({ uri -> onRemoveImageClick(uri) }, true)
         binding.rvImage.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = imageAdapter
@@ -65,24 +64,26 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                 }
             }
 
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                currentPhotoPath?.let { path ->
-                    val file = File(path)
-                    val uri = Uri.fromFile(file)
-                    imageAdapter.addImage(uri)
+        cameraLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    currentPhotoPath?.let { path ->
+                        val file = File(path)
+                        val uri = Uri.fromFile(file)
+                        imageAdapter.addImage(uri)
+                    }
                 }
             }
-        }
 
-        galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-                val uri = result.data!!.data
-                uri?.let {
-                    imageAdapter.addImage(uri)
+        galleryLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                    val uri = result.data!!.data
+                    uri?.let {
+                        imageAdapter.addImage(uri)
+                    }
                 }
             }
-        }
 
         checkAndRequestPermissions()
     }
@@ -142,10 +143,12 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                     takePictureFromCamera()
                     true
                 }
+
                 R.id.menu_choose_from_gallery -> {
                     pickImageFromGallery()
                     true
                 }
+
                 else -> false
             }
         }
@@ -173,8 +176,10 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     }
 
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir: File = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        val timeStamp: String =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
         return File.createTempFile(
             "JPEG_${timeStamp}_",
             ".jpg",

@@ -38,7 +38,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private lateinit var ttsHelper: TTSHelper
     private lateinit var sttLauncher: ActivityResultLauncher<Intent>
 
-
     override fun init() {
         binding.fragment = this
         binding.viewModel = viewModel
@@ -138,12 +137,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         }
     }
 
-    private fun getSpannableString(fullText: String, highlightText: String, highlightColor: String): SpannableString {
+    private fun getSpannableString(
+        fullText: String
+    ): SpannableString {
         val spannableString = SpannableString(fullText)
-        val start = fullText.indexOf(highlightText)
-        val end = start + highlightText.length
+        val start = fullText.indexOf("시그널")
+        val end = start + "시그널".length
         spannableString.setSpan(
-            ForegroundColorSpan(Color.parseColor(highlightColor)),
+            ForegroundColorSpan(Color.parseColor("#64FFCE")),
             start,
             end,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -152,8 +153,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     private fun setUpSpannableText() {
-        val hotSpannable = getSpannableString("화제의 시그널", "시그널", "#64FFCE")
-        val todaySpannable = getSpannableString("오늘의 시그널", "시그널", "#64FFCE")
+        val hotSpannable = getSpannableString("화제의 시그널")
+        val todaySpannable = getSpannableString("오늘의 시그널")
 
         binding.tvHotSignal.text = hotSpannable
         binding.tvTodaySignal.text = todaySpannable
@@ -165,4 +166,3 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
 }
-
