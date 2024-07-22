@@ -86,15 +86,18 @@
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
-        <LinearLayout
-            android:id="@+id/ll_images"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_images"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="@id/iv_more"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_content" />
+            app:layout_constraintTop_toBottomOf="@id/tv_content"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_image" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chip"
@@ -103,7 +106,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="@id/iv_more"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
-            app:layout_constraintTop_toBottomOf="@id/ll_images"
+            app:layout_constraintTop_toBottomOf="@id/rv_images"
             tools:listitem="@layout/item_chip"
             tools:orientation="horizontal" />
 
@@ -211,7 +214,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
