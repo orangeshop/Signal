@@ -44,8 +44,11 @@ public class BoardEntity extends TimeEntity{
     }
 
     // 엔티티의 상태를 변경하는 메서드 추가
-    public void update(String title, String content) {
+    public void update(String title, String content, Long reference, Long liked, Long type) {
         this.title = title;
         this.content = content;
+        this.reference = reference;
+        this.liked = liked;
+        this.type = type;
     }
 }

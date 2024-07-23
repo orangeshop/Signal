@@ -12,34 +12,35 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="file")
+@Table(name = "file")
 public class FileEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="board_id", nullable = false)
+    @JoinColumn(name = "board_id")
     private BoardEntity board;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private Member user;
 
     @ManyToOne
-    @JoinColumn(name="chat_id", nullable = false)
+    @JoinColumn(name = "chat_id", nullable = true)  // null 허용으로 수정
     private ChatRoomEntity chatRoom;
 
     @ManyToOne
-    @JoinColumn(name="message_id", nullable = false)
+    @JoinColumn(name = "message_id", nullable = true)  // null 허용으로 수정
     private MessageEntity message;
 
-    @Column(name="file_url", nullable = false)
+    @Column(name = "file_url", nullable = false)
     private String fileUrl;
 
-    @Column(name="file_type", nullable = false)
+    @Column(name = "file_type")
     private Long fileType;
 
-    @Column(name="file_name", nullable = false)
+    @Column(name = "file_name", nullable = false)
     private String fileName;
 }
