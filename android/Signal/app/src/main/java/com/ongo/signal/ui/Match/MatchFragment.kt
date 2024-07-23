@@ -27,6 +27,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
     private fun checkPermission() {
         if (!checker.checkPermission(requireContext(), runtimePermissions)) {
+            checker.setOnGrantedListener {}
             checker.requestPermissionLauncher.launch(runtimePermissions)
         }
     }
