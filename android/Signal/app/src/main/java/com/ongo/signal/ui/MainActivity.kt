@@ -64,5 +64,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         binding.bottomNavigation.visibility = View.VISIBLE
     }
 
+    companion object {
+        const val CHANNEL_ID = "ongo_channel"
+        fun uploadToken(token: String) {
+
+        }
+    }
+
 
 }
