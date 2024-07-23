@@ -47,13 +47,15 @@
         android:id="@+id/chatAddFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatAddFragment"
         android:label="ChatAddFragment" />
-        android:name="com.ongo.signal.ui.chat.ChatDetailFragment"
-        android:label="chatDetailFragment"
-        />
+
     <fragment
         android:id="@+id/postFragment"
         android:name="com.ongo.signal.ui.main.fragment.PostFragment"
-        android:label="PostFragment" />
+        android:label="PostFragment" >
+        <action
+            android:id="@+id/action_postFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/writePostFragment"
         android:name="com.ongo.signal.ui.main.fragment.WritePostFragment"
@@ -66,5 +68,9 @@
         android:id="@+id/profileEditFragment"
         android:name="com.ongo.signal.ui.my.ProfileEditFragment"
         android:label="ProfileEditFragment" />
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.ongo.signal.ui.main.fragment.ReviewFragment"
+        android:label="ReviewFragment" />
 
 </navigation>
