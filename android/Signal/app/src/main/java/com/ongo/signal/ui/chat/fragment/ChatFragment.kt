@@ -15,6 +15,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "ChatFragment_싸피"
 
+/**
+ * 해당 프래그먼트는 채팅 리스트를 보여주는 프래그먼트입니다.
+ * 프래그먼트에서 fab 버튼을 누르면 채팅방을 만들 수 있도록 화면이 이동합니다.
+ * 또한 채팅 리스트를 클릭할 시 1대1 채팅 화면으로 넘어갑니다.
+ *
+ */
 @AndroidEntryPoint
 class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
@@ -25,8 +31,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
         binding.apply {
 
             chatViewModel.loadChats()
-
-
 
             chatHomeFab.setOnClickListener {
                 findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
@@ -45,7 +49,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {
-
+                    // 롱 클릭시 커스텀 다이어 로그가 나오게 하여 삭제 여부 및 다른 옵션을 선택할 수 있도록 합니다.
                     true
                 }
             )
@@ -56,10 +60,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     chatHomeAdapter.submitList(chatList)
                 })
             }
-
-
-            // Example: Add a new chat item
-
         }
     }
 

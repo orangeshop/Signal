@@ -1,6 +1,5 @@
 package com.ongo.signal.ui.chat.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.databinding.ChatDetailItemBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 private const val TAG = "ChatDetailAdapter_싸피"
 
