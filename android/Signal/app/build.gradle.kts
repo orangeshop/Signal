@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt.plugin)
+    alias(libs.plugins.gms.google.services)
     id("kotlin-kapt")
 }
 
@@ -80,5 +81,8 @@ dependencies {
     kapt (libs.room.compiler)
     //paging
     implementation(libs.paging)
+    //fcm
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging.ktx)
 
 }

@@ -1,10 +1,12 @@
 package com.ongo.signal.ui.my
 
+import android.content.Intent
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMypageBinding
+import com.ongo.signal.ui.LoginActivity
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,6 +23,19 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
         binding.tvEditProfile.setOnClickListener {
             goToProfileEdit()
         }
+
+        binding.ivLogout.setOnClickListener {
+            goToLoginActivity()
+        }
+        binding.tvLogout.setOnClickListener {
+            goToLoginActivity()
+        }
+        binding.ivMysignalIcon.setOnClickListener {
+            goToMySignal()
+        }
+        binding.tvMySignal.setOnClickListener {
+            goToMySignal()
+        }
     }
 
     private fun goToProfileEdit() {
@@ -28,5 +43,18 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
             (requireActivity() as MainActivity).hideBottomNavigation()
             findNavController().navigate(R.id.action_myPageFragment_to_profileEditFragment)
         }
+    }
+
+    private fun goToMySignal(){
+        parentFragmentManager.commit {
+            (requireActivity() as MainActivity).hideBottomNavigation()
+            findNavController().navigate(R.id.action_myPageFragment_to_mySignalFragment)
+        }
+    }
+
+    private fun goToLoginActivity() {
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
     }
 }
