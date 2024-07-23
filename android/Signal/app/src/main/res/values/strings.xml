@@ -29,7 +29,6 @@
     <string name="eating">밥 먹기</string>
     <string name="drink_coffee">커피 마시기</string>
     <string name="matching">매칭</string>
-    <string name="registration">등록</string>
     <string name="user">사용자</string>
     <string name="go_matching">를 클릭해서 매칭해보세요!</string>
     <string name="chat">채팅하기</string>
@@ -37,6 +36,8 @@
     <string name="registration_review">리뷰 등록</string>
     <string name="hotSignal">화제의 시그널</string>
     <string name="realtime_signal">실시간 시그널</string>
+    <string name="view_profile">프로필보기</string>
+    <string name="reviewList">리뷰목록</string>
 
     <string-array name="tag_array">
         <item>자유</item>

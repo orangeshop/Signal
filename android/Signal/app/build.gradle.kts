@@ -79,11 +79,10 @@ dependencies {
     //room
     implementation(libs.bundles.room)
     kapt (libs.room.compiler)
-    //
+    //paging
     implementation(libs.paging)
     //fcm
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
-
 
 }

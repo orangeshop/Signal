@@ -1,16 +1,12 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.speech.RecognizerIntent
-import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.PopupMenu
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
@@ -22,7 +18,8 @@ import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentWritePostBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.ImageAdapter
-import com.ongo.signal.util.PermissionUtil
+import com.ongo.signal.util.PopupMenuHelper
+import com.ongo.signal.util.STTHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.IOException
@@ -34,6 +31,7 @@ import java.util.Locale
 class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragment_write_post) {
 
     private val viewModel: MainViewModel by activityViewModels()
+    private lateinit var sttHelper: STTHelper
     private lateinit var sttLauncher: ActivityResultLauncher<Intent>
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
@@ -44,25 +42,29 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     override fun init() {
         binding.fragment = this
         setUpSpinner()
+        setupLaunchers()
+        setUpImageAdapter()
+    }
 
+    private fun setUpImageAdapter() {
         imageAdapter = ImageAdapter({ uri -> onRemoveImageClick(uri) }, true)
         binding.rvImage.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = imageAdapter
         }
+    }
 
-        sttLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-                    val speechResults =
-                        result.data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                    val recognizedText = speechResults?.get(0).toString()
-                    when (currentTarget) {
-                        R.id.iv_title_mic -> binding.etTitle.setText(recognizedText)
-                        R.id.iv_content_mic -> binding.etContent.setText(recognizedText)
-                    }
+    private fun setupLaunchers() {
+        sttLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
+                when (currentTarget) {
+                    R.id.iv_title_mic -> binding.etTitle.setText(recognizedText)
+                    R.id.iv_content_mic -> binding.etContent.setText(recognizedText)
                 }
             }
+        }
+
+        sttHelper = STTHelper(sttLauncher)
 
         cameraLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -84,19 +86,6 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                     }
                 }
             }
-
-        checkAndRequestPermissions()
-    }
-
-    private fun checkAndRequestPermissions() {
-        val permissions = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        if (!PermissionUtil.checkAndRequestPermissions(this, permissions)) {
-            makeToast("권한이 필요합니다.")
-        }
     }
 
     private fun setUpSpinner() {
@@ -113,31 +102,17 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     fun setupListeners() {
         binding.ivTitleMic.setOnClickListener {
             currentTarget = R.id.iv_title_mic
-            startSpeechToText()
+            sttHelper.startSpeechToText()
         }
 
         binding.ivContentMic.setOnClickListener {
             currentTarget = R.id.iv_content_mic
-            startSpeechToText()
+            sttHelper.startSpeechToText()
         }
-    }
-
-    private fun startSpeechToText() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "검색어를 말해주세요.")
-        }
-        sttLauncher.launch(intent)
     }
 
     fun showImagePickerPopupMenu(view: View) {
-        val popupMenu = PopupMenu(requireContext(), view)
-        popupMenu.menuInflater.inflate(R.menu.popup_image_select, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+        PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_image_select) { item ->
             when (item.itemId) {
                 R.id.menu_take_photo -> {
                     takePictureFromCamera()
@@ -152,7 +127,6 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                 else -> false
             }
         }
-        popupMenu.show()
     }
 
     private fun takePictureFromCamera() {
