@@ -44,6 +44,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 handleBackPressed()
             }
         })
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.mainFragment -> showBottomNavigation()
+                R.id.chatFragment -> showBottomNavigation()
+                R.id.mapFragment -> showBottomNavigation()
+                R.id.myPageFragment -> showBottomNavigation()
+                else -> hideBottomNavigation()
+            }
+        }
     }
 
     private fun handleBackPressed() {
