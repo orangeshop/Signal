@@ -2,6 +2,7 @@ package com.ssafy.signal.file.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ public class S3Uploader {
         this.amazonS3 = amazonS3;
         this.bucket = bucket;
     }
+
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
         String originalFileName = multipartFile.getOriginalFilename();
@@ -75,22 +77,22 @@ public class S3Uploader {
         }
     }
 
-    public void deleteFile(String fileName) {
+    public void delete(String fileName) {
         try {
             // URL 디코딩을 통해 원래의 파일 이름을 가져옵니다.
-            String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
-            log.info("Deleting file from S3: " + decodedFileName);
-            amazonS3.deleteObject(bucket, decodedFileName);
+            String decodedUrl = URLDecoder.decode(fileName, "UTF-8");
+
+            // 객체 키 추출 (URL에서 버킷 이름과 경로 제거)
+            String objectKey = decodedUrl.substring(decodedUrl.indexOf(bucket) + bucket.length() + 1);
+
+            log.info("Deleting file from S3: " + objectKey.substring(32));
+
+            amazonS3.deleteObject(this.bucket, objectKey.substring(32));
         } catch (UnsupportedEncodingException e) {
             log.error("Error while decoding the file name: {}", e.getMessage());
+            throw new RuntimeException("파일 이름을 디코딩하는 동안 오류가 발생했습니다: " + e.getMessage(), e);
         }
     }
 
-    public String updateFile(MultipartFile newFile, String oldFileName, String dirName) throws IOException {
-        // 기존 파일 삭제
-        log.info("S3 oldFileName: " + oldFileName);
-        deleteFile(oldFileName);
-        // 새 파일 업로드
-        return upload(newFile, dirName);
-    }
+
 }

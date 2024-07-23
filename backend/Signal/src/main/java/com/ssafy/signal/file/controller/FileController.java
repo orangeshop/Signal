@@ -23,6 +23,7 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+
     // 게시판 파일 업로드
     @PostMapping("/board/{boardId}/upload")
     public String uploadBoardFile(@RequestParam("file") MultipartFile multipartFile,
@@ -44,8 +45,10 @@ public class FileController {
     }
 
     @DeleteMapping("/delete")
-    public String deleteFile(@RequestParam("fileName") String fileName) {
-        s3Uploader.deleteFile(fileName);
+    public String deleteFile(@RequestParam("fileId") Long id) throws IOException {
+        fileService.deleteFile(id);
         return "File deleted successfully";
     }
+
+
 }

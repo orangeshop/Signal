@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Optional;
 
 @Service
 public class FileService {
@@ -58,5 +61,20 @@ public class FileService {
 
         // 업로드된 파일의 URL 반환
         return url;
+    }
+    // 파일 삭제하기
+    public void deleteFile(Long id) throws  IOException{
+
+            // 파일 이름으로 파일 정보 찾기
+            Optional<FileEntity> fileEntityOptional = fileRepository.findById(id);
+            if (fileEntityOptional.isPresent()) {
+                FileEntity fileEntity = fileEntityOptional.get();
+
+                // S3에서 파일 삭제
+                s3Uploader.delete(fileEntity.getFileUrl());
+
+                // DB에서 파일 정보 삭제
+                fileRepository.delete(fileEntity);
+            }
     }
 }
