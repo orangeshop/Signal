@@ -1,12 +1,8 @@
 package com.ongo.signal.ui
 
 
-import android.os.Bundle
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.OnBackPressedCallback
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -44,6 +40,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 handleBackPressed()
             }
         })
+
+        checkPermission()
+    }
+
+    private fun checkPermission() {
+        if (!checker.checkPermission(this, runtimePermissions)) {
+            checker.setOnGrantedListener{ //퍼미션 획득 성공일때
+                init()
+            }
+
+            checker.requestPermissionLauncher.launch(runtimePermissions) // 권한없으면 창 띄움
+        } else { //이미 전체 권한이 있는 경우
+            init()
+        }
+        /** permission check **/
     }
 
     private fun handleBackPressed() {
@@ -60,9 +71,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         binding.bottomNavigation.visibility = View.GONE
     }
 
-    fun showBottomNavigation(){
+    fun showBottomNavigation() {
         binding.bottomNavigation.visibility = View.VISIBLE
     }
 
+    companion object {
+        const val CHANNEL_ID = "ongo_channel"
+        fun uploadToken(token: String) {
+
+        }
+    }
 
 }
