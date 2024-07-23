@@ -1,19 +1,34 @@
 package com.ongo.signal.ui.match
 
+import android.Manifest
 import android.view.View
 import android.view.animation.AnimationUtils
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.util.RadarView
+import com.ssafy.firebase_b.util.PermissionChecker
 
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
 
     private lateinit var radarView: RadarView
+    private val checker = PermissionChecker(this)
+    private val runtimePermissions = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
 
     override fun init() {
         initViews()
         initAnimation()
+        checkPermission()
+    }
+
+    private fun checkPermission() {
+        if (!checker.checkPermission(requireContext(), runtimePermissions)) {
+            checker.requestPermissionLauncher.launch(runtimePermissions)
+        }
     }
 
     private fun initAnimation() {
