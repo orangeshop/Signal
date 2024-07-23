@@ -7,7 +7,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -130,6 +130,10 @@ public class BoardService {
                 .createdDate(boardEntity.getCreatedDate())
                 .modifiedDate(boardEntity.getModifiedDate())
                 .build();
+    }
+
+    public BoardEntity getBoardById(Long id) {
+        return boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
     }
 }
 

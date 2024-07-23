@@ -5,6 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Controller/ReportController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Dto/ReportChatRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Dto/ReportRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Entity/ReportBoard.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Entity/ReportChat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Repository/ReportBoardRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Repository/ReportChatRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Service/ReportBoardService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Service/ReportChatService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/TokenBlacklist.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MemberLoginDto.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/JwtAccessDeniedHandler.java" afterDir="false" />
@@ -24,6 +33,14 @@
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/test/java/com/ssafy/signal/member/jwt/token/TokenProviderTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardTestController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/domain/Board.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/repository/BoardRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/repository/BoardRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/BoardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/BoardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/chat/controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/chat/controller/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/chat/domain/ChatRoom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/chat/repository/ChatRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/chat/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/chat/service/ChatService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" afterDir="false" />
@@ -78,8 +95,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JUnit5 Test Class" />
-        <option value="Class" />
+        <option value="package-info" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -144,11 +162,14 @@
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\Desktop\S11P12D211\backend\Signal\src\main\java\com\ssafy\signal" />
+    </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="com.ssafy.signal.member.jwt.token" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.SignalApplication">
+  <component name="RunManager" selected="Application.SignalApplication">
     <configuration name="SignalApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.SignalApplication" />
       <module name="Signal.main" />
@@ -234,11 +255,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SignalApplication" />
         <item itemvalue="JUnit.TokenProviderTest.validateTokenNotValid" />
         <item itemvalue="JUnit.TokenProviderTest.validateTokenValid" />
         <item itemvalue="JUnit.TokenProviderTest.createToken" />
         <item itemvalue="JUnit.MemberControllerTest" />
-        <item itemvalue="Application.SignalApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -260,7 +281,8 @@
       <updated>1721012707404</updated>
       <workItem from="1721178036953" duration="24608000" />
       <workItem from="1721260417880" duration="25130000" />
-      <workItem from="1721346757460" duration="21498000" />
+      <workItem from="1721346757460" duration="22415000" />
+      <workItem from="1721697192426" duration="7239000" />
     </task>
     <task id="LOCAL-00001" summary="⭐feat : member model">
       <option name="closed" value="true" />
