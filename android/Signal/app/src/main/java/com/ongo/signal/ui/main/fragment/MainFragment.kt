@@ -51,10 +51,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             }
         }
 
-        binding.tag1.setOnClickListener {
-            Timber.d("clicked")
-        }
-
         sttHelper = STTHelper(sttLauncher)
 
         lifecycleScope.launch {
