@@ -135,6 +135,7 @@ public class BoardService {
     }
     public BoardEntity getBoardById(Long id) {
         return boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Board not found with id: " + id));
-    }
-}
+
+
+}}
 

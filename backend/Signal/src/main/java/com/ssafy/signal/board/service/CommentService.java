@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -82,5 +83,9 @@ public class CommentService {
                 .createdDate(commentEntity.getCreatedDate())
                 .modifiedDate(commentEntity.getModifiedDate())
                 .build();
+    }
+
+    public CommentEntity getCommentById(Long id) {
+        return commentRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
     }
 }
