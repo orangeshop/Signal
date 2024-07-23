@@ -66,10 +66,8 @@ class PermissionChecker(activityOrFragment: Any) {
     private fun resultChecking(result: Map<String, Boolean>) {
         Timber.d("권한 확인 ${result}")
         if (result.values.contains(false)) { //false가 있는 경우라면..
-            Toast.makeText(context, "권한이 부족합니다.", Toast.LENGTH_SHORT).show()
             moveToSettings()
         } else {
-            Toast.makeText(context, "모든 권한이 허가되었습니다.", Toast.LENGTH_SHORT).show()
             permitted.onGranted()
         }
     }
