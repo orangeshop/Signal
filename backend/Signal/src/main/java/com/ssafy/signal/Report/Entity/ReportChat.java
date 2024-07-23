@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Table(name = "report_chat")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReportChat {
 
     @Id
