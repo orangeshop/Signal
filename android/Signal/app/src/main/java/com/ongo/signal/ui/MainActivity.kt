@@ -44,6 +44,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 handleBackPressed()
             }
         })
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.mainFragment -> binding.bottomNavigation.visibility = VISIBLE
+                R.id.chatFragment -> binding.bottomNavigation.visibility = VISIBLE
+                R.id.mapFragment -> binding.bottomNavigation.visibility = VISIBLE
+                R.id.myPageFragment -> binding.bottomNavigation.visibility = VISIBLE
+                else -> binding.bottomNavigation.visibility = GONE
+            }
+        }
     }
 
     private fun handleBackPressed() {
@@ -57,11 +67,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     fun hideBottomNavigation() {
-        binding.bottomNavigation.visibility = View.GONE
+        binding.bottomNavigation.visibility = GONE
     }
 
-    fun showBottomNavigation(){
-        binding.bottomNavigation.visibility = View.VISIBLE
+    fun showBottomNavigation() {
+        binding.bottomNavigation.visibility = VISIBLE
     }
 
 
