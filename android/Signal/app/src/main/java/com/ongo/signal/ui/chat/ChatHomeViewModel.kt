@@ -10,7 +10,10 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.repository.main.chat.ChatDetailDao
 import com.ongo.signal.data.repository.main.chat.ChatHomeDao
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 private const val TAG = "ChatHomeViewModel_싸피"
@@ -41,6 +44,7 @@ class ChatHomeViewModel @Inject constructor(
     }
 
     fun saveChat(room: ChatHomeDTO) {
+
         viewModelScope.launch {
             chatHomeDao.insertAll(room)
             loadChats() // Refresh the list after saving a new chat
@@ -51,35 +55,23 @@ class ChatHomeViewModel @Inject constructor(
         viewModelScope.launch {
             _messageList.value = chatDetailDao.getAll(ID)
         }
-        
-        for(i in 0 ..<(messageList.value?.size ?: 0)){
-            Log.d(TAG, "LoadDetailList: ${messageList.value?.get(i)}")
-        }
     }
+
+
 
     fun SaveDetailList(message : ChatHomeChildDto, id : Int){
         viewModelScope.launch {
-
             chatDetailDao.insertMessage(message)
             LoadDetailList(id)
         }
     }
 
+    fun timeSetting(): String{
+        val now = System.currentTimeMillis()
+        val simpleDateFormat = SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
+        return simpleDateFormat
+    }
 
-//
-//    fun addList(item : ChatHomeChildDto){
-//        val current = _listDetailList.value ?: mutableListOf()
-//
-//        val update = current.toMutableList().apply {
-//            add(item)
-//        }
-//
-//        _listDetailList.value = update
-////        Log.d(TAG, "addList: ${item} ${_listDetailList.value?.get(1)?.content}")
-//        for(item in 0 ..<(listDetailList.value?.size ?: 0)){
-//            Log.d(TAG, "${_listDetailList.value?.get(item)?.content}")
-//        }
-//    }
 
 
 }

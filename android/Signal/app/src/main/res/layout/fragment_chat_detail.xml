@@ -15,7 +15,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_detail_rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent"
@@ -23,6 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/chat_detail_ll"
         />
+
 
         <LinearLayout
             android:id="@+id/chat_detail_ll"
@@ -34,8 +35,10 @@
             android:orientation="horizontal"
         >
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:src="@drawable/baseline_add_mint_24"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+            />
 
             <EditText
                 android:id="@+id/et_search"
@@ -50,14 +53,12 @@
                 android:layout_weight="@integer/material_motion_duration_long_1"
             />
 
-            <Button
+            <ImageView
+                android:src="@drawable/baseline_arrow_circle_up_mint_24"
                 android:id="@+id/chat_detail_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
             />
         </LinearLayout>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

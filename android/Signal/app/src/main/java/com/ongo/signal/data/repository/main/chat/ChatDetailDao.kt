@@ -10,7 +10,7 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 
 @Dao
 interface ChatDetailDao {
-    @Query("SELECT * FROM chat_detail_table where chat_id = :id limit 100")
+    @Query("SELECT * FROM chat_detail_table where chat_id = :id")
     suspend fun getAll(id : Int): List<ChatHomeChildDto>
 
     @Insert()
