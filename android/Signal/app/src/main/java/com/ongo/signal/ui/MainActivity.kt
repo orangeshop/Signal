@@ -33,8 +33,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private val runtimePermissions = arrayOf(
         Manifest.permission.POST_NOTIFICATIONS,
         Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     override fun setupBinding(binding: ActivityMainBinding) {

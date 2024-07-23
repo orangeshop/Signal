@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.ongo.signal.util.OnGrantedListener
+import timber.log.Timber
 
 
 class PermissionChecker(activityOrFragment: Any) {
@@ -63,6 +64,7 @@ class PermissionChecker(activityOrFragment: Any) {
 
 
     private fun resultChecking(result: Map<String, Boolean>) {
+        Timber.d("권한 확인 ${result}")
         if (result.values.contains(false)) { //false가 있는 경우라면..
             Toast.makeText(context, "권한이 부족합니다.", Toast.LENGTH_SHORT).show()
             moveToSettings()
