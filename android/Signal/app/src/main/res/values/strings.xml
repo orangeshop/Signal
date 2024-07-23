@@ -34,6 +34,7 @@
     <string name="go_matching">를 클릭해서 매칭해보세요!</string>
     <string name="chat">채팅하기</string>
     <string name="one_line_review">한줄평 남기기</string>
+    <string name="registration_review">리뷰 등록</string>
 
     <string-array name="tag_array">
         <item>자유</item>
