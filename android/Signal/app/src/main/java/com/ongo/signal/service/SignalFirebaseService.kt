@@ -16,7 +16,6 @@ class SignalFirebaseService : FirebaseMessagingService() {
 //        MainActivity.uploadToken(token)
     }
 
-    // Foreground에서 Push Service를 받기 위해 Notification 설정
     @SuppressLint("MissingPermission")
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
