@@ -23,6 +23,10 @@ lottie = "5.2.0"
 room = "2.6.1"
 paging = "3.3.0"
 radarview = "1.0.2"
+#fcm
+gms = "4.4.2"
+firebase-bom = "33.1.2"
+firebaseMessagingKtx = "24.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,6 +72,10 @@ room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 #paging
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 
+#fcm
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+
 [bundles]
 network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
 room = ["room-ktx", "room-runtime"]
@@ -78,3 +86,5 @@ room = ["room-ktx", "room-runtime"]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+#fcm
+gms-google-services = { id = "com.google.gms.google-services", version.ref = "gms" }
