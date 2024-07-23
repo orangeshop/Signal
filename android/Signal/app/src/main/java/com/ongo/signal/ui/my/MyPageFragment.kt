@@ -24,11 +24,17 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
             goToProfileEdit()
         }
 
-        binding.tvLogout.setOnClickListener {
+        binding.ivLogout.setOnClickListener {
             goToLoginActivity()
         }
         binding.tvLogout.setOnClickListener {
             goToLoginActivity()
+        }
+        binding.ivMysignalIcon.setOnClickListener {
+            goToMySignal()
+        }
+        binding.tvMySignal.setOnClickListener {
+            goToMySignal()
         }
     }
 
@@ -36,6 +42,13 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
         parentFragmentManager.commit {
             (requireActivity() as MainActivity).hideBottomNavigation()
             findNavController().navigate(R.id.action_myPageFragment_to_profileEditFragment)
+        }
+    }
+
+    private fun goToMySignal(){
+        parentFragmentManager.commit {
+            (requireActivity() as MainActivity).hideBottomNavigation()
+            findNavController().navigate(R.id.action_myPageFragment_to_mySignalFragment)
         }
     }
 
