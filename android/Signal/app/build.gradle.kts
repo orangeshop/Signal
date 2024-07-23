@@ -78,8 +78,7 @@ dependencies {
     //room
     implementation(libs.bundles.room)
     kapt (libs.room.compiler)
-    //
+    //paging
     implementation(libs.paging)
-
 
 }
