@@ -11,23 +11,36 @@ public class BoardEntity extends TimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 10)
     private String writer;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String title;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column
+    private Long reference;
+
+    @Column
+    private Long liked;
+
+    @Column
+    private Long type;
+
     @Builder
-    public BoardEntity(Long id, String title, String content, String writer) {
+    public BoardEntity(Long id, String title, String content, String writer, Long reference, Long liked, Long type) {
         this.id = id;
         this.writer = writer;
         this.title = title;
         this.content = content;
+        this.reference = reference != null ? reference : 0L;
+        this.liked = liked != null ? liked : 0L;
+        this.type = type != null ? type : 0L;
     }
 
     // 엔티티의 상태를 변경하는 메서드 추가

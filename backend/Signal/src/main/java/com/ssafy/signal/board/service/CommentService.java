@@ -1,41 +1,34 @@
 package com.ssafy.signal.board.service;
 
 import com.ssafy.signal.board.domain.BoardEntity;
-import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.annotations.NotFound;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
 import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.board.domain.CommentEntity;
 import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.stream.events.Comment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
 
-    @Autowired
-    private BoardRepository boardRepository;
-
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CommentDto> getCommentsByBoardId(Long boardId) {
         List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId);
         List<CommentDto> commentDtoList = new ArrayList<>();
 
         for (CommentEntity commentEntity : commentEntities) {
-            commentDtoList.add(this.convertEntityToDto(commentEntity));
+            commentDtoList.add(convertEntityToDto(commentEntity));
         }
         return commentDtoList;
     }
@@ -44,7 +37,14 @@ public class CommentService {
     public Long saveComment(CommentDto commentDto) {
         BoardEntity boardEntity = boardRepository.findById(commentDto.getBoardId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
-        CommentEntity commentEntity = commentDto.toEntity(boardEntity);
+
+        // CommentEntity를 생성하여 저장합니다.
+        CommentEntity commentEntity = CommentEntity.builder()
+                .boardEntity(boardEntity)
+                .writer(commentDto.getWriter())
+                .content(commentDto.getContent())
+                .build();
+
         return commentRepository.save(commentEntity).getId();
     }
 
@@ -52,7 +52,7 @@ public class CommentService {
     public ResponseEntity<String> deleteComment(Long boardId, Long id) {
         try {
             commentRepository.deleteByBoardIdAndId(boardId, id);
-            return ResponseEntity.ok("성공적으로 삭제되었습니다");
+            return ResponseEntity.ok("Comment successfully deleted.");
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -61,12 +61,11 @@ public class CommentService {
     @Transactional
     public CommentDto updateComment(Long boardId, Long id, CommentDto updatedCommentDto) {
         Optional<CommentEntity> commentEntityOptional = commentRepository.findByBoardIdAndId(boardId, id);
-        if (!commentEntityOptional.isPresent()) {
+        if (commentEntityOptional.isEmpty()) {
             throw new EntityNotFoundException("Comment not found with boardId: " + boardId + " and id: " + id);
         }
-        CommentEntity commentEntity = commentEntityOptional.get();
 
-        // 업데이트 메서드를 호출하여 DTO에서 받은 필드들을 업데이트
+        CommentEntity commentEntity = commentEntityOptional.get();
         commentEntity.updateFromDto(updatedCommentDto);
 
         commentRepository.save(commentEntity);
@@ -77,7 +76,7 @@ public class CommentService {
     private CommentDto convertEntityToDto(CommentEntity commentEntity) {
         return CommentDto.builder()
                 .id(commentEntity.getId())
-                .boardId(commentEntity.getBoard().getId())
+                .boardId(commentEntity.getBoardEntity().getId()) // boardEntity에서 ID를 가져옵니다.
                 .writer(commentEntity.getWriter())
                 .content(commentEntity.getContent())
                 .createdDate(commentEntity.getCreatedDate())
