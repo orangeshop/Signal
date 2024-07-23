@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_myPageFragment_to_profileEditFragment"
             app:destination="@id/profileEditFragment" />
+        <action
+            android:id="@+id/action_myPageFragment_to_mySignalFragment"
+            app:destination="@id/mySignalFragment" />
     </fragment>
 
     <fragment
@@ -66,5 +69,9 @@
         android:id="@+id/profileEditFragment"
         android:name="com.ongo.signal.ui.my.ProfileEditFragment"
         android:label="ProfileEditFragment" />
+    <fragment
+        android:id="@+id/mySignalFragment"
+        android:name="com.ongo.signal.ui.my.MySignalFragment"
+        android:label="MySignalFragment" />
 
 </navigation>
