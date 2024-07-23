@@ -7,24 +7,18 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Entity
 @Table(name = "comment")
 public class CommentEntity extends TimeEntity {
 
-    public void updateFromDto(CommentDto commentDto) {
-        // 필요한 필드만 업데이트
-        if (commentDto.getContent() != null) {
-            this.content = commentDto.getContent();
-        }
-        // 다른 필드도 필요에 따라 업데이트
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
-    private BoardEntity board;
+    @JoinColumn(name = "board_id", nullable = false) // 게시판과의 관계 설정
+    private BoardEntity boardEntity;
 
     @Column(nullable = false)
     private String writer;
@@ -33,19 +27,33 @@ public class CommentEntity extends TimeEntity {
     private String content;
 
     @Builder
-    public CommentEntity(Long id, BoardEntity board, String writer, String content) {
+    public CommentEntity(Long id, BoardEntity boardEntity, String writer, String content) {
         this.id = id;
-        this.board = board;
+        this.boardEntity = boardEntity;
         this.writer = writer;
         this.content = content;
     }
 
-    // 수동으로 getter 메서드 추가
+    // JPA 엔티티의 수동 getter 메서드 (TimeEntity로부터 상속된 필드)
+    @Override
     public LocalDateTime getCreatedDate() {
         return super.getCreatedDate();
     }
 
+    @Override
     public LocalDateTime getModifiedDate() {
         return super.getModifiedDate();
+    }
+
+    // CommentDto로부터 업데이트하는 메서드
+    public void updateFromDto(CommentDto commentDto) {
+        if (commentDto.getContent() != null) {
+            this.content = commentDto.getContent();
+        }
+    }
+
+    // boardId를 반환하는 메서드 추가
+    public Long getBoardId() {
+        return this.boardEntity != null ? this.boardEntity.getId() : null;
     }
 }

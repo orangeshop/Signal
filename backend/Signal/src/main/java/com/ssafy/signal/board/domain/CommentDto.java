@@ -10,16 +10,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CommentDto {
     private Long id;
-    private Long boardId;
+    private Long boardId; // 게시판 ID를 Long 타입으로 유지
     private String writer;
     private String content;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    public CommentEntity toEntity(BoardEntity boardEntity) {
+    // CommentEntity로 변환하는 메서드
+    public CommentEntity toEntity() {
         return CommentEntity.builder()
                 .id(id)
-                .board(boardEntity)
+                .boardEntity(new BoardEntity()) // boardId를 Long 타입으로 설정
                 .writer(writer)
                 .content(content)
                 .build();
@@ -35,4 +36,3 @@ public class CommentDto {
         this.modifiedDate = modifiedDate;
     }
 }
-

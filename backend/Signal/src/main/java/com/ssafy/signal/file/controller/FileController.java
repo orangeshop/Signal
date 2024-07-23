@@ -3,6 +3,7 @@ package com.ssafy.signal.file.controller;
 import com.ssafy.signal.file.service.S3Uploader;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,5 +21,11 @@ public class FileController {
     public String uploadFile(@RequestParam("file") MultipartFile multipartFile,
                              @RequestParam("dirName") String dirName) throws IOException {
         return s3Uploader.upload(multipartFile, dirName);
+    }
+
+    @DeleteMapping("/delete")
+    public String deleteFile(@RequestParam("fileName") String fileName) {
+        s3Uploader.deleteFile(fileName);
+        return "File deleted successfully";
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -30,15 +31,11 @@ public class BoardService {
 
     @Transactional
     public List<BoardDto> getBoardList(Integer pageNum, int limit) {
-        Page<BoardEntity> page = boardRepository.findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "createdDate")));
-
-        List<BoardEntity> boardEntities = page.getContent();
-        List<BoardDto> boardDtoList = new ArrayList<>();
-
-        for (BoardEntity boardEntity : boardEntities) {
-            boardDtoList.add(this.convertEntityToDto(boardEntity));
-        }
-        return boardDtoList;
+        return new ArrayList<>(boardRepository.findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "createdDate")))
+                .getContent())
+                .stream()
+                .map(this::convertEntityToDto)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Transactional
