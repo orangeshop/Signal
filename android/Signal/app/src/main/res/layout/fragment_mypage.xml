@@ -84,7 +84,7 @@
 
         <TextView
             android:id="@+id/tv_my_signal"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
@@ -92,6 +92,7 @@
             android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_mysignal_icon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_mysignal_icon"
             app:layout_constraintTop_toTopOf="@id/iv_mysignal_icon" />
 
@@ -107,7 +108,7 @@
 
         <TextView
             android:id="@+id/tv_my_response_signal"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
@@ -115,6 +116,7 @@
             android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_heart_icon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_heart_icon"
             app:layout_constraintTop_toTopOf="@id/iv_heart_icon" />
 
@@ -130,7 +132,7 @@
 
         <TextView
             android:id="@+id/tv_info"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
@@ -138,6 +140,7 @@
             android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_info_icon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_info_icon"
             app:layout_constraintTop_toTopOf="@id/iv_info_icon" />
 
@@ -153,7 +156,7 @@
 
         <TextView
             android:id="@+id/tv_logout"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
@@ -161,6 +164,7 @@
             android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_logout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_logout"
             app:layout_constraintTop_toTopOf="@id/iv_logout" />
 
