@@ -1,11 +1,9 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import android.widget.PopupMenu
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
@@ -14,7 +12,7 @@ import com.ongo.signal.databinding.FragmentPostBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.ChipAdapter
 import com.ongo.signal.ui.main.adapter.CommentAdapter
-import com.ongo.signal.util.UserPopupMenuHelper
+import com.ongo.signal.util.PopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -55,10 +53,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     fun showPopupMenu(view: View) {
-        val popup = PopupMenu(requireContext(), view)
-        val inflater: MenuInflater = popup.menuInflater
-        inflater.inflate(R.menu.popup_menu, popup.menu)
-        popup.setOnMenuItemClickListener { item: MenuItem ->
+        PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_menu) { item ->
             when (item.itemId) {
                 R.id.action_edit -> {
                     makeToast("수정")
@@ -73,13 +68,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 else -> false
             }
         }
-        popup.show()
     }
 
-    fun showUserPopupMenu(view: View, post: PostDTO) {
-        UserPopupMenuHelper.showUserPopupMenu(requireContext(), view, post) { clickedPost ->
-            makeToast("1대1 채팅을 시작합니다 with ${clickedPost.name}")
-        }
+    fun onProfileClick() {
+        findNavController().navigate(R.id.action_postFragment_to_reviewFragment)
     }
 
     override fun onDestroyView() {
