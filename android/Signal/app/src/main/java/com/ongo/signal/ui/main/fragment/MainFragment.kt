@@ -1,10 +1,18 @@
 package com.ongo.signal.ui.main.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorInflater
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.content.Intent
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
@@ -36,6 +44,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private lateinit var ttsHelper: TTSHelper
     private lateinit var sttHelper: STTHelper
     private lateinit var sttLauncher: ActivityResultLauncher<Intent>
+    private val handler = Handler(Looper.getMainLooper())
+    private val flipInterval = 3000L
 
     override fun init() {
         binding.fragment = this
@@ -45,11 +55,12 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         setUpAdapter()
         setUpSpannableText()
 
-        sttLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
-                binding.etSearch.setText(recognizedText)
+        sttLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
+                    binding.etSearch.setText(recognizedText)
+                }
             }
-        }
 
         sttHelper = STTHelper(sttLauncher)
 
@@ -68,11 +79,61 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 }
             }
         }
+
+        startFlippingViews()
+    }
+
+    private fun startFlippingViews() {
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                flipViews()
+                handler.postDelayed(this, flipInterval)
+            }
+        }, flipInterval)
+    }
+
+    private fun flipViews() {
+        flipView(binding.tvFirstTitle, binding.rvFirst)
+        flipView(binding.tvSecondTitle, binding.rvSecond)
+        flipView(binding.tvThirdTitle, binding.rvThird)
+    }
+
+    private fun flipView(titleView: View, recyclerView: RecyclerView) {
+        val context = titleView.context
+        val flipOut = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
+        val flipIn = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
+        val flipOutRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
+        val flipInRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
+
+        flipOut.setTarget(titleView)
+        flipOutRecycler.setTarget(recyclerView)
+
+        flipOut.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                val nextPosition = (titleView.tag as? Int ?: 0) + 1
+                val nextPost = todayPostAdapter.currentList.getOrNull(nextPosition % todayPostAdapter.itemCount)
+                if (nextPost != null) {
+                    titleView.tag = nextPosition
+                    (titleView as TextView).text = nextPost.title
+                    (recyclerView.adapter as TagAdapter).submitList(nextPost.tags)
+                }
+                flipIn.setTarget(titleView)
+                flipInRecycler.setTarget(recyclerView)
+                flipIn.start()
+                flipInRecycler.start()
+            }
+        })
+
+        flipOut.start()
+        flipOutRecycler.start()
     }
 
     fun onFABClicked() {
+        viewModel.clearPost()
         findNavController().navigate(R.id.action_mainFragment_to_writePostFragment)
     }
+
 
     fun onMicClicked() {
         sttHelper.startSpeechToText()
@@ -153,6 +214,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     override fun onDestroyView() {
         ttsHelper.shutdown()
+        handler.removeCallbacksAndMessages(null)
         super.onDestroyView()
     }
 }
