@@ -1,29 +1,23 @@
 package com.ongo.signal.ui.match
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.util.RadarView
 import com.ssafy.firebase_b.util.PermissionChecker
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Locale
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
 
+@AndroidEntryPoint
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
 
     private lateinit var radarView: RadarView
@@ -32,6 +26,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
+    private val viewModel: MatchViewModel by viewModels()
 
 
     override fun init() {
@@ -58,62 +53,56 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 return@setOnClickListener
             }
 
-            hideRequestMatchingWidget()
-            showRadarWidget()
-            getLocation()
+            viewLifecycleOwner.lifecycleScope.launch {
+                val fusedLocationProviderClient =
+                    LocationServices.getFusedLocationProviderClient(requireActivity())
+                val nowLocation = viewModel.getLocation(fusedLocationProviderClient)
+
+                if (nowLocation == null) {
+                    makeToast("위치 좌표를 받아올 수 없습니다.")
+                }
+
+                Timber.d("${nowLocation}")
+
+                val result =
+                    viewModel.postMatchRegistration(
+                        MatchRegistrationRequest(
+                            nowLocation!!.latitude,
+                            nowLocation.longitude,
+                            18
+                        )
+                    )
+
+
+
+                if (result == RESULT_OK) {
+                    makeToast("성공적으로 매칭 등록을 하였습니다!")
+                    hideRequestMatchingWidget()
+                    showRadarWidget()
+                } else {
+                    makeToast("통신에 문제가 있습니다. 잠시 후 다시 해주세요")
+                }
+            }
+
         }
 
     }
 
 
-    @SuppressLint("MissingPermission")
-    private fun getLocation() {
-
-        val fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireActivity())
-
-        fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-            .addOnSuccessListener { success: Location? ->
-                success?.let { location ->
-                    Timber.d("${location.latitude}, ${location.longitude}")
-                    val geocoder = Geocoder(requireContext(), Locale.KOREA)
-                    val address = geocoder.getFromLocation(
-                        location.latitude,
-                        location.longitude,
-                        1
-                    ) as List<Address>
-                    Timber.d("위치는 : $address")
-                    Timber.d(
-                        "거리는 : ${
-                            calculateDistance(
-                                36.1020544,
-                                128.4213672,
-                                36.1020544,
-                                127.4213672
-                            )
-                        }"
-                    )
-                }
-            }
-            .addOnFailureListener { fail ->
-                Timber.d("fail : $fail")
-            }
-    }
-
-    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val earthRadius = 6371.0
-
-        val dLat = Math.toRadians(lat2 - lat1)
-        val dLon = Math.toRadians(lon2 - lon1)
-
-        val a = sin(dLat / 2) * sin(dLat / 2) +
-                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
-                sin(dLon / 2) * sin(dLon / 2)
-
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-        return earthRadius * c
-    }
+//    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+//        val earthRadius = 6371.0
+//
+//        val dLat = Math.toRadians(lat2 - lat1)
+//        val dLon = Math.toRadians(lon2 - lon1)
+//
+//        val a = sin(dLat / 2) * sin(dLat / 2) +
+//                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+//                sin(dLon / 2) * sin(dLon / 2)
+//
+//        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+//
+//        return earthRadius * c
+//    }
 
 
     private fun hideRequestMatchingWidget() {
@@ -141,11 +130,11 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         initRadar()
 
         lifecycleScope.launch {
-            binding.cvDot.addDot(500f,200f)
-            binding.cvDot.addDot(200f,300f)
-            binding.cvDot.addDot(400f,800f)
+            binding.cvDot.addDot(500f, 200f)
+            binding.cvDot.addDot(200f, 300f)
+            binding.cvDot.addDot(400f, 800f)
             delay(2000L)
-            binding.cvDot.addDot(700f,700f)
+            binding.cvDot.addDot(700f, 700f)
         }
     }
 
@@ -156,5 +145,12 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     override fun onDestroyView() {
         super.onDestroyView()
         radarView.stop()
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewModel.deleteMatchRegistration(18)
+//        }
+    }
+
+    companion object {
+        const val RESULT_OK = "200"
     }
 }

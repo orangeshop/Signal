@@ -1,5 +1,7 @@
 package com.ongo.signal.data.repository
 
+import com.ongo.signal.data.model.match.MatchRegistrationRequest
+import com.ongo.signal.data.model.match.MatchRegistrationResponse
 import com.ongo.signal.network.SignalApi
 import retrofit2.Response
 import javax.inject.Inject
@@ -14,10 +16,13 @@ class SignalRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postMatchRegistration(
-        latitude: Double,
-        longitude: Double,
-        user_id: Long
-    ): Response<Int> {
-        return signalApi.postMatchRegistration(latitude, longitude, user_id)
+        request: MatchRegistrationRequest
+    ): Response<MatchRegistrationResponse> {
+        return signalApi.postMatchRegistration(request)
     }
+
+    override suspend fun deleteMatchRegistration(userId: Long): Response<Int> {
+        return signalApi.deleteMatchRegistration(userId)
+    }
+
 }
