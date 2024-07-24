@@ -7,7 +7,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.main.PostDTO
 import com.ongo.signal.databinding.FragmentPostBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.ChipAdapter
@@ -72,11 +71,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     fun onProfileClick() {
         findNavController().navigate(R.id.action_postFragment_to_reviewFragment)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.clearPost()
     }
 
 }
