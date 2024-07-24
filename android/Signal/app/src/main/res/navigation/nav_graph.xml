@@ -26,7 +26,7 @@
         <action
             android:id="@+id/action_mainFragment_to_postFragment"
             app:destination="@id/postFragment"
-            app:enterAnim="@anim/anim_slide_in_from_right_fade_in"
+            app:enterAnim="@anim/anim_slide_up"
             app:exitAnim="@anim/anim_fade_out"
             app:popEnterAnim="@anim/anim_slide_in_from_left_fade_in"
             app:popExitAnim="@anim/anim_fade_out" />
