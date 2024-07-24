@@ -10,7 +10,7 @@ interface SignalRepository {
 
     suspend fun postMatchRegistration(
         request: MatchRegistrationRequest
-    ): Response<MatchRegistrationResponse>
+    ): Result<MatchRegistrationResponse?>
 
     suspend fun deleteMatchRegistration(userId: Long): Response<Int>
 }

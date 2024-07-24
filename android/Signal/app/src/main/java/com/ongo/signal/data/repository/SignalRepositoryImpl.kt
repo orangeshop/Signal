@@ -17,12 +17,16 @@ class SignalRepositoryImpl @Inject constructor(
 
     override suspend fun postMatchRegistration(
         request: MatchRegistrationRequest
-    ): Response<MatchRegistrationResponse> {
-        return signalApi.postMatchRegistration(request)
+    ): Result<MatchRegistrationResponse?> {
+        val req = signalApi.postMatchRegistration(request)
+        return if (req.isSuccessful) {
+            Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
     }
 
     override suspend fun deleteMatchRegistration(userId: Long): Response<Int> {
         return signalApi.deleteMatchRegistration(userId)
     }
-
 }

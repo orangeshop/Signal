@@ -10,13 +10,11 @@ import com.ongo.signal.data.model.match.LatLng
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.repository.SignalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.util.Timer
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -25,41 +23,73 @@ import kotlin.coroutines.resumeWithException
 class MatchViewModel @Inject constructor(
     private val signalRepository: SignalRepository
 ) : ViewModel() {
-    suspend fun postMatchRegistration(request: MatchRegistrationRequest): String {
-        val result = viewModelScope.async(Dispatchers.IO) {
-            runCatching { signalRepository.postMatchRegistration(request) }
-                .onSuccess {
-                    Timber.d("성공 ${it.body()}")
-                    return@async "200"
+    // uiState
+
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            when(throwable.message) {
+                "asd" -> {
+                    // show Toast
+                    // uiEffect
                 }
-                .onFailure {
-                    it.printStackTrace()
+                "zxc" -> {
+                    // quit the app
+                    // uiEffect
                 }
-            return@async FAILURE_MESSAGE
+            }
+            // uiState.value.update {
+            //   it.copy(toastMessage = "${throwable.message}.", isToastShowing = true)
+            // }
         }
-        return result.await()
+
+    fun postMatchRegistration(
+        request: MatchRegistrationRequest,
+        onSuccess: (String) -> Unit
+    ) {
+//        val result = viewModelScope.async(Dispatchers.IO) {
+//            runCatching { signalRepository.postMatchRegistration(request) }
+//                .onSuccess {
+//                    Timber.d("성공 ${it.body()}")
+//                    return@async "200"
+//                }
+//                .onFailure {
+//                    it.printStackTrace()
+//                }
+//            return@async FAILURE_MESSAGE
+//        }
+//        return result.await()
+        viewModelScope.launch(coroutineExceptionHandler) {
+            signalRepository.postMatchRegistration(request).onSuccess { res ->
+                res?.let {
+                    println(it.latitude)
+                    println(it.longitude)
+                    println(it.user_id)
+                    println(it.location_id)
+                }
+            }.onFailure { throw it }
+        }
     }
 
     //함수를 호출하기전 권한을 허락 맡으므로 MissingPermission 어노테이션 추가
-    @SuppressLint("MissingPermission")
-    suspend fun getLocation(fusedLocationProviderClient: FusedLocationProviderClient): LatLng? {
-        return withContext(Dispatchers.IO) {
-            suspendCancellableCoroutine<LatLng?> { continuation ->
-                fusedLocationProviderClient.getCurrentLocation(
-                    Priority.PRIORITY_HIGH_ACCURACY,
-                    null
-                )
-                    .addOnSuccessListener { location: Location? ->
-                        location?.let {
-                            continuation.resume(LatLng(it.latitude, it.longitude))
-                        } ?: continuation.resume(null)
-                    }
-                    .addOnFailureListener { exception ->
-                        continuation.resumeWithException(exception)
-                    }
-            }
-        }
-    }
+//    @SuppressLint("MissingPermission")
+//    suspend fun getLocation(fusedLocationProviderClient: FusedLocationProviderClient): LatLng? {
+//        return withContext(Dispatchers.IO) {
+//            suspendCancellableCoroutine<LatLng?> { continuation ->
+//                fusedLocationProviderClient.getCurrentLocation(
+//                    Priority.PRIORITY_HIGH_ACCURACY,
+//                    null
+//                )
+//                    .addOnSuccessListener { location: Location? ->
+//                        location?.let {
+//                            continuation.resume(LatLng(it.latitude, it.longitude))
+//                        } ?: continuation.resume(null)
+//                    }
+//                    .addOnFailureListener { exception ->
+//                        continuation.resumeWithException(exception)
+//                    }
+//            }
+//        }
+//    }
 
     suspend fun deleteMatchRegistration(userId: Long) {
         viewModelScope.launch {

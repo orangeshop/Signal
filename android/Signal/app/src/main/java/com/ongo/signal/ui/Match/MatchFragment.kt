@@ -6,6 +6,7 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -15,7 +16,6 @@ import com.ssafy.firebase_b.util.PermissionChecker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
@@ -45,47 +45,40 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         radarView = binding.rvRadar
 
         binding.btnComplete.setOnClickListener {
-
             if (!checker.checkPermission(requireContext(), runtimePermissions)) {
                 checker.setOnGrantedListener {}
                 checker.requestPermissionLauncher.launch(runtimePermissions)
                 makeToast("권한을 허락해주셔야 매칭을 진행할 수 있습니다.")
                 return@setOnClickListener
             }
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                val fusedLocationProviderClient =
-                    LocationServices.getFusedLocationProviderClient(requireActivity())
-                val nowLocation = viewModel.getLocation(fusedLocationProviderClient)
-
-                if (nowLocation == null) {
+            // context 들고가는 작업은 view에서 꼭 할것
+            // view 죽으면 viewmodel 에서 팅길 수 있음
+            // when viewModel dead?
+            // requireActivity, requireContext difference
+            LocationServices.getFusedLocationProviderClient(requireContext()).run {
+                getCurrentLocation(
+                    Priority.PRIORITY_HIGH_ACCURACY,
+                    null
+                ).addOnSuccessListener { currentLocation ->
+                    lifecycleScope.launch {
+                        viewModel.postMatchRegistration(
+                            request = MatchRegistrationRequest(
+                                currentLocation.latitude,
+                                currentLocation.longitude,
+                                18
+                            ),
+                            onSuccess = {
+                                makeToast("성공적으로 매칭 등록을 하였습니다!")
+                                hideRequestMatchingWidget()
+                                showRadarWidget()
+                            }
+                        )
+                    }
+                }.addOnFailureListener { exception ->
                     makeToast("위치 좌표를 받아올 수 없습니다.")
                 }
-
-                Timber.d("${nowLocation}")
-
-                val result =
-                    viewModel.postMatchRegistration(
-                        MatchRegistrationRequest(
-                            nowLocation!!.latitude,
-                            nowLocation.longitude,
-                            18
-                        )
-                    )
-
-
-
-                if (result == RESULT_OK) {
-                    makeToast("성공적으로 매칭 등록을 하였습니다!")
-                    hideRequestMatchingWidget()
-                    showRadarWidget()
-                } else {
-                    makeToast("통신에 문제가 있습니다. 잠시 후 다시 해주세요")
-                }
             }
-
         }
-
     }
 
 
