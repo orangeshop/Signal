@@ -7,6 +7,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ongo.signal.R
@@ -14,6 +15,8 @@ import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.util.RadarView
 import com.ssafy.firebase_b.util.PermissionChecker
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
 import kotlin.math.atan2
@@ -80,7 +83,16 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                         1
                     ) as List<Address>
                     Timber.d("위치는 : $address")
-                    Timber.d("거리는 : ${calculateDistance(36.1020544,128.4213672,36.1020544,127.4213672)}")
+                    Timber.d(
+                        "거리는 : ${
+                            calculateDistance(
+                                36.1020544,
+                                128.4213672,
+                                36.1020544,
+                                127.4213672
+                            )
+                        }"
+                    )
                 }
             }
             .addOnFailureListener { fail ->
@@ -120,12 +132,21 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             rvRadar.visibility = View.VISIBLE
             tvUser.visibility = View.VISIBLE
             tvClickGuide.visibility = View.VISIBLE
-            ivProfile.visibility = View.VISIBLE
-            tvUserId.visibility = View.VISIBLE
-            tvIntroduce.visibility = View.VISIBLE
-            btnMatching.visibility = View.VISIBLE
+            cvDot.visibility = View.VISIBLE
+//            ivProfile.visibility = View.VISIBLE
+//            tvUserId.visibility = View.VISIBLE
+//            tvIntroduce.visibility = View.VISIBLE
+//            btnMatching.visibility = View.VISIBLE
         }
         initRadar()
+
+        lifecycleScope.launch {
+            binding.cvDot.addDot(500f,200f)
+            binding.cvDot.addDot(200f,300f)
+            binding.cvDot.addDot(400f,800f)
+            delay(2000L)
+            binding.cvDot.addDot(700f,700f)
+        }
     }
 
     private fun initRadar() {
