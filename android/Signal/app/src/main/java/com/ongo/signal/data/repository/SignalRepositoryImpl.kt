@@ -12,4 +12,12 @@ class SignalRepositoryImpl @Inject constructor(
     override suspend fun getPost(id: Int): Response<Int> {
         return signalApi.getMainPost(id)
     }
+
+    override suspend fun postMatchRegistration(
+        latitude: Double,
+        longitude: Double,
+        user_id: Long
+    ): Response<Int> {
+        return signalApi.postMatchRegistration(latitude, longitude, user_id)
+    }
 }
