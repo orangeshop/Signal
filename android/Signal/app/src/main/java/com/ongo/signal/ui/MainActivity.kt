@@ -8,6 +8,7 @@ import android.content.Context
 import android.os.Build
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -21,7 +22,7 @@ import com.ongo.signal.ui.chat.fragment.ChatFragment
 import com.ongo.signal.ui.main.fragment.MainFragment
 import com.ongo.signal.ui.match.MatchFragment
 import com.ongo.signal.ui.my.MyPageFragment
-import com.ssafy.firebase_b.util.PermissionChecker
+import com.ongo.signal.util.PermissionChecker
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -30,11 +31,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private lateinit var navHostFragment: NavHostFragment
     private val checker = PermissionChecker(this)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val runtimePermissions = arrayOf(
         Manifest.permission.POST_NOTIFICATIONS,
         Manifest.permission.CAMERA,
     )
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun setupBinding(binding: ActivityMainBinding) {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
@@ -68,6 +71,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         checkPermission()
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkPermission() {
         if (!checker.checkPermission(this, runtimePermissions)) {
             checker.setOnGrantedListener {
@@ -102,9 +106,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannel(NotificationChannel(id, name, importance))
-        }
+        notificationManager.createNotificationChannel(NotificationChannel(id, name, importance))
     }
 
 
@@ -132,6 +134,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         }
     }
-
 
 }
