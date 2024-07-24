@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0"
+agp = "8.4.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -22,11 +22,17 @@ timber = "5.0.1"
 lottie = "5.2.0"
 room = "2.6.1"
 paging = "3.3.0"
+
+moshi = "1.9.0"
+krossbow = "7.1.0"
+
+
 radarview = "1.0.2"
 #fcm
 gms = "4.4.2"
 firebase-bom = "33.1.2"
 firebaseMessagingKtx = "24.0.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -72,15 +78,26 @@ room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 #paging
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 
+#squareup
+moshi-kotlin = {group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi"}
+converter-scalars = {group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit2"}
+
+#krossbow
+krossbow-stomp-core = {group = "org.hildan.krossbow", name = "krossbow-stomp-core", version.ref = "krossbow"}
+krossbow-websocket-builtin = {group = "org.hildan.krossbow", name = "krossbow-websocket-builtin", version.ref = "krossbow"}
+krossbow-websocket-okhttp = {group = "org.hildan.krossbow", name = "krossbow-websocket-okhttp", version.ref = "krossbow"}
+krossbow-stomp-moshi = {group = "org.hildan.krossbow", name = "krossbow-stomp-moshi", version.ref = "krossbow"}
+
 #fcm
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 
+
 [bundles]
 network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
 room = ["room-ktx", "room-runtime"]
-
-
+squareup = ["moshi-kotlin", "converter-scalars"]
+krossbow = ["krossbow-stomp-core", "krossbow-websocket-builtin", "krossbow-websocket-okhttp"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
