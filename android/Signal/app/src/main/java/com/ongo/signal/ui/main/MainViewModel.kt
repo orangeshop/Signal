@@ -21,7 +21,6 @@ class MainViewModel @Inject constructor(
     private val _selectedPost = MutableStateFlow<PostDTO?>(null)
     val selectedPost: StateFlow<PostDTO?> = _selectedPost
 
-
     private var currentPage = 1
     private val pageSize = 5
 

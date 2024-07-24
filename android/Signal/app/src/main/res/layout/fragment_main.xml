@@ -307,6 +307,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:backgroundTint="@color/mint"
+            android:foreground="@drawable/ripple_effect"
             android:onClick="@{()->fragment.onFABClicked()}"
             android:src="@drawable/baseline_edit__mint_24"
             app:borderWidth="1dp"
