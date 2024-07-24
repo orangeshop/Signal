@@ -31,6 +31,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
 
         binding.apply {
+
+            chatViewModel.ConnectedWebSocket(chatViewModel.chatRoomNumber)
+
             chatDetailAdapter = ChatDetailAdapter()
             binding.chatDetailRv.adapter = chatDetailAdapter
 
@@ -53,6 +56,17 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             false,
                             chatViewModel.timeSetting()
                         ), chatViewModel.chatRoomNumber)
+
+                    chatViewModel.StompSend(ChatHomeChildDto(
+                        0,
+                        chatViewModel.chatRoomNumber,
+                        1,
+                        1,
+                        false,
+                        binding.etSearch.text.toString(),
+                        false,
+                        chatViewModel.timeSetting()
+                    ))
 
                     binding.etSearch.text.clear()
 

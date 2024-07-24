@@ -31,6 +31,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
         binding.apply {
 
             chatViewModel.loadChats()
+            chatViewModel.StompDisConnect()
 
             chatHomeFab.setOnClickListener {
                 findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)

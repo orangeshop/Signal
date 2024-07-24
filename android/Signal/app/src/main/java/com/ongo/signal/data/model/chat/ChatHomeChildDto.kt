@@ -13,5 +13,5 @@ data class ChatHomeChildDto(
     val is_from_sender: Boolean,
     val content : String,
     val read : Boolean,
-    val send_at : String
+    var send_at : String
 )
