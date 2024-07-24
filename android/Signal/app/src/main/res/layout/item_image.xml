@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="uri"
+            type="android.net.Uri" />
+
+        <variable
+            name="fragment"
+            type="com.ongo.signal.ui.main.fragment.WritePostFragment" />
+
+        <variable
+            name="showRemove"
+            type="boolean" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/baseline_chat_white_24"
+            app:imageUri="@{uri}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_remove"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:onClick="@{() -> fragment.onRemoveImageClick(uri)}"
+            android:padding="4dp"
+            android:src="@drawable/baseline_close_red_24"
+            android:visibility="@{showRemove ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="@id/iv_image"
+            app:layout_constraintTop_toTopOf="@id/iv_image" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

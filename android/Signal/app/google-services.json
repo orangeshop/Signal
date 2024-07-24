@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977636750898",
+    "project_id": "signal-d51bd",
+    "storage_bucket": "signal-d51bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977636750898:android:03c95c1a8604e8335fee2b",
+        "android_client_info": {
+          "package_name": "com.ongo.signal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAAgSEy39OteNVySgzh95EXh9HLjkUC4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,18 +14,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.65" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="20dp"
+            android:padding="4dp"
+            app:layout_constraintEnd_toStartOf="@id/iv_title_mic"
+            app:layout_constraintStart_toStartOf="@id/gl"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <EditText
             android:id="@+id/et_title"
             android:layout_width="0dp"
             android:layout_height="46dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="40dp"
             android:hint="@string/title"
             android:padding="10dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gl"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,9 +50,10 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"
+            android:onClick="@{() -> fragment.setupListeners()}"
             android:src="@drawable/baseline_mic__white_24"
             app:layout_constraintBottom_toBottomOf="@id/et_title"
-            app:layout_constraintStart_toEndOf="@id/et_title"
+            app:layout_constraintEnd_toEndOf="@id/btn_regist"
             app:layout_constraintTop_toTopOf="@id/et_title" />
 
         <EditText
@@ -48,7 +66,7 @@
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintBottom_toTopOf="@id/tv_reply"
-            app:layout_constraintEnd_toEndOf="@id/et_title"
+            app:layout_constraintEnd_toStartOf="@id/iv_content_mic"
             app:layout_constraintStart_toStartOf="@id/et_title"
             app:layout_constraintTop_toBottomOf="@id/et_title" />
 
@@ -57,9 +75,10 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_margin="8dp"
+            android:onClick="@{() -> fragment.setupListeners()}"
             android:src="@drawable/baseline_mic__white_24"
             app:layout_constraintBottom_toBottomOf="@id/et_content"
-            app:layout_constraintStart_toEndOf="@id/et_content" />
+            app:layout_constraintEnd_toEndOf="@id/btn_regist" />
 
         <TextView
             android:id="@+id/tv_reply"
@@ -86,7 +105,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/senior"
-                android:textColor="@color/mint"
                 android:textSize="12sp" />
 
             <com.google.android.material.chip.Chip
@@ -95,7 +113,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/junior"
-                android:textColor="@color/mint"
                 android:textSize="12sp" />
 
         </com.google.android.material.chip.ChipGroup>
@@ -108,15 +125,29 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="10dp"
             android:background="@color/gray"
-            app:layout_constraintBottom_toTopOf="@id/btn_regist"
+            app:layout_constraintBottom_toTopOf="@id/rv_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            tools:listitem="@layout/item_image"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/iv_image"
+            app:layout_constraintStart_toStartOf="@id/et_title"
+            app:layout_constraintEnd_toStartOf="@id/iv_content_mic" />
 
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_margin="15dp"
+            android:onClick="@{(view)->fragment.showImagePickerPopupMenu(view)}"
             android:src="@drawable/baseline_image_white_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

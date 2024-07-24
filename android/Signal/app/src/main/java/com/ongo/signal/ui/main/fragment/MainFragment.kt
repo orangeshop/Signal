@@ -1,9 +1,7 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.speech.RecognizerIntent
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -20,12 +18,12 @@ import com.ongo.signal.databinding.FragmentMainBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.TagAdapter
 import com.ongo.signal.ui.main.adapter.TodayPostAdapter
+import com.ongo.signal.util.STTHelper
 import com.ongo.signal.util.TTSHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Locale
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
@@ -36,24 +34,24 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private lateinit var secondTagAdapter: TagAdapter
     private lateinit var thirdTagAdapter: TagAdapter
     private lateinit var ttsHelper: TTSHelper
+    private lateinit var sttHelper: STTHelper
     private lateinit var sttLauncher: ActivityResultLauncher<Intent>
-
 
     override fun init() {
         binding.fragment = this
         binding.viewModel = viewModel
         ttsHelper = TTSHelper(requireContext())
-        sttLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-                    val speechResults =
-                        result.data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                    val recognizedText = speechResults?.get(0).toString()
-                    binding.etSearch.setText(recognizedText)
-                }
-            }
+
         setUpAdapter()
         setUpSpannableText()
+
+        sttLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
+                binding.etSearch.setText(recognizedText)
+            }
+        }
+
+        sttHelper = STTHelper(sttLauncher)
 
         lifecycleScope.launch {
             viewModel.posts.collectLatest { newPosts ->
@@ -77,15 +75,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     fun onMicClicked() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "검색어를 말해주세요.")
-        }
-        sttLauncher.launch(intent)
+        sttHelper.startSpeechToText()
     }
 
     private fun setUpAdapter() {
@@ -138,12 +128,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         }
     }
 
-    private fun getSpannableString(fullText: String, highlightText: String, highlightColor: String): SpannableString {
+    private fun getSpannableString(
+        fullText: String
+    ): SpannableString {
         val spannableString = SpannableString(fullText)
-        val start = fullText.indexOf(highlightText)
-        val end = start + highlightText.length
+        val start = fullText.indexOf("시그널")
+        val end = start + "시그널".length
         spannableString.setSpan(
-            ForegroundColorSpan(Color.parseColor(highlightColor)),
+            ForegroundColorSpan(Color.parseColor("#64FFCE")),
             start,
             end,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -152,8 +144,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     private fun setUpSpannableText() {
-        val hotSpannable = getSpannableString("화제의 시그널", "시그널", "#64FFCE")
-        val todaySpannable = getSpannableString("오늘의 시그널", "시그널", "#64FFCE")
+        val hotSpannable = getSpannableString("화제의 시그널")
+        val todaySpannable = getSpannableString("오늘의 시그널")
 
         binding.tvHotSignal.text = hotSpannable
         binding.tvTodaySignal.text = todaySpannable
@@ -163,6 +155,4 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         ttsHelper.shutdown()
         super.onDestroyView()
     }
-
 }
-
