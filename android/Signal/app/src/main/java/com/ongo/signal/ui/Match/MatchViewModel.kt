@@ -30,7 +30,7 @@ class MatchViewModel @Inject constructor(
             runCatching { signalRepository.postMatchRegistration(request) }
                 .onSuccess {
                     Timber.d("성공 ${it.body()}")
-                    return@async it.body().toString()
+                    return@async "200"
                 }
                 .onFailure {
                     it.printStackTrace()
