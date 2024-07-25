@@ -16,6 +16,7 @@ import com.ssafy.firebase_b.util.PermissionChecker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
@@ -67,8 +68,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                 currentLocation.longitude,
                                 18
                             ),
-                            onSuccess = {
-                                makeToast("성공적으로 매칭 등록을 하였습니다!")
+                            onSuccess = { response ->
+                                Timber.d("${response}")
                                 hideRequestMatchingWidget()
                                 showRadarWidget()
                             }
@@ -80,23 +81,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             }
         }
     }
-
-
-//    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-//        val earthRadius = 6371.0
-//
-//        val dLat = Math.toRadians(lat2 - lat1)
-//        val dLon = Math.toRadians(lon2 - lon1)
-//
-//        val a = sin(dLat / 2) * sin(dLat / 2) +
-//                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
-//                sin(dLon / 2) * sin(dLon / 2)
-//
-//        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-//
-//        return earthRadius * c
-//    }
-
 
     private fun hideRequestMatchingWidget() {
         with(binding) {
@@ -138,12 +122,5 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     override fun onDestroyView() {
         super.onDestroyView()
         radarView.stop()
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewModel.deleteMatchRegistration(18)
-//        }
-    }
-
-    companion object {
-        const val RESULT_OK = "200"
     }
 }

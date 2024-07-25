@@ -1,23 +1,15 @@
 package com.ongo.signal.ui.match
 
-import android.annotation.SuppressLint
-import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Priority
-import com.ongo.signal.data.model.match.LatLng
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
+import com.ongo.signal.data.model.match.MatchRegistrationResponse
 import com.ongo.signal.data.repository.SignalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 @HiltViewModel
 class MatchViewModel @Inject constructor(
@@ -27,24 +19,12 @@ class MatchViewModel @Inject constructor(
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
-            when(throwable.message) {
-                "asd" -> {
-                    // show Toast
-                    // uiEffect
-                }
-                "zxc" -> {
-                    // quit the app
-                    // uiEffect
-                }
-            }
-            // uiState.value.update {
-            //   it.copy(toastMessage = "${throwable.message}.", isToastShowing = true)
-            // }
+            Timber.d("${throwable.message}")
         }
 
     fun postMatchRegistration(
         request: MatchRegistrationRequest,
-        onSuccess: (String) -> Unit
+        onSuccess: (MatchRegistrationResponse) -> Unit
     ) {
 //        val result = viewModelScope.async(Dispatchers.IO) {
 //            runCatching { signalRepository.postMatchRegistration(request) }
@@ -59,12 +39,9 @@ class MatchViewModel @Inject constructor(
 //        }
 //        return result.await()
         viewModelScope.launch(coroutineExceptionHandler) {
-            signalRepository.postMatchRegistration(request).onSuccess { res ->
-                res?.let {
-                    println(it.latitude)
-                    println(it.longitude)
-                    println(it.user_id)
-                    println(it.location_id)
+            signalRepository.postMatchRegistration(request).onSuccess { response ->
+                response?.let {
+                    onSuccess(response)
                 }
             }.onFailure { throw it }
         }

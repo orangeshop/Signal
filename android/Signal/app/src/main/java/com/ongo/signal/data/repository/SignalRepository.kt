@@ -13,4 +13,6 @@ interface SignalRepository {
     ): Result<MatchRegistrationResponse?>
 
     suspend fun deleteMatchRegistration(userId: Long): Response<Int>
+
+
 }
