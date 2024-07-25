@@ -31,7 +31,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
         binding.apply {
 
             chatViewModel.loadChats()
-            chatViewModel.StompDisConnect()
+            chatViewModel.stompDisconnect()
 
             chatHomeFab.setOnClickListener {
                 findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
@@ -46,7 +46,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
                     chatViewModel.chatRoomNumber = it.chat_id
-                    chatViewModel.LoadDetailList(it.chat_id)
+                    chatViewModel.loadDetailList(it.chat_id)
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {
@@ -66,6 +66,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
     override fun onResume() {
         super.onResume()
-        chatViewModel.claerMessageList()
+        chatViewModel.clearMessageList()
     }
 }
