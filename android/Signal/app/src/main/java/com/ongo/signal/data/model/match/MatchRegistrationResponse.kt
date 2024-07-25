@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MatchRegistrationResponse(
     val latitude: Double,
-    val location_id: Int,
+    val location_id: Long,
     val longitude: Double,
-    @SerializedName("user_id") val userId: Int
+    @SerializedName("user_id") val userId: Long
 )

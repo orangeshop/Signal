@@ -9,6 +9,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.match.Dot
+import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.util.RadarView
@@ -69,9 +71,14 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                 18
                             ),
                             onSuccess = { response ->
-                                Timber.d("${response}")
                                 hideRequestMatchingWidget()
                                 showRadarWidget()
+                                viewModel.getMatchPossibleUser(
+                                    locationId = response.location_id,
+                                    onSuccess =  { possibleUsers->
+                                        binding.cvDot.addDot(convertToDotList(possibleUsers))
+                                    }
+                                )
                             }
                         )
                     }
@@ -79,6 +86,16 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     makeToast("위치 좌표를 받아올 수 없습니다.")
                 }
             }
+        }
+    }
+
+    private fun convertToDotList(responseList: List<MatchPossibleResponse>): List<Dot> {
+        return responseList.map { response ->
+            Dot(
+                userId = response.user.userId,
+                distance = response.dist,
+                quadrant = response.quadrant
+            )
         }
     }
 
@@ -106,13 +123,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         }
         initRadar()
 
-        lifecycleScope.launch {
-            binding.cvDot.addDot(500f, 200f)
-            binding.cvDot.addDot(200f, 300f)
-            binding.cvDot.addDot(400f, 800f)
-            delay(2000L)
-            binding.cvDot.addDot(700f, 700f)
-        }
     }
 
     private fun initRadar() {

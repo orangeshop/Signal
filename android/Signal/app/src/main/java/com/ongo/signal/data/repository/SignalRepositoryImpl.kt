@@ -1,5 +1,6 @@
 package com.ongo.signal.data.repository
 
+import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.model.match.MatchRegistrationResponse
 import com.ongo.signal.network.SignalApi
@@ -28,5 +29,14 @@ class SignalRepositoryImpl @Inject constructor(
 
     override suspend fun deleteMatchRegistration(userId: Long): Response<Int> {
         return signalApi.deleteMatchRegistration(userId)
+    }
+
+    override suspend fun getMatchPossibleUser(locationId: Long): Result<List<MatchPossibleResponse>?> {
+        val req = signalApi.getMatchPossibleUser(locationId)
+        return if (req.isSuccessful){
+            Result.success(req.body())
+        } else{
+            Result.failure(Exception())
+        }
     }
 }

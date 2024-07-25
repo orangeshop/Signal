@@ -1,5 +1,6 @@
 package com.ongo.signal.network
 
+import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.model.match.MatchRegistrationResponse
 import retrofit2.Response
@@ -26,5 +27,10 @@ interface SignalApi {
     @DELETE("location/user")
     suspend fun deleteMatchRegistration(
         @Query("userId") userId: Long
-    ) : Response<Int>
+    ): Response<Int>
+
+    @GET("match-test")
+    suspend fun getMatchPossibleUser(
+        @Query("locationId") locationId: Long,
+    ): Response<List<MatchPossibleResponse>>
 }
