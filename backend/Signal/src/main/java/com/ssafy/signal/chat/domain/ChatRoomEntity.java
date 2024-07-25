@@ -1,5 +1,6 @@
 package com.ssafy.signal.chat.domain;
 
+import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,20 +19,28 @@ public class ChatRoomEntity {
     private long chatId;
 
     //TODD : 유저 엔티티 추가되면 외래키 설정하기
-    @ColumnDefault("0")
-    private long from_id;
-    @ColumnDefault("0")
-    private long to_id;
+    @OneToOne()
+    @JoinColumn(name="from_id")
+    private Member from_id;
 
+    @OneToOne()
+    @JoinColumn(name="to_id")
+    private Member to_id;
+
+    @ColumnDefault("''")
     private String last_message;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("''")
+    @ColumnDefault("'NONE'")
     private SenderType sender_type;
 
     public ChatRoomEntity(long from_id, long to_id, String s, SenderType senderType) {
-        this.from_id = from_id;
-        this.to_id = to_id;
+        this.from_id = new Member();
+        this.from_id.setUserId(from_id);
+
+        this.to_id = new Member();
+        this.to_id.setUserId(to_id);
+
         this.last_message = s;
         this.sender_type = senderType;
     }
@@ -39,8 +48,8 @@ public class ChatRoomEntity {
     public ChatRoomDto asChatRoomDto() {
         return new ChatRoomDto(
                 chatId,
-                from_id,
-                to_id,
+                from_id.getUserId(),
+                to_id.getUserId(),
                 last_message,
                 sender_type
         );
