@@ -32,8 +32,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     private val viewModel: MatchViewModel by viewModels()
     private val possibleUserAdapter =
         PossibleUserAdapter(
-            onMatchClick = { Timber.d("버튼 클릭") },
-            onClick = { Timber.d("루트 클릭") }
+            onMatchClick = { userId -> Timber.d("버튼 클릭 $userId") },
+            onClick = { userId -> binding.cvDot.setDotFocused(userId) }
         )
 
 
@@ -100,6 +100,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         return responseList.map { response ->
             Dot(
                 userId = response.user.userId,
+                userName = response.user.name,
                 distance = response.dist,
                 quadrant = response.quadrant
             )

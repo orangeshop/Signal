@@ -1,11 +1,17 @@
 package com.ongo.signal.ui.match
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.ongo.signal.data.model.match.Dot
 import timber.log.Timber
 import kotlin.math.cos
@@ -25,9 +31,15 @@ class DotCustomView @JvmOverloads constructor(
 //        color = 0xFF64FFCE.toInt()
         isAntiAlias = true
     }
+    private val textPaint = Paint().apply {
+        color = ContextCompat.getColor(context, android.R.color.white)
+        textSize = 32f
+        isAntiAlias = true
+    }
 
     private val pointRadius = 24f
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -36,6 +48,38 @@ class DotCustomView @JvmOverloads constructor(
             pointPaint.alpha = (dot.alpha * 255).toInt()
             canvas.drawCircle(dot.x, dot.y, pointRadius, pointPaint)
         }
+
+        originDots.forEach { dot ->
+            if (dot.isFocused) {
+                val profileSize = pointRadius * 2
+                val profileRect = Rect(
+                    (dot.x - profileSize / 2).toInt(),
+                    (dot.y - profileSize / 2).toInt(),
+                    (dot.x + profileSize / 2).toInt(),
+                    (dot.y + profileSize / 2).toInt()
+                )
+//                drawProfileImage(dot, profileRect, canvas)
+                canvas.drawText(
+                    dot.userName,
+                    dot.x - pointRadius,
+                    dot.y + pointRadius + 20,
+                    textPaint
+                )
+            }
+
+        }
+    }
+
+    fun setDotFocused(userId: Long) {
+        originDots.forEach { dot ->
+            dot.isFocused = false
+        }
+
+        originDots.find { it.userId == userId }?.let { dot ->
+            dot.isFocused = true
+        }
+
+        invalidate()
     }
 
     fun addDot(dots: List<Dot>) {
@@ -62,6 +106,24 @@ class DotCustomView @JvmOverloads constructor(
         Timber.d("$originDots")
 
         invalidate()
+    }
+
+    private fun drawProfileImage(dot: Dot, rect: Rect, canvas: Canvas) {
+        Glide.with(context)
+            .asBitmap()
+            .load(dot.profileImage)
+            .into(object : com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                ) {
+                    canvas.drawBitmap(resource, null, rect, pointPaint)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // Handle the placeholder if needed
+                }
+            })
     }
 
     private fun calculatePosition(dot: Dot) {

@@ -9,27 +9,27 @@ import com.ongo.signal.data.model.match.MatchPossibleUser
 import com.ongo.signal.databinding.ItemPossibleUserBinding
 
 class PossibleUserAdapter(
-    private val onMatchClick: () -> Unit,
-    private val onClick: () -> Unit,
+    private val onMatchClick: (userId: Long) -> Unit,
+    private val onClick: (userId: Long) -> Unit,
 ) :
     ListAdapter<MatchPossibleUser, PossibleUserAdapter.ViewHolder>(DiffUtilCallback()) {
 
     class ViewHolder(
         private val binding: ItemPossibleUserBinding,
-        private val onMatchClick: () -> Unit,
-        private val onClick: () -> Unit
+        private val onMatchClick: (userId: Long) -> Unit,
+        private val onClick: (userId: Long) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(user: MatchPossibleUser) {
             binding.tvUserId.text = user.name
 //            binding.tvIntroduce.text = user.comment
             binding.tvIntroduce.text = "안녕하세요"
-            binding.btnMatching.setOnClickListener { onMatchClick() }
-            binding.root.setOnClickListener { onClick() }
+            binding.btnMatching.setOnClickListener { onMatchClick(user.userId) }
+            binding.root.setOnClickListener { onClick(user.userId) }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PossibleUserAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {
         val binding =
             ItemPossibleUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding, onMatchClick, onClick)
