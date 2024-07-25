@@ -66,7 +66,8 @@ class DotCustomView @JvmOverloads constructor(
 
     private fun calculatePosition(dot: Dot) {
         val centerX = width / 2f
-        val centerY = height / 2f
+        val verticalBias = 0.435f
+        val centerY = height * verticalBias
 
         val circleRadius = centerX - pointRadius
         val scaledDistance = (dot.distance / 10) * circleRadius

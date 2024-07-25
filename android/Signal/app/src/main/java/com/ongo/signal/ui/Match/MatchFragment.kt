@@ -13,10 +13,10 @@ import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.databinding.FragmentMatchBinding
+import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
 import com.ongo.signal.util.RadarView
 import com.ssafy.firebase_b.util.PermissionChecker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -30,6 +30,11 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
     private val viewModel: MatchViewModel by viewModels()
+    private val possibleUserAdapter =
+        PossibleUserAdapter(
+            onMatchClick = { Timber.d("버튼 클릭") },
+            onClick = { Timber.d("루트 클릭") }
+        )
 
 
     override fun init() {
@@ -46,6 +51,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
     private fun initViews() {
         radarView = binding.rvRadar
+        binding.rvPossibleMatch.adapter = possibleUserAdapter
 
         binding.btnComplete.setOnClickListener {
             if (!checker.checkPermission(requireContext(), runtimePermissions)) {
@@ -75,8 +81,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                 showRadarWidget()
                                 viewModel.getMatchPossibleUser(
                                     locationId = response.location_id,
-                                    onSuccess =  { possibleUsers->
+                                    onSuccess = { possibleUsers ->
                                         binding.cvDot.addDot(convertToDotList(possibleUsers))
+                                        possibleUserAdapter.submitList(possibleUsers.map { it.user })
                                     }
                                 )
                             }
@@ -116,6 +123,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             tvUser.visibility = View.VISIBLE
             tvClickGuide.visibility = View.VISIBLE
             cvDot.visibility = View.VISIBLE
+            rvPossibleMatch.visibility = View.VISIBLE
 //            ivProfile.visibility = View.VISIBLE
 //            tvUserId.visibility = View.VISIBLE
 //            tvIntroduce.visibility = View.VISIBLE

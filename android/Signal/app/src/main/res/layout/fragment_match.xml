@@ -70,7 +70,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:fontFamily="@font/inter_extralight"
                 android:text="@string/eating"
                 android:textSize="18sp"
                 app:chipCornerRadius="30dp"
@@ -81,7 +80,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:fontFamily="@font/inter_extralight"
                 android:text="@string/drink_coffee"
                 android:textSize="18sp"
                 app:chipCornerRadius="30dp"
@@ -120,6 +118,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.45"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -138,7 +137,7 @@
             app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.15" />
+            app:layout_constraintVertical_bias="0.13" />
 
         <TextView
             android:id="@+id/tv_click_guide"
@@ -152,56 +151,20 @@
             app:layout_constraintStart_toEndOf="@id/tv_user"
             app:layout_constraintTop_toTopOf="@id/tv_user" />
 
-        <ImageView
-            android:id="@+id/iv_profile"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginBottom="40dp"
-            android:src="@drawable/human"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_possible_match"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="8dp"
             android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_user_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="3dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="최지훈"
-            android:textColor="@color/mint"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/iv_profile"
-            app:layout_constraintTop_toTopOf="@id/iv_profile" />
-
-        <TextView
-            android:id="@+id/tv_introduce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_light"
-            android:text="어르신들 사랑해요"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/tv_user_id"
-            app:layout_constraintTop_toBottomOf="@id/tv_user_id" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_matching"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/background_cancel_button"
-            android:fontFamily="@font/inter_light"
-            android:paddingHorizontal="8dp"
-            android:text="매칭 신청"
-            android:textColor="@color/mint"
-            android:textSize="20sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/iv_profile"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_profile" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/item_possible_user"
+            app:layout_constraintTop_toBottomOf="@id/rv_radar" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
