@@ -14,8 +14,8 @@ import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
+import com.ongo.signal.util.PermissionChecker
 import com.ongo.signal.util.RadarView
-import com.ssafy.firebase_b.util.PermissionChecker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
