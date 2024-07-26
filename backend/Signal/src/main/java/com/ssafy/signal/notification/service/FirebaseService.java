@@ -28,7 +28,12 @@ public class FirebaseService {
 
     @PostConstruct
     public void init() throws IOException {
-        getAccessToken();
+        try {
+            getAccessToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // 로그 출력 또는 적절한 예외 처리
+        }
     }
 
     @Scheduled(fixedRate = 3000000)  // 50분(3000초)마다 갱신
