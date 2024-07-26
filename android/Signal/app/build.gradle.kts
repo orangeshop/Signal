@@ -88,6 +88,8 @@ dependencies {
     //fcm
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
+    //locations
+    implementation(libs.locations)
 
 
 }
