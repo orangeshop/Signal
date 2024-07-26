@@ -41,11 +41,15 @@ class MainViewModel @Inject constructor(
 
     fun loadBoards() {
         viewModelScope.launch {
-            val response = boardRepository.readBoard()
-            if (response.isSuccessful) {
-                _boards.value = response.body() ?: emptyList()
-            } else {
-                Timber.d(response.errorBody().toString())
+            try {
+                val response = boardRepository.readBoard()
+                if (response.isSuccessful) {
+                    _boards.value = response.body() ?: emptyList()
+                } else {
+                    Timber.d(response.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to load boards")
             }
         }
     }
@@ -54,50 +58,58 @@ class MainViewModel @Inject constructor(
         val boardRequestDTO =
             BoardRequestDTO(userId = userId, writer = writer, title = title, content = content)
         viewModelScope.launch {
-            val response = boardRepository.writeBoard(boardRequestDTO)
-            if (response.isSuccessful) {
-                _selectedBoard.value = response.body()?.let {
-                    BoardDTO(
-                        id = it.id,
-                        writer = it.writer,
-                        title = it.title,
-                        content = it.content,
-                        createdDate = it.createdDate,
-                        modifiedDate = it.modifiedDate,
-                        liked = it.liked,
-                        reference = it.reference,
-                        type = it.type,
-                        comments = it.comments,
-                        userId = it.userId
-                    )
+            try {
+                val response = boardRepository.writeBoard(boardRequestDTO)
+                if (response.isSuccessful) {
+                    _selectedBoard.value = response.body()?.let {
+                        BoardDTO(
+                            id = it.id,
+                            writer = it.writer,
+                            title = it.title,
+                            content = it.content,
+                            createdDate = it.createdDate,
+                            modifiedDate = it.modifiedDate,
+                            liked = it.liked,
+                            reference = it.reference,
+                            type = it.type,
+                            comments = it.comments,
+                            userId = it.userId
+                        )
+                    }
+                } else {
+                    Timber.d(response.errorBody().toString())
                 }
-            } else {
-                Timber.d(response.errorBody().toString())
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to create board")
             }
         }
     }
 
     fun loadBoardDetails(boardId: Int) {
         viewModelScope.launch {
-            val response = boardRepository.readBoardById(boardId)
-            if (response.isSuccessful) {
-                _selectedBoard.value = response.body()?.let {
-                    BoardDTO(
-                        id = it.id,
-                        writer = it.writer,
-                        title = it.title,
-                        content = it.content,
-                        createdDate = it.createdDate,
-                        modifiedDate = it.modifiedDate,
-                        liked = it.liked,
-                        reference = it.reference,
-                        type = it.type,
-                        comments = it.comments,
-                        userId = it.userId
-                    )
+            try {
+                val response = boardRepository.readBoardById(boardId)
+                if (response.isSuccessful) {
+                    _selectedBoard.value = response.body()?.let {
+                        BoardDTO(
+                            id = it.id,
+                            writer = it.writer,
+                            title = it.title,
+                            content = it.content,
+                            createdDate = it.createdDate,
+                            modifiedDate = it.modifiedDate,
+                            liked = it.liked,
+                            reference = it.reference,
+                            type = it.type,
+                            comments = it.comments,
+                            userId = it.userId
+                        )
+                    }
+                } else {
+                    Timber.d(response.errorBody().toString())
                 }
-            } else {
-                Timber.d(response.errorBody().toString())
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to load board details")
             }
         }
     }
@@ -112,18 +124,26 @@ class MainViewModel @Inject constructor(
                 content = content
             )
             viewModelScope.launch {
-                boardRepository.updateBoard(boardId, boardRequestDTO)
+                try {
+                    boardRepository.updateBoard(boardId, boardRequestDTO)
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to update board")
+                }
             }
         }
     }
 
     fun deleteBoard(boardId: Int) {
         viewModelScope.launch {
-            val response = boardRepository.deleteBoard(boardId)
-            if (response.isSuccessful) {
-                Timber.d("Board deleted successfully: ${response.body()}")
-            } else {
-                Timber.d(response.errorBody().toString())
+            try {
+                val response = boardRepository.deleteBoard(boardId)
+                if (response.isSuccessful) {
+                    Timber.d("Board deleted successfully: ${response.body()}")
+                } else {
+                    Timber.d(response.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to delete board")
             }
         }
     }
@@ -138,11 +158,15 @@ class MainViewModel @Inject constructor(
 
     fun loadComments(boardId: Int) {
         viewModelScope.launch {
-            val response = commentRepository.readComments(boardId)
-            if (response.isSuccessful) {
-                _comments.value = response.body() ?: CommentDTO()
-            } else {
-                Timber.d(response.errorBody().toString())
+            try {
+                val response = commentRepository.readComments(boardId)
+                if (response.isSuccessful) {
+                    _comments.value = response.body() ?: CommentDTO()
+                } else {
+                    Timber.d(response.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to load comments")
             }
         }
     }
@@ -159,14 +183,17 @@ class MainViewModel @Inject constructor(
             url = ""
         )
         viewModelScope.launch {
-            val response = commentRepository.writeComment(boardId, commentDto)
-            if (response.isSuccessful) {
-                loadComments(boardId.toInt())
-                Timber.d(response.message())
-            } else {
-                Timber.d(response.errorBody().toString())
+            try {
+                val response = commentRepository.writeComment(boardId, commentDto)
+                if (response.isSuccessful) {
+                    loadComments(boardId.toInt())
+                    Timber.d(response.message())
+                } else {
+                    Timber.d(response.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to create comment")
             }
         }
     }
 }
-
