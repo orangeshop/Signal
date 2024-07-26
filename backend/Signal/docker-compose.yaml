@@ -1,0 +1,8 @@
+services:
+  spring_application:
+    image: signal
+    container_name: application
+    ports:
+      - 8080:8080
+    environment:
+      - TZ=Asia/Seoul
