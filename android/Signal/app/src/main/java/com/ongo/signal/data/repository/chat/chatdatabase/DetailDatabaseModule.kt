@@ -1,9 +1,7 @@
-package com.ongo.signal.data.repository.main
+package com.ongo.signal.data.repository.chat.chatdatabase
 
 import android.content.Context
 import androidx.room.Room
-import com.ongo.signal.data.repository.main.chat.ChatDetailDao
-import com.ongo.signal.data.repository.main.chat.ChatDetailDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,11 +1,9 @@
-package com.ongo.signal.data.repository.main.chat
+package com.ongo.signal.data.repository.chat.chatdatabase
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 
 
