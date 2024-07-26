@@ -20,7 +20,7 @@ class MatchViewModel @Inject constructor(
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
-            Timber.d("${throwable.message}")
+            Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
         }
 
     fun postMatchRegistration(
@@ -32,7 +32,10 @@ class MatchViewModel @Inject constructor(
                 response?.let {
                     onSuccess(it)
                 }
-            }.onFailure { throw it }
+            }.onFailure {
+                Timber.d("통신 안돼요 ${it.message}")
+                throw it
+            }
         }
     }
 

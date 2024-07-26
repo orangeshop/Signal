@@ -58,10 +58,20 @@ class DotCustomView @JvmOverloads constructor(
                     (dot.x + profileSize / 2).toInt(),
                     (dot.y + profileSize / 2).toInt()
                 )
-//                drawProfileImage(dot, profileRect, canvas)
+
+                dot.profileBitmap?.let { bitmap ->
+                    canvas.drawBitmap(bitmap, null, profileRect, pointPaint)
+                }
+
                 canvas.drawText(
                     dot.userName,
                     dot.x - pointRadius,
+                    dot.y + pointRadius + 20,
+                    textPaint
+                )
+                canvas.drawText(
+                    dot.comment,
+                    dot.x + pointRadius + 20,
                     dot.y + pointRadius + 20,
                     textPaint
                 )
@@ -100,6 +110,7 @@ class DotCustomView @JvmOverloads constructor(
             if (originDots.none { it.userId == newDot.userId }) {
                 calculatePosition(newDot)
                 startFadeInAnimation(newDot)
+                loadImage(newDot)
                 originDots.add(newDot)
             }
         }
@@ -108,7 +119,7 @@ class DotCustomView @JvmOverloads constructor(
         invalidate()
     }
 
-    private fun drawProfileImage(dot: Dot, rect: Rect, canvas: Canvas) {
+    private fun loadImage(dot: Dot) {
         Glide.with(context)
             .asBitmap()
             .load(dot.profileImage)
@@ -117,11 +128,12 @@ class DotCustomView @JvmOverloads constructor(
                     resource: Bitmap,
                     transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
                 ) {
-                    canvas.drawBitmap(resource, null, rect, pointPaint)
+                    dot.profileBitmap = resource
+                    invalidate()
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    // Handle the placeholder if needed
+
                 }
             })
     }

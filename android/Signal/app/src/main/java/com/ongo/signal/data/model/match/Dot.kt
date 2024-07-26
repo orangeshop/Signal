@@ -1,5 +1,7 @@
 package com.ongo.signal.data.model.match
 
+import android.graphics.Bitmap
+
 data class Dot(
     val userId: Long,
     val userName: String,
@@ -10,4 +12,5 @@ data class Dot(
     var x: Float = 0f, var y: Float = 0f,
     var alpha: Float = 0f,
     var isFocused: Boolean = false,
+    var profileBitmap: Bitmap? = null,
 )
