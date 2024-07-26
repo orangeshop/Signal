@@ -81,10 +81,15 @@ dependencies {
     kapt (libs.room.compiler)
     //paging
     implementation(libs.paging)
+
+    implementation(libs.bundles.squareup)
+    implementation(libs.bundles.krossbow)
+
     //fcm
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
     //locations
     implementation(libs.locations)
+
 
 }
