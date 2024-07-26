@@ -1,10 +1,13 @@
 package com.ssafy.signal.board.domain;
 
+import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
@@ -23,10 +26,15 @@ public class CommentEntity extends TimeEntity {
     @Column(nullable = false)
     private String writer;
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private Member userId;
+
+
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Builder
+
     public CommentEntity(Long id, BoardEntity boardEntity, String writer, String content) {
         this.id = id;
         this.boardEntity = boardEntity;
@@ -52,8 +60,32 @@ public class CommentEntity extends TimeEntity {
         }
     }
 
-    // boardId를 반환하는 메서드 추가
-    public Long getBoardId() {
-        return this.boardEntity != null ? this.boardEntity.getId() : null;
+
+
+    public CommentDto asCommentDto()
+    {
+        return CommentDto.builder()
+                .id(id)
+                .boardId(boardEntity.getId())
+                .userId(userId.getUserId())
+                .writer(writer)
+                .content(content)
+                .createdDate(getCreatedDate())
+                .modifiedDate(getModifiedDate())
+                .build();
+    }
+
+    public CommentDto asCommentDto(String url)
+    {
+        return CommentDto.builder()
+                .id(id)
+                .url(url)
+                .boardId(boardEntity.getId())
+                .userId(userId.getUserId())
+                .writer(writer)
+                .content(content)
+                .createdDate(getCreatedDate())
+                .modifiedDate(getModifiedDate())
+                .build();
     }
 }

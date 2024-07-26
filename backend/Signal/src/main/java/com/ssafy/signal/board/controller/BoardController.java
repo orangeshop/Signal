@@ -42,22 +42,12 @@ public class BoardController {
 
 
     /* 게시글 쓰기 */
-    @GetMapping("/post")
-    public String write() {
-        return "";
-    }
-
     @PostMapping("/post")
-    public BoardDto write(BoardDto boardDto) {
+    public BoardDto write(@RequestBody BoardDto boardDto) {
         return boardService.savePost(boardDto);
     }
 
     /* 게시글 수정 */
-    @GetMapping("/board/update/{no}")
-    public BoardDto update(@PathVariable("no") Long no) {
-        return boardService.getPost(no);
-    }
-
     @PutMapping("/board/update/{no}")
     public BoardDto update(@PathVariable Long no, BoardDto boardDto) {
         return boardService.updatePost(no, boardDto);
@@ -71,12 +61,10 @@ public class BoardController {
         return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
     }
 
+    /* 게시글 검색 */
     @GetMapping("/board/search")
-    public String search(@RequestParam(value="keyword") String keyword, Model model) {
+    public ResponseEntity<List<BoardDto>> search(@RequestParam(value="keyword") String keyword) {
         List<BoardDto> boardDtoList = boardService.searchPosts(keyword);
-
-        model.addAttribute("boardList", boardDtoList);
-
-        return "";
+        return ResponseEntity.ok().body(boardDtoList);
     }
 }
