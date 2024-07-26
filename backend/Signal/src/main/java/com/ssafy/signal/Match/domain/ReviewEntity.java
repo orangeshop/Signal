@@ -1,5 +1,6 @@
 package com.ssafy.signal.Match.domain;
 
+import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -12,32 +13,38 @@ public class ReviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long review_id;
 
-    @Column(name="user_id")
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private Member userId;
 
     @Column
     private String content;
 
-    @Column
-    private long writer_id;
+    @ManyToOne
+    @JoinColumn(name="writer_id")
+    private Member writer_id;
 
     @Column
     private int star;
 
     public ReviewEntity(long user_id, String content, long writer_id, int star)
     {
-        this.userId = user_id;
+        this.userId = Member.builder()
+                .userId(user_id)
+                .build();
         this.content = content;
-        this.writer_id = writer_id;
+        this.writer_id = Member.builder()
+                .userId(writer_id)
+                .build();
         this.star = star;
     }
 
     public ReviewDto asReviewDto(){
         return new ReviewDto(
                 review_id,
-                userId,
+                userId.getUserId(),
                 content,
-                writer_id,
+                writer_id.getUserId(),
                 star
         );
     }

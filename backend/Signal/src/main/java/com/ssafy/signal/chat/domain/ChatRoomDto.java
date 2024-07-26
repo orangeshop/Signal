@@ -18,8 +18,8 @@ public class ChatRoomDto {
         return new ChatRoomEntity(
                 from_id,
                 to_id,
-                last_message,
-                sender_type
+                last_message == null ? "" : last_message,
+                sender_type == null ? SenderType.NONE : sender_type
         );
     }
 }

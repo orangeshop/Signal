@@ -25,6 +25,7 @@ public class ChatController {
     @MessageMapping("/chat/send")
     public void send(MessageDto message) throws Exception {
         chatService.saveMessage(message);
+        chatService.updateLastMessage(message);
         messagingTemplate.convertAndSend("/topic/" + message.getChat_id(), message);
     }
 

@@ -48,6 +48,9 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 
+    //firebase
+    implementation("com.google.firebase:firebase-admin:9.1.1")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }
 
 tasks.withType<Test> {

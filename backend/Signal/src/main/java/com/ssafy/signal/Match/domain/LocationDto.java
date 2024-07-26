@@ -6,17 +6,18 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class LocationDto {
-    public long location_id;
+    private long location_id;
 
-    public double latitude;
-    public double longitude;
+    private double latitude;
+    private double longitude;
 
-
+    private long user_id;
     public LocationEntity asLocationEntity()
     {
         return new LocationEntity(
                 latitude,
-                longitude
+                longitude,
+                user_id
         );
     }
 }
