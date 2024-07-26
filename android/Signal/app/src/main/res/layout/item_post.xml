@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="post"
-            type="com.ongo.signal.data.model.main.PostDTO" />
+            name="board"
+            type="com.ongo.signal.data.model.main.BoardDTO" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_marginEnd="-10dp"
-            android:text="@{post.title}"
+            android:text="@{board.title}"
             android:textColor="@color/white"
             android:textSize="36sp"
             android:textStyle="bold"
@@ -37,16 +37,17 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginTop="15dp"
-            app:imageUrl="@{post.profile}"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             tools:src="@drawable/baseline_more_vert_mint_24" />
+        <!--            app:imageUrl="@{post.profile}"-->
+
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{post.name}"
+            android:text="@{board.writer}"
             android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
@@ -60,7 +61,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:dateText="@{post.date}"
+            android:text="@{board.getFormattedCreatedDate()}"
             app:layout_constraintBottom_toBottomOf="@id/tv_name"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             tools:text="2024-07-16" />
@@ -70,7 +71,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@{post.content}"
+            android:text="@{board.content}"
             android:textColor="@color/white"
             android:textSize="26sp"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
@@ -118,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{String.valueOf(post.likeCount)}"
+            android:text="@{String.valueOf(board.liked)}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
@@ -141,7 +142,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{String.valueOf(post.commentCount)}"
+            android:text="@{String.valueOf(board.comments.size)}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"

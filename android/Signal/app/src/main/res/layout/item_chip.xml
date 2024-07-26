@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="tag"
             type="com.ongo.signal.data.model.main.TagDTO" />
@@ -19,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:clickable="false"
             android:padding="4dp"
             android:text="@{tag.tag}"
             app:layout_constraintStart_toStartOf="parent"

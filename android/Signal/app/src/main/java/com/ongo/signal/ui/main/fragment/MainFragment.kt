@@ -31,7 +31,6 @@ import com.ongo.signal.util.TTSHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
@@ -65,16 +64,16 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         sttHelper = STTHelper(sttLauncher)
 
         lifecycleScope.launch {
-            viewModel.posts.collectLatest { newPosts ->
-                todayPostAdapter.submitList(newPosts)
-                if (newPosts.isNotEmpty()) {
-                    Timber.d(newPosts[0].tags.toString())
-                    firstTagAdapter.submitList(newPosts[0].tags)
-                    if (newPosts.size > 1) {
-                        secondTagAdapter.submitList(newPosts[1].tags)
+            viewModel.boards.collectLatest { newBoards ->
+                todayPostAdapter.submitList(newBoards)
+                if (newBoards.isNotEmpty()) {
+//                    Timber.d(newBoards[0].tags.toString())
+//                    firstTagAdapter.submitList(newBoards[0].tags)
+                    if (newBoards.size > 1) {
+//                        secondTagAdapter.submitList(newBoards[1].tags)
                     }
-                    if (newPosts.size > 2) {
-                        thirdTagAdapter.submitList(newPosts[2].tags)
+                    if (newBoards.size > 2) {
+//                        thirdTagAdapter.submitList(newBoards[2].tags)
                     }
                 }
             }
@@ -112,11 +111,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 val nextPosition = (titleView.tag as? Int ?: 0) + 1
-                val nextPost = todayPostAdapter.currentList.getOrNull(nextPosition % todayPostAdapter.itemCount)
-                if (nextPost != null) {
+                val nextBoard = todayPostAdapter.currentList.getOrNull(nextPosition % todayPostAdapter.itemCount)
+                if (nextBoard != null) {
                     titleView.tag = nextPosition
-                    (titleView as TextView).text = nextPost.title
-                    (recyclerView.adapter as TagAdapter).submitList(nextPost.tags)
+                    (titleView as TextView).text = nextBoard.title
+//                    (recyclerView.adapter as TagAdapter).submitList(nextBoard.tags)
                 }
                 flipIn.setTarget(titleView)
                 flipInRecycler.setTarget(recyclerView)
@@ -130,7 +129,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     fun onFABClicked() {
-        viewModel.clearPost()
+        viewModel.clearBoard()
         findNavController().navigate(R.id.action_mainFragment_to_writePostFragment)
     }
 
@@ -142,10 +141,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private fun setUpAdapter() {
         todayPostAdapter = TodayPostAdapter(
             onEndReached = {
-                viewModel.loadPosts()
+                viewModel.loadBoards()
             },
-            onItemClicked = { post ->
-                viewModel.selectPost(post)
+            onItemClicked = { board ->
+                viewModel.selectBoard(board)
                 findNavController().navigate(R.id.action_mainFragment_to_postFragment)
             },
             onTTSClicked = { content ->
@@ -182,7 +181,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (!recyclerView.canScrollVertically(1)) {
-                        viewModel.loadPosts()
+                        viewModel.loadBoards()
                     }
                 }
             })
