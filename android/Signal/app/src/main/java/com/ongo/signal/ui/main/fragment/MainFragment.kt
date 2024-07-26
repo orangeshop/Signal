@@ -110,23 +110,26 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         flipOut.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                val nextPosition = (titleView.tag as? Int ?: 0) + 1
-                val nextBoard = todayPostAdapter.currentList.getOrNull(nextPosition % todayPostAdapter.itemCount)
-                if (nextBoard != null) {
-                    titleView.tag = nextPosition
-                    (titleView as TextView).text = nextBoard.title
-//                    (recyclerView.adapter as TagAdapter).submitList(nextBoard.tags)
+                if (todayPostAdapter.itemCount > 0) {
+                    val nextPosition = (titleView.tag as? Int ?: 0) + 1
+                    val nextBoard = todayPostAdapter.currentList.getOrNull(nextPosition % todayPostAdapter.itemCount)
+                    if (nextBoard != null) {
+                        titleView.tag = nextPosition
+                        (titleView as TextView).text = nextBoard.title
+                        // (recyclerView.adapter as TagAdapter).submitList(nextBoard.tags)
+                    }
+                    flipIn.setTarget(titleView)
+                    flipInRecycler.setTarget(recyclerView)
+                    flipIn.start()
+                    flipInRecycler.start()
                 }
-                flipIn.setTarget(titleView)
-                flipInRecycler.setTarget(recyclerView)
-                flipIn.start()
-                flipInRecycler.start()
             }
         })
 
         flipOut.start()
         flipOutRecycler.start()
     }
+
 
     fun onFABClicked() {
         viewModel.clearBoard()
