@@ -5,32 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.data.model.chat.ChatHomeDTO
-import com.ongo.signal.data.repository.chat.chatdatabase.ChatDetailDao
-import com.ongo.signal.data.repository.chat.chatdatabase.ChatHomeDao
 import com.ongo.signal.data.repository.chat.ChatUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import org.hildan.krossbow.stomp.StompClient
-import org.hildan.krossbow.stomp.StompSession
-import org.hildan.krossbow.stomp.frame.StompFrame
-import org.hildan.krossbow.stomp.headers.StompSubscribeHeaders
-import org.hildan.krossbow.stomp.sendText
-import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
-import java.text.SimpleDateFormat
-import java.util.Locale
 import javax.inject.Inject
 
 private const val TAG = "ChatHomeViewModel_싸피"
 
 @HiltViewModel
 class ChatHomeViewModel @Inject constructor(
-    private val chatUseCases: ChatUseCases
+    private val chatUseCases: ChatUseCases,
+
 ) : ViewModel() {
 
     private val _liveList = MutableLiveData<List<ChatHomeDTO>>()
@@ -42,7 +29,6 @@ class ChatHomeViewModel @Inject constructor(
     var chatRoomNumber = 0
 
     fun clearMessageList() {
-        chatUseCases.clearMessageList()
         _messageList.value = emptyList()
     }
 
@@ -59,9 +45,10 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    fun loadDetailList(ID: Int) {
+    fun loadDetailList(id: Int) {
         viewModelScope.launch {
-            _messageList.value = chatUseCases.loadDetailList(ID)
+            _messageList.value = chatUseCases.loadDetailList(id)
+            Log.d(TAG, "loadDetailList: viewmodel load")
         }
     }
 
@@ -84,8 +71,9 @@ class ChatHomeViewModel @Inject constructor(
 
     fun stompGet(chatRoomNumber: Int) {
         viewModelScope.launch {
-            chatUseCases.stompGet(chatRoomNumber)
-            loadDetailList(chatRoomNumber)
+            chatUseCases.stompGet(chatRoomNumber){ id ->
+               loadDetailList(id)
+            }
         }
     }
 
@@ -93,6 +81,7 @@ class ChatHomeViewModel @Inject constructor(
         viewModelScope.launch {
             chatUseCases.connectedWebSocket(chatRoomNumber)
             stompGet(chatRoomNumber)
+
         }
     }
 

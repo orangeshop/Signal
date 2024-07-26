@@ -22,11 +22,6 @@ class ChatUseCasesImpl @Inject constructor(
 ) : ChatUseCases {
 
     private var stompSession: StompSession? = null
-    private val _messageList = mutableListOf<ChatHomeChildDto>()
-
-    override fun clearMessageList() {
-        _messageList.clear()
-    }
 
     override suspend fun loadChats(): List<ChatHomeDTO> {
         return chatRoomRepository.getAllChats()
@@ -42,6 +37,7 @@ class ChatUseCasesImpl @Inject constructor(
 
     override suspend fun saveDetailList(message: ChatHomeChildDto, id: Int) {
         chatRoomRepository.insertMessage(message)
+
     }
 
     override fun timeSetting(): String {
@@ -58,7 +54,8 @@ class ChatUseCasesImpl @Inject constructor(
         )
     }
 
-    override suspend fun stompGet(chatRoomNumber: Int) {
+    override suspend fun stompGet(chatRoomNumber: Int, onSuccess: (Int) -> Unit){
+
         stompSession?.apply {
             val newChatMessage: Flow<StompFrame.Message> = subscribe(
                 StompSubscribeHeaders(
@@ -71,13 +68,15 @@ class ChatUseCasesImpl @Inject constructor(
                 val stompGetMessage: ChatHomeChildDto = Gson().fromJson(json, ChatHomeChildDto::class.java)
                 stompGetMessage.send_at = ""
                 saveDetailList(stompGetMessage, stompGetMessage.chat_id)
+                Log.d(TAG, "stompGet: asdasdasdasdasd ${stompGetMessage}")
+                onSuccess(stompGetMessage.chat_id)
             }
         }
     }
 
     override suspend fun connectedWebSocket(chatRoomNumber: Int) {
         try {
-            stompSession = stompService.connect("ws://192.168.100.95:8080/chat")
+            stompSession = stompService.connect("ws://192.168.100.161:8080/chat")
         } catch (e: Exception) {
             Log.d(TAG, "ConnectedWebSocket: $e")
         }
