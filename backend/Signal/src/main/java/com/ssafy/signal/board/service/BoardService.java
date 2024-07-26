@@ -3,10 +3,12 @@ package com.ssafy.signal.board.service;
 import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.repository.BoardRepository;
+import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,7 @@ public class BoardService {
         BoardEntity boardEntity = boardEntityOptional.get();
 
         // 2. 엔티티의 업데이트 메서드 호출
-        boardEntity.update(boardDto.getTitle(), boardDto.getContent());
+        boardEntity.update(boardDto.getTitle(), boardDto.getContent(), boardDto.getReference(), boardDto.getLiked(), boardDto.getType());
         // 필요에 따라 다른 필드들도 업데이트
 
         // 3. 엔티티 저장 (업데이트된 엔티티를 저장하면 JPA가 자동으로 업데이트 처리)
@@ -131,9 +133,9 @@ public class BoardService {
                 .modifiedDate(boardEntity.getModifiedDate())
                 .build();
     }
-
     public BoardEntity getBoardById(Long id) {
-        return boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
-    }
-}
+        return boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Board not found with id: " + id));
+
+
+}}
 

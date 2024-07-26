@@ -79,9 +79,4 @@ public class BoardController {
 
         return "";
     }
-    @PostMapping("/board/fileupload")
-    public String uploadFile(@RequestParam("file") MultipartFile multipartFile,
-                             @RequestParam("dirName") String dirName) throws IOException {
-        return s3Uploader.upload(multipartFile, dirName);
-    }
 }
