@@ -5,13 +5,15 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="fragment"
             type="com.ongo.signal.ui.main.fragment.PostFragment" />
 
         <variable
-            name="post"
-            type="com.ongo.signal.data.model.main.PostDTO" />
+            name="viewModel"
+            type="com.ongo.signal.ui.main.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:fontFamily="@font/inter_extrabold"
-            android:text="@{post.title}"
+            android:text="@{viewModel.selectedBoard.title}"
             android:textColor="@color/white"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +40,7 @@
             android:layout_height="32dp"
             android:onClick="@{(view) -> fragment.showPopupMenu(view)}"
             android:src="@drawable/baseline_more_vert_mint_24"
+            android:visibility="@{viewModel.selectedBoard.userId == viewModel.currentUserId ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_title" />
@@ -48,16 +51,16 @@
             android:layout_height="28dp"
             android:layout_marginTop="15dp"
             android:onClick="@{()->fragment.onProfileClick()}"
-            app:imageUrl="@{post.profile}"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             tools:src="@drawable/baseline_more_vert_mint_24" />
+        <!--app:imageUrl="@{board.profile}"-->
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{post.name}"
+            android:text="@{viewModel.selectedBoard.writer}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
@@ -68,8 +71,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.selectedBoard.getFormattedCreatedDate()}"
             android:textColor="@color/white"
-            app:dateText="@{post.date}"
             app:layout_constraintBottom_toBottomOf="@id/tv_name"
             app:layout_constraintEnd_toEndOf="@id/iv_more" />
 
@@ -78,7 +81,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@{post.content}"
+            android:text="@{viewModel.selectedBoard.content}"
             android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@id/iv_more"
@@ -124,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{String.valueOf(post.likeCount)}"
+            android:text="@{String.valueOf(viewModel.selectedBoard.liked)}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
@@ -146,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{String.valueOf(post.commentCount)}"
+            android:text="@{String.valueOf(viewModel.selectedBoard.getCommentCount())}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
@@ -168,8 +171,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_comment"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_line"
@@ -212,6 +216,7 @@
                 android:layout_height="40dp"
                 android:layout_margin="8dp"
                 android:layout_marginBottom="8dp"
+                android:onClick="@{() -> fragment.createComment()}"
                 android:src="@drawable/baseline_arrow_circle_up_white_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
