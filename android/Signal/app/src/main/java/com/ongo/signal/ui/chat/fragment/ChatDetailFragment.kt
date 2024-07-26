@@ -45,17 +45,17 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             binding.chatDetailBtn.setOnClickListener {
                 if(binding.etSearch.text.toString() != "") {
-                    chatViewModel.saveDetailList(
-                        ChatHomeChildDto(
-                            0,
-                            chatViewModel.chatRoomNumber,
-                            1,
-                            1,
-                            false,
-                            binding.etSearch.text.toString(),
-                            false,
-                            chatViewModel.timeSetting()
-                        ), chatViewModel.chatRoomNumber)
+//                    chatViewModel.saveDetailList(
+//                        ChatHomeChildDto(
+//                            0,
+//                            chatViewModel.chatRoomNumber,
+//                            1,
+//                            1,
+//                            false,
+//                            binding.etSearch.text.toString(),
+//                            false,
+//                            chatViewModel.timeSetting()
+//                        ), chatViewModel.chatRoomNumber)
 
                     chatViewModel.stompSend(ChatHomeChildDto(
                         0,
@@ -72,7 +72,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                     // 헤당 부분 콜백을 받아서 처리되도록 수정해야함
                     lifecycleScope.launch {
-                        delay(200)
+                        delay(1000)
                         chatViewModel.messageList.value?.let { it1 ->
                             binding.chatDetailRv.smoothScrollToPosition(
                                 it1.lastIndex )
