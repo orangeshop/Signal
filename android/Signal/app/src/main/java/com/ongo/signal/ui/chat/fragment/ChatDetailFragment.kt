@@ -32,7 +32,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
         binding.apply {
 
-            chatViewModel.ConnectedWebSocket(chatViewModel.chatRoomNumber)
+            chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
 
             chatDetailAdapter = ChatDetailAdapter()
             binding.chatDetailRv.adapter = chatDetailAdapter
@@ -45,7 +45,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             binding.chatDetailBtn.setOnClickListener {
                 if(binding.etSearch.text.toString() != "") {
-                    chatViewModel.SaveDetailList(
+                    chatViewModel.saveDetailList(
                         ChatHomeChildDto(
                             0,
                             chatViewModel.chatRoomNumber,
@@ -57,7 +57,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             chatViewModel.timeSetting()
                         ), chatViewModel.chatRoomNumber)
 
-                    chatViewModel.StompSend(ChatHomeChildDto(
+                    chatViewModel.stompSend(ChatHomeChildDto(
                         0,
                         chatViewModel.chatRoomNumber,
                         1,

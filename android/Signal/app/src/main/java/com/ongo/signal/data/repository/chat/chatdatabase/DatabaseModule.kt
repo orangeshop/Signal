@@ -1,9 +1,7 @@
-package com.ongo.signal.data.repository.main
+package com.ongo.signal.data.repository.chat.chatdatabase
 
 import android.content.Context
 import androidx.room.Room
-import com.ongo.signal.data.repository.main.chat.ChatHomeDao
-import com.ongo.signal.data.repository.main.chat.ChatHomeDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +24,7 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideChatHomeDao(database: ChatHomeDatabase):ChatHomeDao{
+    fun provideChatHomeDao(database: ChatHomeDatabase): ChatHomeDao {
         return database.chatHomeDao()
     }
 }
