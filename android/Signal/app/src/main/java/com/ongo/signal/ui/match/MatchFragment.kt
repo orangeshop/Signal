@@ -11,6 +11,7 @@ import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
+import com.ongo.signal.data.model.match.MatchProposeRequest
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
@@ -18,6 +19,7 @@ import com.ongo.signal.util.PermissionChecker
 import com.ongo.signal.util.RadarView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
@@ -31,7 +33,15 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     private val viewModel: MatchViewModel by viewModels()
     private val possibleUserAdapter =
         PossibleUserAdapter(
-            onMatchClick = { userId, userName -> makeToast("${userName} 님께 매칭 신청을 하였습니다.") },
+            onMatchClick = { userId, userName ->
+                viewModel.postProposeMatch(
+                    fromId = 18,
+                    toId = userId,
+                    onSuccess = {
+                        makeToast("${userName} 님께 매칭 신청을 하였습니다.")
+                    }
+                )
+            },
             onClick = { userId -> binding.cvDot.setDotFocused(userId) }
         )
 
@@ -81,6 +91,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                 viewModel.getMatchPossibleUser(
                                     locationId = response.location_id,
                                     onSuccess = { possibleUsers ->
+                                        possibleUsers.forEach { nowUser ->
+                                            Timber.d("현재 유저는 ${nowUser}\n")
+                                        }
                                         binding.cvDot.addDot(convertToDotList(possibleUsers))
                                         possibleUserAdapter.submitList(possibleUsers.map { it.user })
                                     }
