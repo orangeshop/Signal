@@ -13,4 +13,5 @@
     <color name="backgroundColor">#121212</color>
     <color name="radar_color">#02EB25</color>
     <color name="color_translate">#00000000</color>
+    <color name="rippleColor">#40FFFFFF</color>
 </resources>

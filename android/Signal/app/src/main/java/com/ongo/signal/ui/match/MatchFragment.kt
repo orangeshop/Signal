@@ -18,7 +18,6 @@ import com.ongo.signal.util.PermissionChecker
 import com.ongo.signal.util.RadarView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
@@ -32,7 +31,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     private val viewModel: MatchViewModel by viewModels()
     private val possibleUserAdapter =
         PossibleUserAdapter(
-            onMatchClick = { userId -> Timber.d("버튼 클릭 $userId") },
+            onMatchClick = { userId, userName -> makeToast("${userName} 님께 매칭 신청을 하였습니다.") },
             onClick = { userId -> binding.cvDot.setDotFocused(userId) }
         )
 
@@ -94,6 +93,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 }
             }
         }
+
     }
 
     private fun convertToDotList(responseList: List<MatchPossibleResponse>): List<Dot> {

@@ -173,6 +173,6 @@ class DotCustomView @JvmOverloads constructor(
         popupWindow.isTouchable = false
 
 
-        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, x - 75, y - 170)
+        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, x - 75, y - 180)
     }
 }
