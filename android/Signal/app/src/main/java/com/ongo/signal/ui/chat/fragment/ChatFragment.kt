@@ -1,16 +1,16 @@
 package com.ongo.signal.ui.chat.fragment
 
+import android.os.Build.VERSION_CODES.P
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.chat.ChatHomeChildDto
-import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.FragmentChatBinding
+import com.ongo.signal.ui.chat.CustomDialog
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
-import com.ongo.signal.ui.chat.ChatHomeViewModel
+import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "ChatFragment_싸피"
@@ -36,13 +36,9 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             chatHomeFab.setOnClickListener {
                 findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
-
-                chatViewModel.saveChat(
-                    ChatHomeDTO(
-                        0, 1, 2, "last", "status"
-                    )
-                )
             }
+
+
 
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
@@ -51,7 +47,13 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {
+
                     // 롱 클릭시 커스텀 다이어 로그가 나오게 하여 삭제 여부 및 다른 옵션을 선택할 수 있도록 합니다.
+                    CustomDialog.show(requireContext()){
+                        Log.d(TAG, "init: ${it}")
+//                        chatViewModel.deleteChat(it)
+
+                    }
                     true
                 }
             )

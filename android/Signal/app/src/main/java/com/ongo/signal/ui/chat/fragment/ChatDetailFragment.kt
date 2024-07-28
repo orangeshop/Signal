@@ -1,20 +1,19 @@
 package com.ongo.signal.ui.chat.fragment
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.databinding.FragmentChatDetailBinding
 import com.ongo.signal.ui.MainActivity
-import com.ongo.signal.ui.chat.ChatHomeViewModel
+import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 private const val TAG = "ChatDetailFragment_싸피"
 
@@ -28,6 +27,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
 
     override fun init() {
+
+        Log.d(TAG, "@@@@@@@@@@@@@@@@ vChatDetailFragment : ")
+        (requireActivity() as? MainActivity)?.showBottomNavigation()
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
 
         binding.apply {

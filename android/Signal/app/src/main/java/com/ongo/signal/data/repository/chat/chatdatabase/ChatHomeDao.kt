@@ -9,7 +9,7 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 
 @Dao
 interface ChatHomeDao {
-    @Query("SELECT * FROM chat_home_table")
+    @Query("SELECT * FROM chat_home_table ORDER BY status asc")
     suspend fun getAll(): List<ChatHomeDTO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

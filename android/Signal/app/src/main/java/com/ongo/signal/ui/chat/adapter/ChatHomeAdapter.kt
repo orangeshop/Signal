@@ -11,22 +11,19 @@ import com.ongo.signal.databinding.ChatItemListBinding
 private const val TAG = "ChatHomeAdapter"
 class ChatHomeAdapter(
     private val chatItemClick: (item : ChatHomeDTO) -> Unit,
-    private val chatItemLongClick: () -> Boolean
+    private val chatItemLongClick: (item : ChatHomeDTO) -> Boolean
 ): ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
-//            if(item.list.size > 0) {
-//                binding.chatItemTitle.text = item.list[0].name
-//                binding.content.text = item.list[0].content
-//                binding.Time.text = item.list[0].time
-//            binding.Alarm.text = item.list.get(0).alarm.toString()
-//            }
+
+            binding.chatItemTitle.text = item.chat_id.toString()
+
             binding.chatHomeCl.setOnClickListener {
                 chatItemClick(item)
             }
 
             binding.chatHomeCl.setOnLongClickListener {
-                chatItemLongClick()
+                chatItemLongClick(item)
             }
 
 

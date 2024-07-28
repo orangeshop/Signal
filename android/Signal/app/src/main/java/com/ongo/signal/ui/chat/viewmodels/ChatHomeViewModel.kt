@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.chat
+package com.ongo.signal.ui.chat.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData

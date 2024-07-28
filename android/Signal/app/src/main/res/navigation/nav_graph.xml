@@ -57,7 +57,11 @@
     <fragment
         android:id="@+id/chatAddFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatAddFragment"
-        android:label="ChatAddFragment" />
+        android:label="ChatAddFragment" >
+        <action
+            android:id="@+id/action_chatAddFragment_to_chatDetailFragment"
+            app:destination="@id/chatDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/postFragment"
