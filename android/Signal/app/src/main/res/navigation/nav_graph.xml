@@ -16,9 +16,9 @@
             app:destination="@id/chatDetailFragment" />
     </fragment>
     <fragment
-        android:id="@+id/mapFragment"
+        android:id="@+id/matchFragment"
         android:name="com.ongo.signal.ui.match.MatchFragment"
-        android:label="MapFragment" />
+        android:label="MatchFragment" />
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.ongo.signal.ui.main.fragment.MainFragment"

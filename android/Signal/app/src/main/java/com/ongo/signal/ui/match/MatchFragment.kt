@@ -1,8 +1,10 @@
 package com.ongo.signal.ui.match
 
 import android.Manifest
+import android.content.Intent
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
@@ -47,14 +49,33 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
 
     override fun init() {
+        requireActivity().intent
+        arguments?.let { args ->
+            if (args.getBoolean("matchNotification")) {
+                showMatchingDialog()
+            }
+        }
         initViews()
         initAnimation()
+    }
+
+    private fun showMatchingDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("매칭 신청")
+            .setMessage("매칭이 신청되었습니다")
+            .setPositiveButton("수락") { dialog, _ ->
+                // 수락 버튼 클릭 시 실행할 코드
+            }
+            .setNegativeButton("거절") { dialog, _ ->
+                // 거절 버튼 클릭 시 실행할 코드
+            }
+            .show()
     }
 
 
     private fun initAnimation() {
         val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_alpha)
-        val matchView = requireView().findViewById<View>(R.id.cl_match)
+        val matchView = requireView().findViewById<View>(R.id.matchFragment)
         matchView.startAnimation(anim)
     }
 
