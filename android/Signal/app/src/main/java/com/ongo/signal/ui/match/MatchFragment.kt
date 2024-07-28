@@ -1,7 +1,6 @@
 package com.ongo.signal.ui.match
 
 import android.Manifest
-import android.content.Intent
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
@@ -13,7 +12,6 @@ import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
-import com.ongo.signal.data.model.match.MatchProposeRequest
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
@@ -52,6 +50,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         requireActivity().intent
         arguments?.let { args ->
             if (args.getBoolean("matchNotification")) {
+                args.remove("matchNotification")
                 showMatchingDialog()
             }
         }
