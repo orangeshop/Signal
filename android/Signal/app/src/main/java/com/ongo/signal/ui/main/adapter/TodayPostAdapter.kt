@@ -7,14 +7,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.PostDTO
 import com.ongo.signal.databinding.ItemPostBinding
 
 class TodayPostAdapter(
     private val onEndReached: () -> Unit,
-    private val onItemClicked: (PostDTO) -> Unit,
+    private val onItemClicked: (BoardDTO) -> Unit,
     private val onTTSClicked: (String) -> Unit
-) : ListAdapter<PostDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
+) : ListAdapter<BoardDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -35,19 +36,19 @@ class TodayPostAdapter(
             }
         }
 
-        fun bind(post: PostDTO) {
-            binding.post = post
+        fun bind(board: BoardDTO) {
+            binding.board = board
             binding.executePendingBindings()
             binding.root.setOnClickListener {
-                onItemClicked(post)
+                onItemClicked(board)
             }
 
             binding.ivTts.setOnClickListener {
-                onTTSClicked(post.title)
+                onTTSClicked(board.title)
             }
 
-            chipAdapter.submitList(post.tags)
-            imageAdapter.submitList(post.image?.map { Uri.parse(it.toString()) })
+//            chipAdapter.submitList(board.tags)
+//            imageAdapter.submitList(board.image?.map { Uri.parse(it.toString()) }) 추후 수정
         }
     }
 
@@ -63,12 +64,12 @@ class TodayPostAdapter(
         return ViewHolder(binding)
     }
 
-    class DiffUtilCallback : DiffUtil.ItemCallback<PostDTO>() {
-        override fun areItemsTheSame(p0: PostDTO, p1: PostDTO): Boolean {
-            return p0.postId == p1.postId
+    class DiffUtilCallback : DiffUtil.ItemCallback<BoardDTO>() {
+        override fun areItemsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
+            return p0.id == p1.id
         }
 
-        override fun areContentsTheSame(p0: PostDTO, p1: PostDTO): Boolean {
+        override fun areContentsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
             return p0 == p1
         }
     }

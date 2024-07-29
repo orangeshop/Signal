@@ -1,4 +1,4 @@
-package com.ongo.signal.data.repository.main.chat
+package com.ongo.signal.data.repository.chat.chatdatabase
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

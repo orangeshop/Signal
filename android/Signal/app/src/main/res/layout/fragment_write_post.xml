@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="viewModel"
+            type="com.ongo.signal.ui.main.MainViewModel" />
+
+        <variable
             name="fragment"
             type="com.ongo.signal.ui.main.fragment.WritePostFragment" />
     </data>
@@ -39,6 +43,7 @@
             android:layout_marginTop="20dp"
             android:hint="@string/title"
             android:padding="10dp"
+            android:text="@{viewModel.selectedBoard != null ? viewModel.selectedBoard.title : null}"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintEnd_toStartOf="@id/gl"
@@ -63,6 +68,7 @@
             android:gravity="start"
             android:hint="@string/hint_content"
             android:padding="10dp"
+            android:text="@{viewModel.selectedBoard != null ? viewModel.selectedBoard.content : null}"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintBottom_toTopOf="@id/tv_reply"

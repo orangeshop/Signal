@@ -7,7 +7,7 @@
 
         <variable
             name="comment"
-            type="com.ongo.signal.data.model.main.CommentDTO" />
+            type="com.ongo.signal.data.model.main.CommentDTOItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,16 +20,17 @@
             android:layout_height="28dp"
             android:layout_margin="10dp"
             android:layout_marginTop="15dp"
-            app:imageUrl="@{comment.userProfile}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/baseline_more_vert_mint_24" />
+
+        <!--        app:imageUrl="@{comment.userProfile}"-->
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{comment.userName}"
+            android:text="@{comment.writer}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
