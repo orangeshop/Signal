@@ -2,6 +2,7 @@ package com.ongo.signal.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.ongo.signal.network.LoginApi
 import com.ongo.signal.network.MainApi
 import com.ongo.signal.network.MatchApi
 import com.ongo.signal.network.StompService
@@ -42,9 +43,14 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideSignalRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
-        .baseUrl("http://13.125.47.74:8080/")
+        .baseUrl("http://192.168.100.161:8080/")
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
+
+    @Singleton
+    @Provides
+    fun provideLoginApiService(retrofit: Retrofit): LoginApi =
+        retrofit.create(LoginApi::class.java)
 
     @Singleton
     @Provides

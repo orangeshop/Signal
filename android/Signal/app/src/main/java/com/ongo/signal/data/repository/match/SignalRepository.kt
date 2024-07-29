@@ -1,4 +1,4 @@
-package com.ongo.signal.data.repository
+package com.ongo.signal.data.repository.match
 
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
