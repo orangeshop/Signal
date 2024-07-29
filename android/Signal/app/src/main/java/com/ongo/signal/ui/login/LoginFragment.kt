@@ -11,7 +11,6 @@ import com.ongo.signal.databinding.FragmentLoginBinding
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import kotlin.math.sign
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
@@ -32,7 +31,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         }
 
         binding.btnLogin.setOnClickListener {
-            if (binding.tietId.text.toString().isBlank() || binding.tietPassword.text.toString().isBlank()) {
+            if (binding.tietId.text.toString().isBlank() || binding.tietPassword.text.toString()
+                    .isBlank()
+            ) {
                 makeToast("아이디나 비밀번호를 입력해주세요")
                 return@setOnClickListener
             }
@@ -48,7 +49,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     UserSession.userName = signalUser.userName
                     UserSession.accessToken = signalUser.accessToken
 
-                    
+                    viewModel.saveUserData(
+                        userId = signalUser.userId,
+                        userName = signalUser.userName,
+                        profileImage = "",
+                        accessToken = signalUser.accessToken
+                    )
+
+
                     val intent = Intent(requireContext(), MainActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()

@@ -2,6 +2,7 @@ package com.ongo.signal.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.SignalUser
 import com.ongo.signal.data.repository.login.LoginRepository
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val dataStoreClass: DataStoreClass
 ) : ViewModel() {
 
     private val coroutineExceptionHandler =
@@ -40,6 +42,21 @@ class LoginViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun saveUserData(
+        userId: Long,
+        userName: String,
+        profileImage: String = "",
+        accessToken: String
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            dataStoreClass.setIsLogin(true)
+            dataStoreClass.setUserId(userId)
+            dataStoreClass.setUserName(userName)
+            dataStoreClass.setProfileImage(profileImage)
+            dataStoreClass.setAccessToken(accessToken)
         }
     }
 }

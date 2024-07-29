@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseActivity
+import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.databinding.ActivityMainBinding
 import com.ongo.signal.ui.chat.fragment.ChatFragment
 import com.ongo.signal.ui.main.fragment.MainFragment
@@ -27,11 +29,14 @@ import com.ongo.signal.ui.match.MatchFragment
 import com.ongo.signal.ui.my.MyPageFragment
 import com.ongo.signal.util.PermissionChecker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
-
+    
     private lateinit var navHostFragment: NavHostFragment
     private val checker = PermissionChecker(this)
 
@@ -75,6 +80,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
 
         checkPermission()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -140,7 +146,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             val bundle = Bundle().apply {
                 putBoolean("matchNotification", true)
             }
-            navController.navigate(R.id.matchFragment,bundle)
+            navController.navigate(R.id.matchFragment, bundle)
         }
     }
 

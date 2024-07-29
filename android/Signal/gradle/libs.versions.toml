@@ -34,6 +34,8 @@ firebase-bom = "33.1.2"
 firebaseMessagingKtx = "24.0.0"
 #location
 locations = "21.0.1"
+#datastore
+datastore = "1.1.1"
 
 
 [libraries]
@@ -96,6 +98,9 @@ firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messa
 
 #locations
 locations = {group = "com.google.android.gms", name= "play-services-location", version.ref = "locations"}
+
+#datastore
+datastore = {group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore"}
 
 
 [bundles]
