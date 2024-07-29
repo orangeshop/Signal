@@ -3,6 +3,7 @@ package com.ongo.signal.ui.match
 import android.Manifest
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
@@ -32,20 +33,48 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     private val viewModel: MatchViewModel by viewModels()
     private val possibleUserAdapter =
         PossibleUserAdapter(
-            onMatchClick = { userId -> Timber.d("버튼 클릭 $userId") },
+            onMatchClick = { userId, userName ->
+                viewModel.postProposeMatch(
+                    fromId = 18,
+                    toId = userId,
+                    onSuccess = {
+                        makeToast("${userName} 님께 매칭 신청을 하였습니다.")
+                    }
+                )
+            },
             onClick = { userId -> binding.cvDot.setDotFocused(userId) }
         )
 
 
     override fun init() {
+        requireActivity().intent
+        arguments?.let { args ->
+            if (args.getBoolean("matchNotification")) {
+                args.remove("matchNotification")
+                showMatchingDialog()
+            }
+        }
         initViews()
         initAnimation()
+    }
+
+    private fun showMatchingDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("매칭 신청")
+            .setMessage("매칭이 신청되었습니다")
+            .setPositiveButton("수락") { dialog, _ ->
+                // 수락 버튼 클릭 시 실행할 코드
+            }
+            .setNegativeButton("거절") { dialog, _ ->
+                // 거절 버튼 클릭 시 실행할 코드
+            }
+            .show()
     }
 
 
     private fun initAnimation() {
         val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_alpha)
-        val matchView = requireView().findViewById<View>(R.id.cl_match)
+        val matchView = requireView().findViewById<View>(R.id.matchFragment)
         matchView.startAnimation(anim)
     }
 
@@ -82,6 +111,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                 viewModel.getMatchPossibleUser(
                                     locationId = response.location_id,
                                     onSuccess = { possibleUsers ->
+                                        possibleUsers.forEach { nowUser ->
+                                            Timber.d("현재 유저는 ${nowUser}\n")
+                                        }
                                         binding.cvDot.addDot(convertToDotList(possibleUsers))
                                         possibleUserAdapter.submitList(possibleUsers.map { it.user })
                                     }
@@ -94,6 +126,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 }
             }
         }
+
     }
 
     private fun convertToDotList(responseList: List<MatchPossibleResponse>): List<Dot> {

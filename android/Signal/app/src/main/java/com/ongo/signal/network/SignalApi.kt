@@ -1,6 +1,7 @@
 package com.ongo.signal.network
 
 import com.ongo.signal.data.model.match.MatchPossibleResponse
+import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.model.match.MatchRegistrationResponse
 import retrofit2.Response
@@ -33,4 +34,10 @@ interface SignalApi {
     suspend fun getMatchPossibleUser(
         @Query("locationId") locationId: Long,
     ): Response<List<MatchPossibleResponse>>
+
+    @POST("match/propose")
+    suspend fun postProposeMatch(
+        @Query("fromId") fromId: Long,
+        @Query("toId") toId: Long,
+    ): Response<MatchProposeResponse>
 }
