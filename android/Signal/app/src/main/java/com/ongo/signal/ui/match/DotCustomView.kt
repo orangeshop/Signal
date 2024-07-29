@@ -6,18 +6,22 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.ImageView
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.ongo.signal.R
 import com.ongo.signal.data.model.match.Dot
 import timber.log.Timber
 import kotlin.math.cos
-import kotlin.math.pow
 import kotlin.math.sin
-import kotlin.math.sqrt
 import kotlin.random.Random
 
 class DotCustomView @JvmOverloads constructor(
@@ -27,13 +31,6 @@ class DotCustomView @JvmOverloads constructor(
     private val originDots = mutableListOf<Dot>()
 
     private val pointPaint = Paint().apply {
-        color = 0xD1180B.toInt()
-//        color = 0xFF64FFCE.toInt()
-        isAntiAlias = true
-    }
-    private val textPaint = Paint().apply {
-        color = ContextCompat.getColor(context, android.R.color.white)
-        textSize = 32f
         isAntiAlias = true
     }
 
@@ -46,38 +43,14 @@ class DotCustomView @JvmOverloads constructor(
 
         originDots.forEach { dot ->
             pointPaint.alpha = (dot.alpha * 255).toInt()
+            pointPaint.color = if (dot.isFocused) {
+                ContextCompat.getColor(context, R.color.point_dot)
+            } else {
+                ContextCompat.getColor(context, R.color.radar_color)
+            }
             canvas.drawCircle(dot.x, dot.y, pointRadius, pointPaint)
         }
 
-        originDots.forEach { dot ->
-            if (dot.isFocused) {
-                val profileSize = pointRadius * 2
-                val profileRect = Rect(
-                    (dot.x - profileSize / 2).toInt(),
-                    (dot.y - profileSize / 2).toInt(),
-                    (dot.x + profileSize / 2).toInt(),
-                    (dot.y + profileSize / 2).toInt()
-                )
-
-                dot.profileBitmap?.let { bitmap ->
-                    canvas.drawBitmap(bitmap, null, profileRect, pointPaint)
-                }
-
-                canvas.drawText(
-                    dot.userName,
-                    dot.x - pointRadius,
-                    dot.y + pointRadius + 20,
-                    textPaint
-                )
-                canvas.drawText(
-                    dot.comment,
-                    dot.x + pointRadius + 20,
-                    dot.y + pointRadius + 20,
-                    textPaint
-                )
-            }
-
-        }
     }
 
     fun setDotFocused(userId: Long) {
@@ -87,6 +60,7 @@ class DotCustomView @JvmOverloads constructor(
 
         originDots.find { it.userId == userId }?.let { dot ->
             dot.isFocused = true
+            showProfilePopup(dot)
         }
 
         invalidate()
@@ -144,7 +118,10 @@ class DotCustomView @JvmOverloads constructor(
         val centerY = height * verticalBias
 
         val circleRadius = centerX - pointRadius
-        val scaledDistance = (dot.distance / 10) * circleRadius
+        val innerMargin = pointRadius * 2
+        val adjustedCircleRadius = circleRadius - innerMargin
+        val scaledDistance = (dot.distance / 10) * adjustedCircleRadius
+
 
         val angle = when (dot.quadrant) {
             1 -> Random.nextDouble(0.0, Math.PI / 2)
@@ -162,10 +139,6 @@ class DotCustomView @JvmOverloads constructor(
 
     }
 
-    private fun distance(x1: Float, y1: Float, x2: Float, y2: Float): Float {
-        return sqrt((x2 - x1).pow(2) + (y2 - y1).pow(2))
-    }
-
     private fun startFadeInAnimation(dot: Dot) {
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.duration = 1000
@@ -174,5 +147,32 @@ class DotCustomView @JvmOverloads constructor(
             invalidate()
         }
         animator.start()
+    }
+
+    private fun showProfilePopup(dot: Dot) {
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popupView = inflater.inflate(R.layout.profile_popup, null)
+
+        val popupWindow = PopupWindow(popupView, WRAP_CONTENT, WRAP_CONTENT, false)
+
+        val textView = popupView.findViewById<TextView>(R.id.tv_popup_user_name)
+        val imageView = popupView.findViewById<ImageView>(R.id.iv_popup_profile)
+
+        textView.text = dot.userName
+        dot.profileBitmap?.let { bitmap ->
+            imageView.setImageBitmap(bitmap)
+        }
+
+        val location = IntArray(2)
+        this.getLocationOnScreen(location)
+        val x = location[0] + dot.x.toInt()
+        val y = location[1] + dot.y.toInt() - popupWindow.height
+
+        popupWindow.setBackgroundDrawable(null)
+        popupWindow.isOutsideTouchable = true
+        popupWindow.isTouchable = false
+
+
+        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, x - 75, y - 180)
     }
 }

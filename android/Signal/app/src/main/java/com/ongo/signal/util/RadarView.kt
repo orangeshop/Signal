@@ -27,8 +27,8 @@ class RadarView @JvmOverloads constructor(
     private var mCircleCenterY: Float = 0f
     private var mRadius: Float = 0f
     private var mInsideRadius: Float = 0f
-    private var mCircleColor: Int = Color.parseColor("#52fff9")
-    private var mLineColor: Int = Color.parseColor("#1ecdf4")
+    private var mCircleColor: Int = Color.parseColor("#02EB25")
+    private var mLineColor: Int = Color.parseColor("#02EB25")
     private var mSideColor: Int = Color.parseColor("#52fff9")
     private var mOutsideBackgroundColor: Int = Color.parseColor("#1bb8f2")
     private var mInsideBackgroundColor: Int = Color.WHITE
