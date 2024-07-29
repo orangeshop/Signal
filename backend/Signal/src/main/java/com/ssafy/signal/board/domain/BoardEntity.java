@@ -4,11 +4,17 @@ import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@AllArgsConstructor
+@Builder
 @Table(name="board")
 public class BoardEntity extends TimeEntity{
 
@@ -39,17 +45,12 @@ public class BoardEntity extends TimeEntity{
     @Column
     private Long type;
 
-    @Builder
-    public BoardEntity(Long id, String title, String content, String writer, Long reference, Long liked, Long type, Member user) {
-        this.id = id;
-        this.writer = writer;
-        this.title = title;
-        this.content = content;
-        this.reference = reference != null ? reference : 0L;
-        this.liked = liked != null ? liked : 0L;
-        this.type = type != null ? type : 0L;
-        this.user = user;
-    }
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @Builder.Default
+    @JoinTable(name="tag",
+            joinColumns = @JoinColumn(name="tag_id"),
+            inverseJoinColumns = @JoinColumn(name="tag_name"))
+    List<TagEntity> tags = new ArrayList<>();
 
     // 엔티티의 상태를 변경하는 메서드 추가
     public void update(String title, String content, Long reference, Long liked, Long type) {
@@ -58,5 +59,21 @@ public class BoardEntity extends TimeEntity{
         this.reference = reference;
         this.liked = liked;
         this.type = type;
+    }
+
+    public BoardDto asBoardDto()
+    {
+        return BoardDto.builder()
+                .createdDate(getCreatedDate())
+                .modifiedDate(getModifiedDate())
+                .content(content)
+                .id(id)
+                .writer(writer)
+                .title(title)
+                .liked(liked)
+                .reference(reference)
+                .tags(tags.stream().map(TagEntity::asTagDto).toList())
+                .type(type)
+                .build();
     }
 }

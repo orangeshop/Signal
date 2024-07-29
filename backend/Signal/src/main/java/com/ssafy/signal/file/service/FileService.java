@@ -17,6 +17,8 @@ import java.util.Optional;
 
 @Service
 public class FileService {
+
+    private final String DIR_NAME = "signal";
     @Autowired
     private FileRepository fileRepository;
 
@@ -29,9 +31,9 @@ public class FileService {
     @Autowired
     private S3Uploader s3Uploader;
 
-    public String uploadBoardFile(MultipartFile multipartFile, String dirName, Long boardId) throws IOException {
+    public String uploadBoardFile(MultipartFile multipartFile, Long boardId) throws IOException {
         // S3에 파일 업로드 후 URL 가져오기
-        String url = s3Uploader.upload(multipartFile, dirName);
+        String url = s3Uploader.upload(multipartFile, DIR_NAME);
 
         // 파일 정보를 DB에 저장
         FileEntity file = new FileEntity();
