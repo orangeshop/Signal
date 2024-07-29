@@ -13,6 +13,4 @@ interface ChatDetailDao {
 
     @Insert()
     suspend fun insertMessage(ChatHomeChildDtos: ChatHomeChildDto)
-
-
 }

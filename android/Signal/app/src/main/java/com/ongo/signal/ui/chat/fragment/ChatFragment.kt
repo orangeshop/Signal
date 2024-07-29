@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.FragmentChatBinding
 import com.ongo.signal.ui.chat.CustomDialog
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
@@ -35,7 +36,12 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             chatViewModel.clearMessageList()
 
             chatHomeFab.setOnClickListener {
-                findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
+                chatViewModel.saveChat(
+                    ChatHomeDTO(
+                        0, 1, 2, "last", "null"
+                    )
+                )
+//                findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
             }
 
 
@@ -52,7 +58,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     CustomDialog.show(requireContext()){
                         Log.d(TAG, "init: ${it}")
 //                        chatViewModel.deleteChat(it)
-
                     }
                     true
                 }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.data.model.chat.ChatHomeDTO
+import com.ongo.signal.data.repository.chat.chatservice.ChatRepository
 import com.ongo.signal.network.StompService
 import kotlinx.coroutines.flow.Flow
 import org.hildan.krossbow.stomp.StompSession
@@ -17,26 +18,34 @@ import javax.inject.Inject
 private const val TAG = "ChatUseCasesImpl_싸피"
 
 class ChatUseCasesImpl @Inject constructor(
-    private val chatRoomRepository: ChatRoomRepository,
-    private val stompService: StompService
+    private val chatRoomRepositoryImpl: ChatRoomRepositoryImpl,
+    private val stompService: StompService,
+    private val chatRepository: ChatRepository
 ) : ChatUseCases {
 
     private var stompSession: StompSession? = null
 
     override suspend fun loadChats(): List<ChatHomeDTO> {
-        return chatRoomRepository.getAllChats()
+        val serverChatList = chatRepository.getChatList().body()
+        if (serverChatList != null) {
+            for(item in serverChatList){
+                saveChat(item)
+            }
+        }
+
+        return chatRoomRepositoryImpl.getAllChats()
     }
 
     override suspend fun saveChat(room: ChatHomeDTO) {
-        chatRoomRepository.insertChat(room)
+        chatRoomRepositoryImpl.insertChat(room)
     }
 
     override suspend fun loadDetailList(id: Int): List<ChatHomeChildDto> {
-        return chatRoomRepository.getAllMessages(id)
+        return chatRoomRepositoryImpl.getAllMessages(id)
     }
 
     override suspend fun saveDetailList(message: ChatHomeChildDto, id: Int) {
-        chatRoomRepository.insertMessage(message)
+        chatRoomRepositoryImpl.insertMessage(message)
 
     }
 
@@ -68,7 +77,6 @@ class ChatUseCasesImpl @Inject constructor(
                 val stompGetMessage: ChatHomeChildDto = Gson().fromJson(json, ChatHomeChildDto::class.java)
                 stompGetMessage.send_at = ""
                 saveDetailList(stompGetMessage, stompGetMessage.chat_id)
-                Log.d(TAG, "stompGet: asdasdasdasdasd ${stompGetMessage}")
                 onSuccess(stompGetMessage.chat_id)
             }
         }
@@ -76,7 +84,7 @@ class ChatUseCasesImpl @Inject constructor(
 
     override suspend fun connectedWebSocket(chatRoomNumber: Int) {
         try {
-            stompSession = stompService.connect("ws://192.168.100.161:8080/chat")
+            stompSession = stompService.connect("ws://192.168.100.95:8080/chat")
         } catch (e: Exception) {
             Log.d(TAG, "ConnectedWebSocket: $e")
         }

@@ -27,9 +27,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
 
     override fun init() {
-
-        Log.d(TAG, "@@@@@@@@@@@@@@@@ vChatDetailFragment : ")
-        (requireActivity() as? MainActivity)?.showBottomNavigation()
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
 
         binding.apply {

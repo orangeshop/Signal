@@ -52,13 +52,11 @@ class ChatAddFragment : BaseFragment<FragmentChatAddBinding>(R.layout.fragment_c
                 }
             }
 
-            val test = ChatHomeDTO(
-                0, 1, 2, "last", "status"
-            )
-
             binding.chatAddBtn.setOnClickListener {
                 chatViewModel.saveChat(
-                    test
+                    ChatHomeDTO(
+                        0, 1, 2, "last", "null"
+                    )
                 )
 
 

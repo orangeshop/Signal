@@ -6,7 +6,7 @@ import com.ongo.signal.data.repository.chat.chatdatabase.ChatDetailDao
 import com.ongo.signal.data.repository.chat.chatdatabase.ChatHomeDao
 import javax.inject.Inject
 
-class ChatRoomRepository @Inject constructor(
+class ChatRoomRepositoryImpl @Inject constructor(
     private val chatHomeDao: ChatHomeDao,
     private val chatDetailDao: ChatDetailDao
 ) {
