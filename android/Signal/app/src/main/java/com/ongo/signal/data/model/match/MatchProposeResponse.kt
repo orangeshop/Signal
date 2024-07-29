@@ -9,3 +9,5 @@ data class MatchProposeResponse(
     @SerializedName("type") val type: String,
     @SerializedName("comment") val comment: String,
 )
+
+//zz
