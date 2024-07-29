@@ -5,11 +5,13 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.databinding.FragmentLoginBinding
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import kotlin.math.sign
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
@@ -41,6 +43,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 ),
                 onSuccess = { signalUser ->
                     Timber.d("로그인 성공 $signalUser")
+                    // TODO refactor 구조 ..
+                    UserSession.userId = signalUser.userId
+                    UserSession.userName = signalUser.userName
+                    UserSession.accessToken = signalUser.accessToken
+
+                    
                     val intent = Intent(requireContext(), MainActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()
