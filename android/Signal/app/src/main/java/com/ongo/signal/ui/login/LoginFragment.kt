@@ -10,7 +10,6 @@ import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.databinding.FragmentLoginBinding
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
@@ -42,24 +41,26 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     loginId = binding.tietId.text.toString(),
                     password = binding.tietPassword.text.toString()
                 ),
-                onSuccess = { signalUser ->
-                    Timber.d("로그인 성공 $signalUser")
-                    // TODO refactor 구조 ..
-                    UserSession.userId = signalUser.userId
-                    UserSession.userName = signalUser.userName
-                    UserSession.accessToken = signalUser.accessToken
+                onSuccess = { isSuccess, signalUser ->
+                    if (isSuccess) {
+                        signalUser?.let {
+                            UserSession.userId = signalUser.userId
+                            UserSession.userName = signalUser.userName
+                            UserSession.accessToken = signalUser.accessToken
 
-                    viewModel.saveUserData(
-                        userId = signalUser.userId,
-                        userName = signalUser.userName,
-                        profileImage = "",
-                        accessToken = signalUser.accessToken
-                    )
-
-
-                    val intent = Intent(requireContext(), MainActivity::class.java)
-                    startActivity(intent)
-                    requireActivity().finish()
+                            viewModel.saveUserData(
+                                userId = signalUser.userId,
+                                userName = signalUser.userName,
+                                profileImage = "",
+                                accessToken = signalUser.accessToken
+                            )
+                            val intent = Intent(requireContext(), MainActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+                    } else {
+                        makeToast("아이디나 비밀번호를 확인해주세요")
+                    }
                 }
             )
 

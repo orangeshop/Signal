@@ -1,5 +1,6 @@
 package com.ongo.signal.data.repository.login
 
+import com.ongo.signal.data.model.login.FCMTokenResponse
 import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.LoginResponse
 import com.ongo.signal.network.LoginApi
@@ -13,6 +14,16 @@ class LoginRepositoryImpl @Inject constructor(
 ) : LoginRepository {
     override suspend fun postLogin(request: LoginRequest): Result<LoginResponse?> {
         val req = loginApi.postLoginRequest(request)
+        return if (req.isSuccessful) {
+            Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
+
+    override suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?> {
+        val req = loginApi.postRegistToken(userId = userId, token = token)
+        Timber.d("토큰 답변 유저 아디 : $userId 답변 : $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
