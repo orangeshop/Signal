@@ -4,7 +4,7 @@ import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.model.match.MatchRegistrationResponse
-import com.ongo.signal.network.SignalApi
+import com.ongo.signal.network.MatchApi
 import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SignalRepositoryImpl @Inject constructor(
-    private val signalApi: SignalApi
+    private val signalApi: MatchApi
 ) : SignalRepository {
     override suspend fun getPost(id: Int): Response<Int> {
         return signalApi.getMainPost(id)

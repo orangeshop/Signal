@@ -3,7 +3,7 @@ package com.ongo.signal.di
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.ongo.signal.network.MainApi
-import com.ongo.signal.network.SignalApi
+import com.ongo.signal.network.MatchApi
 import com.ongo.signal.network.StompService
 import dagger.Module
 import dagger.Provides
@@ -14,7 +14,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -49,8 +48,8 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideGptApiService(retrofit: Retrofit): SignalApi =
-        retrofit.create(SignalApi::class.java)
+    fun provideMatchApiService(retrofit: Retrofit): MatchApi =
+        retrofit.create(MatchApi::class.java)
 
     @Singleton
     @Provides
