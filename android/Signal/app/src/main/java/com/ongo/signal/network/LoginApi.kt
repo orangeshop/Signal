@@ -26,4 +26,9 @@ interface LoginApi {
     suspend fun postLogoutRequest(
         @Header("Authorization") token: String,
     ): Response<Void>
+
+    @POST("/user/create")
+    suspend fun postSignUpRequest(
+
+    )
 }

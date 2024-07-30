@@ -212,7 +212,7 @@
                         android:checked="true"
                         android:fontFamily="@font/inter_light"
                         android:text="@string/junior"
-                        android:textSize="22sp"
+                        android:textSize="24sp"
                         app:chipCornerRadius="30dp" />
 
                     <com.google.android.material.chip.Chip
@@ -222,7 +222,7 @@
                         android:checkable="true"
                         android:fontFamily="@font/inter_extralight"
                         android:text="@string/senior"
-                        android:textSize="22sp"
+                        android:textSize="24sp"
                         app:chipCornerRadius="30dp" />
 
                 </com.google.android.material.chip.ChipGroup>
