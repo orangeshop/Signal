@@ -34,7 +34,7 @@ class ChatHomeViewModel @Inject constructor(
 
     fun loadChats() {
         viewModelScope.launch {
-            _liveList.value = chatUseCases.loadChats()
+            _liveList.value = chatUseCases.loadChats().sortedByDescending { it.send_at }
         }
     }
 
@@ -48,16 +48,15 @@ class ChatHomeViewModel @Inject constructor(
     fun loadDetailList(id: Int) {
         viewModelScope.launch {
             _messageList.value = chatUseCases.loadDetailList(id)
-            Log.d(TAG, "loadDetailList: viewmodel load")
         }
     }
 
-    fun saveDetailList(message: ChatHomeChildDto, id: Int) {
-        viewModelScope.launch {
-            chatUseCases.saveDetailList(message, id)
-            loadDetailList(id)
-        }
-    }
+//    fun saveDetailList(message: ChatHomeChildDto, id: Int) {
+//        viewModelScope.launch {
+//            chatUseCases.saveDetailList(message, id)
+//            loadDetailList(id)
+//        }
+//    }
 
     fun timeSetting(): String {
         return chatUseCases.timeSetting()
@@ -90,4 +89,6 @@ class ChatHomeViewModel @Inject constructor(
             chatUseCases.stompDisconnect()
         }
     }
+
+
 }

@@ -27,8 +27,10 @@ class ChatUseCasesImpl @Inject constructor(
 
     override suspend fun loadChats(): List<ChatHomeDTO> {
         val serverChatList = chatRepository.getChatList().body()
+        Log.d(TAG, "loadChats: ${serverChatList}")
         if (serverChatList != null) {
             for(item in serverChatList){
+                Log.d(TAG, "loadChats: ${item}")
                 saveChat(item)
             }
         }
@@ -41,6 +43,8 @@ class ChatUseCasesImpl @Inject constructor(
     }
 
     override suspend fun loadDetailList(id: Int): List<ChatHomeChildDto> {
+
+
         return chatRoomRepositoryImpl.getAllMessages(id)
     }
 

@@ -4,15 +4,20 @@ import android.os.Build.VERSION_CODES.P
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.data.model.chat.ChatHomeDTO
+import com.ongo.signal.data.model.chat.DateConverter
 import com.ongo.signal.databinding.FragmentChatBinding
 import com.ongo.signal.ui.chat.CustomDialog
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.sql.Date
 
 private const val TAG = "ChatFragment_싸피"
 
@@ -31,14 +36,24 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
     override fun init() {
         binding.apply {
 
-            chatViewModel.loadChats()
+            lifecycleScope.launch {
+                while (true) {
+
+
+                    chatViewModel.loadChats()
+                    delay(5000)
+                }
+            }
+//            chatViewModel.loadChats()
             chatViewModel.stompDisconnect()
             chatViewModel.clearMessageList()
+
+
 
             chatHomeFab.setOnClickListener {
                 chatViewModel.saveChat(
                     ChatHomeDTO(
-                        0, 1, 2, "last", "null"
+                        0, 1, 2, "last", "null", Date(System.currentTimeMillis())
                     )
                 )
 //                findNavController().navigate(R.id.action_chatFragment_to_chatAddFragment)
@@ -60,9 +75,38 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 //                        chatViewModel.deleteChat(it)
                     }
                     true
+                },
+                timeSetting = {item ->
+                    var list = item.split(" ").toMutableList()
+
+
+                    list[3] = list[3].substring(0, 2).toInt().plus(9).toString() + list[3].substring(2,5)
+
+                    if(list[3].substring(0, 2).toInt() > 24){
+                        list[3] = list[3].substring(0, 2).toInt(). minus(24).toString() + list[3].substring(2,5)
+                        list[2] = list[2].toInt().plus(1).toString()
+                    }
+                    val x = 0
+
+                    when(x){
+                        0 -> Log.d(TAG, "init: ")
+                        1 -> Log.d(TAG, "init: ")
+                        else -> Log.d(TAG, "init: ")
+                    }
+                    var test = "오전"
+
+                    if(list[3].substring(0, 2).toInt() > 12){
+                        list[3] = list[3].substring(0, 2).toInt(). minus(12).toString() + list[3].substring(2,5)
+                        test = "오후"
+                    }
+
+                    "${test} ${list[3]}"
                 }
+
             )
             binding.chatHomeList.adapter = chatHomeAdapter
+
+
 
             lifecycleOwner?.let {
                 chatViewModel.liveList.observe(it, Observer { chatList ->

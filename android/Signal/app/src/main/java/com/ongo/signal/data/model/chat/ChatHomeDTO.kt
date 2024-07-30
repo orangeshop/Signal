@@ -2,6 +2,7 @@ package com.ongo.signal.data.model.chat
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(tableName = "chat_home_table")
 data class ChatHomeDTO(
@@ -9,5 +10,6 @@ data class ChatHomeDTO(
     val from_id: Int,
     val to_id: Int,
     val last_message: String,
-    val sender_type: String
+    val sender_type: String,
+    var send_at: Date
 )

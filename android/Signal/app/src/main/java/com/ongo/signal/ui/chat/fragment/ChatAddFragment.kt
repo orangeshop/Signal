@@ -18,6 +18,7 @@ import com.ongo.signal.ui.chat.adapter.ChatAddProfileAdapter
 import com.ongo.signal.ui.chat.adapter.ChatAddTopAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatAddViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.sql.Date
 
 private const val TAG = "ChatAddFragment_싸피"
 @AndroidEntryPoint
@@ -53,11 +54,11 @@ class ChatAddFragment : BaseFragment<FragmentChatAddBinding>(R.layout.fragment_c
             }
 
             binding.chatAddBtn.setOnClickListener {
-                chatViewModel.saveChat(
-                    ChatHomeDTO(
-                        0, 1, 2, "last", "null"
-                    )
-                )
+//                chatViewModel.saveChat(
+//                    ChatHomeDTO(
+//                        0, 1, 2, "last", "null", Date(System.currentTimeMillis()).toString()
+//                    )
+//                )
 
 
 
