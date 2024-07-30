@@ -17,7 +17,7 @@ pipeline{
         stage('Deploy'){
             steps{
                 script{
-                    sh 'docker build -t jenkins .'
+                    sh 'docker build -f backend/Signal/Dockerfile -t jenkins .'
                     sh 'docker rm -f jenkins'
                     sh 'docker run -d --name jenkins -p 8080:8080 jenkins'
                 }
