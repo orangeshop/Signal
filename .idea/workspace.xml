@@ -5,6 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> e59e4bc288c4902a769a6672c40fd31447626358
       <change beforePath="$PROJECT_DIR$/backend/Signal/Jenkinsfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/Jenkinsfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
