@@ -1,14 +1,31 @@
-FROM jenkins/jenkins:jdk17
+#FROM openjdk:17
+#
+#CMD ["./gradlew","clean", "build"]
+#
+#VOLUME /tmp
+#
+#ARG JAR_FILE=build/libs/*.jar
+#
+#COPY ${JAR_FILE} app.jar
+#
+#EXPOSE 8080
+#
+#ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-#도커를 실행하기 위한 root 계정으로 전환
+FROM jenkins/jenkins:lts
+
 USER root
 
-#도커 설치
-COPY docker_install.sh /docker_install.sh
-RUN chmod +x /docker_install.sh
-RUN /docker_install.sh
+# Docker 설치
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+    apt-get update && \
+    apt-get install -y docker-ce-cli
 
-#설치 후 도커그룹의 jenkins 계정 생성 후 해당 계정으로 변경
-RUN groupadd -f docker
+# Jenkins user를 Docker 그룹에 추가
 RUN usermod -aG docker jenkins
+
 USER jenkins
+
