@@ -2,13 +2,16 @@ package com.ssafy.signal.board.controller;
 
 import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.service.BoardService;
+import com.ssafy.signal.file.service.S3Uploader;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,10 +21,13 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private final S3Uploader s3Uploader;
+
     /* 게시글 목록 */
     @GetMapping("/board")
-    public ResponseEntity<List<BoardDto>> list(@RequestParam(value="page", defaultValue = "1") Integer pageNum) {
-        List<BoardDto> boardList = boardService.getBoardList(pageNum);
+    public ResponseEntity<List<BoardDto>> list(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(defaultValue = "3") int limit) {
+        List<BoardDto> boardList = boardService.getBoardList(pageNum, limit);
         Integer[] pageList = boardService.getPageList(pageNum);
 
         return ResponseEntity.ok().body(boardList);
@@ -36,22 +42,12 @@ public class BoardController {
 
 
     /* 게시글 쓰기 */
-    @GetMapping("/post")
-    public String write() {
-        return "";
-    }
-
     @PostMapping("/post")
-    public BoardDto write(BoardDto boardDto) {
+    public BoardDto write(@RequestBody BoardDto boardDto) {
         return boardService.savePost(boardDto);
     }
 
     /* 게시글 수정 */
-    @GetMapping("/board/update/{no}")
-    public BoardDto update(@PathVariable("no") Long no) {
-        return boardService.getPost(no);
-    }
-
     @PutMapping("/board/update/{no}")
     public BoardDto update(@PathVariable Long no, BoardDto boardDto) {
         return boardService.updatePost(no, boardDto);
@@ -65,12 +61,10 @@ public class BoardController {
         return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
     }
 
+    /* 게시글 검색 */
     @GetMapping("/board/search")
-    public String search(@RequestParam(value="keyword") String keyword, Model model) {
+    public ResponseEntity<List<BoardDto>> search(@RequestParam(value="keyword") String keyword) {
         List<BoardDto> boardDtoList = boardService.searchPosts(keyword);
-
-        model.addAttribute("boardList", boardDtoList);
-
-        return "";
+        return ResponseEntity.ok().body(boardDtoList);
     }
 }
