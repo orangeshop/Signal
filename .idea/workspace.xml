@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/Jenkinsfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/Jenkinsfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +104,7 @@
     "Spring Boot.SignalApplication.executor": "Run",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "Merging backend",
+    "git-widget-placeholder": "member",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/Desktop/S11P12D211",
     "node.js.detected.package.eslint": "true",
@@ -137,7 +137,7 @@
       <recent name="com.ssafy.signal.member.jwt.token" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SignalApplication">
+  <component name="RunManager" selected="Spring Boot.SignalApplication">
     <configuration name="SignalApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.SignalApplication" />
       <module name="Signal.main" />
