@@ -31,7 +31,6 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(coroutineExceptionHandler) {
             loginRepository.postLogin(request).onSuccess { response ->
                 response?.let {
-                    Timber.d("로긴 확인 $response")
                     if (response.status) {
                         onSuccess(
                             true,

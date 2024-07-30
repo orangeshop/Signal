@@ -8,4 +8,6 @@ interface LoginRepository {
     suspend fun postLogin(request: LoginRequest): Result<LoginResponse?>
 
     suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?>
+
+    suspend fun deleteUser(token: String): Int
 }

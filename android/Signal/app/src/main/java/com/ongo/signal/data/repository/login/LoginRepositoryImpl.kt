@@ -23,11 +23,21 @@ class LoginRepositoryImpl @Inject constructor(
 
     override suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?> {
         val req = loginApi.postRegistToken(userId = userId, token = token)
-        Timber.d("토큰 답변 유저 아디 : $userId 답변 : $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
             Result.failure(Exception())
         }
     }
+
+    override suspend fun deleteUser(token: String): Int{
+        val req = loginApi.postLogoutRequest(token = token)
+        return if(req.isSuccessful){
+            1
+        } else{
+            0
+        }
+    }
+
+
 }

@@ -25,6 +25,5 @@ interface LoginApi {
     @POST("/user/logout")
     suspend fun postLogoutRequest(
         @Header("Authorization") token: String,
-        @Body request: String
-    ): Response<String>
+    ): Response<Void>
 }
