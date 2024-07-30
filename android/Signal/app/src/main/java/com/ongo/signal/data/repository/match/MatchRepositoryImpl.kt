@@ -1,5 +1,6 @@
 package com.ongo.signal.data.repository.match
 
+import com.ongo.signal.data.model.match.MatchAcceptResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -47,8 +48,18 @@ class MatchRepositoryImpl @Inject constructor(
         toId: Long,
     ): Result<MatchProposeResponse?> {
 
-        val req = signalApi.postProposeMatch(fromId,toId)
-        Timber.d("${req}")
+        val req = signalApi.postProposeMatch(fromId, toId)
+        Timber.d("postProposeMatch ${req}")
+        return if (req.isSuccessful) {
+            Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
+
+    override suspend fun postProposeAccept(fromId: Long, toId: Long): Result<MatchAcceptResponse?> {
+        val req = signalApi.postProposeAccept(fromId, toId)
+        Timber.d("postProposeAccept ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {

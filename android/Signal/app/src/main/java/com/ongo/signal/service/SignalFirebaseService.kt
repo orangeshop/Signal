@@ -18,7 +18,6 @@ import timber.log.Timber
 class SignalFirebaseService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-//        MainActivity.uploadToken(token)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

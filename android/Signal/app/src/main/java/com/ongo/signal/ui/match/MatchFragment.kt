@@ -10,6 +10,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -63,7 +64,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             .setTitle("매칭 신청")
             .setMessage("매칭이 신청되었습니다")
             .setPositiveButton("수락") { dialog, _ ->
-                // 수락 버튼 클릭 시 실행할 코드
+//                UserSession.userId?.let { userId ->
+//                    viewModel.postProposeAccept(fromId = userId, toId = { })
+//                }
             }
             .setNegativeButton("거절") { dialog, _ ->
                 // 거절 버튼 클릭 시 실행할 코드

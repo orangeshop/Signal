@@ -2,6 +2,7 @@ package com.ongo.signal.ui.match
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ongo.signal.data.model.match.MatchAcceptResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -19,6 +20,9 @@ class MatchViewModel @Inject constructor(
 ) : ViewModel() {
     // uiState 
     // 내유저 정보, 매칭 가능 유저 정보
+    private var _otherUserId: Long? = null
+    val otherUserId: Long?
+        get() = _otherUserId
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -68,10 +72,28 @@ class MatchViewModel @Inject constructor(
         }
     }
 
+    fun postProposeAccept(
+        fromId: Long,
+        toId: Long,
+        onSuccess: (MatchAcceptResponse) -> Unit
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            matchRepository.postProposeAccept(fromId, toId).onSuccess { response ->
+                response?.let {
+                    onSuccess(response)
+                }
+            }
+        }
+    }
+
     fun deleteMatchRegistration(userId: Long) {
         viewModelScope.launch {
             matchRepository.deleteMatchRegistration(userId)
         }
+    }
+
+    fun setOtherUserId(userId: Long) {
+        _otherUserId = userId
     }
 
 

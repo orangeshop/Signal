@@ -14,6 +14,7 @@ class LoginRepositoryImpl @Inject constructor(
 ) : LoginRepository {
     override suspend fun postLogin(request: LoginRequest): Result<LoginResponse?> {
         val req = loginApi.postLoginRequest(request)
+        Timber.d("login : $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {

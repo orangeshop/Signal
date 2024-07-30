@@ -1,5 +1,6 @@
 package com.ongo.signal.data.repository.match
 
+import com.ongo.signal.data.model.match.MatchAcceptResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -22,5 +23,10 @@ interface MatchRepository {
         fromId: Long,
         toId: Long,
     ): Result<MatchProposeResponse?>
+
+    suspend fun postProposeAccept(
+        fromId: Long,
+        toId: Long,
+    ): Result<MatchAcceptResponse?>
 
 }
