@@ -1,5 +1,6 @@
 package com.ongo.signal.network
 
+import com.ongo.signal.data.model.match.MatchAcceptResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -40,4 +41,11 @@ interface MatchApi {
         @Query("fromId") fromId: Long,
         @Query("toId") toId: Long,
     ): Response<MatchProposeResponse>
+
+    @POST("match/accept")
+    suspend fun postProposeAccept(
+        @Query("fromId") fromId: Long,
+        @Query("toId") toId: Long,
+        @Query("flag") flag: Int,
+    ) : Response<MatchAcceptResponse>
 }

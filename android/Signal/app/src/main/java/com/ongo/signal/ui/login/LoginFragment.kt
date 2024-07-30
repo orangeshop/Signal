@@ -49,6 +49,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                             UserSession.userName = signalUser.userName
                             UserSession.accessToken = signalUser.accessToken
 
+                            Timber.d(" 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
+
                             viewModel.saveUserData(
                                 userId = signalUser.userId,
                                 userName = signalUser.userName,

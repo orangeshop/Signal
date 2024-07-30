@@ -10,6 +10,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -35,7 +36,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         PossibleUserAdapter(
             onMatchClick = { userId, userName ->
                 viewModel.postProposeMatch(
-                    fromId = 18,
+                    fromId = UserSession.userId!!,
                     toId = userId,
                     onSuccess = {
                         makeToast("${userName} 님께 매칭 신청을 하였습니다.")
@@ -51,6 +52,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         arguments?.let { args ->
             if (args.getBoolean("matchNotification")) {
                 args.remove("matchNotification")
+                viewModel.setOtherUserId(args.getLong("otherUserId", 0L))
+                Timber.d("서비스에서 가져온 값${args.getLong("otherUserId", 0L)}")
+                viewModel.setOtherUserName(args.getString("otherUserName", ""))
                 showMatchingDialog()
             }
         }
@@ -63,10 +67,28 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             .setTitle("매칭 신청")
             .setMessage("매칭이 신청되었습니다")
             .setPositiveButton("수락") { dialog, _ ->
-                // 수락 버튼 클릭 시 실행할 코드
+                UserSession.userId?.let { userId ->
+                    Timber.d("매칭 수락할게요 !! ${userId} ${viewModel.otherUserId!!}")
+                    viewModel.postProposeAccept(
+                        fromId = userId,
+                        toId = viewModel.otherUserId!!,
+                        1
+                    ) {
+                        Timber.d("매칭이 수락되었습니다")
+                    }
+                }
             }
+
             .setNegativeButton("거절") { dialog, _ ->
-                // 거절 버튼 클릭 시 실행할 코드
+                UserSession.userId?.let { userId ->
+                    viewModel.postProposeAccept(
+                        fromId = userId,
+                        toId = viewModel.otherUserId!!,
+                        0
+                    ) {
+                        Timber.d("매칭이 거절되었습니다")
+                    }
+                }
             }
             .show()
     }
@@ -99,11 +121,12 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     null
                 ).addOnSuccessListener { currentLocation ->
                     lifecycleScope.launch {
+                        Timber.d("매칭 쐈어요 아이디는 ${UserSession.userName} ${UserSession.userId}")
                         viewModel.postMatchRegistration(
                             request = MatchRegistrationRequest(
                                 currentLocation.latitude,
                                 currentLocation.longitude,
-                                18
+                                UserSession.userId!!
                             ),
                             onSuccess = { response ->
                                 hideRequestMatchingWidget()
@@ -112,7 +135,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                     locationId = response.location_id,
                                     onSuccess = { possibleUsers ->
                                         possibleUsers.forEach { nowUser ->
-                                            Timber.d("현재 유저는 ${nowUser}\n")
+                                            Timber.d("현재 유저는 ${nowUser}")
                                         }
                                         binding.cvDot.addDot(convertToDotList(possibleUsers))
                                         possibleUserAdapter.submitList(possibleUsers.map { it.user })

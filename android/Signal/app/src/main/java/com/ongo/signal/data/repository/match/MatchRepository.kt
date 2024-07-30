@@ -1,12 +1,13 @@
 package com.ongo.signal.data.repository.match
 
+import com.ongo.signal.data.model.match.MatchAcceptResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.model.match.MatchRegistrationResponse
 import retrofit2.Response
 
-interface SignalRepository {
+interface MatchRepository {
 
     suspend fun getPost(id: Int): Response<Int>
 
@@ -22,5 +23,11 @@ interface SignalRepository {
         fromId: Long,
         toId: Long,
     ): Result<MatchProposeResponse?>
+
+    suspend fun postProposeAccept(
+        fromId: Long,
+        toId: Long,
+        flag: Int,
+    ): Result<MatchAcceptResponse?>
 
 }

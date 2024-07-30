@@ -140,6 +140,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         if (intent.getBooleanExtra("matchNotification", false)) {
             val bundle = Bundle().apply {
                 putBoolean("matchNotification", true)
+                putLong("otherUserId", intent.getLongExtra("otherUserId",0))
+                putString("otherUserName", intent.getStringExtra("otherUserName") ?: "")
             }
             navController.navigate(R.id.matchFragment, bundle)
         }
