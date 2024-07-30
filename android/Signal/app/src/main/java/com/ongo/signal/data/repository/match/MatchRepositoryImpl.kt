@@ -23,6 +23,7 @@ class MatchRepositoryImpl @Inject constructor(
         request: MatchRegistrationRequest
     ): Result<MatchRegistrationResponse?> {
         val req = signalApi.postMatchRegistration(request)
+        Timber.d("매칭 등록 $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
@@ -57,8 +58,12 @@ class MatchRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postProposeAccept(fromId: Long, toId: Long): Result<MatchAcceptResponse?> {
-        val req = signalApi.postProposeAccept(fromId, toId)
+    override suspend fun postProposeAccept(
+        fromId: Long,
+        toId: Long,
+        flag: Int
+    ): Result<MatchAcceptResponse?> {
+        val req = signalApi.postProposeAccept(fromId, toId, flag)
         Timber.d("postProposeAccept ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())

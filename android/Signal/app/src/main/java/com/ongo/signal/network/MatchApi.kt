@@ -45,6 +45,7 @@ interface MatchApi {
     @POST("match/accept")
     suspend fun postProposeAccept(
         @Query("fromId") fromId: Long,
-        @Query("toId") toId: Long
+        @Query("toId") toId: Long,
+        @Query("flag") flag: Int,
     ) : Response<MatchAcceptResponse>
 }

@@ -24,6 +24,10 @@ class MatchViewModel @Inject constructor(
     val otherUserId: Long?
         get() = _otherUserId
 
+    private var _otherUserName: String? = null
+    val otherUserName: String?
+        get() = _otherUserName
+
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
             Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
@@ -75,10 +79,11 @@ class MatchViewModel @Inject constructor(
     fun postProposeAccept(
         fromId: Long,
         toId: Long,
+        flag: Int,
         onSuccess: (MatchAcceptResponse) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            matchRepository.postProposeAccept(fromId, toId).onSuccess { response ->
+            matchRepository.postProposeAccept(fromId, toId, flag).onSuccess { response ->
                 response?.let {
                     onSuccess(response)
                 }
@@ -94,6 +99,10 @@ class MatchViewModel @Inject constructor(
 
     fun setOtherUserId(userId: Long) {
         _otherUserId = userId
+    }
+
+    fun setOtherUserName(userName: String) {
+        _otherUserName = userName
     }
 
 

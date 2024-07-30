@@ -24,6 +24,7 @@ class LoginRepositoryImpl @Inject constructor(
 
     override suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?> {
         val req = loginApi.postRegistToken(userId = userId, token = token)
+        Timber.d("토큰 서버에 등록 : $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {

@@ -18,7 +18,7 @@ interface LoginApi {
 
     @POST("/token/regist")
     suspend fun postRegistToken(
-        @Query("user_id") userId: Long,
+        @Query("userId") userId: Long,
         @Query("token") token: String,
     ) : Response<FCMTokenResponse>
 

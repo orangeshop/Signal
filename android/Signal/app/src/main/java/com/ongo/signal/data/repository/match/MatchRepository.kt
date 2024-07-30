@@ -27,6 +27,7 @@ interface MatchRepository {
     suspend fun postProposeAccept(
         fromId: Long,
         toId: Long,
+        flag: Int,
     ): Result<MatchAcceptResponse?>
 
 }
