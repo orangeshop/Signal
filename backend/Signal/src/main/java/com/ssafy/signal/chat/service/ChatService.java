@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,5 +59,9 @@ public class ChatService {
                 .stream()
                 .map(MessageEntity::asMessageDto)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public ChatRoomEntity getChatRoomById(Long id) {
+        return chatRoomRepository.findById(id).orElseThrow(() -> new NoSuchElementException("chat not found with id: " + id));
     }
 }

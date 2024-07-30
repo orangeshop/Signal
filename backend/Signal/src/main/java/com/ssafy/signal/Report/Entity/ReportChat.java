@@ -1,5 +1,7 @@
 package com.ssafy.signal.Report.Entity;
 
+import com.ssafy.signal.chat.domain.ChatRoomEntity;
+import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,14 +24,17 @@ public class ReportChat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reportId;
 
-    @Column(name = "chat_id", nullable = false)
-    private Long chatId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_id")
+    private ChatRoomEntity chatId;
 
-    @Column(name = "target_member_id", nullable = false)
-    private Long targetMemberId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "target_id", nullable = false)
+    private Member targetMemberId;
 
-    @Column(name = "member_id", nullable = false)
-    private Long memberId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "mem_id", nullable = false)
+    private Member memberId;
 
     @Column(name = "report_datetime")
     private LocalDateTime repDatetime;

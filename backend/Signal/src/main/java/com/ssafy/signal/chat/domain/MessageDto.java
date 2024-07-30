@@ -3,11 +3,13 @@ package com.ssafy.signal.chat.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 import java.util.Date;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class MessageDto {
     private long message_id;

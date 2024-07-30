@@ -50,8 +50,10 @@ public class TokenProvider {
                 .setExpiration(accessTokenExpirationTime)
                 .compact();
 
+
         return TokenInfo.builder()
-                .ownerLoginId(member.getLoginId())
+                .status(true)
+                .member(member)
                 .tokenId(tokenId)
                 .accessToken(accessToken)
                 .accessTokenExpireTime(accessTokenExpirationTime)

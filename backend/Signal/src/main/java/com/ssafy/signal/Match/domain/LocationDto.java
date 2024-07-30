@@ -2,8 +2,10 @@ package com.ssafy.signal.Match.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class LocationDto {
     private long location_id;

@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
+      <change afterPath="$PROJECT_DIR$/backend/Signal/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/docker-compose.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Signal/docker_install.sh" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Controller/ReportController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Dto/ReportChatRequestDto.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/Report/Dto/ReportRequestDto.java" afterDir="false" />
@@ -82,7 +85,13 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="Signal" type="f1a62948:ProjectNode" />
-                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Signal" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -110,6 +119,10 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/backend/Signal" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -124,6 +137,7 @@
     &quot;Application.SignalApplication.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Signal [:SignalApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Signal [bootJar].executor&quot;: &quot;Run&quot;,
     &quot;JUnit.MemberControllerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.TokenProviderTest.createToken.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.TokenProviderTest.validateTokenNotValid.executor&quot;: &quot;Run&quot;,
@@ -145,11 +159,11 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -163,6 +177,7 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\Desktop\S11P12D211\backend\Signal" />
       <recent name="C:\Users\SSAFY\Desktop\S11P12D211\backend\Signal\src\main\java\com\ssafy\signal" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
@@ -170,6 +185,12 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.SignalApplication">
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
     <configuration name="SignalApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.SignalApplication" />
       <module name="Signal.main" />
@@ -183,20 +204,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MemberControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Signal.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.ssafy.signal" />
-      <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.MemberControllerTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="Signal [bootJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend/Signal" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="bootJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
     </configuration>
     <configuration name="TokenProviderTest.createToken" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Signal.test" />
@@ -255,21 +283,13 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.Signal [bootJar]" />
         <item itemvalue="Application.SignalApplication" />
         <item itemvalue="JUnit.TokenProviderTest.validateTokenNotValid" />
         <item itemvalue="JUnit.TokenProviderTest.validateTokenValid" />
         <item itemvalue="JUnit.TokenProviderTest.createToken" />
-        <item itemvalue="JUnit.MemberControllerTest" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -282,7 +302,14 @@
       <workItem from="1721178036953" duration="24608000" />
       <workItem from="1721260417880" duration="25130000" />
       <workItem from="1721346757460" duration="22415000" />
-      <workItem from="1721697192426" duration="7239000" />
+      <workItem from="1721697192426" duration="11902000" />
+      <workItem from="1721782639577" duration="1977000" />
+      <workItem from="1721786471611" duration="10613000" />
+      <workItem from="1721871745913" duration="12184000" />
+      <workItem from="1721893175335" duration="2221000" />
+      <workItem from="1721952911018" duration="603000" />
+      <workItem from="1721962940052" duration="982000" />
+      <workItem from="1721965763684" duration="780000" />
     </task>
     <task id="LOCAL-00001" summary="⭐feat : member model">
       <option name="closed" value="true" />

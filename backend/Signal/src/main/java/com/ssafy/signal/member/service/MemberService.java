@@ -72,12 +72,23 @@ public class MemberService implements UserDetailsService {
 
             return tokenProvider.createToken(member);
         } catch (IllegalArgumentException | BadCredentialsException exception) {
-            throw new IllegalArgumentException("계정이 존재하지 않거나 비밀번호가 잘못되었습니다.");
+//            throw new IllegalArgumentException("계정이 존재하지 않거나 비밀번호가 잘못되었습니다.");
+            return TokenInfo.builder()
+                    .status(false)
+                    .member(null)
+                    .tokenId(null)
+                    .accessToken(null)
+                    .accessTokenExpireTime(null)
+                    .build();
         }
     }
 
     private void checkPassword(String password, Member member) {
-        if (!passwordEncoder.matches(password, member.getPassword())) {
+//        if (!passwordEncoder.matches(password, member.getPassword())) {
+//            log.info("일치하지 않는 비밀번호");
+//            throw new BadCredentialsException("기존 비밀번호 확인에 실패했습니다.");
+//        }
+        if (!password.equals(member.getPassword())) {
             log.info("일치하지 않는 비밀번호");
             throw new BadCredentialsException("기존 비밀번호 확인에 실패했습니다.");
         }
