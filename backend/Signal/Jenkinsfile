@@ -1,0 +1,25 @@
+pipeline{
+    agent any
+
+    stages{
+        stage('Build'){
+            steps{
+                script{
+                    sh 'chmod +x gradlew'
+                    sh './gradlew clean build'
+                    sh 'chmod +x ./docker_install.sh'
+                    sh './docker_install.sh'
+                }
+            }
+        }
+        stage('Deploy'){
+            steps{
+                script{
+                    sh 'docker build -t jenkins .'
+                    sh 'docker rm -f jenkins'
+                    sh 'docker run -d --name jenkins -p 8080:8080 jenkins'
+                }
+            }
+        }
+    }
+}
