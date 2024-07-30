@@ -19,11 +19,7 @@ pipeline{
                 script{
                     sh 'docker build -f backend/Signal/Dockerfile -t jenkins-signal .'
                     sh 'docker rm -f jenkins-signal'
-<<<<<<< HEAD
                     sh 'docker run -d --name jenkins-signal -p 8080:8080 jenkins-signal'
-=======
-                    sh 'docker run -d --name jenkins -p 8080:8080 jenkins-signal'
->>>>>>> e59e4bc288c4902a769a6672c40fd31447626358
                 }
             }
         }
