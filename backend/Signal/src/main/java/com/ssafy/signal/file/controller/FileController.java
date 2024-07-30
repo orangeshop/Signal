@@ -27,11 +27,10 @@ public class FileController {
     // 게시판 파일 업로드
     @PostMapping("/board/{boardId}/upload")
     public String uploadBoardFile(@RequestParam("file") MultipartFile multipartFile,
-                             @PathVariable("boardId") Long boardId,
-                             @RequestParam("dirName") String dirName) throws IOException {
+                             @PathVariable("boardId") Long boardId) throws IOException {
 
         // FileService를 통해 파일 업로드 및 URL 반환
-        return fileService.uploadBoardFile(multipartFile, dirName, boardId);
+        return fileService.uploadBoardFile(multipartFile, boardId);
     }
 
     // 프로필 이미지 업로드

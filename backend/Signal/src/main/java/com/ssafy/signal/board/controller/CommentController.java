@@ -23,14 +23,14 @@ public class CommentController {
     }
 
     @PostMapping("/comment/{boardId}")
-    public Long createComment(CommentDto commentDto) {
-
+    public CommentDto createComment(@RequestBody CommentDto commentDto) {
         return commentService.saveComment(commentDto);
     }
 
     @PutMapping("/comment/{boardId}/{id}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable Long boardId,
                                                     @PathVariable Long id,
+                                                    @RequestBody
                                                     CommentDto updatedCommentDto) {
         try {
             CommentDto result = commentService.updateComment(boardId, id, updatedCommentDto);

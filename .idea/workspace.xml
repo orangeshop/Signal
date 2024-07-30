@@ -46,11 +46,6 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="Signal" type="f1a62948:ProjectNode" />
-                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
-              </path>
             </expand>
             <select />
           </tree_state>
@@ -77,6 +72,10 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -105,7 +104,7 @@
     "Spring Boot.SignalApplication.executor": "Run",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "backend",
+    "git-widget-placeholder": "Merging backend",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/Desktop/S11P12D211",
     "node.js.detected.package.eslint": "true",
@@ -113,11 +112,11 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Problems",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.17701149",
+    "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "configurable.group.appearance",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -131,13 +130,14 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\Desktop\S11P12D211\backend\Signal" />
       <recent name="C:\Users\SSAFY\Desktop\S11P12D211\backend\Signal\src\main\java\com\ssafy\signal" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="com.ssafy.signal.member.jwt.token" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.SignalApplication">
+  <component name="RunManager" selected="Application.SignalApplication">
     <configuration name="SignalApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.SignalApplication" />
       <module name="Signal.main" />
@@ -228,6 +228,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.Signal [bootJar]" />
@@ -257,8 +263,15 @@
       <workItem from="1721178036953" duration="24608000" />
       <workItem from="1721260417880" duration="25130000" />
       <workItem from="1721346757460" duration="22415000" />
-      <workItem from="1721697192426" duration="7239000" />
-      <workItem from="1721952472787" duration="9727000" />
+      <workItem from="1721697192426" duration="11902000" />
+      <workItem from="1721782639577" duration="1977000" />
+      <workItem from="1721786471611" duration="10613000" />
+      <workItem from="1721871745913" duration="12184000" />
+      <workItem from="1721893175335" duration="2221000" />
+      <workItem from="1721952911018" duration="603000" />
+      <workItem from="1721962940052" duration="982000" />
+      <workItem from="1721965763684" duration="780000" />
+      <workItem from="1722305912021" duration="13000" />
     </task>
     <task id="LOCAL-00001" summary="⭐feat : member model">
       <option name="closed" value="true" />

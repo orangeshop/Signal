@@ -1,10 +1,14 @@
 package com.ssafy.signal.board.service;
 
+import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.board.domain.CommentEntity;
 import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
+import com.ssafy.signal.file.domain.FileEntity;
+import com.ssafy.signal.file.repository.FileRepository;
+import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,31 +26,27 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
+    private final FileRepository fileRepository;
 
     @Transactional(readOnly = true)
     public List<CommentDto> getCommentsByBoardId(Long boardId) {
         List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId);
         List<CommentDto> commentDtoList = new ArrayList<>();
 
+
         for (CommentEntity commentEntity : commentEntities) {
-            commentDtoList.add(convertEntityToDto(commentEntity));
+            String url = fileRepository.findAllByUser(commentEntity.getUserId()).getFileUrl();
+            commentDtoList.add(commentEntity.asCommentDto(url));
+
         }
         return commentDtoList;
     }
 
     @Transactional
-    public Long saveComment(CommentDto commentDto) {
+    public CommentDto saveComment(CommentDto commentDto) {
         BoardEntity boardEntity = boardRepository.findById(commentDto.getBoardId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
-
-        // CommentEntity를 생성하여 저장합니다.
-        CommentEntity commentEntity = CommentEntity.builder()
-                .boardEntity(boardEntity)
-                .writer(commentDto.getWriter())
-                .content(commentDto.getContent())
-                .build();
-
-        return commentRepository.save(commentEntity).getId();
+        return commentRepository.save(commentDto.toEntity()).asCommentDto();
     }
 
     @Transactional
@@ -71,19 +71,10 @@ public class CommentService {
 
         commentRepository.save(commentEntity);
 
-        return convertEntityToDto(commentEntity);
+        return commentEntity.asCommentDto();
     }
 
-    private CommentDto convertEntityToDto(CommentEntity commentEntity) {
-        return CommentDto.builder()
-                .id(commentEntity.getId())
-                .boardId(commentEntity.getBoardEntity().getId()) // boardEntity에서 ID를 가져옵니다.
-                .writer(commentEntity.getWriter())
-                .content(commentEntity.getContent())
-                .createdDate(commentEntity.getCreatedDate())
-                .modifiedDate(commentEntity.getModifiedDate())
-                .build();
-    }
+
 
     public CommentEntity getCommentById(Long id) {
         return commentRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));

@@ -10,7 +10,6 @@ import com.ssafy.signal.member.principle.UserPrinciple;
 import com.ssafy.signal.member.service.MemberService;
 
 import com.ssafy.signal.member.service.TokenBlacklistService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -18,11 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -128,8 +125,8 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ApiResponseJson authenticateAccountAndIssueToken(@Valid @RequestBody MemberLoginDto memberLoginDto,
-                                                            BindingResult bindingResult) {
+    public TokenInfo authenticateAccountAndIssueToken(@Valid @RequestBody MemberLoginDto memberLoginDto,
+                                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new IllegalArgumentException("잘못된 요청입니다.");
         }
@@ -137,7 +134,8 @@ public class MemberController {
         TokenInfo tokenInfoDto = memberService.loginMember(memberLoginDto.getLoginId(), memberLoginDto.getPassword());
         log.info("Token issued for account: {}", tokenInfoDto.getTokenId());
 
-        return new ApiResponseJson(HttpStatus.OK, tokenInfoDto);
+//        return new ApiResponseJson(HttpStatus.OK, tokenInfoDto);
+        return tokenInfoDto;
     }
 
     @PostMapping("/logout")
@@ -148,8 +146,9 @@ public class MemberController {
             Instant expirationInstant = tokenProvider.getExpiration(token).toInstant();
             LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
             tokenBlacklistService.blacklistToken(token, expirationTime);
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(403).body(null);
     }
 }
 
