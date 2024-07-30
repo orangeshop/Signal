@@ -1,5 +1,6 @@
 package com.ssafy.signal.chat.domain;
 
+import com.ssafy.signal.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,11 +16,13 @@ public class ChatRoomDto {
     private SenderType sender_type;
 
     public ChatRoomEntity asChatRoomEntity() {
-        return new ChatRoomEntity(
-                from_id,
-                to_id,
-                last_message == null ? "" : last_message,
-                sender_type == null ? SenderType.NONE : sender_type
-        );
+        return ChatRoomEntity
+                .builder()
+                .chatId(chat_id)
+                .from_id(Member.builder().userId(from_id).build())
+                .to_id(Member.builder().userId(to_id).build())
+                .last_message(last_message == null ? "" : last_message)
+                .sender_type(sender_type == null ? SenderType.NONE : sender_type)
+                .build();
     }
 }

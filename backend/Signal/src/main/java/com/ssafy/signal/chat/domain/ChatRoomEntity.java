@@ -3,11 +3,13 @@ package com.ssafy.signal.chat.domain;
 import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Data
