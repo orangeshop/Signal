@@ -11,9 +11,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SignalRepositoryImpl @Inject constructor(
+class MatchRepositoryImpl @Inject constructor(
     private val signalApi: MatchApi
-) : SignalRepository {
+) : MatchRepository {
     override suspend fun getPost(id: Int): Response<Int> {
         return signalApi.getMainPost(id)
     }

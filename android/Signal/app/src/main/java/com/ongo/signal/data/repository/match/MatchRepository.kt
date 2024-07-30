@@ -6,7 +6,7 @@ import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.model.match.MatchRegistrationResponse
 import retrofit2.Response
 
-interface SignalRepository {
+interface MatchRepository {
 
     suspend fun getPost(id: Int): Response<Int>
 

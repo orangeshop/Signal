@@ -6,7 +6,7 @@ import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.data.model.match.MatchRegistrationResponse
-import com.ongo.signal.data.repository.match.SignalRepository
+import com.ongo.signal.data.repository.match.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MatchViewModel @Inject constructor(
-    private val signalRepository: SignalRepository
+    private val matchRepository: MatchRepository
 ) : ViewModel() {
     // uiState 
     // 내유저 정보, 매칭 가능 유저 정보
@@ -30,7 +30,7 @@ class MatchViewModel @Inject constructor(
         onSuccess: (MatchRegistrationResponse) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            signalRepository.postMatchRegistration(request).onSuccess { response ->
+            matchRepository.postMatchRegistration(request).onSuccess { response ->
                 response?.let {
                     onSuccess(it)
                 }
@@ -46,7 +46,7 @@ class MatchViewModel @Inject constructor(
         onSuccess: (List<MatchPossibleResponse>) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            signalRepository.getMatchPossibleUser(locationId).onSuccess { response ->
+            matchRepository.getMatchPossibleUser(locationId).onSuccess { response ->
                 response?.let {
                     onSuccess(it)
                 }
@@ -60,7 +60,7 @@ class MatchViewModel @Inject constructor(
         onSuccess: (MatchProposeResponse) -> Unit,
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            signalRepository.postProposeMatch(fromId, toId).onSuccess { response ->
+            matchRepository.postProposeMatch(fromId, toId).onSuccess { response ->
                 response?.let {
                     onSuccess(it)
                 }
@@ -70,7 +70,7 @@ class MatchViewModel @Inject constructor(
 
     fun deleteMatchRegistration(userId: Long) {
         viewModelScope.launch {
-            signalRepository.deleteMatchRegistration(userId)
+            matchRepository.deleteMatchRegistration(userId)
         }
     }
 

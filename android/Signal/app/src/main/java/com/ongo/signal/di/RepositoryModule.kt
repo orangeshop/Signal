@@ -2,8 +2,8 @@ package com.ongo.signal.di
 
 import com.ongo.signal.data.repository.login.LoginRepository
 import com.ongo.signal.data.repository.login.LoginRepositoryImpl
-import com.ongo.signal.data.repository.match.SignalRepository
-import com.ongo.signal.data.repository.match.SignalRepositoryImpl
+import com.ongo.signal.data.repository.match.MatchRepository
+import com.ongo.signal.data.repository.match.MatchRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,8 +17,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindSignalRepository(
-        signalRepositoryImpl: SignalRepositoryImpl
-    ): SignalRepository
+        signalRepositoryImpl: MatchRepositoryImpl
+    ): MatchRepository
 
     @Singleton
     @Binds

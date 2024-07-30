@@ -43,7 +43,7 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideSignalRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.100.161:8080/")
+        .baseUrl("http://192.168.100.95:8080/")
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
