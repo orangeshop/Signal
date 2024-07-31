@@ -88,6 +88,9 @@
             app:exitAnim="@anim/anim_fade_out"
             app:popEnterAnim="@anim/anim_slide_in_from_left_fade_in"
             app:popExitAnim="@anim/anim_fade_out" />
+        <action
+            android:id="@+id/action_writePostFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileEditFragment"
