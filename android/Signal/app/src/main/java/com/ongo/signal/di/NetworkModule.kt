@@ -5,6 +5,9 @@ import com.google.gson.GsonBuilder
 import com.ongo.signal.network.LoginApi
 import com.ongo.signal.network.MainApi
 import com.ongo.signal.network.MatchApi
+import com.ongo.signal.data.repository.chat.chatservice.ChatRepository
+import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
+import com.ongo.signal.network.ChatRoomApi
 import com.ongo.signal.network.StompService
 import dagger.Module
 import dagger.Provides
@@ -66,5 +69,18 @@ object NetworkModule {
     @Singleton
     fun provideStompService(): StompService {
         return StompService()
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatRoomApi(retrofit: Retrofit): ChatRoomApi {
+        return retrofit.create(ChatRoomApi::class.java)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideChatRepository(chatApi: ChatRoomApi): ChatRepository {
+        return ChatRepositoryImpl(chatApi)
     }
 }
