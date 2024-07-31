@@ -38,6 +38,7 @@ public class ChatService {
         long chat_id = messageDto.getChat_id();
         ChatRoomDto chatRoomDto = chatRoomRepository.findById(chat_id).orElseThrow().asChatRoomDto();
         chatRoomDto.setLast_message(messageDto.getContent());
+        chatRoomDto.setSend_at(messageDto.getSend_at());
 
         if(messageDto.getIs_from_sender() != null)
             chatRoomDto.setSender_type(messageDto.getIs_from_sender() ? SenderType.FROM : SenderType.TO);

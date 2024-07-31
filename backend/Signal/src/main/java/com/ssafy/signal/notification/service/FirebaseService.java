@@ -68,7 +68,7 @@ public class FirebaseService {
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
-        FcmMessage.Data data = new FcmMessage.Data("from data " + title,body);
+        FcmMessage.Data data = new FcmMessage.Data(title,body);
         Message message = new FcmMessage.Message(data,targetToken);
         FcmMessage fcmMessage = new FcmMessage(false,message);
         return objectMapperProvider.jsonMapper().writeValueAsString(fcmMessage);

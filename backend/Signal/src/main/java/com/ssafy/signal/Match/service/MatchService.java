@@ -1,12 +1,16 @@
 package com.ssafy.signal.Match.service;
 
+import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import com.ssafy.signal.Match.domain.*;
 import com.ssafy.signal.Match.repository.LocationRepository;
+import com.ssafy.signal.Match.repository.MatchRepository;
 import com.ssafy.signal.Match.repository.ReviewRepository;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.notification.service.FirebaseService;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -24,6 +28,7 @@ public class MatchService {
     private final LocationRepository locationRepository;
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
+    private final MatchRepository matchRepository;
 
     private final FirebaseService firebaseService;
 
@@ -46,6 +51,7 @@ public class MatchService {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    @Transactional
     public LocationDto saveLocation(LocationDto locationDto) {
         Member user = Member
                 .builder()
@@ -60,10 +66,16 @@ public class MatchService {
                 .asLocationDto();
     }
 
-    public String registToken(long user_id, String token) {
+    public TokenResponse registToken(long user_id, String token) {
         userTokens.put(user_id,token);
-
-        return "{ \"user_id\": "+user_id+", \"token\": "+token+"}";
+        System.out.println("Now " + user_id +" "+token);
+        System.out.println();
+        System.out.println();
+        for(long user : userTokens.keySet())
+        {
+            System.out.println(user + " regist " + userTokens.get(user));
+        }
+        return TokenResponse.builder().user_id(user_id).token(token).build();
     }
 
     public MatchResponse proposeMatch(long from_id,long to_id) throws Exception{
@@ -77,25 +89,27 @@ public class MatchService {
 
         String token = userTokens.get(to.getUserId());
 
-        MatchResponse response = MatchResponse
+        if(token != null)
+            firebaseService.sendMessageTo(token,"요청",from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment());
+
+
+        return MatchResponse
                 .builder()
                 .from_id(from_id)
                 .to_id(to_id)
-                .name(to.getName())
-                .type(to.getType())
-                .comment(to.getComment())
+                .name(from.getName())
+                .type(from.getType())
+                .comment(from.getComment())
                 .build();
-
-        if(token != null)
-            firebaseService.sendMessageTo(token,"요청",firebaseService.objectMapperProvider.jsonMapper().writeValueAsString(response));
-        return response;
     }
 
-    public MatchResponse acceptMatch(long from_id,long to_id) throws Exception{
+    @Transactional
+    public MatchResponse acceptMatch(long from_id,long to_id, int flag) throws Exception{
         Member from = Member.builder().userId(from_id).build();
         Member to = Member.builder().userId(to_id).build();
-
+        System.out.println(from_id + " send to " + to_id);
         if(!locationRepository.existsByUserId(from) || !locationRepository.existsByUserId(to)) throw new Exception("User Not Found");
+
 
         LocationDto fromLocation = locationRepository.findByUserId(from).asLocationDto();
         LocationDto toLocation = locationRepository.findByUserId(to).asLocationDto();
@@ -103,24 +117,29 @@ public class MatchService {
         from = locationRepository.findByUserId(from).getUserId();
         to = locationRepository.findByUserId(to).getUserId();
 
-        locationRepository.deleteById(fromLocation.getLocation_id());
-        locationRepository.deleteById(toLocation.getLocation_id());
+        if(flag == 1)
+        {
+            locationRepository.deleteById(fromLocation.getLocation_id());
+            locationRepository.deleteById(toLocation.getLocation_id());
+            saveMatch(from_id,to_id);
+        }
 
         String token = userTokens.get(to.getUserId());
 
-        MatchResponse response = MatchResponse
+
+        if(token != null && flag == 1)
+            firebaseService.sendMessageTo(token,"승낙",from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment());
+        if(token != null && flag == 0)
+            firebaseService.sendMessageTo(token,"거부",from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment());
+
+        return MatchResponse
                 .builder()
                 .from_id(from_id)
                 .to_id(to_id)
-                .name(to.getName())
-                .type(to.getType())
-                .comment(to.getComment())
+                .name(from.getName())
+                .type(from.getType())
+                .comment(from.getComment())
                 .build();
-
-        if(token != null)
-            firebaseService.sendMessageTo(token,"승낙",firebaseService.objectMapperProvider.jsonMapper().writeValueAsString(response));
-
-        return response;
     }
 
     public void deleteLocation(long locationId) {
@@ -211,5 +230,27 @@ public class MatchService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
         return EARTH_RADIUS * c;
+    }
+
+    private MatchDto saveMatch(long from_id,long to_id)
+    {
+        return matchRepository.save(MatchDto.builder()
+                        .proposeId(to_id)
+                        .acceptId(from_id)
+                        .build()
+                        .asMatchEntity()
+                )
+                .asMatchDto();
+    }
+
+    public List<MatchDto> getMatch(long user_id)
+    {
+        return matchRepository
+                .findAllByUserId(Member.builder()
+                        .userId(user_id)
+                        .build())
+                .stream()
+                .map(MatchEntity::asMatchDto)
+                .toList();
     }
 }

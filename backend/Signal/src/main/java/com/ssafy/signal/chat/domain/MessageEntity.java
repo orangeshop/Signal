@@ -43,13 +43,14 @@ public class MessageEntity {
 
     public MessageDto asMessageDto()
     {
-        return new MessageDto(
-                message_id,
-                chatRoomEntity.getChatId(),
-                is_from_sender,
-                content,
-                is_read,
-                send_at
-        );
+        return MessageDto
+                .builder()
+                .message_id(message_id)
+                .chat_id(chatRoomEntity.getChatId())
+                .is_from_sender(is_from_sender)
+                .content(content)
+                .is_read(is_read)
+                .send_at(send_at)
+                .build();
     }
 }

@@ -5,6 +5,7 @@ import com.ssafy.signal.chat.domain.ChatRoomEntity;
 import com.ssafy.signal.chat.domain.MessageDto;
 import com.ssafy.signal.chat.repository.ChatRoomRepository;
 import com.ssafy.signal.chat.service.ChatService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,7 +25,7 @@ public class ChatController {
 
     @MessageMapping("/chat/send")
     public void send(MessageDto message) throws Exception {
-        chatService.saveMessage(message);
+        message = chatService.saveMessage(message);
         chatService.updateLastMessage(message);
         messagingTemplate.convertAndSend("/topic/" + message.getChat_id(), message);
     }

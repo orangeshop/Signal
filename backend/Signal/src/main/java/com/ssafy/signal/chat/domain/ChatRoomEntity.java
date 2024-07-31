@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 @Builder
 @AllArgsConstructor
@@ -36,24 +39,18 @@ public class ChatRoomEntity {
     @ColumnDefault("'NONE'")
     private SenderType sender_type;
 
-    public ChatRoomEntity(long from_id, long to_id, String s, SenderType senderType) {
-        this.from_id = new Member();
-        this.from_id.setUserId(from_id);
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date send_at;
 
-        this.to_id = new Member();
-        this.to_id.setUserId(to_id);
-
-        this.last_message = s;
-        this.sender_type = senderType;
-    }
 
     public ChatRoomDto asChatRoomDto() {
-        return new ChatRoomDto(
-                chatId,
-                from_id.getUserId(),
-                to_id.getUserId(),
-                last_message,
-                sender_type
-        );
+        return ChatRoomDto.builder()
+                .chat_id(chatId)
+                .from_id(from_id.getUserId())
+                .to_id(to_id.getUserId())
+                .last_message(last_message)
+                .sender_type(sender_type)
+                .send_at(send_at)
+                .build();
     }
 }
