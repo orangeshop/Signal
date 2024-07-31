@@ -38,6 +38,15 @@
     <string name="realtime_signal">실시간 시그널</string>
     <string name="view_profile">프로필보기</string>
     <string name="reviewList">리뷰목록</string>
+    <string name="tag1">자유</string>
+    <string name="tag2">생활</string>
+    <string name="tag3">건강</string>
+    <string name="tag4">교육</string>
+    <string name="tag5">뉴스</string>
+    <string name="tag6">여행</string>
+    <string name="tag7">음식</string>
+    <string name="tag8">스포츠</string>
+    <string name="tag9">가족</string>
 
     <string-array name="tag_array">
         <item>자유</item>
@@ -48,6 +57,7 @@
         <item>여행</item>
         <item>음식</item>
         <item>스포츠</item>
+        <item>가족</item>
     </string-array>
 
 </resources>
