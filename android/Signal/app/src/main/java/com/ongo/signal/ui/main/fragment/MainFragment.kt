@@ -12,16 +12,20 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.FragmentMainBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.TagAdapter
@@ -31,6 +35,7 @@ import com.ongo.signal.util.TTSHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
@@ -63,23 +68,63 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
         sttHelper = STTHelper(sttLauncher)
 
-        lifecycleScope.launch {
-            viewModel.boards.collectLatest { newBoards ->
-                todayPostAdapter.submitList(newBoards)
-                if (newBoards.isNotEmpty()) {
-//                    Timber.d(newBoards[0].tags.toString())
-//                    firstTagAdapter.submitList(newBoards[0].tags)
-                    if (newBoards.size > 1) {
-//                        secondTagAdapter.submitList(newBoards[1].tags)
-                    }
-                    if (newBoards.size > 2) {
-//                        thirdTagAdapter.submitList(newBoards[2].tags)
-                    }
-                }
-            }
-        }
+        observeBoards()
+        observeHotSignalBoards()
 
         startFlippingViews()
+    }
+
+    private fun observeBoards() {
+        lifecycleScope.launch {
+            viewModel.boards.collectLatest { newBoards ->
+                Timber.d("New boards received: $newBoards")
+                todayPostAdapter.submitList(newBoards)
+                updateTagAdapters(newBoards)
+            }
+        }
+    }
+
+    private fun observeHotSignalBoards() {
+        lifecycleScope.launch {
+            viewModel.hotSignalBoards.collectLatest { newHotBoards ->
+                Timber.d("New hot signal boards received: $newHotBoards")
+                updateHotSignalTitles(newHotBoards)
+            }
+        }
+    }
+
+    private fun updateHotSignalTitles(newHotBoards: List<BoardDTO>) {
+        if (newHotBoards.isNotEmpty()) {
+            binding.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
+            binding.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
+            binding.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
+        }
+    }
+
+    private fun updateTagAdapters(newBoards: List<BoardDTO>) {
+        if (newBoards.isNotEmpty()) {
+            val firstBoardTags = newBoards[0].tags ?: emptyList()
+            firstTagAdapter.submitList(firstBoardTags)
+            if (newBoards.size > 1) {
+                val secondBoardTags = newBoards[1].tags ?: emptyList()
+                secondTagAdapter.submitList(secondBoardTags)
+            }
+            if (newBoards.size > 2) {
+                val thirdBoardTags = newBoards[2].tags ?: emptyList()
+                thirdTagAdapter.submitList(thirdBoardTags)
+            }
+        }
+    }
+
+    fun onChipClicked(tag: String) {
+        if (viewModel.selectedTag.value == tag) {
+            viewModel.clearSelectedTag()
+            viewModel.clearSearch()
+        } else {
+            viewModel.clearSelectedTag()
+            viewModel.setSelectedTag(tag)
+            viewModel.loadHotAndRecentSignalBoardsByTag(tag, 0, 10)
+        }
     }
 
     private fun startFlippingViews() {
@@ -92,17 +137,19 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     private fun flipViews() {
-        flipView(binding.tvFirstTitle, binding.rvFirst)
-        flipView(binding.tvSecondTitle, binding.rvSecond)
-        flipView(binding.tvThirdTitle, binding.rvThird)
+        flipView(binding.tvFirstTitle, binding.rvFirst, 0)
+        flipView(binding.tvSecondTitle, binding.rvSecond, 1)
+        flipView(binding.tvThirdTitle, binding.rvThird, 2)
     }
 
-    private fun flipView(titleView: View, recyclerView: RecyclerView) {
+    private fun flipView(titleView: View, recyclerView: RecyclerView, initialPosition: Int) {
         val context = titleView.context
         val flipOut = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
         val flipIn = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
-        val flipOutRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
-        val flipInRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
+        val flipOutRecycler =
+            AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
+        val flipInRecycler =
+            AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
 
         flipOut.setTarget(titleView)
         flipOutRecycler.setTarget(recyclerView)
@@ -110,14 +157,12 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         flipOut.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                if (todayPostAdapter.itemCount > 0) {
-                    val nextPosition = (titleView.tag as? Int ?: 0) + 1
-                    val nextBoard = todayPostAdapter.currentList.getOrNull(nextPosition % todayPostAdapter.itemCount)
-                    if (nextBoard != null) {
-                        titleView.tag = nextPosition
-                        (titleView as TextView).text = nextBoard.title
-                        // (recyclerView.adapter as TagAdapter).submitList(nextBoard.tags)
-                    }
+                if (viewModel.hotSignalBoards.value.isNotEmpty()) {
+                    val currentPosition = (titleView.tag as? Int ?: initialPosition) + 3
+                    val nextPosition = currentPosition % viewModel.hotSignalBoards.value.size
+                    titleView.tag = nextPosition
+                    (titleView as TextView).text =
+                        viewModel.hotSignalBoards.value[nextPosition].title
                     flipIn.setTarget(titleView)
                     flipInRecycler.setTarget(recyclerView)
                     flipIn.start()
@@ -130,15 +175,41 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         flipOutRecycler.start()
     }
 
-
     fun onFABClicked() {
         viewModel.clearBoard()
         findNavController().navigate(R.id.action_mainFragment_to_writePostFragment)
     }
 
-
     fun onMicClicked() {
         sttHelper.startSpeechToText()
+    }
+
+    fun searchKeyword() {
+        val keyword = binding.etSearch.text.toString()
+        viewModel.searchBoard(keyword)
+        fadeOut(binding.ivSearch)
+        fadeOut(binding.ivMic)
+        fadeIn(binding.ivRefresh)
+    }
+
+    fun loadAllBoards() {
+        viewModel.clearSearch()
+        binding.etSearch.setText("")
+        fadeIn(binding.ivSearch)
+        fadeIn(binding.ivMic)
+        fadeOut(binding.ivRefresh)
+    }
+
+    private fun fadeOut(view: View) {
+        val fadeOut = AnimationUtils.loadAnimation(context, R.anim.anim_fade_out)
+        view.startAnimation(fadeOut)
+        view.visibility = View.GONE
+    }
+
+    private fun fadeIn(view: View) {
+        view.visibility = View.VISIBLE
+        val fadeIn = AnimationUtils.loadAnimation(context, R.anim.anim_slide_in_from_right_fade_in)
+        view.startAnimation(fadeIn)
     }
 
     private fun setUpAdapter() {
@@ -152,7 +223,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             },
             onTTSClicked = { content ->
                 ttsHelper.speak(content)
-            }
+            },
+            viewModel = viewModel
         )
 
         firstTagAdapter = TagAdapter()
