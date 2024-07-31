@@ -78,7 +78,7 @@ dependencies {
 
     //room
     implementation(libs.bundles.room)
-    kapt (libs.room.compiler)
+    kapt(libs.room.compiler)
     //paging
     implementation(libs.paging)
 
@@ -91,5 +91,7 @@ dependencies {
     //locations
     implementation(libs.locations)
 
+    //coil
+    implementation(libs.coil)
 
 }
