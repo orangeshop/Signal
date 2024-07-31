@@ -8,6 +8,10 @@
         <variable
             name="board"
             type="com.ongo.signal.data.model.main.BoardDTO" />
+
+        <variable
+            name="viewModel"
+            type="com.ongo.signal.ui.main.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,9 +63,9 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{board.getFormattedCreatedDate()}"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:text="@{board.getFormattedCreatedDate()}"
             app:layout_constraintBottom_toBottomOf="@id/tv_name"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             tools:text="2024-07-16" />
@@ -84,13 +88,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:spanCount="2"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/tv_content"
             tools:itemCount="3"
-            tools:listitem="@layout/item_image" />
+            tools:listitem="@layout/item_image_post" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chips"
@@ -105,9 +109,10 @@
 
         <ImageView
             android:id="@+id/iv_thumb"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginTop="15dp"
+            android:onClick="@{() -> viewModel.onThumbClick(board)}"
             android:padding="4dp"
             android:src="@drawable/baseline_thumb_up_alt_white_24"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
@@ -128,8 +133,8 @@
 
         <ImageView
             android:id="@+id/iv_comment"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginStart="8dp"
             android:padding="4dp"
             android:src="@drawable/baseline_chat_white_24"
@@ -142,7 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{String.valueOf(board.comments.size)}"
+            android:text="@{String.valueOf(board.getCommentCount())}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
