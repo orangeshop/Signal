@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/S11P12D211-2.iml" filepath="$PROJECT_DIR$/.idea/S11P12D211-2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Signal.iml" filepath="$PROJECT_DIR$/.idea/modules/Signal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Signal.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Signal.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Signal.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Signal.test.iml" />
     </modules>
   </component>
 </project>
