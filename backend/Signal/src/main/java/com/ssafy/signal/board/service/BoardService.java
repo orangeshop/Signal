@@ -1,11 +1,10 @@
 package com.ssafy.signal.board.service;
 
-import com.ssafy.signal.board.domain.BoardDto;
-import com.ssafy.signal.board.domain.BoardEntity;
+import com.ssafy.signal.board.domain.*;
 import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
-import com.ssafy.signal.board.domain.CommentDto;
-import com.ssafy.signal.board.domain.CommentEntity;
+import com.ssafy.signal.board.repository.TagRepository;
+import com.ssafy.signal.file.service.FileService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
@@ -30,17 +29,60 @@ public class BoardService {
     private BoardRepository boardRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private TagRepository tagRepository;
+
 
     private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
     private static final int PAGE_POST_COUNT = 4; // 한 페이지에 존재하는 게시글 수
 
+    // 생성된 순서대로 게시글 정렬 (오늘의 시그널)
     @Transactional
     public List<BoardDto> getBoardList(Integer pageNum, int limit) {
-        return new ArrayList<>(boardRepository.findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "createdDate")))
+        List<BoardDto> boards = new ArrayList<>(boardRepository
+                .findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "createdDate")))
                 .getContent())
                 .stream()
-                .map(this::convertEntityToDto)
+                .map(BoardEntity::asBoardDto)
                 .collect(Collectors.toCollection(ArrayList::new));
+
+        for(BoardDto board : boards)
+        {
+            long id = board.getId();
+            List<CommentDto> comments = commentRepository
+                    .findByBoardId(id)
+                    .stream()
+                    .map(CommentEntity::asCommentDto)
+                    .toList();
+
+            board.setComments(comments);
+        }
+
+        return boards;
+    }
+    // 인기순 (liked)으로 정렬 - 화제의 시그널
+    @Transactional
+    public List<BoardDto> getBoardListLiked(Integer pageNum, int limit) {
+        List<BoardDto> boards = new ArrayList<>(boardRepository
+                .findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "liked")))
+                .getContent())
+                .stream()
+                .map(BoardEntity::asBoardDto)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for(BoardDto board : boards)
+        {
+            long id = board.getId();
+            List<CommentDto> comments = commentRepository
+                    .findByBoardId(id)
+                    .stream()
+                    .map(CommentEntity::asCommentDto)
+                    .toList();
+
+            board.setComments(comments);
+        }
+
+        return boards;
     }
 
     @Transactional
@@ -48,24 +90,11 @@ public class BoardService {
         return boardRepository.count();
     }
 
-    @Transactional
-    public BoardDto getPost(Long id) {
-        Optional<BoardEntity> boardEntityWrapper = boardRepository.findById(id);
-        BoardEntity boardEntity = boardEntityWrapper.orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-
-        // 댓글 조회
-        List<CommentDto> comments = commentRepository.findByBoardId(id).stream()
-                .map(CommentEntity::asCommentDto)
-                .collect(Collectors.toList());
-
-        return this.convertEntityToDto(boardEntity, comments);
-    }
 
     @Transactional
     public BoardDto savePost(BoardDto boardDto) {
-        System.out.println(boardDto.getContent());
-        BoardEntity savedEntity = boardRepository.save(boardDto.toEntity());
-        return convertEntityToDto(savedEntity, new ArrayList<>()); // 저장 후에는 댓글이 없으므로 빈 리스트 전달
+        //System.out.println(boardDto.getContent());
+        return boardRepository.save(boardDto.toEntity()).asBoardDto();
     }
 
     @Transactional
@@ -155,6 +184,7 @@ public class BoardService {
                 .type(boardEntity.getType())
                 .createdDate(boardEntity.getCreatedDate())
                 .modifiedDate(boardEntity.getModifiedDate())
+                .tags(boardEntity.getTags().stream().map(TagEntity::asTagDto).toList())
                 .comments(comments)
                 .build();
     }
@@ -166,4 +196,21 @@ public class BoardService {
     public BoardEntity getBoardById(Long id) {
         return boardRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Board not found with id: " + id));
     }
+
+    @Transactional
+    public void incrementReferenceCount(Long id) {
+        BoardEntity boardEntity = boardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        boardEntity.incrementReference();
+        boardRepository.save(boardEntity);
+    }
+
+    @Transactional
+    public void incrementLikedCount(Long id) {
+        BoardEntity boardEntity = boardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        boardEntity.incrementLiked();
+        boardRepository.save(boardEntity);
+    }
+
 }

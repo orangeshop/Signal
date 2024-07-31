@@ -5,15 +5,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@AllArgsConstructor
 @Builder
 @Table(name="board")
 public class BoardEntity extends TimeEntity{
@@ -45,13 +41,26 @@ public class BoardEntity extends TimeEntity{
     @Column
     private Long type;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany()
     @Builder.Default
-    @JoinTable(name="tag",
-            joinColumns = @JoinColumn(name="tag_id"),
-            inverseJoinColumns = @JoinColumn(name="tag_name"))
+    @JoinTable(name="tag_board",
+            joinColumns = @JoinColumn(name = "board_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
     List<TagEntity> tags = new ArrayList<>();
 
+
+    @Builder
+    public BoardEntity(Long id, String writer, Member user, String title, String content, Long reference, Long liked, Long type, List<TagEntity> tags) {
+        this.id = id;
+        this.writer = writer;
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.reference = reference != null ? reference : 0;
+        this.liked = liked != null ? liked : 0;
+        this.type = type != null ? type : 0;
+        this.tags = tags != null ? tags : new ArrayList<>();
+    }
     // 엔티티의 상태를 변경하는 메서드 추가
     public void update(String title, String content, Long reference, Long liked, Long type) {
         this.title = title;
@@ -68,6 +77,7 @@ public class BoardEntity extends TimeEntity{
                 .modifiedDate(getModifiedDate())
                 .content(content)
                 .id(id)
+                .userId(user.getUserId())
                 .writer(writer)
                 .title(title)
                 .liked(liked)
@@ -75,5 +85,31 @@ public class BoardEntity extends TimeEntity{
                 .tags(tags.stream().map(TagEntity::asTagDto).toList())
                 .type(type)
                 .build();
+    }
+
+    public BoardDto asBoardDto(List<CommentDto> comments, List<String> fileUrls )
+    {
+        return BoardDto.builder()
+                .createdDate(getCreatedDate())
+                .modifiedDate(getModifiedDate())
+                .content(content)
+                .id(id)
+                .writer(writer)
+                .title(title)
+                .userId(user.getUserId())
+                .liked(liked)
+                .comments(comments)
+                .reference(reference)
+                .tags(tags.stream().map(TagEntity::asTagDto).toList())
+                .type(type)
+                .fileUrls(fileUrls)
+                .build();
+    }
+    public void incrementReference(){
+        this.reference++;
+    }
+
+    public void incrementLiked() {
+        this.liked++;
     }
 }

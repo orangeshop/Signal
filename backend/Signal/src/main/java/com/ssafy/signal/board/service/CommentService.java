@@ -35,9 +35,9 @@ public class CommentService {
 
 
         for (CommentEntity commentEntity : commentEntities) {
-            String url = fileRepository.findAllByUser(commentEntity.getUserId()).getFileUrl();
+            FileEntity file = fileRepository.findAllByUser(commentEntity.getUserId());
+            String url =  file == null ? null : file.getFileUrl();
             commentDtoList.add(commentEntity.asCommentDto(url));
-
         }
         return commentDtoList;
     }

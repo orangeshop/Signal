@@ -24,12 +24,9 @@ public class TagEntity {
     @Column(name="tag_name")
     private String tagName;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "tags")
     @Builder.Default
-    @JoinTable(name="board",
-            joinColumns = @JoinColumn(name="tag_name"),
-            inverseJoinColumns = @JoinColumn(name="tag_id"))
-    List<BoardEntity> boards = new ArrayList<>();
+    List<BoardEntity> board = new ArrayList<>();
 
     public TagDto asTagDto()
     {

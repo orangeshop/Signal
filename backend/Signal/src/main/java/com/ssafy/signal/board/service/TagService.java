@@ -8,36 +8,37 @@ import com.ssafy.signal.board.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class TagService {
-    private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
-    private static final int PAGE_POST_COUNT = 4; // 한 페이지에 존재하는 게시글 수
-
     private final TagRepository tagRepository;
-    private final BoardRepository boardRepository;
-    //private final BoardTagRepository boardTagRepository;
 
     public List<BoardDto>getBoardByTagRecent(String tag,int page,int limit) {
         TagEntity tagEntity = tagRepository.findByTagName(tag);
-        List<BoardEntity> boards = tagEntity.getBoards().stream().toList();
-        boards.sort(Comparator.comparing(BoardEntity::getCreatedDate).reversed());
 
-        return boards.stream().map(BoardEntity::asBoardDto)
-                .toList()
-                .subList(page * limit, page * limit + limit);
+        List<BoardDto> boards = new ArrayList<>(tagEntity.getBoard().stream().map(BoardEntity::asBoardDto).toList());
+        boards.sort(Comparator.comparing(BoardDto::getCreatedDate).reversed());
+        return boards
+                .subList(page * limit, Math.min(page * limit + limit,boards.size()));
     }
 
-    public List<BoardDto>getBoardByTagHot(String tag,int page,int limit) {
+    public List<BoardDto> getBoardByTagHot(String tag, int page, int limit) {
         TagEntity tagEntity = tagRepository.findByTagName(tag);
-        List<BoardEntity> boards = tagEntity.getBoards().stream().filter(board->board.getLiked()>=10).toList();
-        boards.sort(Comparator.comparing(BoardEntity::getLiked).reversed());
 
-        return boards.stream().map(BoardEntity::asBoardDto)
-                .toList()
-                .subList(page * limit, page * limit + limit);
+        // 태그와 관련된 모든 게시물 가져오기
+        List<BoardDto> boards = new ArrayList<>(tagEntity.getBoard().stream()
+                .map(BoardEntity::asBoardDto)
+                .filter(board -> board.getLiked() >= 10) // 좋아요 수가 10 이상인 게시물만 필터링
+                .toList());
+
+        // 좋아요 수를 기준으로 내림차순 정렬
+        boards.sort(Comparator.comparing(BoardDto::getLiked).reversed());
+
+        // 페이지에 맞게 서브리스트 반환
+        return boards.subList(page * limit, Math.min(page * limit + limit, boards.size()));
     }
 }
