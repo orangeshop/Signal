@@ -1,9 +1,122 @@
 package com.ongo.signal.ui.login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ongo.signal.config.DataStoreClass
+import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.model.login.SignupRequest
+import com.ongo.signal.data.model.login.SignupUIState
+import com.ongo.signal.data.repository.login.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
-class SignupViewModel : ViewModel() {
+class SignupViewModel @Inject constructor(
+    private val loginRepository: LoginRepository,
+    private val dataStoreClass: DataStoreClass,
+) : ViewModel() {
+
+    var uiState =
+        SignupUIState(userId = "", userName = "", password = "", passwordCheck = "")
+
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
+        }
+
+
+    fun setUserId(userId: String) {
+        uiState = uiState.copy(userId = userId)
+    }
+
+    fun setPassword(password: String) {
+        uiState = uiState.copy(password = password)
+    }
+
+    fun setPasswordCheck(passwordCheck: String) {
+        uiState = uiState.copy(passwordCheck = passwordCheck)
+    }
+
+    fun setName(userName: String) {
+        uiState = uiState.copy(userName = userName)
+    }
+
+    fun setType(type: String) {
+        uiState = uiState.copy(type = type)
+    }
+
+    fun setPossible(isPossible: Boolean?) {
+        uiState = uiState.copy(isPossibleId = isPossible)
+    }
+
+    fun postSignup(onSuccess: () -> Unit) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            loginRepository.postSignup(
+                request = SignupRequest(
+                    loginId = uiState.userId,
+                    name = uiState.userName,
+                    password = uiState.password,
+                    type = uiState.type
+                )
+            ).onSuccess { response ->
+                response?.let {
+                    UserSession.userId = it.userInfo.userId
+                    UserSession.userName = it.userInfo.name
+                    UserSession.accessToken = it.accessToken
+
+                    saveUserData(
+                        userId = UserSession.userId!!,
+                        userName = UserSession.userName!!,
+                        accessToken = UserSession.accessToken!!
+                    )
+
+                    onSuccess()
+                }
+            }
+        }
+    }
+
+    fun checkDuplicatedId(userId: String, onSuccess: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            loginRepository.postCheckPossibleId(userId).onSuccess { response ->
+                response?.let {
+                    Timber.d("중복확인3 ${response.duplicated}")
+                    uiState = uiState.copy(isPossibleId = !response.duplicated)
+                    onSuccess(!response.duplicated)
+                }
+            }
+        }
+    }
+
+    fun checkUIState(): Pair<Boolean, String> {
+        with(uiState) {
+            if (isPossibleId == null) return Pair(false, "아이디 중복 확인을 해주세요")
+            if (isPossibleId == false) return Pair(false, "사용 불가능한 아이디입니다.")
+            if (password != passwordCheck) return Pair(false, "비밀번호와 비밀번호 확인이 다릅니다")
+            if (userName.isBlank()) return Pair(false, "이름을 입력해주세요")
+            return Pair(true, "${uiState}")
+        }
+
+    }
+
+
+    private fun saveUserData(
+        userId: Long,
+        userName: String,
+        profileImage: String = "",
+        accessToken: String
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            dataStoreClass.setIsLogin(true)
+            dataStoreClass.setUserId(userId)
+            dataStoreClass.setUserName(userName)
+            dataStoreClass.setProfileImage(profileImage)
+            dataStoreClass.setAccessToken(accessToken)
+        }
+    }
+
 
 }
