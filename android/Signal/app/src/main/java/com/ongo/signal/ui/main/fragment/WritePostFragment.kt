@@ -41,9 +41,16 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
 
     override fun init() {
         binding.fragment = this
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         setUpSpinner()
         setupLaunchers()
         setUpImageAdapter()
+
+        viewModel.selectedBoard.value?.let {
+            binding.etTitle.setText(it.title)
+            binding.etContent.setText(it.content)
+        }
     }
 
     private fun setUpImageAdapter() {
@@ -55,14 +62,15 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     }
 
     private fun setupLaunchers() {
-        sttLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
-                when (currentTarget) {
-                    R.id.iv_title_mic -> binding.etTitle.setText(recognizedText)
-                    R.id.iv_content_mic -> binding.etContent.setText(recognizedText)
+        sttLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
+                    when (currentTarget) {
+                        R.id.iv_title_mic -> binding.etTitle.setText(recognizedText)
+                        R.id.iv_content_mic -> binding.etContent.setText(recognizedText)
+                    }
                 }
             }
-        }
 
         sttHelper = STTHelper(sttLauncher)
 
@@ -173,6 +181,19 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     }
 
     fun onRegisterButtonClick() {
+        val title = binding.etTitle.text.toString()
+        val content = binding.etContent.text.toString()
+        val userId = 3
+        val writer = "admin"
+        if (viewModel.selectedBoard.value == null) {
+            viewModel.createBoard(userId, writer, title, content)
+        } else {
+            viewModel.updateBoard(
+                boardId = viewModel.selectedBoard.value!!.id,
+                title = title,
+                content = content
+            )
+        }
         findNavController().navigate(R.id.action_writePostFragment_to_postFragment)
     }
 }

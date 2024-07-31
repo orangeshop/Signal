@@ -9,6 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_margin="8dp"
+        android:background="@drawable/background_possible_user_ripple"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -47,7 +48,7 @@
             android:id="@+id/btn_matching"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_cancel_button"
+            android:background="@drawable/background_cancel_button_ripple"
             android:fontFamily="@font/inter_light"
             android:paddingHorizontal="8dp"
             android:text="매칭 신청"

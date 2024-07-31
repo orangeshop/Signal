@@ -5,12 +5,16 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.tasks.OnCompleteListener
@@ -29,8 +33,11 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
+    private val viewModel: MainViewModel by viewModels()
+
     private lateinit var navHostFragment: NavHostFragment
     private val checker = PermissionChecker(this)
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val runtimePermissions = arrayOf(
         Manifest.permission.POST_NOTIFICATIONS,
@@ -52,6 +59,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         binding.bottomNavigation.setupWithNavController(navController)
 
+        handleIntent(intent, navController)
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 handleBackPressed()
@@ -62,13 +71,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             when (destination.id) {
                 R.id.mainFragment -> showBottomNavigation()
                 R.id.chatFragment -> showBottomNavigation()
-                R.id.mapFragment -> showBottomNavigation()
+                R.id.matchFragment -> showBottomNavigation()
                 R.id.myPageFragment -> showBottomNavigation()
                 else -> hideBottomNavigation()
             }
         }
 
         checkPermission()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -95,9 +105,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 return@OnCompleteListener
             }
             Timber.d("token 정보: ${task.result ?: "task.result is null"}")
-            if (task.result != null) {
-                uploadToken(task.result)
-            }
+            viewModel.postFCMToken(task.result)
         })
     }
 
@@ -128,11 +136,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         binding.bottomNavigation.visibility = View.VISIBLE
     }
 
+    private fun handleIntent(intent: Intent, navController: NavController) {
+        if (intent.getBooleanExtra("matchNotification", false)) {
+            val bundle = Bundle().apply {
+                putBoolean("matchNotification", true)
+                putLong("otherUserId", intent.getLongExtra("otherUserId",0))
+                putString("otherUserName", intent.getStringExtra("otherUserName") ?: "")
+            }
+            navController.navigate(R.id.matchFragment, bundle)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent, navHostFragment.navController)
+    }
+
     companion object {
         const val CHANNEL_ID = "ongo_channel"
-        fun uploadToken(token: String) {
-
-        }
     }
 
 }

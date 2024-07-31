@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     //locations
     implementation(libs.locations)
-
+    //datastore
+    implementation(libs.datastore)
 
 }

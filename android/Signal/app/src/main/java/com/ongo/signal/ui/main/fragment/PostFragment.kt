@@ -15,6 +15,7 @@ import com.ongo.signal.util.PopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
@@ -24,6 +25,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private val viewModel: MainViewModel by activityViewModels()
 
     override fun init() {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         commentAdapter = CommentAdapter()
         chipAdapter = ChipAdapter()
 
@@ -38,13 +42,27 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             adapter = chipAdapter
         }
 
+        viewModel.selectedBoard.value?.id?.let { boardId ->
+            viewModel.loadBoardDetails(boardId)
+            viewModel.loadComments(boardId)
+        }
+
+
         lifecycleScope.launch {
-            viewModel.selectedPost.collectLatest { post ->
-                post?.let {
-                    binding.post = it
-                    chipAdapter.submitList(it.tags)
-                    commentAdapter.submitList(it.comment)
+            viewModel.selectedBoard.collectLatest { board ->
+                board?.let {
+                    Timber.d(viewModel.selectedBoard.value?.title)
+                    Timber.d(viewModel.selectedBoard.value?.content)
+//                    chipAdapter.submitList(it.tags)
+                    commentAdapter.submitList(it.comments)
                 }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.comments.collectLatest { comments ->
+                commentAdapter.submitList(comments)
+                Timber.d(comments.toString())
             }
         }
 
@@ -55,18 +73,27 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_menu) { item ->
             when (item.itemId) {
                 R.id.action_edit -> {
-                    makeToast("수정")
+                    findNavController().navigate(R.id.action_postFragment_to_writePostFragment)
                     true
                 }
 
                 R.id.action_delete -> {
-                    makeToast("삭제")
+                    viewModel.selectedBoard.value?.id?.let { viewModel.deleteBoard(it) }
+                    findNavController().navigate(R.id.action_postFragment_to_mainFragment)
                     true
                 }
 
                 else -> false
             }
         }
+    }
+
+    fun createComment() {
+        val content = binding.etComment.text.toString()
+        val writer = "홍길동"
+        val boardId = viewModel.selectedBoard.value?.id ?: return
+        viewModel.createComment(boardId.toLong(), writer, content)
+        binding.etComment.text.clear()
     }
 
     fun onProfileClick() {

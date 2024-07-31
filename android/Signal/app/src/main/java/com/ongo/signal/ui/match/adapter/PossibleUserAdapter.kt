@@ -9,14 +9,14 @@ import com.ongo.signal.data.model.match.MatchPossibleUser
 import com.ongo.signal.databinding.ItemPossibleUserBinding
 
 class PossibleUserAdapter(
-    private val onMatchClick: (userId: Long) -> Unit,
+    private val onMatchClick: (userId: Long, userName: String) -> Unit,
     private val onClick: (userId: Long) -> Unit,
 ) :
     ListAdapter<MatchPossibleUser, PossibleUserAdapter.ViewHolder>(DiffUtilCallback()) {
 
     class ViewHolder(
         private val binding: ItemPossibleUserBinding,
-        private val onMatchClick: (userId: Long) -> Unit,
+        private val onMatchClick: (userId: Long, userName: String) -> Unit,
         private val onClick: (userId: Long) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
@@ -24,7 +24,7 @@ class PossibleUserAdapter(
             binding.tvUserId.text = user.name
 //            binding.tvIntroduce.text = user.comment
             binding.tvIntroduce.text = "안녕하세요"
-            binding.btnMatching.setOnClickListener { onMatchClick(user.userId) }
+            binding.btnMatching.setOnClickListener { onMatchClick(user.userId, user.name) }
             binding.root.setOnClickListener { onClick(user.userId) }
         }
     }
