@@ -6,21 +6,29 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.main.ImageItem
+import com.ongo.signal.data.model.main.TagDTO
 import com.ongo.signal.databinding.FragmentWritePostBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.ImageAdapter
 import com.ongo.signal.util.PopupMenuHelper
 import com.ongo.signal.util.STTHelper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -38,6 +46,9 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     private var currentPhotoPath: String? = null
     private var currentTarget: Int = 0
     private lateinit var imageAdapter: ImageAdapter
+    private lateinit var selectedTag: String
+    private var selectedTagId: Int = 0
+
 
     override fun init() {
         binding.fragment = this
@@ -50,11 +61,12 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         viewModel.selectedBoard.value?.let {
             binding.etTitle.setText(it.title)
             binding.etContent.setText(it.content)
+            imageAdapter.submitList(it.imageUrls?.map { url -> ImageItem.UrlItem(url) })
         }
     }
 
     private fun setUpImageAdapter() {
-        imageAdapter = ImageAdapter({ uri -> onRemoveImageClick(uri) }, true)
+        imageAdapter = ImageAdapter({ item -> onRemoveImageClick(item) }, true)
         binding.rvImage.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = imageAdapter
@@ -80,7 +92,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                     currentPhotoPath?.let { path ->
                         val file = File(path)
                         val uri = Uri.fromFile(file)
-                        imageAdapter.addImage(uri)
+                        imageAdapter.addImage(ImageItem.UriItem(uri))
                     }
                 }
             }
@@ -90,7 +102,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                 if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                     val uri = result.data!!.data
                     uri?.let {
-                        imageAdapter.addImage(uri)
+                        imageAdapter.addImage(ImageItem.UriItem(uri))
                     }
                 }
             }
@@ -105,6 +117,23 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         adapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         binding.spinner.adapter = adapter
         binding.spinner.setBackgroundResource(R.drawable.background_spinner)
+
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedTag = parent.getItemAtPosition(position).toString()
+                selectedTagId = position + 1
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                selectedTag = parent.getItemAtPosition(0).toString()
+                selectedTagId = 1
+            }
+        }
     }
 
     fun setupListeners() {
@@ -176,8 +205,8 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         galleryLauncher.launch(intent)
     }
 
-    fun onRemoveImageClick(uri: Uri) {
-        imageAdapter.removeImage(uri)
+    fun onRemoveImageClick(item: ImageItem) {
+        imageAdapter.removeImage(item)
     }
 
     fun onRegisterButtonClick() {
@@ -185,15 +214,48 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         val content = binding.etContent.text.toString()
         val userId = 3
         val writer = "admin"
-        if (viewModel.selectedBoard.value == null) {
-            viewModel.createBoard(userId, writer, title, content)
-        } else {
-            viewModel.updateBoard(
-                boardId = viewModel.selectedBoard.value!!.id,
-                title = title,
-                content = content
-            )
+        val tags = listOf(TagDTO(tagId = selectedTagId, tag = selectedTag))
+
+        lifecycleScope.launch {
+            if (viewModel.selectedBoard.value == null) {
+                viewModel.createBoard(userId, writer, title, content, tags).join()
+                Timber.d("Board created")
+            } else {
+                viewModel.updateBoard(
+                    boardId = viewModel.selectedBoard.value!!.id,
+                    title = title,
+                    content = content,
+                    tags = tags
+                ).join()
+                Timber.d("Board updated")
+            }
+            uploadImagesAndNavigate()
         }
-        findNavController().navigate(R.id.action_writePostFragment_to_postFragment)
     }
+
+    private fun uploadImagesAndNavigate() {
+        val boardId = viewModel.selectedBoard.value?.id ?: return
+        val imageItems = imageAdapter.currentList
+        val uriItems = imageItems.filterIsInstance<ImageItem.UriItem>()
+
+        if (uriItems.isEmpty()) {
+            findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
+        } else {
+            val uploadTasks = uriItems.map { item ->
+                lifecycleScope.async {
+                    viewModel.uploadImage(boardId.toLong(), item.uri, requireContext()).await()
+                }
+            }
+            lifecycleScope.launch {
+                try {
+                    uploadTasks.awaitAll()
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to upload all images")
+                } finally {
+                    findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
+                }
+            }
+        }
+    }
+
 }
