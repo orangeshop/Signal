@@ -5,9 +5,15 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="comment"
             type="com.ongo.signal.data.model.main.CommentDTOItem" />
+
+        <variable
+            name="currentUserId"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,9 +71,12 @@
             android:id="@+id/tv_edit_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:padding="4dp"
+            android:layout_marginEnd="4dp"
             android:text="@string/edit"
             android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="@{comment.userId == currentUserId ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/tv_content"
             app:layout_constraintEnd_toStartOf="@id/tv_delete_comment" />
 
@@ -76,8 +85,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
+            android:padding="4dp"
             android:text="@string/delete"
             android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="@{comment.userId == currentUserId ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/tv_content"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
