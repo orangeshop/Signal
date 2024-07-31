@@ -11,7 +11,9 @@ import com.ongo.signal.databinding.ChatDetailItemBinding
 
 private const val TAG = "ChatDetailAdapter_싸피"
 
-class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolder>(diffUtil) {
+class ChatDetailAdapter(
+    private val timeSetting: (item: String) -> String
+) : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeChildDto){
@@ -20,8 +22,8 @@ class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolde
             binding.chatOtherTimeMeTv.visibility = View.GONE
 
             binding.chatDetailItemTv.text = item.content
-            binding.chatOtherReadTv.text = item.read.toString()
-            binding.chatOtherTimeTv.text = item.send_at
+            binding.chatOtherReadTv.text = item.is_read.toString()
+            binding.chatOtherTimeTv.text = timeSetting(item.send_at)
         }
     }
 
@@ -32,8 +34,8 @@ class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolde
             binding.chatOtherReadTv.visibility = View.GONE
 
             binding.chatDetailItemMeTv.text = item.content
-            binding.chatOtherReadMeTv.text = item.read.toString()
-            binding.chatOtherTimeMeTv.text = item.send_at
+            binding.chatOtherReadMeTv.text = item.is_read.toString()
+            binding.chatOtherTimeMeTv.text = timeSetting(item.send_at)
         }
     }
 
@@ -59,9 +61,9 @@ class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolde
 
     override fun getItemViewType(position: Int): Int {
         if(getItem(position).is_from_sender){
-            return 1
-        }else{
             return 2
+        }else{
+            return 1
         }
     }
 

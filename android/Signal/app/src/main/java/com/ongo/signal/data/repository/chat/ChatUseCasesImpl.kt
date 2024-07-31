@@ -40,13 +40,20 @@ class ChatUseCasesImpl @Inject constructor(
         chatRoomRepositoryImpl.insertChat(room)
     }
 
-    override suspend fun loadDetailList(id: Int): List<ChatHomeChildDto> {
+    override suspend fun loadDetailList(id: Long): List<ChatHomeChildDto> {
+        val serverMessageList = chatRepository.getAllMessages(id).body()
 
+        if(serverMessageList != null){
+            for(item in serverMessageList){
+                saveDetailList(item, id)
+                Log.d(TAG, "loadDetailList: ${item}")
+            }
+        }
 
         return chatRoomRepositoryImpl.getAllMessages(id)
     }
 
-    override suspend fun saveDetailList(message: ChatHomeChildDto, id: Int) {
+    override suspend fun saveDetailList(message: ChatHomeChildDto, id: Long) {
         chatRoomRepositoryImpl.insertMessage(message)
 
     }
@@ -61,11 +68,11 @@ class ChatUseCasesImpl @Inject constructor(
 
         stompSession?.sendText(
             "/app/chat/send",
-            "{\"message_id\":${item.message_id},\"chat_id\":${item.chat_id},\"is_from_sender\":${item.is_from_sender},\"content\":\"${item.content}\",\"is_read\":${item.read},\"send_at\":null}"
+            "{\"message_id\":${item.message_id},\"chat_id\":${item.chat_id},\"is_from_sender\":${item.is_from_sender},\"content\":\"${item.content}\",\"is_read\":${item.is_read},\"send_at\":null}"
         )
     }
 
-    override suspend fun stompGet(chatRoomNumber: Int, onSuccess: (Int) -> Unit){
+    override suspend fun stompGet(chatRoomNumber: Long, onSuccess: (Long) -> Unit){
 
         stompSession?.apply {
             val newChatMessage: Flow<StompFrame.Message> = subscribe(
@@ -84,7 +91,7 @@ class ChatUseCasesImpl @Inject constructor(
         }
     }
 
-    override suspend fun connectedWebSocket(chatRoomNumber: Int) {
+    override suspend fun connectedWebSocket(chatRoomNumber: Long) {
         try {
             stompSession = stompService.connect("ws://192.168.100.95:8080/chat")
         } catch (e: Exception) {

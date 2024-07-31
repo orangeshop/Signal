@@ -9,6 +9,7 @@ import com.ongo.signal.data.model.chat.ChatHomeChildDto
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.repository.chat.ChatUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.time.ZoneId
@@ -31,7 +32,10 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageList = MutableLiveData<List<ChatHomeChildDto>>()
     val messageList: LiveData<List<ChatHomeChildDto>> = _messageList
 
-    var chatRoomNumber = 0
+    var chatRoomNumber : Long = 0
+    var chatRoomFromID : Long = 0
+    var chatRoomToID : Long = 0
+
 
     fun clearMessageList() {
         _messageList.value = emptyList()
@@ -43,20 +47,40 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    fun saveChat(room: ChatHomeDTO) {
+//    fun saveChat(room: ChatHomeDTO) {
+//        viewModelScope.launch {
+//            chatUseCases.saveChat(room)
+//            loadChats() // Refresh the list after saving a new chat
+//        }
+//    }
+
+    /**
+     * 기존의 코드
+     * messageList <- room에서 detailList의 모든 리스트를 들고와서 갱신함
+     *
+     * 개선 방향
+     * 기존의 코드에서 messageList 이후의 메시지만 라이브 데이터에 올리는 방식으로 로직 변경
+     *
+     * 내가 보낸 메시지는 바로 viewmodel에 넣는다.
+     *
+     *
+     *
+     **/
+
+    fun loadDetailList(id: Long) {
         viewModelScope.launch {
-            chatUseCases.saveChat(room)
-            loadChats() // Refresh the list after saving a new chat
+            _messageList.value = chatUseCases.loadDetailList(id).sortedBy { it.message_id }
         }
     }
 
-    fun loadDetailList(id: Int) {
-        viewModelScope.launch {
-            _messageList.value = chatUseCases.loadDetailList(id)
-        }
-    }
-
-//    fun saveDetailList(message: ChatHomeChildDto, id: Int) {
+//    fun appendDetailList(message: ChatHomeChildDto) {
+//        val currentList = _messageList.value.orEmpty().toMutableList()
+//        currentList.add(message)
+//        _messageList.value = currentList
+//    }
+//
+//
+//    fun saveDetailList(message: ChatHomeChildDto, id: Long) {
 //        viewModelScope.launch {
 //            chatUseCases.saveDetailList(message, id)
 //            loadDetailList(id)
@@ -67,25 +91,27 @@ class ChatHomeViewModel @Inject constructor(
         return chatUseCases.timeSetting()
     }
 
-    fun stompSend(item: ChatHomeChildDto) {
+    fun stompSend(item: ChatHomeChildDto, onSuccess: () -> Unit) {
         viewModelScope.launch {
             chatUseCases.stompSend(item)
+            delay(500)
+            onSuccess()
         }
     }
 
-    fun stompGet(chatRoomNumber: Int) {
+    fun stompGet(chatRoomNumber: Long) {
         viewModelScope.launch {
             chatUseCases.stompGet(chatRoomNumber){ id ->
+                Log.d(TAG, "stompGet: id ${id}")
                loadDetailList(id)
             }
         }
     }
 
-    fun connectedWebSocket(chatRoomNumber: Int) {
+    fun connectedWebSocket(chatRoomNumber: Long) {
         viewModelScope.launch {
             chatUseCases.connectedWebSocket(chatRoomNumber)
             stompGet(chatRoomNumber)
-
         }
     }
 
@@ -96,7 +122,10 @@ class ChatHomeViewModel @Inject constructor(
     }
 
 
-    fun timeSetting(time : String) : String {
+    fun timeSetting(time : String, target: Int) : String {
+
+        Log.d(TAG, "timeSetting: ${time}")
+        
         // DateTimeFormatter을 사용하여 입력된 날짜 문자열을 ZonedDateTime 객체로 파싱
         val inputFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
         val zonedDateTime = ZonedDateTime.parse(time, inputFormatter)
@@ -112,22 +141,30 @@ class ChatHomeViewModel @Inject constructor(
         var result = ""
 
 
-        if(formattedDate.split(" ")[0] == Date(System.currentTimeMillis()).toString()){
-            result = formattedDate.split(" ")[1].substring(0,5)
-            if(result.split(":")[0].toInt() > 12){
-                result = "오후 " + formattedDate.split(" ")[1].substring(0,2).toInt().minus(12) +formattedDate.split(" ")[1].substring(2,5)
-            }else{
-                result = "오전 " + formattedDate.split(" ")[1].substring(0,5)
+        if(target == 0) {
+            if (formattedDate.split(" ")[0] == Date(System.currentTimeMillis()).toString()) {
+                result = formattedDate.split(" ")[1].substring(0, 5)
+                if (result.split(":")[0].toInt() >= 12) {
+                    result = "오후 " + formattedDate.split(" ")[1].substring(0, 2).toInt()
+                        .minus(12) + formattedDate.split(" ")[1].substring(2, 5)
+                } else {
+                    result = "오전 " + formattedDate.split(" ")[1].substring(0, 5)
+                }
+            } else if (formattedDate.split(" ")[0] == Date(System.currentTimeMillis() - 86400000).toString()) {
+                result = "어제"
+            } else {
+                result = formattedDate.split(" ")[0]
             }
         }
-        else if (formattedDate.split(" ")[0] == Date(System.currentTimeMillis() - 86400000).toString()){
-            result = "어제"
+        else if(target == 1){
+            result = formattedDate.split(" ")[1].substring(0, 5)
+            if (result.split(":")[0].toInt() >= 12) {
+                result = "오후 " + formattedDate.split(" ")[1].substring(0, 2).toInt()
+                    .minus(12) + formattedDate.split(" ")[1].substring(2, 5)
+            } else {
+                result = "오전 " + formattedDate.split(" ")[1].substring(0, 5)
+            }
         }
-        else{
-            result = formattedDate.split(" ")[0]
-        }
-
-
         return result
     }
 

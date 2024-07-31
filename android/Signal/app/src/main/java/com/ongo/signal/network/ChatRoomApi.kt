@@ -13,11 +13,11 @@ import retrofit2.http.Query
 
 interface ChatRoomApi {
     @GET("/chat-room")
-    suspend fun getChatRoomList(@Query("user_id") user_id: Int): Response<MutableList<ChatHomeDTO>>
+    suspend fun getChatRoomList(@Query("user_id") user_id: Long): Response<MutableList<ChatHomeDTO>>
 
     @POST("/chat-room/create")
     suspend fun saveChatRoom(@Body chatRoom: ChatHomeCreate) : Response<ChatHomeCreate>
 
     @GET("/chat-room/messages")
-    suspend fun getAllChatDetail(@Path("user_id") id: Int): Response<MutableList<ChatHomeChildDto>>
+    suspend fun getAllChatDetail(@Query("chat_id") chat_id: Long): Response<MutableList<ChatHomeChildDto>>
 }

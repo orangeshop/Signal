@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.DateConverter
 import com.ongo.signal.databinding.FragmentChatBinding
@@ -40,28 +41,26 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
     override fun init() {
         binding.apply {
 
+            var check = true
+
             lifecycleScope.launch {
-                while (true) {
+                while (check) {
                     chatViewModel.loadChats()
                     delay(5000)
                 }
             }
+
             chatViewModel.stompDisconnect()
             chatViewModel.clearMessageList()
 
-
-
-//            chatHomeFab.setOnClickListener {
-//                chatViewModel.saveChat(
-//                    ChatHomeDTO(
-//                        0, 1, 2, "last", "null", Date(System.currentTimeMillis())
-//                    )
-//                )
-//            }
-
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
+                    check = false
                     chatViewModel.chatRoomNumber = it.chat_id
+                    chatViewModel.chatRoomFromID = it.from_id
+                    chatViewModel.chatRoomToID = it.to_id
+                    UserSession.userId
+
                     chatViewModel.loadDetailList(it.chat_id)
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
@@ -74,7 +73,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     true
                 },
                 timeSetting = {item ->
-                    chatViewModel.timeSetting(item)
+                    chatViewModel.timeSetting(item, 0)
                 }
 
             )

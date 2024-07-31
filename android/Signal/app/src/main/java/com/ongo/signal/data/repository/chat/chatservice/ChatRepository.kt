@@ -10,6 +10,6 @@ interface ChatRepository {
 
     suspend fun saveChatRoom(chatRoom: ChatHomeCreate) : Response<ChatHomeCreate>
 
-    suspend fun getAllMessages(chat_id: Int): Response<MutableList<ChatHomeChildDto>>
+    suspend fun getAllMessages(chat_id: Long): Response<MutableList<ChatHomeChildDto>>
 
 }
