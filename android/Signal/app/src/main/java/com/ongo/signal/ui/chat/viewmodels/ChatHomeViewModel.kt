@@ -10,6 +10,11 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.repository.chat.ChatUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.sql.Date
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 private const val TAG = "ChatHomeViewModel_싸피"
@@ -90,5 +95,40 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
+
+    fun timeSetting(time : String) : String {
+        // DateTimeFormatter을 사용하여 입력된 날짜 문자열을 ZonedDateTime 객체로 파싱
+        val inputFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
+        val zonedDateTime = ZonedDateTime.parse(time, inputFormatter)
+
+        // 한국 시간대로 변환
+        val koreaZoneId = ZoneId.of("Asia/Seoul")
+        val koreaTime = zonedDateTime.withZoneSameInstant(koreaZoneId)
+
+        // 원하는 형식으로 포맷팅
+        val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formattedDate = koreaTime.format(outputFormatter)
+
+        var result = ""
+
+
+        if(formattedDate.split(" ")[0] == Date(System.currentTimeMillis()).toString()){
+            result = formattedDate.split(" ")[1].substring(0,5)
+            if(result.split(":")[0].toInt() > 12){
+                result = "오후 " + formattedDate.split(" ")[1].substring(0,2).toInt().minus(12) +formattedDate.split(" ")[1].substring(2,5)
+            }else{
+                result = "오전 " + formattedDate.split(" ")[1].substring(0,5)
+            }
+        }
+        else if (formattedDate.split(" ")[0] == Date(System.currentTimeMillis() - 86400000).toString()){
+            result = "어제"
+        }
+        else{
+            result = formattedDate.split(" ")[0]
+        }
+
+
+        return result
+    }
 
 }

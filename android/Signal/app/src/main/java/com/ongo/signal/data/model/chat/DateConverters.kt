@@ -23,11 +23,8 @@ class DateConverter {
     @TypeConverter
     fun fromTimestamp(value: Long?): Date {
         val test = value?.let { Date(it) }
-        Log.d(TAG, "fromTimestamp: ${test}")
-
         val test2 = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
         test2.time = test
-
         return test2.time
     }
 
