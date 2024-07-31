@@ -8,7 +8,6 @@ import com.ongo.signal.network.MatchApi
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepository
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.network.ChatRoomApi
-import com.ongo.signal.network.SignalApi
 import com.ongo.signal.network.StompService
 import dagger.Module
 import dagger.Provides
