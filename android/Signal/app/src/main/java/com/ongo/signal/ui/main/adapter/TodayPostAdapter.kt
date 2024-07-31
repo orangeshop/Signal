@@ -1,27 +1,29 @@
 package com.ongo.signal.ui.main.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ongo.signal.data.model.main.BoardDTO
-import com.ongo.signal.data.model.main.PostDTO
+import com.ongo.signal.data.model.main.ImageItem
 import com.ongo.signal.databinding.ItemPostBinding
+import com.ongo.signal.ui.main.MainViewModel
 
 class TodayPostAdapter(
     private val onEndReached: () -> Unit,
     private val onItemClicked: (BoardDTO) -> Unit,
-    private val onTTSClicked: (String) -> Unit
+    private val onTTSClicked: (String) -> Unit,
+    private val viewModel: MainViewModel
 ) : ListAdapter<BoardDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         private val chipAdapter = ChipAdapter()
-        private val imageAdapter = ImageAdapter({ }, false)
+        private val imageUriAdapter = ImageAdapter({ }, false)
 
         init {
             binding.rvChips.apply {
@@ -31,13 +33,14 @@ class TodayPostAdapter(
             }
             binding.rvImages.apply {
                 layoutManager =
-                    LinearLayoutManager(binding.root.context, LinearLayoutManager.VERTICAL, false)
-                adapter = imageAdapter
+                    StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                adapter = imageUriAdapter
             }
         }
 
         fun bind(board: BoardDTO) {
             binding.board = board
+            binding.viewModel = viewModel
             binding.executePendingBindings()
             binding.root.setOnClickListener {
                 onItemClicked(board)
@@ -47,8 +50,10 @@ class TodayPostAdapter(
                 onTTSClicked(board.title)
             }
 
-//            chipAdapter.submitList(board.tags)
-//            imageAdapter.submitList(board.image?.map { Uri.parse(it.toString()) }) 추후 수정
+            chipAdapter.submitList(board.tags)
+            val boardImages = viewModel.boardImages.value[board.id] ?: emptyList()
+            val imageItems = boardImages.map { ImageItem.UrlItem(it.fileUrl) }
+            imageUriAdapter.submitList(imageItems)
         }
     }
 
