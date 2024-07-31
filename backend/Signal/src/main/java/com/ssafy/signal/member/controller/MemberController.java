@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,22 +71,45 @@ public class MemberController {
     }
 
     @PostMapping("/create")
-    public ApiResponseJson createMember(@Valid @RequestBody Member member, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new IllegalArgumentException("잘못된 요청입니다.");
+    public TokenInfo createMember(@Valid @RequestBody Member member, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                throw new IllegalArgumentException("잘못된 요청입니다.");
+            }
+
+            Member member1 = memberService.saveMember(member);
+            log.info("Account successfully created: {}", member1);
+
+            TokenInfo tokenInfoDto = memberService.loginMember(member.getLoginId(), member.getPassword());
+            log.info("Token issued for account: {}", tokenInfoDto.getTokenId());
+
+            return tokenInfoDto;
+
+//            return new ApiResponseJson(HttpStatus.OK, Map.of(
+//                    "loginId", member1.getLoginId(),
+//                    "name", member1.getName()
+//            )
+//            )
+        } catch (IllegalArgumentException | BadCredentialsException exception) {
+            TokenInfo tokenInfoDto2 = memberService.loginMember(null, null);
+            return tokenInfoDto2;
+//            return new ApiResponseJson(HttpStatus.BAD_REQUEST, exception.getMessage());
         }
-
-        Member member1 = memberService.saveMember(member);
-        log.info("Account successfully created: {}", member1);
-
-        return new ApiResponseJson(HttpStatus.OK, Map.of(
-                "loginId", member1.getLoginId(),
-                "name", member1.getName()
-        ));
     }
+
+    @PostMapping("/duplicate")
+    public ResponseEntity<String> duplicateId(@RequestParam String loginId) {
+        if (memberService.chekcLoginId(loginId)) {
+            return ResponseEntity.ok("사용가능한 아이디입니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복되는 아이디가 있습니다.");
+        }
+    }
+
 
     @GetMapping("/userinfo")
     public ApiResponseJson getUserInfo(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+
         log.info("요청 아이디 : {}", userPrinciple.getLoginId());
 
         Member foundMember = memberService.getUserInfo(userPrinciple.getLoginId());

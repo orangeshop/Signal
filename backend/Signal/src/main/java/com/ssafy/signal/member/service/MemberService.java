@@ -37,6 +37,16 @@ public class MemberService implements UserDetailsService {
     private final TokenProvider tokenProvider;
     private final TokenBlacklistRepository tokenBlacklistRepository;
 
+
+    public Boolean chekcLoginId(String loginId) {
+        if (memberRepository.existsByLoginId(loginId)) {
+            log.info("이미 등록된 아이디 = {}", loginId);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public Member saveMember(Member member) {
         checkPasswordStrength(member.getPassword());
 
@@ -55,14 +65,6 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(member1);
     }
 
-    public void blacklistToken(String token, LocalDateTime expirationTime) {
-        TokenBlacklist tokenBlacklist = new TokenBlacklist(token, expirationTime);
-        tokenBlacklistRepository.save(tokenBlacklist);
-    }
-
-    public boolean isTokenBlacklisted(String token) {
-        return tokenBlacklistRepository.findByToken(token).isPresent();
-    }
 
     public TokenInfo loginMember(String loginId, String password) {
         try {
@@ -73,6 +75,7 @@ public class MemberService implements UserDetailsService {
             return tokenProvider.createToken(member);
         } catch (IllegalArgumentException | BadCredentialsException exception) {
 //            throw new IllegalArgumentException("계정이 존재하지 않거나 비밀번호가 잘못되었습니다.");
+
             return TokenInfo.builder()
                     .status(false)
                     .member(null)
@@ -84,14 +87,14 @@ public class MemberService implements UserDetailsService {
     }
 
     private void checkPassword(String password, Member member) {
-//        if (!passwordEncoder.matches(password, member.getPassword())) {
-//            log.info("일치하지 않는 비밀번호");
-//            throw new BadCredentialsException("기존 비밀번호 확인에 실패했습니다.");
-//        }
-        if (!password.equals(member.getPassword())) {
+        if (!passwordEncoder.matches(password, member.getPassword())) {
             log.info("일치하지 않는 비밀번호");
             throw new BadCredentialsException("기존 비밀번호 확인에 실패했습니다.");
         }
+//        if (!password.equals(member.getPassword())) {
+//            log.info("일치하지 않는 비밀번호");
+//            throw new BadCredentialsException("기존 비밀번호 확인에 실패했습니다.");
+//        }
     }
 
     private Member findMemberByLoginId(String loginId) {
@@ -123,10 +126,6 @@ public class MemberService implements UserDetailsService {
 
     public Member getUserInfo(String loginId) {
         return findMemberByLoginId(loginId);
-    }
-
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
     }
 
     public List<Member> getAllMembers() {
