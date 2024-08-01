@@ -111,7 +111,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun loadHotSignalBoards() {
+    fun loadHotSignalBoards() {
         viewModelScope.launch {
             try {
                 val response = boardRepository.getHotSignal()
