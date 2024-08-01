@@ -30,4 +30,15 @@ interface MatchRepository {
         flag: Int,
     ): Result<MatchAcceptResponse?>
 
+    suspend fun postProposeVideoCall(
+        fromId: Long,
+        toId: Long,
+    ): Result<MatchProposeResponse?>
+
+    suspend fun postProposeVideoCallAccept(
+        fromId: Long,
+        toId: Long,
+        flag: Int,
+    ): Result<MatchAcceptResponse?>
+
 }

@@ -13,6 +13,34 @@
         android:layout_height="match_parent"
         android:background="@color/backgroundColor">
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/background_cancel_button_ripple"
+            android:fontFamily="@font/inter_light"
+            android:paddingHorizontal="8dp"
+            android:text="영상 통화"
+            android:textColor="@color/mint"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/background_cancel_button_ripple"
+            android:fontFamily="@font/inter_light"
+            android:paddingHorizontal="8dp"
+            android:text="수락"
+            android:textColor="@color/mint"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <TextView
             android:id="@+id/tv_what"
             android:layout_width="wrap_content"
@@ -118,9 +146,9 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.45"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.45" />
 
 
         <TextView
@@ -161,9 +189,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:listitem="@layout/item_possible_user"
-            app:layout_constraintTop_toBottomOf="@id/rv_radar" />
-
+            app:layout_constraintTop_toBottomOf="@id/rv_radar"
+            tools:listitem="@layout/item_possible_user" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
