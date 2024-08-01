@@ -48,7 +48,8 @@ public class FirebaseService {
         String prefix = "backend/Signal/";
         String path = "src/main/resources/firebase/firebase_service_key.json";
 
-        boolean isRemote = true;
+        log.info("시스템 경로 : " + System.getProperty("user.dir"));
+        boolean isRemote = false;
         path = isRemote ? prefix + path : path;
 
         FileInputStream serviceAccount = new FileInputStream(path);
