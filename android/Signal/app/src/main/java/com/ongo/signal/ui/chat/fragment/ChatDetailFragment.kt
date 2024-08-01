@@ -39,11 +39,11 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
 
             chatDetailAdapter = ChatDetailAdapter(
-                timeSetting = {
+                timeSetting = {time,target ->
                     val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).apply {
                         timeZone = TimeZone.getTimeZone("UTC")
                     }
-                    val date: Date? = isoFormat.parse(it)
+                    val date: Date? = isoFormat.parse(time)
 
                     // 원하는 출력 형식의 포맷터
                     val outputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT' yyyy", Locale.ENGLISH).apply {
@@ -52,9 +52,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                     var result = ""
 
-                    if (date != null) {
+                    if (date !=     null) {
                         val time = outputFormat.format(date)
-                        result = chatViewModel.timeSetting(time, 1)
+                        result = chatViewModel.timeSetting(time, target)
 
                     }
 

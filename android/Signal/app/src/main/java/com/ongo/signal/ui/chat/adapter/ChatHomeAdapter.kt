@@ -30,6 +30,8 @@ class ChatHomeAdapter(
             binding.chatHomeCl.setOnLongClickListener {
                 chatItemLongClick(item)
             }
+
+            binding.Alarm.text = "1"
         }
     }
 

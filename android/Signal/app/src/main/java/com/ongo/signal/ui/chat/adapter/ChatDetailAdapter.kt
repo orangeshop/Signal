@@ -12,7 +12,7 @@ import com.ongo.signal.databinding.ChatDetailItemBinding
 private const val TAG = "ChatDetailAdapter_싸피"
 
 class ChatDetailAdapter(
-    private val timeSetting: (item: String) -> String
+    private val timeSetting: (item: String, target : Int) -> String
 ) : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
@@ -21,9 +21,11 @@ class ChatDetailAdapter(
             binding.chatOtherReadMeTv.visibility = View.GONE
             binding.chatOtherTimeMeTv.visibility = View.GONE
 
+            binding.today.text = timeSetting(item.sendAt, 2)
+
             binding.chatDetailItemTv.text = item.content
-            binding.chatOtherReadTv.text = item.isRead.toString()
-            binding.chatOtherTimeTv.text = timeSetting(item.sendAt)
+            binding.chatOtherReadTv.text = if(item.isRead == false) "1" else ""
+            binding.chatOtherTimeTv.text = timeSetting(item.sendAt, 0)
         }
     }
 
@@ -33,9 +35,10 @@ class ChatDetailAdapter(
             binding.chatOtherTimeTv.visibility = View.GONE
             binding.chatOtherReadTv.visibility = View.GONE
 
+            binding.today.text = timeSetting(item.sendAt, 2)
+
             binding.chatDetailItemMeTv.text = item.content
-            binding.chatOtherReadMeTv.text = item.isRead.toString()
-            binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt)
+            binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt, 0)
         }
     }
 

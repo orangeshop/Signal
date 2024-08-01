@@ -59,6 +59,10 @@ class ChatUseCasesImpl @Inject constructor(
 
     }
 
+    override suspend fun readMessage(id: Long) {
+        chatRepository.readMessage(id)
+    }
+
     override fun timeSetting(): String {
         val now = System.currentTimeMillis()
         return SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
@@ -88,6 +92,7 @@ class ChatUseCasesImpl @Inject constructor(
                 stompGetMessage.sendAt = ""
                 saveDetailList(stompGetMessage, stompGetMessage.chatId)
                 onSuccess(stompGetMessage.chatId)
+                readMessage(chatRoomNumber)
             }
         }
     }

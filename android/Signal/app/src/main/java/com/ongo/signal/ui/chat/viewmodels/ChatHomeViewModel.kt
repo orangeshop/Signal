@@ -72,6 +72,12 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
+    fun readMessage(id: Long){
+        viewModelScope.launch {
+            chatUseCases.readMessage(id)
+        }
+    }
+
 //    fun appendDetailList(message: ChatHomeChildDto) {
 //        val currentList = _messageList.value.orEmpty().toMutableList()
 //        currentList.add(message)
@@ -102,7 +108,8 @@ class ChatHomeViewModel @Inject constructor(
         viewModelScope.launch {
             chatUseCases.stompGet(chatRoomNumber){ id ->
                 Log.d(TAG, "stompGet: id ${id}")
-               loadDetailList(id)
+                loadDetailList(id)
+
             }
         }
     }
@@ -163,6 +170,8 @@ class ChatHomeViewModel @Inject constructor(
             } else {
                 result = "오전 " + formattedDate.split(" ")[1].substring(0, 5)
             }
+        }else if(target == 2){
+            result = formattedDate.split(" ")[0]
         }
         return result
     }

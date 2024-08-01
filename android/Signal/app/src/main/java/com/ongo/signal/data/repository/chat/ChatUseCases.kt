@@ -8,6 +8,7 @@ interface ChatUseCases {
     suspend fun saveChat(room: ChatHomeDTO)
     suspend fun loadDetailList(id: Long): List<ChatHomeChildDto>
     suspend fun saveDetailList(message: ChatHomeChildDto, id: Long)
+    suspend fun readMessage(id: Long)
     fun timeSetting(): String
     suspend fun stompSend(item: ChatHomeChildDto)
     suspend fun stompGet(chatRoomNumber: Long, onSuccess: (Long) -> Unit)

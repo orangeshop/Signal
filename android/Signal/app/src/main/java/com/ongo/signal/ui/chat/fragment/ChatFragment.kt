@@ -36,6 +36,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             lifecycleScope.launch {
                 while (check) {
                     chatViewModel.loadChats()
+
                     delay(5000)
                 }
             }
