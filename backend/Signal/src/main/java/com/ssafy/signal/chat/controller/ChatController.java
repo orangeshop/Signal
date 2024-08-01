@@ -44,4 +44,9 @@ public class ChatController {
     public List<MessageDto> getAllMessage(@RequestParam("chat_id") long chat_id) throws Exception {
         return chatService.getAllMessages(chat_id);
     }
+
+    @PatchMapping("/message/read")
+    public void letMessageRead(@RequestParam("chat_id") long chat_id) throws Exception {
+        chatService.LetMessageRead(chat_id);
+    }
 }

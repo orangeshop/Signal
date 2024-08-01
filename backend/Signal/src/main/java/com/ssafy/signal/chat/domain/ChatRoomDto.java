@@ -21,7 +21,23 @@ public class ChatRoomDto {
 
     private Date send_at;
 
+
+    private String from_name;
+    private String to_name;
+
     public ChatRoomEntity asChatRoomEntity() {
+        return ChatRoomEntity
+                .builder()
+                .chatId(chat_id)
+                .send_at(send_at)
+                .from_id(Member.builder().userId(from_id).build())
+                .to_id(Member.builder().userId(to_id).build())
+                .last_message(last_message == null ? "" : last_message)
+                .sender_type(sender_type == null ? SenderType.NONE : sender_type)
+                .build();
+    }
+
+    public ChatRoomEntity asChatRoomEntity(String from_name, String to_name) {
         return ChatRoomEntity
                 .builder()
                 .chatId(chat_id)

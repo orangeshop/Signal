@@ -4,6 +4,8 @@ import com.ssafy.signal.chat.domain.*;
 import com.ssafy.signal.chat.repository.ChatRoomRepository;
 import com.ssafy.signal.chat.repository.MessageRepository;
 import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
+    private final MemberRepository memberRepository;
 
     public ChatRoomDto createChatRoom(ChatRoomDto chatRoomDto) {
         return chatRoomRepository
@@ -27,10 +30,26 @@ public class ChatService {
 
     public List<ChatRoomDto> getAllChatRooms(long user_id) {
         Member userId = Member.builder().userId(user_id).build();
-        return chatRoomRepository.findChatRoomsByUserId(userId)
-                .stream()
-                .map(ChatRoomEntity::asChatRoomDto)
-                .collect(Collectors.toList());
+
+        List<ChatRoomEntity> chatRooms = chatRoomRepository.findChatRoomsByUserId(userId);
+        List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
+
+        for(ChatRoomEntity chatRoom : chatRooms) {
+            long from_id = chatRoom.getFrom_id().getUserId();
+            long to_id = chatRoom.getTo_id().getUserId();
+
+            String from_name="",to_name="";
+            if(memberRepository.findById(from_id).isPresent()) {
+                from_name = memberRepository.findById(from_id).get().getName();
+            }
+
+            if(memberRepository.findById(to_id).isPresent()) {
+                to_name = memberRepository.findById(to_id).get().getName();
+            }
+
+            chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name));
+        }
+        return chatRoomDtos;
     }
 
     public ChatRoomDto updateLastMessage(MessageDto messageDto)
@@ -64,5 +83,18 @@ public class ChatService {
 
     public ChatRoomEntity getChatRoomById(Long id) {
         return chatRoomRepository.findById(id).orElseThrow(() -> new NoSuchElementException("chat not found with id: " + id));
+    }
+
+    @Transactional
+    public void LetMessageRead(long chat_id)
+    {
+        List<MessageEntity> messages = messageRepository.findByChatRoomEntity_ChatId(chat_id);
+        if(messages == null || messages.isEmpty()) return;
+
+        for(MessageEntity message : messages)
+        {
+            message.setIs_read(true);
+            messageRepository.save(message);
+        }
     }
 }
