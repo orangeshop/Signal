@@ -45,11 +45,11 @@ public class FirebaseService {
 
     @Scheduled(fixedRate = 300000)  // 50분(3000초)마다 갱신
     public void getAccessToken() throws IOException {
-        String prefix = "backend/Signal/";
+        String prefix = "S11P12D211/backend/Signal/";
         String path = "src/main/resources/firebase/firebase_service_key.json";
 
         log.info("시스템 경로 : " + System.getProperty("user.dir"));
-        boolean isRemote = false;
+        boolean isRemote = true;
         path = isRemote ? prefix + path : path;
 
         FileInputStream serviceAccount = new FileInputStream(path);
