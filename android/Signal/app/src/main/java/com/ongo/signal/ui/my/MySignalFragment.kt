@@ -16,16 +16,16 @@ class MySignalFragment : BaseFragment<FragmentMySignalBinding>(R.layout.fragment
     private val previewPostAdapter = PreviewPostAdapter(onClick = {})
 
     private val mockTags = listOf(
-        TagDTO(tagId = "1", tag = "Technology"),
-        TagDTO(tagId = "2", tag = "Health"),
-        TagDTO(tagId = "3", tag = "Science"),
-        TagDTO(tagId = "4", tag = "Education"),
-        TagDTO(tagId = "5", tag = "Travel"),
-        TagDTO(tagId = "6", tag = "Food"),
-        TagDTO(tagId = "7", tag = "Art"),
-        TagDTO(tagId = "8", tag = "Sports"),
-        TagDTO(tagId = "9", tag = "Finance"),
-        TagDTO(tagId = "10", tag = "Entertainment")
+        TagDTO(tagId = 1, tag = "Technology"),
+        TagDTO(tagId = 2, tag = "Health"),
+        TagDTO(tagId = 3, tag = "Science"),
+        TagDTO(tagId = 4, tag = "Education"),
+        TagDTO(tagId = 5, tag = "Travel"),
+        TagDTO(tagId = 6, tag = "Food"),
+        TagDTO(tagId = 7, tag = "Art"),
+        TagDTO(tagId = 8, tag = "Sports"),
+        TagDTO(tagId = 9, tag = "Finance"),
+        TagDTO(tagId = 10, tag = "Entertainment")
     )
 
     private val mockData = List(10) { index ->

@@ -58,10 +58,24 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_margin="15dp"
+                    android:onClick="@{()->fragment.searchKeyword()}"
                     android:src="@drawable/baseline_search_24"
                     app:layout_constraintBottom_toBottomOf="@id/et_search"
                     app:layout_constraintEnd_toEndOf="@id/et_search"
                     app:layout_constraintTop_toTopOf="@id/et_search" />
+
+                <ImageView
+                    android:id="@+id/iv_refresh"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="15dp"
+                    android:onClick="@{()->fragment.loadAllBoards()}"
+                    android:src="@drawable/baseline_refresh_24"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/et_search"
+                    app:layout_constraintEnd_toEndOf="@id/et_search"
+                    app:layout_constraintTop_toTopOf="@id/et_search"
+                    tools:visibility="visible" />
 
                 <HorizontalScrollView
                     android:id="@+id/hsv_chip"
@@ -76,63 +90,80 @@
                         android:id="@+id/chipGroup"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/et_search">
+                        app:layout_constraintTop_toBottomOf="@id/et_search"
+                        app:singleSelection="true">
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag1"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag1)}"
+                            android:text="@string/tag1" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag2"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag1)}"
+                            android:text="@string/tag2" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag3"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag3)}"
+                            android:text="@string/tag3" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag4"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag4)}"
+                            android:text="@string/tag4" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag5"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag5)}"
+                            android:text="@string/tag5" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag6"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag6)}"
+                            android:text="@string/tag6" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag7"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag7)}"
+                            android:text="@string/tag7" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag8"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag8)}"
+                            android:text="@string/tag8" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/tag9"
+                            style="@style/CustomChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag9)}"
+                            android:text="@string/tag9" />
 
                     </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>

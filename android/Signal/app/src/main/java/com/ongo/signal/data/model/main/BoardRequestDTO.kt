@@ -4,5 +4,6 @@ data class BoardRequestDTO(
     val userId: Int,
     val writer: String,
     val title: String,
-    val content: String
+    val content: String,
+    val tags: List<TagDTO>
 )

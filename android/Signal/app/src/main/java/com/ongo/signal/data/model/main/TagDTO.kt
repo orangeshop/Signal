@@ -1,6 +1,8 @@
 package com.ongo.signal.data.model.main
 
+import com.google.gson.annotations.SerializedName
+
 data class TagDTO(
-    val tagId: String,
-    val tag: String
+    @SerializedName("id") val tagId: Int,
+    @SerializedName("tagName") val tag: String
 )

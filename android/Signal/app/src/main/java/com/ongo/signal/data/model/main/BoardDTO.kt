@@ -1,10 +1,11 @@
 package com.ongo.signal.data.model.main
 
+import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class BoardDTO(
-    val comments: ArrayList<CommentDTOItem>,
+    val comments: ArrayList<CommentDTOItem>? = arrayListOf(),
     val content: String,
     val createdDate: String? = null,
     val id: Int = 0,
@@ -14,7 +15,9 @@ data class BoardDTO(
     val title: String,
     val type: Int? = 0,
     val userId: Int,
-    val writer: String
+    val writer: String,
+    @SerializedName("fileUrls") val imageUrls: List<String>? = listOf(),
+    val tags: List<TagDTO>? = emptyList()
 ) {
     fun getFormattedCreatedDate(): String? {
         return createdDate?.let { formatDate(it) }
@@ -31,6 +34,6 @@ data class BoardDTO(
     }
 
     fun getCommentCount(): Int {
-        return comments.size
+        return comments?.size ?: 0
     }
 }
