@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -23,6 +24,17 @@ public class TokenBlacklistService {
     }
 
     public boolean isTokenBlacklisted(String token) {
-        return tokenBlacklistRepository.findByToken(token).isPresent();
+        token = token.substring(7);
+        Optional<TokenBlacklist> tokenBlacklistOptional = tokenBlacklistRepository.findByToken(token);
+        if (tokenBlacklistOptional.isPresent()) {
+            TokenBlacklist tokenBlacklist = tokenBlacklistOptional.get();
+            if (tokenBlacklist.getExpirationTime().isAfter(LocalDateTime.now())) {
+                return true;
+            } else {
+                log.debug("Removing expired token from blacklist: {}", token);
+                tokenBlacklistRepository.delete(tokenBlacklist);
+            }
+        }
+        return false;
     }
 }

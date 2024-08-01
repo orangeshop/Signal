@@ -82,6 +82,8 @@ public class MemberService implements UserDetailsService {
                     .tokenId(null)
                     .accessToken(null)
                     .accessTokenExpireTime(null)
+                    .refreshToken(null)
+                    .refreshTokenExpireTime(null)
                     .build();
         }
     }
