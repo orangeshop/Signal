@@ -9,7 +9,7 @@ import com.ongo.signal.data.model.chat.ChatHomeChildDto
 
 @Dao
 interface ChatDetailDao {
-    @Query("SELECT * FROM chat_detail_table where chat_id = :id")
+    @Query("SELECT * FROM chat_detail_table where chatId = :id")
     suspend fun getAll(id : Long): List<ChatHomeChildDto>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
