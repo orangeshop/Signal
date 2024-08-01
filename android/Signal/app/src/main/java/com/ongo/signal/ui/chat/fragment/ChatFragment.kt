@@ -8,9 +8,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.CreateChatRoom
+import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.model.chat.ChatHomeCreate
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.DateConverter
+import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.databinding.FragmentChatBinding
+import com.ongo.signal.network.ChatRoomApi
 import com.ongo.signal.ui.chat.CustomDialog
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
@@ -40,41 +45,41 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
     override fun init() {
         binding.apply {
 
+            var check = true
+
             lifecycleScope.launch {
-                while (true) {
+                while (check) {
                     chatViewModel.loadChats()
                     delay(5000)
                 }
             }
+
             chatViewModel.stompDisconnect()
             chatViewModel.clearMessageList()
 
-
-
-//            chatHomeFab.setOnClickListener {
-//                chatViewModel.saveChat(
-//                    ChatHomeDTO(
-//                        0, 1, 2, "last", "null", Date(System.currentTimeMillis())
-//                    )
-//                )
-//            }
-
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
+                    check = false
                     chatViewModel.chatRoomNumber = it.chat_id
+                    chatViewModel.chatRoomFromID = it.from_id
+                    chatViewModel.chatRoomToID = it.to_id
+                    UserSession.userId
+
                     chatViewModel.loadDetailList(it.chat_id)
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {
+                    // ChatRepositoryImpl의 싱글턴 인스턴스를 가져옴
+//                    CreateChatRoom.Create(8,9)
 
                     // 롱 클릭시 커스텀 다이어 로그가 나오게 하여 삭제 여부 및 다른 옵션을 선택할 수 있도록 합니다.
-                    CustomDialog.show(requireContext()){
-//                        chatViewModel.deleteChat(it)
-                    }
+//                    CustomDialog.show(requireContext()){
+////                        chatViewModel.deleteChat(it)
+//                    }
                     true
                 },
                 timeSetting = {item ->
-                    chatViewModel.timeSetting(item)
+                    chatViewModel.timeSetting(item, 0)
                 }
 
             )

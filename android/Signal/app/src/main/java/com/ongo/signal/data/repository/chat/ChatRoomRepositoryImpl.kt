@@ -16,7 +16,7 @@ class ChatRoomRepositoryImpl @Inject constructor(
         chatHomeDao.insertAll(room)
     }
 
-    suspend fun getAllMessages(ID: Int): List<ChatHomeChildDto> = chatDetailDao.getAll(ID)
+    suspend fun getAllMessages(ID: Long): List<ChatHomeChildDto> = chatDetailDao.getAll(ID)
 
     suspend fun insertMessage(message: ChatHomeChildDto) {
         chatDetailDao.insertMessage(message)

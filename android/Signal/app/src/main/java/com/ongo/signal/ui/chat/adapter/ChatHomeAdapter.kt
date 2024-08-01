@@ -18,7 +18,7 @@ class ChatHomeAdapter(
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
 
-            binding.chatItemTitle.text = item.to_id.toString()
+            binding.chatItemTitle.text = item.to_name
 
             binding.content.text = item.last_message
 
@@ -31,8 +31,6 @@ class ChatHomeAdapter(
             binding.chatHomeCl.setOnLongClickListener {
                 chatItemLongClick(item)
             }
-
-
         }
     }
 
