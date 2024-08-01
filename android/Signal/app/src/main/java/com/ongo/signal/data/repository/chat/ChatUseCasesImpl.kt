@@ -94,7 +94,7 @@ class ChatUseCasesImpl @Inject constructor(
 
     override suspend fun connectedWebSocket(chatRoomNumber: Long) {
         try {
-            stompSession = stompService.connect("ws://192.168.100.95:8080/chat")
+            stompSession = stompService.connect("ws://13.125.47.74:8080/chat")
         } catch (e: Exception) {
             Log.d(TAG, "ConnectedWebSocket: $e")
         }

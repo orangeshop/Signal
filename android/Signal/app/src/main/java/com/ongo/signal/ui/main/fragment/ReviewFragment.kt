@@ -54,6 +54,7 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     }
 
     fun onReview() {
+
         findNavController().navigate(R.id.action_reviewFragment_to_matchReviewFragment)
     }
 }

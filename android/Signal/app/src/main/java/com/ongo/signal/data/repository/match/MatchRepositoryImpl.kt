@@ -1,6 +1,7 @@
 package com.ongo.signal.data.repository.match
 
 import com.ongo.signal.data.model.match.MatchAcceptResponse
+import com.ongo.signal.data.model.match.MatchHistoryResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -13,16 +14,16 @@ import javax.inject.Singleton
 
 @Singleton
 class MatchRepositoryImpl @Inject constructor(
-    private val signalApi: MatchApi
+    private val matchApi: MatchApi
 ) : MatchRepository {
     override suspend fun getPost(id: Int): Response<Int> {
-        return signalApi.getMainPost(id)
+        return matchApi.getMainPost(id)
     }
 
     override suspend fun postMatchRegistration(
         request: MatchRegistrationRequest
     ): Result<MatchRegistrationResponse?> {
-        val req = signalApi.postMatchRegistration(request)
+        val req = matchApi.postMatchRegistration(request)
         Timber.d("매칭 등록 $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -32,11 +33,11 @@ class MatchRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteMatchRegistration(userId: Long): Response<Int> {
-        return signalApi.deleteMatchRegistration(userId)
+        return matchApi.deleteMatchRegistration(userId)
     }
 
     override suspend fun getMatchPossibleUser(locationId: Long): Result<List<MatchPossibleResponse>?> {
-        val req = signalApi.getMatchPossibleUser(locationId)
+        val req = matchApi.getMatchPossibleUser(locationId)
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
@@ -49,7 +50,7 @@ class MatchRepositoryImpl @Inject constructor(
         toId: Long,
     ): Result<MatchProposeResponse?> {
 
-        val req = signalApi.postProposeMatch(fromId, toId)
+        val req = matchApi.postProposeMatch(fromId, toId)
         Timber.d("postProposeMatch ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -63,7 +64,7 @@ class MatchRepositoryImpl @Inject constructor(
         toId: Long,
         flag: Int
     ): Result<MatchAcceptResponse?> {
-        val req = signalApi.postProposeAccept(fromId, toId, flag)
+        val req = matchApi.postProposeAccept(fromId, toId, flag)
         Timber.d("postProposeAccept ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -76,7 +77,7 @@ class MatchRepositoryImpl @Inject constructor(
         fromId: Long,
         toId: Long
     ): Result<MatchProposeResponse?> {
-        val req = signalApi.postProposeVideoCall(fromId,toId)
+        val req = matchApi.postProposeVideoCall(fromId,toId)
         Timber.d("영통 응답 확인 ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -90,8 +91,18 @@ class MatchRepositoryImpl @Inject constructor(
         toId: Long,
         flag: Int
     ): Result<MatchAcceptResponse?> {
-        val req = signalApi.postVideoCallAccept(fromId, toId, flag)
+        val req = matchApi.postVideoCallAccept(fromId, toId, flag)
         Timber.d("영통 수락 확인 ${req}")
+        return if (req.isSuccessful) {
+            Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
+
+    override suspend fun getMatchHistory(userId: Long): Result<MatchHistoryResponse?> {
+        val req = matchApi.getMatchHistory(userId)
+        Timber.d("매칭 이력 확인 $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
