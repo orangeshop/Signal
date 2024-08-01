@@ -43,9 +43,15 @@ public class FirebaseService {
         }
     }
 
-    @Scheduled(fixedRate = 300000)  // 50분(3000초)마다 갱신
+    @Scheduled(fixedRate = 1000000)  // 50분(3000초)마다 갱신
     public void getAccessToken() throws IOException {
-        FileInputStream serviceAccount = new FileInputStream("src/main/resources/firebase/firebase_service_key.json");
+        String prefix = "backend/Signal/";
+        String path = "backend/Signal/src/main/resources/firebase/firebase_service_key.json";
+
+        boolean isRemote = true;
+        path = isRemote ? path : prefix + path;
+
+        FileInputStream serviceAccount = new FileInputStream("backend/Signal/src/main/resources/firebase/firebase_service_key.json");
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccount)
                 .createScoped("https://www.googleapis.com/auth/cloud-platform");
         googleCredentials.refreshIfExpired();
