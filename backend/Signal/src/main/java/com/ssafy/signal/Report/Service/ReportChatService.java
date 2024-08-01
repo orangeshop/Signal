@@ -1,4 +1,4 @@
-package com.ssafy.signal.report.service;
+package com.ssafy.signal.report.Service;
 
 import com.ssafy.signal.report.Dto.ReportChatRequestDto;
 import com.ssafy.signal.report.Entity.ReportChat;

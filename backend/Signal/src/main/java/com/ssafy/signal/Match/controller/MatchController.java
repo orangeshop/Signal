@@ -1,12 +1,7 @@
 package com.ssafy.signal.match.controller;
 
-<<<<<<< HEAD:backend/Signal/src/main/java/com/ssafy/signal/Match/controller/MatchController.java
-import com.ssafy.signal.Match.domain.*;
-import com.ssafy.signal.Match.service.MatchService;
-=======
 import com.ssafy.signal.match.domain.*;
 import com.ssafy.signal.match.service.MatchService;
->>>>>>> backend:backend/Signal/src/main/java/com/ssafy/signal/match/controller/MatchController.java
 import com.ssafy.signal.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

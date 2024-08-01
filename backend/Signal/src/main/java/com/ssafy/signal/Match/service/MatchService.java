@@ -73,10 +73,6 @@ public class MatchService {
             System.out.println(user + " regist " + userTokens.get(user));
         }
         return TokenResponse.builder().user_id(user_id).token(token).build();
-<<<<<<< HEAD:backend/Signal/src/main/java/com/ssafy/signal/Match/service/MatchService.java
-
-=======
->>>>>>> backend:backend/Signal/src/main/java/com/ssafy/signal/match/service/MatchService.java
     }
 
     public MatchResponse proposeMatch(long from_id,long to_id) throws Exception{
