@@ -10,6 +10,9 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springdoc.core.providers.ObjectMapperProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +30,7 @@ public class FirebaseService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/signal-d51bd/messages:send";
     public final ObjectMapperProvider objectMapperProvider;
     private String accessToken;
-
+    @Autowired private ResourceLoader resourceLoader;
     Map<Long,String> userTokens = new ConcurrentHashMap<>();
 
     public FirebaseService(ObjectMapperProvider objectMapperProvider) {
@@ -46,22 +50,10 @@ public class FirebaseService {
 
     @Scheduled(fixedRate = 300000)  // 50분(3000초)마다 갱신
     public void getAccessToken() throws IOException {
-        String prefix = "S11P12D211/backend/Signal/";
-        String path = "src/main/resources/firebase/firebase_service_key.json";
+        Resource resource = resourceLoader.getResource("classpath:firebase/firebase_service_key.json");
+        InputStream inputStream = resource.getInputStream();
 
-        log.info("시스템 경로 : " + System.getProperty("user.dir"));
-        File dir = new File(System.getProperty("user.dir"));
-
-        String[] filenames = dir.list();
-        for (String filename : filenames) {
-            log.info("filename : " + filename);
-        }
-
-        boolean isRemote = true;
-        path = isRemote ? prefix + path : path;
-
-        FileInputStream serviceAccount = new FileInputStream(path);
-        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccount)
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(inputStream)
                 .createScoped("https://www.googleapis.com/auth/cloud-platform");
         googleCredentials.refreshIfExpired();
         accessToken = googleCredentials.getAccessToken().getTokenValue();
