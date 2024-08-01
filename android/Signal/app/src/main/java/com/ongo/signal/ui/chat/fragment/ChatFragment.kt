@@ -1,32 +1,18 @@
 package com.ongo.signal.ui.chat.fragment
 
-import android.os.Build.VERSION_CODES.P
-import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
-import com.ongo.signal.data.model.chat.ChatHomeCreate
-import com.ongo.signal.data.model.chat.ChatHomeDTO
-import com.ongo.signal.data.model.chat.DateConverter
-import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.databinding.FragmentChatBinding
-import com.ongo.signal.network.ChatRoomApi
-import com.ongo.signal.ui.chat.CustomDialog
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.sql.Date
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 private const val TAG = "ChatFragment_싸피"
 
@@ -60,12 +46,12 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
                     check = false
-                    chatViewModel.chatRoomNumber = it.chat_id
-                    chatViewModel.chatRoomFromID = it.from_id
-                    chatViewModel.chatRoomToID = it.to_id
+                    chatViewModel.chatRoomNumber = it.chatId
+                    chatViewModel.chatRoomFromID = it.fromId
+                    chatViewModel.chatRoomToID = it.toId
                     UserSession.userId
 
-                    chatViewModel.loadDetailList(it.chat_id)
+                    chatViewModel.loadDetailList(it.chatId)
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {

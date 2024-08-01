@@ -42,7 +42,7 @@ class ChatHomeViewModel @Inject constructor(
 
     fun loadChats() {
         viewModelScope.launch {
-            _liveList.value = chatUseCases.loadChats().sortedByDescending { it.send_at }
+            _liveList.value = chatUseCases.loadChats().sortedByDescending { it.sendAt }
         }
     }
 
@@ -68,7 +68,7 @@ class ChatHomeViewModel @Inject constructor(
 
     fun loadDetailList(id: Long) {
         viewModelScope.launch {
-            _messageList.value = chatUseCases.loadDetailList(id).sortedBy { it.message_id }
+            _messageList.value = chatUseCases.loadDetailList(id).sortedBy { it.messageId }
         }
     }
 

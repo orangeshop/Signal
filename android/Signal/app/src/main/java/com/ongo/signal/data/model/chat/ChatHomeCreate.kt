@@ -1,6 +1,8 @@
 package com.ongo.signal.data.model.chat
 
+import com.google.gson.annotations.SerializedName
+
 data class ChatHomeCreate(
-    val from_id : Int,
-    val to_id : Int,
+    @SerializedName("from_id") val fromId : Int,
+    @SerializedName("to_id")val toId : Int,
 )
