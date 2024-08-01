@@ -1,6 +1,6 @@
-package com.ssafy.signal.Match.repository;
+package com.ssafy.signal.match.repository;
 
-import com.ssafy.signal.Match.domain.LocationEntity;
+import com.ssafy.signal.match.domain.LocationEntity;
 import com.ssafy.signal.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 

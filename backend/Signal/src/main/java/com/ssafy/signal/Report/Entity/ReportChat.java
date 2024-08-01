@@ -1,4 +1,4 @@
-package com.ssafy.signal.Report.Entity;
+package com.ssafy.signal.report.Entity;
 
 import com.ssafy.signal.chat.domain.ChatRoomEntity;
 import com.ssafy.signal.member.domain.Member;

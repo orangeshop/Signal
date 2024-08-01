@@ -1,4 +1,4 @@
-package com.ssafy.signal.Report.Entity;
+package com.ssafy.signal.report.Entity;
 
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.domain.CommentEntity;

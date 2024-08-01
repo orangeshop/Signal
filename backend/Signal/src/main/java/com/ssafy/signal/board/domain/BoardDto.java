@@ -26,12 +26,9 @@ public class BoardDto {
     private LocalDateTime modifiedDate;
     private List<CommentDto> comments;
     private List<TagDto> tags;
+    private List<String> fileUrls;
 
     public BoardEntity toEntity(){
-        for(TagDto tag : tags)
-        {
-            System.out.println(tag.getTagName());
-        }
         return  BoardEntity.builder()
                 .id(id)
                 .writer(writer)
@@ -45,5 +42,17 @@ public class BoardDto {
                 .build();
     }
 
-
+    public BoardEntity toEntity(List<CommentDto> comments){
+        return  BoardEntity.builder()
+                .id(id)
+                .writer(writer)
+                .title(title)
+                .content(content)
+                .reference(reference)
+                .liked(liked)
+                .type(type)
+                .tags(tags.stream().map(TagDto::toEntity).toList())
+                .user(Member.builder().userId(userId).build()) // Member 객체 참조
+                .build();
+    }
 }

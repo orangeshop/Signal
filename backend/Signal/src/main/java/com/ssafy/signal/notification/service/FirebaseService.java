@@ -38,7 +38,7 @@ public class FirebaseService {
 
     @Scheduled(fixedRate = 3000000)  // 50분(3000초)마다 갱신
     public void getAccessToken() throws IOException {
-        FileInputStream serviceAccount = new FileInputStream("src/main/resources/firebase/firebase_service_key.json");
+        FileInputStream serviceAccount = new FileInputStream("backend/Signal/src/main/resources/firebase/firebase_service_key.json");
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccount)
                 .createScoped("https://www.googleapis.com/auth/cloud-platform");
         googleCredentials.refreshIfExpired();
@@ -68,7 +68,7 @@ public class FirebaseService {
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
-        FcmMessage.Data data = new FcmMessage.Data("from data " + title,body);
+        FcmMessage.Data data = new FcmMessage.Data(title,body);
         Message message = new FcmMessage.Message(data,targetToken);
         FcmMessage fcmMessage = new FcmMessage(false,message);
         return objectMapperProvider.jsonMapper().writeValueAsString(fcmMessage);

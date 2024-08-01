@@ -1,4 +1,4 @@
-package com.ssafy.signal.Match.domain;
+package com.ssafy.signal.match.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

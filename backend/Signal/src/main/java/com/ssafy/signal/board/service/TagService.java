@@ -1,43 +1,84 @@
 package com.ssafy.signal.board.service;
 
-import com.ssafy.signal.board.domain.BoardDto;
-import com.ssafy.signal.board.domain.BoardEntity;
-import com.ssafy.signal.board.domain.TagEntity;
+import com.ssafy.signal.board.domain.*;
 import com.ssafy.signal.board.repository.BoardRepository;
+import com.ssafy.signal.board.repository.CommentRepository;
 import com.ssafy.signal.board.repository.TagRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class TagService {
-    private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
-    private static final int PAGE_POST_COUNT = 4; // 한 페이지에 존재하는 게시글 수
-
     private final TagRepository tagRepository;
-    private final BoardRepository boardRepository;
-    //private final BoardTagRepository boardTagRepository;
+    private final CommentRepository commentRepository; // CommentRepository 주입
 
-    public List<BoardDto>getBoardByTagRecent(String tag,int page,int limit) {
+    @Transactional
+    public List<BoardDto> getBoardByTagRecent(String tag, int page, int limit) {
         TagEntity tagEntity = tagRepository.findByTagName(tag);
-        List<BoardEntity> boards = tagEntity.getBoards().stream().toList();
-        boards.sort(Comparator.comparing(BoardEntity::getCreatedDate).reversed());
 
-        return boards.stream().map(BoardEntity::asBoardDto)
-                .toList()
-                .subList(page * limit, page * limit + limit);
+        if (tagEntity == null) {
+            return Collections.emptyList(); // 태그가 없는 경우 빈 리스트 반환
+        }
+
+        // 태그에 해당하는 게시글을 생성 날짜 기준으로 내림차순 정렬
+        List<BoardDto> boards = tagEntity.getBoard().stream()
+                .map(BoardEntity::asBoardDto)
+                .sorted(Comparator.comparing(BoardDto::getCreatedDate).reversed())
+                .collect(Collectors.toList());
+
+        // 페이지네이션 처리
+        int start = page * limit;
+        int end = Math.min(start + limit, boards.size());
+        if (start >= end) {
+            return Collections.emptyList(); // 페이지가 범위를 벗어난 경우 빈 리스트 반환
+        }
+        List<BoardDto> pagedBoards = boards.subList(start, end);
+
+        // 각 게시글에 댓글 설정
+        for (BoardDto board : pagedBoards) {
+            long id = board.getId();
+            List<CommentDto> comments = commentRepository
+                    .findByBoardId(id)
+                    .stream()
+                    .map(CommentEntity::asCommentDto)
+                    .collect(Collectors.toList());
+
+            board.setComments(comments);
+        }
+
+        return pagedBoards;
     }
 
-    public List<BoardDto>getBoardByTagHot(String tag,int page,int limit) {
+    public List<BoardDto> getBoardByTagHot(String tag, int page, int limit) {
         TagEntity tagEntity = tagRepository.findByTagName(tag);
-        List<BoardEntity> boards = tagEntity.getBoards().stream().filter(board->board.getLiked()>=10).toList();
-        boards.sort(Comparator.comparing(BoardEntity::getLiked).reversed());
 
-        return boards.stream().map(BoardEntity::asBoardDto)
-                .toList()
-                .subList(page * limit, page * limit + limit);
+        List<BoardDto> boards = new ArrayList<>(tagEntity.getBoard().stream()
+                .map(BoardEntity::asBoardDto)
+                .filter(board -> board.getLiked() >= 10) // 좋아요 수가 10 이상인 게시물만 필터링
+                .collect(Collectors.toList()));
+        boards.sort(Comparator.comparing(BoardDto::getLiked).reversed());
+
+        boards = boards.subList(page * limit, Math.min(page * limit + limit, boards.size()));
+
+        for (BoardDto board : boards) {
+            long id = board.getId();
+            List<CommentDto> comments = commentRepository
+                    .findByBoardId(id)
+                    .stream()
+                    .map(CommentEntity::asCommentDto)
+                    .collect(Collectors.toList());
+
+            board.setComments(comments);
+        }
+
+        return boards;
     }
 }

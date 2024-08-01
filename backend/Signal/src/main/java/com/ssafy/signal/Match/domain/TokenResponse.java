@@ -1,4 +1,5 @@
-package com.ssafy.signal.Match.domain;
+package com.ssafy.signal.match.domain;
+
 
 import lombok.*;
 

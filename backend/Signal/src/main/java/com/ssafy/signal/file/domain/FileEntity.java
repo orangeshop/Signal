@@ -19,8 +19,8 @@ public class FileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "board_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "board_id" )
     private BoardEntity board;
 
     @ManyToOne
@@ -43,4 +43,16 @@ public class FileEntity {
 
     @Column(name = "file_name", nullable = false)
     private String fileName;
+
+    public FileDto asFileDto()
+    {
+        return FileDto
+                .builder()
+                .fileName(fileName)
+                .fileType(fileType)
+                .fileUrl(fileUrl)
+                .boardId(board.getId())
+                .id(id)
+                .build();
+    }
 }

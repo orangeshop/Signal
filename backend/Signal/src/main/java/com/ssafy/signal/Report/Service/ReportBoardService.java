@@ -1,8 +1,8 @@
-package com.ssafy.signal.Report.Service;
+package com.ssafy.signal.report.Service;
 
-import com.ssafy.signal.Report.Dto.ReportRequestDto;
-import com.ssafy.signal.Report.Entity.ReportBoard;
-import com.ssafy.signal.Report.Repository.ReportBoardRepository;
+import com.ssafy.signal.report.Dto.ReportRequestDto;
+import com.ssafy.signal.report.Entity.ReportBoard;
+import com.ssafy.signal.report.Repository.ReportBoardRepository;
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.domain.CommentEntity;
 import com.ssafy.signal.board.service.BoardService;

@@ -1,8 +1,8 @@
-package com.ssafy.signal.Report.Service;
+package com.ssafy.signal.report.service;
 
-import com.ssafy.signal.Report.Dto.ReportChatRequestDto;
-import com.ssafy.signal.Report.Entity.ReportChat;
-import com.ssafy.signal.Report.Repository.ReportChatRepository;
+import com.ssafy.signal.report.Dto.ReportChatRequestDto;
+import com.ssafy.signal.report.Entity.ReportChat;
+import com.ssafy.signal.report.Repository.ReportChatRepository;
 import com.ssafy.signal.chat.service.ChatService;
 import com.ssafy.signal.member.service.MemberService;
 import lombok.RequiredArgsConstructor;

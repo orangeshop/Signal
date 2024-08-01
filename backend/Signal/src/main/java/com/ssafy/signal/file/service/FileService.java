@@ -2,9 +2,11 @@ package com.ssafy.signal.file.service;
 
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.service.BoardService;
+import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.member.service.MemberService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FileService {
@@ -68,7 +72,7 @@ public class FileService {
     public void deleteFile(Long id) throws  IOException{
 
             // 파일 이름으로 파일 정보 찾기
-            Optional<FileEntity> fileEntityOptional = fileRepository.findById(id);
+                Optional<FileEntity> fileEntityOptional = fileRepository.findById(id);
             if (fileEntityOptional.isPresent()) {
                 FileEntity fileEntity = fileEntityOptional.get();
 
@@ -78,5 +82,19 @@ public class FileService {
                 // DB에서 파일 정보 삭제
                 fileRepository.delete(fileEntity);
             }
+    }
+
+    public List<FileDto> getAllFiles() {
+        List<FileEntity> fileEntities = fileRepository.findAll();
+        return fileEntities.stream()
+                .map(FileEntity::asFileDto)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<String> getFilesByBoardId(Long boardId) {
+        return fileRepository.findByBoardId(boardId).stream()
+                .map(FileEntity::getFileUrl)
+                .collect(Collectors.toList());
     }
 }

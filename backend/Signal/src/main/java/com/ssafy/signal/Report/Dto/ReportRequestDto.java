@@ -1,9 +1,7 @@
-package com.ssafy.signal.Report.Dto;
+package com.ssafy.signal.report.Dto;
 
-import com.ssafy.signal.member.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
-import org.w3c.dom.Text;
 
 @Getter
 @Setter

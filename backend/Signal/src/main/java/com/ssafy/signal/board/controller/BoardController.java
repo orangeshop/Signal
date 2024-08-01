@@ -2,16 +2,14 @@ package com.ssafy.signal.board.controller;
 
 import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.service.BoardService;
+import com.ssafy.signal.board.service.DuplicateService;
 import com.ssafy.signal.file.service.S3Uploader;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,21 +20,32 @@ public class BoardController {
     private BoardService boardService;
 
     @Autowired
+    private DuplicateService duplicateService;
+    @Autowired
     private final S3Uploader s3Uploader;
 
-    /* 게시글 목록 */
+    /* 게시글 목록 조회(오늘의 시그널) */
     @GetMapping("/board")
-    public ResponseEntity<List<BoardDto>> list(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(defaultValue = "3") int limit) {
+    public ResponseEntity<List<BoardDto>> listToday(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(defaultValue = "3") int limit) {
         List<BoardDto> boardList = boardService.getBoardList(pageNum, limit);
         Integer[] pageList = boardService.getPageList(pageNum);
 
         return ResponseEntity.ok().body(boardList);
     }
 
+    /* 게시글 목록 조회(화제의 시그널) */
+    @GetMapping("/board/liked")
+    public ResponseEntity<List<BoardDto>> listLiked(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(defaultValue = "3") int limit) {
+        List<BoardDto> boardList = boardService.getBoardListLiked(pageNum, limit);
+        Integer[] pageList = boardService.getPageList(pageNum); // 페이지 목록 필요시 사용할 수 있습니다.
+
+        return ResponseEntity.ok().body(boardList);
+    }
     /* 게시글 상세 */
     @GetMapping("/board/{no}")
     public BoardDto detail(@PathVariable("no") Long no) {
-        BoardDto boardDto = boardService.getPost(no);
+        boardService.incrementReferenceCount(no);
+        BoardDto boardDto = duplicateService.getPost(no);
         return boardDto;
     }
 
@@ -49,9 +58,8 @@ public class BoardController {
 
     /* 게시글 수정 */
     @PutMapping("/board/update/{no}")
-    public BoardDto update(@PathVariable Long no, BoardDto boardDto) {
+    public BoardDto update(@PathVariable Long no, @RequestBody  BoardDto boardDto) {
         return boardService.updatePost(no, boardDto);
-
     }
 
     /* 게시글 삭제 */
@@ -67,4 +75,12 @@ public class BoardController {
         List<BoardDto> boardDtoList = boardService.searchPosts(keyword);
         return ResponseEntity.ok().body(boardDtoList);
     }
+
+    /* 좋아요 버튼 클릭 */
+    @PostMapping("/board/{no}/like")
+    public ResponseEntity<String> likePost(@PathVariable("no") Long no) {
+        boardService.incrementLikedCount(no);  // 좋아요 카운트 증가
+        return ResponseEntity.ok("Liked Successfully");
+    }
+
 }

@@ -1,6 +1,6 @@
-package com.ssafy.signal.Report.Repository;
+package com.ssafy.signal.report.Repository;
 
-import com.ssafy.signal.Report.Entity.ReportChat;
+import com.ssafy.signal.report.Entity.ReportChat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReportChatRepository extends JpaRepository<ReportChat, Long> {

@@ -1,11 +1,11 @@
-package com.ssafy.signal.Report.Controller;
+package com.ssafy.signal.report.Controller;
 
-import com.ssafy.signal.Report.Dto.ReportChatRequestDto;
-import com.ssafy.signal.Report.Dto.ReportRequestDto;
-import com.ssafy.signal.Report.Entity.ReportBoard;
-import com.ssafy.signal.Report.Entity.ReportChat;
-import com.ssafy.signal.Report.Service.ReportBoardService;
-import com.ssafy.signal.Report.Service.ReportChatService;
+import com.ssafy.signal.report.Dto.ReportChatRequestDto;
+import com.ssafy.signal.report.Dto.ReportRequestDto;
+import com.ssafy.signal.report.Entity.ReportBoard;
+import com.ssafy.signal.report.Entity.ReportChat;
+import com.ssafy.signal.report.Service.ReportBoardService;
+import com.ssafy.signal.report.Service.ReportChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

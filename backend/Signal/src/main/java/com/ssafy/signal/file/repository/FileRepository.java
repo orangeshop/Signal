@@ -11,4 +11,5 @@ import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
     FileEntity findAllByUser(Member userId);
+    List<FileEntity> findByBoardId(Long boardId);
 }
