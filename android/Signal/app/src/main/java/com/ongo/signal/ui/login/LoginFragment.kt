@@ -48,14 +48,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                             UserSession.userId = signalUser.userId
                             UserSession.userName = signalUser.userName
                             UserSession.accessToken = signalUser.accessToken
+                            UserSession.refreshToken = signalUser.refreshToken
 
-                            Timber.d(" 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
+                            Timber.d("로그인 완료 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
 
                             viewModel.saveUserData(
                                 userId = signalUser.userId,
                                 userName = signalUser.userName,
                                 profileImage = "",
-                                accessToken = signalUser.accessToken
+                                accessToken = signalUser.accessToken,
+                                refreshToken = signalUser.refreshToken
                             )
                             val intent = Intent(requireContext(), MainActivity::class.java)
                             startActivity(intent)
