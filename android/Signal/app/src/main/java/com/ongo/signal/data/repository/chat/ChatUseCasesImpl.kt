@@ -69,7 +69,7 @@ class ChatUseCasesImpl @Inject constructor(
 
         stompSession?.sendText(
             "/app/chat/send",
-            "{\"message_id\":${item.message_id},\"chat_id\":${item.chat_id},\"is_from_sender\":${item.is_from_sender},\"content\":\"${item.content}\",\"is_read\":${item.is_read},\"send_at\":null}"
+            "{\"message_id\":${item.messageId},\"chat_id\":${item.chatId},\"is_from_sender\":${item.isFromSender},\"content\":\"${item.content}\",\"is_read\":${item.isRead},\"send_at\":null}"
         )
     }
 
@@ -85,9 +85,9 @@ class ChatUseCasesImpl @Inject constructor(
             newChatMessage.collect {
                 val json = it.bodyAsText
                 val stompGetMessage: ChatHomeChildDto = Gson().fromJson(json, ChatHomeChildDto::class.java)
-                stompGetMessage.send_at = ""
-                saveDetailList(stompGetMessage, stompGetMessage.chat_id)
-                onSuccess(stompGetMessage.chat_id)
+                stompGetMessage.sendAt = ""
+                saveDetailList(stompGetMessage, stompGetMessage.chatId)
+                onSuccess(stompGetMessage.chatId)
             }
         }
     }

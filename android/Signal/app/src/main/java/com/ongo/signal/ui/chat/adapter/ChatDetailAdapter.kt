@@ -22,8 +22,8 @@ class ChatDetailAdapter(
             binding.chatOtherTimeMeTv.visibility = View.GONE
 
             binding.chatDetailItemTv.text = item.content
-            binding.chatOtherReadTv.text = item.is_read.toString()
-            binding.chatOtherTimeTv.text = timeSetting(item.send_at)
+            binding.chatOtherReadTv.text = item.isRead.toString()
+            binding.chatOtherTimeTv.text = timeSetting(item.sendAt)
         }
     }
 
@@ -34,8 +34,8 @@ class ChatDetailAdapter(
             binding.chatOtherReadTv.visibility = View.GONE
 
             binding.chatDetailItemMeTv.text = item.content
-            binding.chatOtherReadMeTv.text = item.is_read.toString()
-            binding.chatOtherTimeMeTv.text = timeSetting(item.send_at)
+            binding.chatOtherReadMeTv.text = item.isRead.toString()
+            binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt)
         }
     }
 
@@ -60,7 +60,7 @@ class ChatDetailAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if(getItem(position).is_from_sender){
+        if(getItem(position).isFromSender){
             return 2
         }else{
             return 1
@@ -70,7 +70,7 @@ class ChatDetailAdapter(
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<ChatHomeChildDto>() {
             override fun areItemsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
-                return oldItem.chat_id == newItem.chat_id
+                return oldItem.chatId == newItem.chatId
             }
 
             override fun areContentsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
