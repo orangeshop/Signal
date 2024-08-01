@@ -40,7 +40,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val runtimePermissions = arrayOf(
-        Manifest.permission.POST_NOTIFICATIONS,
         Manifest.permission.CAMERA,
     )
 
