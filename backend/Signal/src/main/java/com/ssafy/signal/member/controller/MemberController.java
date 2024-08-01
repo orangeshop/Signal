@@ -2,10 +2,12 @@ package com.ssafy.signal.member.controller;
 
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberLoginDto;
+import com.ssafy.signal.member.json.duplicateJson;
 import com.ssafy.signal.member.jwt.JwtUtil;
 import com.ssafy.signal.member.jwt.json.ApiResponseJson;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
+import com.ssafy.signal.member.jwt.token.dto.TokenRequest;
 import com.ssafy.signal.member.principle.UserPrinciple;
 import com.ssafy.signal.member.service.MemberService;
 
@@ -97,12 +99,12 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/duplicate")
-    public ResponseEntity<String> duplicateId(@RequestParam String loginId) {
+    @PostMapping("/duplicate/{loginId}")
+    public duplicateJson duplicateId(@PathVariable("loginId") String loginId) {
         if (memberService.chekcLoginId(loginId)) {
-            return ResponseEntity.ok("사용가능한 아이디입니다.");
+            return new duplicateJson(false);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복되는 아이디가 있습니다.");
+            return new duplicateJson(true);
         }
     }
 
@@ -124,7 +126,7 @@ public class MemberController {
 
 
     @DeleteMapping("/drop")
-    public ResponseEntity<String> deleteMember(@RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<String> deleteMember(@RequestHeader("RefreshToken") String bearerToken) {
         String token = tokenProvider.resolveToken(bearerToken);
         if (token != null) {
             // 현재 로그인한 사용자를 확인하고 회원 탈퇴 처리
@@ -163,7 +165,7 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<Void> logout(@RequestHeader("RefreshToken") String bearerToken) {
         String token = tokenProvider.resolveToken(bearerToken);
         log.debug("Extracted token for logout: {}", token);
         if (token != null) {
@@ -173,6 +175,17 @@ public class MemberController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(403).body(null);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenInfo> refreshToken(@RequestHeader("RefreshToken") String tokenRequest) {
+        try {
+//            String token = tokenProvider.resolveToken(tokenRequest);
+            TokenInfo tokenInfo = tokenProvider.refreshToken(tokenRequest);
+            return ResponseEntity.ok(tokenInfo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 }
 

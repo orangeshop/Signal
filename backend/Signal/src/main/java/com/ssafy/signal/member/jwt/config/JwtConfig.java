@@ -4,6 +4,8 @@ import com.ssafy.signal.member.jwt.JwtAccessDeniedHandler;
 import com.ssafy.signal.member.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.signal.member.jwt.JwtProperties;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
+import com.ssafy.signal.member.repository.MemberRepository;
+import com.ssafy.signal.member.service.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
 public class JwtConfig {
 
     @Bean
-    public TokenProvider tokenProvider(JwtProperties jwtProperties) {
-        return new TokenProvider(jwtProperties.getSecret(), jwtProperties.getAccessTokenValidityInSeconds());
+    public TokenProvider tokenProvider(JwtProperties jwtProperties, MemberRepository memberRepository, TokenBlacklistService tokenBlacklistService) {
+        return new TokenProvider(jwtProperties.getSecret(), jwtProperties.getAccessTokenValidityInSeconds(), memberRepository, tokenBlacklistService);
     }
 
     @Bean

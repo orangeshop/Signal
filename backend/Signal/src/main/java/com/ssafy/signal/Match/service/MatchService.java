@@ -60,10 +60,17 @@ public class MatchService {
                 .asLocationDto();
     }
 
-    public String registToken(long user_id, String token) {
+    public TokenResponse registToken(long user_id, String token) {
         userTokens.put(user_id,token);
+        System.out.println("Now " + user_id +" "+token);
+        System.out.println();
+        System.out.println();
+        for(long user : userTokens.keySet())
+        {
+            System.out.println(user + " regist " + userTokens.get(user));
+        }
+        return TokenResponse.builder().user_id(user_id).token(token).build();
 
-        return "{ \"user_id\": "+user_id+", \"token\": "+token+"}";
     }
 
     public MatchResponse proposeMatch(long from_id,long to_id) throws Exception{

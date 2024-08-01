@@ -1,9 +1,6 @@
 package com.ssafy.signal.Match.controller;
 
-import com.ssafy.signal.Match.domain.LocationDto;
-import com.ssafy.signal.Match.domain.MatchListResponse;
-import com.ssafy.signal.Match.domain.MatchResponse;
-import com.ssafy.signal.Match.domain.ReviewDto;
+import com.ssafy.signal.Match.domain.*;
 import com.ssafy.signal.Match.service.MatchService;
 import com.ssafy.signal.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +48,7 @@ public class MatchController {
     }
 
     @PostMapping("/token/regist")
-    public String registerToken(@RequestParam("userId") long user_id,@RequestParam("token") String token) {
+    public TokenResponse registerToken(@RequestParam("userId") long user_id, @RequestParam("token") String token) {
         return matchService.registToken(user_id, token);
     }
 

@@ -8,7 +8,7 @@ public final class ResponseStatusCode {
     public static final int LOGIN_FAILED = 420;
     public static final int SERVER_ERROR = 500;
 
-    public static final int TOKEN_EXPIRED = 4011;
+    public static final int TOKEN_EXPIRED = 401;
     public static final int TOKEN_IS_BLACKLIST = 4012;
     public static final int TOKEN_WRONG_SIGNATURE = 4013;
     public static final int TOKEN_HASH_NOT_SUPPORTED = 4014;
@@ -18,5 +18,4 @@ public final class ResponseStatusCode {
     private ResponseStatusCode() {
 
     }
-
 }
