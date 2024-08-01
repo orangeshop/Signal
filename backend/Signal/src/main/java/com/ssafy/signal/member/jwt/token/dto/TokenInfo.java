@@ -14,6 +14,8 @@ public class TokenInfo {
     private Boolean status;
     private String accessToken;
     private Date accessTokenExpireTime;
+    private String refreshToken;
+    private Date refreshTokenExpireTime;
     private Member member;
     private String tokenId;
 }
