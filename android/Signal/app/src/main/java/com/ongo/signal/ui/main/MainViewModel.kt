@@ -57,8 +57,6 @@ class MainViewModel @Inject constructor(
     private val _selectedTag = MutableStateFlow<String?>(null)
     val selectedTag: StateFlow<String?> = _selectedTag
 
-    private var isSearch: Boolean = false
-
     init {
         loadBoards()
         loadHotSignalBoards()
@@ -66,7 +64,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun loadBoards() {
-        if (isSearch) return
         viewModelScope.launch {
             try {
                 val response = boardRepository.readBoard()
@@ -136,37 +133,35 @@ class MainViewModel @Inject constructor(
     fun loadHotAndRecentSignalBoardsByTag(tag: String, page: Int, limit: Int) {
         viewModelScope.launch {
             try {
-                val hotSignalDeferred =
-                    async { boardRepository.getHotSignalByTag(tag, page, limit) }
-                val recentSignalDeferred =
-                    async { boardRepository.getRecentSignalByTag(tag, page, limit) }
-
-                Timber.d(tag)
-                Timber.d(page.toString())
-                Timber.d(limit.toString())
-                Timber.d(hotSignalDeferred.toString())
+                val hotSignalDeferred = async { boardRepository.getHotSignalByTag(tag, page, limit) }
+                val recentSignalDeferred = async { boardRepository.getRecentSignalByTag(tag, page, limit) }
 
                 val hotSignalResponse = hotSignalDeferred.await()
                 val recentSignalResponse = recentSignalDeferred.await()
 
-                if (hotSignalResponse.isSuccessful) {
+                Timber.d("Hot signal response status: ${hotSignalResponse.isSuccessful}, body: ${hotSignalResponse.body()}")
+                Timber.d("Recent signal response status: ${recentSignalResponse.isSuccessful}, body: ${recentSignalResponse.body()}")
+
+                if (hotSignalResponse.isSuccessful && recentSignalResponse.isSuccessful) {
                     val hotSignalList = hotSignalResponse.body() ?: emptyList()
+                    val recentSignalList = recentSignalResponse.body() ?: emptyList()
+
                     if (_hotSignalBoards.value != hotSignalList) {
                         _hotSignalBoards.value = hotSignalList
-                        Timber.d(_hotSignalBoards.value.toString())
+                        Timber.d("Updated hot signal boards: ${_hotSignalBoards.value}")
                     }
-                } else {
-                    Timber.d(hotSignalResponse.errorBody().toString())
-                }
 
-                if (recentSignalResponse.isSuccessful) {
-                    val recentSignalList = recentSignalResponse.body() ?: emptyList()
                     if (_boards.value != recentSignalList) {
                         _boards.value = recentSignalList
-                        Timber.d(_boards.value.toString())
+                        Timber.d("Updated boards: ${_boards.value}")
                     }
                 } else {
-                    Timber.d(recentSignalResponse.errorBody().toString())
+                    if (!hotSignalResponse.isSuccessful) {
+                        Timber.d("Hot signal response error: ${hotSignalResponse.errorBody().toString()}")
+                    }
+                    if (!recentSignalResponse.isSuccessful) {
+                        Timber.d("Recent signal response error: ${recentSignalResponse.errorBody().toString()}")
+                    }
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Failed to load hot and recent signal boards by tag")
@@ -174,8 +169,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
+
     fun setSelectedTag(tag: String) {
         _selectedTag.value = tag
+        Timber.d(_selectedTag.value)
     }
 
     fun clearSelectedTag() {
@@ -183,7 +180,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun searchBoard(keyword: String) {
-        isSearch = true
         viewModelScope.launch {
             try {
                 val response = boardRepository.searchBoard(keyword)
@@ -202,7 +198,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun clearSearch() {
-        isSearch = false
         loadBoards()
     }
 
