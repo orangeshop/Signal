@@ -1,6 +1,5 @@
 package com.ongo.signal.ui.chat.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -18,11 +17,11 @@ class ChatHomeAdapter(
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
 
-            binding.chatItemTitle.text = item.to_id.toString()
+            binding.chatItemTitle.text = item.toName
 
-            binding.content.text = item.last_message
+            binding.content.text = item.lastMessage
 
-            binding.Time.text = timeSetting(item.send_at.toString())
+            binding.Time.text = timeSetting(item.sendAt.toString())
 
             binding.chatHomeCl.setOnClickListener {
                 chatItemClick(item)
@@ -31,8 +30,6 @@ class ChatHomeAdapter(
             binding.chatHomeCl.setOnLongClickListener {
                 chatItemLongClick(item)
             }
-
-
         }
     }
 
@@ -55,7 +52,7 @@ class ChatHomeAdapter(
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<ChatHomeDTO>() {
             override fun areItemsTheSame(oldItem: ChatHomeDTO, newItem: ChatHomeDTO): Boolean {
-                return oldItem.chat_id == newItem.chat_id
+                return oldItem.chatId == newItem.chatId
             }
 
             override fun areContentsTheSame(oldItem: ChatHomeDTO, newItem: ChatHomeDTO): Boolean {

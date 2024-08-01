@@ -11,7 +11,9 @@ import com.ongo.signal.databinding.ChatDetailItemBinding
 
 private const val TAG = "ChatDetailAdapter_싸피"
 
-class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolder>(diffUtil) {
+class ChatDetailAdapter(
+    private val timeSetting: (item: String) -> String
+) : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeChildDto){
@@ -20,8 +22,8 @@ class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolde
             binding.chatOtherTimeMeTv.visibility = View.GONE
 
             binding.chatDetailItemTv.text = item.content
-            binding.chatOtherReadTv.text = item.read.toString()
-            binding.chatOtherTimeTv.text = item.send_at
+            binding.chatOtherReadTv.text = item.isRead.toString()
+            binding.chatOtherTimeTv.text = timeSetting(item.sendAt)
         }
     }
 
@@ -32,8 +34,8 @@ class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolde
             binding.chatOtherReadTv.visibility = View.GONE
 
             binding.chatDetailItemMeTv.text = item.content
-            binding.chatOtherReadMeTv.text = item.read.toString()
-            binding.chatOtherTimeMeTv.text = item.send_at
+            binding.chatOtherReadMeTv.text = item.isRead.toString()
+            binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt)
         }
     }
 
@@ -58,17 +60,17 @@ class ChatDetailAdapter() : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolde
     }
 
     override fun getItemViewType(position: Int): Int {
-        if(getItem(position).is_from_sender){
-            return 1
-        }else{
+        if(getItem(position).isFromSender){
             return 2
+        }else{
+            return 1
         }
     }
 
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<ChatHomeChildDto>() {
             override fun areItemsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
-                return oldItem.chat_id == newItem.chat_id
+                return oldItem.chatId == newItem.chatId
             }
 
             override fun areContentsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
