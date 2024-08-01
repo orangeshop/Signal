@@ -106,7 +106,7 @@
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:onClick="@{()->fragment.onChipClicked(@string/tag1)}"
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag2)}"
                             android:text="@string/tag2" />
 
                         <com.google.android.material.chip.Chip
