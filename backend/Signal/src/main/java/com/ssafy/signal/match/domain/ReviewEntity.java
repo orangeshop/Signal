@@ -22,7 +22,7 @@ public class ReviewEntity {
 
     @ManyToOne
     @JoinColumn(name="writer_id")
-    private Member writer_id;
+    private Member writerId;
 
     @Column
     private int star;
@@ -33,7 +33,7 @@ public class ReviewEntity {
                 .userId(user_id)
                 .build();
         this.content = content;
-        this.writer_id = Member.builder()
+        this.writerId = Member.builder()
                 .userId(writer_id)
                 .build();
         this.star = star;
@@ -44,7 +44,7 @@ public class ReviewEntity {
                 review_id,
                 userId.getUserId(),
                 content,
-                writer_id.getUserId(),
+                writerId.getUserId(),
                 star
         );
     }

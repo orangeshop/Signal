@@ -4,12 +4,14 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
 @NoArgsConstructor
 @Entity
+@Setter
 @Table(name="message")
 public class MessageEntity {
     @Id

@@ -5,7 +5,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 import com.ssafy.signal.notification.domain.FcmMessage.Message;
 import com.ssafy.signal.notification.domain.FcmMessage;
+import com.ssafy.signal.notification.domain.TokenResponse;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springdoc.core.providers.ObjectMapperProvider;
 import org.springframework.http.HttpHeaders;
@@ -14,12 +16,17 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 public class FirebaseService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/signal-d51bd/messages:send";
     public final ObjectMapperProvider objectMapperProvider;
     private String accessToken;
+
+    Map<Long,String> userTokens = new ConcurrentHashMap<>();
 
     public FirebaseService(ObjectMapperProvider objectMapperProvider) {
         this.objectMapperProvider = objectMapperProvider;
@@ -36,9 +43,9 @@ public class FirebaseService {
         }
     }
 
-    @Scheduled(fixedRate = 3000000)  // 50분(3000초)마다 갱신
+    @Scheduled(fixedRate = 300000)  // 50분(3000초)마다 갱신
     public void getAccessToken() throws IOException {
-        FileInputStream serviceAccount = new FileInputStream("backend/Signal/src/main/resources/firebase/firebase_service_key.json");
+        FileInputStream serviceAccount = new FileInputStream("src/main/resources/firebase/firebase_service_key.json");
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccount)
                 .createScoped("https://www.googleapis.com/auth/cloud-platform");
         googleCredentials.refreshIfExpired();
@@ -49,10 +56,11 @@ public class FirebaseService {
         return accessToken;
     }
 
-    public String sendMessageTo(String targetToken,String title, String body) throws IOException
+    public String sendMessageTo(long user_id,String title, String body) throws IOException
     {
+        String targetToken = userTokens.get(user_id);
+        if(targetToken == null) return null;
         String message = makeMessage(targetToken,title,body);
-        System.out.println("msg 내용 : "+message);
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json;charset=utf-8"));
         Request request = new Request.Builder()
@@ -63,7 +71,7 @@ public class FirebaseService {
                 .build();
         Response response = client.newCall(request).execute();
 
-        System.out.println(response.body().string());
+        log.info(response.body().string());
         return message;
     }
 
@@ -72,5 +80,11 @@ public class FirebaseService {
         Message message = new FcmMessage.Message(data,targetToken);
         FcmMessage fcmMessage = new FcmMessage(false,message);
         return objectMapperProvider.jsonMapper().writeValueAsString(fcmMessage);
+    }
+
+    public TokenResponse registToken(long user_id, String token) {
+        userTokens.put(user_id,token);
+        log.info("User "+user_id+" has been registered.");
+        return TokenResponse.builder().user_id(user_id).token(token).build();
     }
 }

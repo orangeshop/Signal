@@ -47,11 +47,6 @@ public class MatchController {
         return matchService.getMatchUser(locationId);
     }
 
-    @PostMapping("/token/regist")
-    public TokenResponse registerToken(@RequestParam("userId") long user_id, @RequestParam("token") String token) {
-        return matchService.registToken(user_id, token);
-    }
-
     @PostMapping("/match/propose")
     public MatchResponse proposeMatch(@RequestParam("fromId") long from_id, @RequestParam("toId") long to_id)throws Exception {
         return matchService.proposeMatch(from_id,to_id);

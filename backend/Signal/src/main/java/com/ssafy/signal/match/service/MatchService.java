@@ -9,6 +9,7 @@ import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.notification.service.FirebaseService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class MatchService {
     private static final int EARTH_RADIUS = 6371;
@@ -31,7 +33,26 @@ public class MatchService {
 
     Map<Long,String> userTokens = new ConcurrentHashMap<>();
 
-    public ReviewDto writeReview(ReviewDto reviewDto) {
+    public ReviewDto writeReview(ReviewDto reviewDto){
+        List<MatchDto> matchUsers = Optional.ofNullable(
+                        matchRepository.findAllByUserId(Member.builder().userId(reviewDto.getWriter_id()).build())
+                ).orElse(new ArrayList<>())
+                .stream()
+                .map(MatchEntity::asMatchDto)
+                .filter(match -> (reviewDto.getUser_id() == match.getProposeId() &&
+                        reviewDto.getWriter_id() == match.getAcceptId())
+                        ||
+                        (reviewDto.getUser_id() == match.getAcceptId() &&
+                                reviewDto.getWriter_id() == match.getProposeId())
+                )
+                .toList();
+
+        if(matchUsers.isEmpty())
+        {
+            log.error("No match found for user " + reviewDto.getWriter_id());
+            return null;
+        }
+
         return reviewRepository
                 .save(reviewDto.asReviewEntity())
                 .asReviewDto();
@@ -63,18 +84,6 @@ public class MatchService {
                 .asLocationDto();
     }
 
-    public TokenResponse registToken(long user_id, String token) {
-        userTokens.put(user_id,token);
-        System.out.println("Now " + user_id +" "+token);
-        System.out.println();
-        System.out.println();
-        for(long user : userTokens.keySet())
-        {
-            System.out.println(user + " regist " + userTokens.get(user));
-        }
-        return TokenResponse.builder().user_id(user_id).token(token).build();
-    }
-
     public MatchResponse proposeMatch(long from_id,long to_id) throws Exception{
         Member from = Member.builder().userId(from_id).build();
         Member to = Member.builder().userId(to_id).build();
@@ -84,10 +93,12 @@ public class MatchService {
         from = locationRepository.findByUserId(from).getUserId();
         to = locationRepository.findByUserId(to).getUserId();
 
-        String token = userTokens.get(to.getUserId());
+        String body = makeMessageBody(from,to);
+        firebaseService.sendMessageTo(
+                to.getUserId(),
+                "요청",
+                body);
 
-        if(token != null)
-            firebaseService.sendMessageTo(token,"요청",from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment());
 
 
         return MatchResponse
@@ -105,7 +116,6 @@ public class MatchService {
     public MatchResponse acceptMatch(long from_id,long to_id, int flag) throws Exception{
         Member from = Member.builder().userId(from_id).build();
         Member to = Member.builder().userId(to_id).build();
-        System.out.println(from_id + " send to " + to_id);
         if(!locationRepository.existsByUserId(from) || !locationRepository.existsByUserId(to)) throw new Exception("User Not Found");
 
 
@@ -122,13 +132,18 @@ public class MatchService {
             saveMatch(from_id,to_id);
         }
 
-        String token = userTokens.get(to.getUserId());
 
-
-        if(token != null && flag == 1)
-            firebaseService.sendMessageTo(token,"승낙",from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment());
-        if(token != null && flag == 0)
-            firebaseService.sendMessageTo(token,"거부",from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment());
+        String body = makeMessageBody(from,to);
+        if(flag == 1)
+            firebaseService.sendMessageTo(
+                    to.getUserId(),
+                    "요청",
+                    body);
+        else if(flag == 0)
+            firebaseService.sendMessageTo(
+                    to.getUserId(),
+                    "요청",
+                    body);
 
         return MatchResponse
                 .builder()
@@ -144,10 +159,12 @@ public class MatchService {
         Member from = memberRepository.findById(from_id).orElseThrow();
         Member to = memberRepository.findById(to_id).orElseThrow();
 
-        String token = userTokens.get(to.getUserId());
 
-        if(token != null)
-            firebaseService.sendMessageTo(token,"요청",from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment());
+        String body = makeMessageBody(from,to);
+        firebaseService.sendMessageTo(
+                to.getUserId(),
+                "요청",
+                body);
 
 
         return MatchResponse
@@ -165,14 +182,18 @@ public class MatchService {
         Member from = memberRepository.findById(from_id).orElseThrow();
         Member to = memberRepository.findById(to_id).orElseThrow();
 
-        String token = userTokens.get(to.getUserId());
+        String body = makeMessageBody(from,to);
 
-        if (token != null) {
-            if (flag == 1) {
-                firebaseService.sendMessageTo(token, "승낙", from.getUserId() + " " + to.getUserId() + " " + from.getName() + " " + from.getType() + " " + from.getComment());
-            } else if (flag == 0) {
-                firebaseService.sendMessageTo(token, "거부", from.getUserId() + " " + to.getUserId() + " " + from.getName() + " " + from.getType() + " " + from.getComment());
-            }
+        if (flag == 1) {
+            firebaseService.sendMessageTo(
+                    to.getUserId(),
+                    "승낙",
+                    body);
+        } else if (flag == 0) {
+            firebaseService.sendMessageTo(
+                    to.getUserId(),
+                    "거부",
+                    body);
         }
 
         return MatchResponse
@@ -250,7 +271,9 @@ public class MatchService {
                 ))
                 .filter(matchListResponse ->
                         matchListResponse.getDist() <= NEAR_DISTANCE &&
-                        matchListResponse.getLocation().getLocation_id() != location_id)
+                        matchListResponse.getLocation().getLocation_id() != location_id &&
+                        myLocation.getUser_id() != matchListResponse.getLocation().getUser_id()
+                        )
                 .toList();
     }
 
@@ -286,15 +309,38 @@ public class MatchService {
                 .asMatchDto();
     }
 
+    private boolean filterMatch(MatchDto matchDto, List<ReviewDto> reviews,long user_id)
+    {
+        long target_id = matchDto.getProposeId() == user_id ? matchDto.getAcceptId() : matchDto.getProposeId();
+        for(ReviewDto reviewDto : reviews)
+        {
+            if(reviewDto.getUser_id() == target_id) return false;
+        }
+        return true;
+    }
     public List<MatchDto> getMatch(long user_id)
     {
+        List<ReviewDto>  reviews = Optional.ofNullable(
+                reviewRepository.findAllByWriterId(Member.builder().userId(user_id).build()
+                ))
+                .orElse(new ArrayList<>())
+                .stream()
+                .map(ReviewEntity::asReviewDto)
+                .toList();
+
+
         return matchRepository
                 .findAllByUserId(Member.builder()
                         .userId(user_id)
                         .build())
                 .stream()
                 .map(MatchEntity::asMatchDto)
+                .filter(matchDto -> filterMatch(matchDto,reviews,user_id))
                 .toList();
     }
 
+    private String makeMessageBody(Member from,Member to)
+    {
+        return from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment();
+    }
 }
