@@ -47,6 +47,7 @@
     <string name="tag7">음식</string>
     <string name="tag8">스포츠</string>
     <string name="tag9">가족</string>
+    <string name="my_comment_signal">내가 댓글을 남긴 시그널</string>
 
     <string-array name="tag_array">
         <item>자유</item>

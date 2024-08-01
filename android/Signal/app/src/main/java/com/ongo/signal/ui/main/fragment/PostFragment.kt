@@ -12,12 +12,10 @@ import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.CommentDTOItem
-import com.ongo.signal.data.model.main.ImageItem
 import com.ongo.signal.databinding.FragmentPostBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.ChipAdapter
 import com.ongo.signal.ui.main.adapter.CommentAdapter
-import com.ongo.signal.ui.main.adapter.ImageAdapter
 import com.ongo.signal.ui.main.adapter.PostImageAdapter
 import com.ongo.signal.util.PopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,10 +78,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     val comments = it.comments
                     val tags = it.tags
 
+                    Timber.d(comments.toString())
                     imageAdapter.submitList(imageUrls)
                     commentAdapter.submitList(comments)
                     chipAdapter.submitList(tags)
-                    Timber.d("recycle")
                 }
             }
         }
