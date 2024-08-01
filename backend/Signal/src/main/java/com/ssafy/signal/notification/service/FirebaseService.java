@@ -43,13 +43,13 @@ public class FirebaseService {
         }
     }
 
-    @Scheduled(fixedRate = 1000000)  // 50분(3000초)마다 갱신
+    @Scheduled(fixedRate = 300000)  // 50분(3000초)마다 갱신
     public void getAccessToken() throws IOException {
         String prefix = "backend/Signal/";
-        String path = "backend/Signal/src/main/resources/firebase/firebase_service_key.json";
+        String path = "src/main/resources/firebase/firebase_service_key.json";
 
         boolean isRemote = true;
-        path = isRemote ? path : prefix + path;
+        path = isRemote ? prefix + path : path;
 
         FileInputStream serviceAccount = new FileInputStream(path);
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccount)
