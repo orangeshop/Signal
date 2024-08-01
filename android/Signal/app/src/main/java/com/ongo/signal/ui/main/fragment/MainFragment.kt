@@ -215,7 +215,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private fun setUpAdapter() {
         todayPostAdapter = TodayPostAdapter(
             onEndReached = {
-                viewModel.loadBoards()
+//                viewModel.loadBoards()
             },
             onItemClicked = { board ->
                 viewModel.selectBoard(board)
@@ -256,7 +256,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (!recyclerView.canScrollVertically(1)) {
-                        viewModel.loadBoards()
+//                        viewModel.loadBoards()
                     }
                 }
             })

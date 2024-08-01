@@ -103,10 +103,18 @@
     <fragment
         android:id="@+id/reviewFragment"
         android:name="com.ongo.signal.ui.main.fragment.ReviewFragment"
-        android:label="ReviewFragment" />
+        android:label="ReviewFragment" >
+        <action
+            android:id="@+id/action_reviewFragment_to_matchReviewFragment"
+            app:destination="@id/matchReviewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mySignalFragment"
         android:name="com.ongo.signal.ui.my.MySignalFragment"
         android:label="MySignalFragment" />
+    <fragment
+        android:id="@+id/matchReviewFragment"
+        android:name="com.ongo.signal.ui.match.MatchReviewFragment"
+        android:label="MatchReviewFragment" />
 
 </navigation>
