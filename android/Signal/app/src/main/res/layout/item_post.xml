@@ -6,20 +6,28 @@
     <data>
 
         <variable
-            name="post"
-            type="com.ongo.signal.data.model.main.PostDTO" />
+            name="board"
+            type="com.ongo.signal.data.model.main.BoardDTO" />
+
+        <variable
+            name="viewModel"
+            type="com.ongo.signal.ui.main.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="#202020">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="@{post.title}"
+            android:layout_marginEnd="-10dp"
+            android:text="@{board.title}"
             android:textColor="@color/white"
             android:textSize="36sp"
             android:textStyle="bold"
@@ -33,18 +41,19 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginTop="15dp"
-            app:imageUrl="@{post.profile}"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             tools:src="@drawable/baseline_more_vert_mint_24" />
+        <!--            app:imageUrl="@{post.profile}"-->
+
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{post.name}"
+            android:text="@{board.writer}"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
             app:layout_constraintStart_toEndOf="@id/iv_profile"
             app:layout_constraintTop_toTopOf="@id/iv_profile"
@@ -54,9 +63,9 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:text="@{board.getFormattedCreatedDate()}"
             android:textColor="@color/white"
-            app:dateText="@{post.date}"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_name"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             tools:text="2024-07-16" />
@@ -66,43 +75,48 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@{post.content}"
+            android:text="@{board.content}"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="26sp"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/iv_profile"
             tools:text="Sample content goes here." />
 
-        <LinearLayout
-            android:id="@+id/ll_images"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_images"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:spanCount="2"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_content" />
+            app:layout_constraintTop_toBottomOf="@id/tv_content"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_image_post" />
 
-        <LinearLayout
-            android:id="@+id/ll_chips"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chips"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
-            app:layout_constraintTop_toBottomOf="@id/ll_images" />
+            app:layout_constraintTop_toBottomOf="@id/rv_images"
+            tools:listitem="@layout/item_chip"
+            tools:orientation="horizontal" />
 
         <ImageView
             android:id="@+id/iv_thumb"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginTop="15dp"
+            android:onClick="@{() -> viewModel.onThumbClick(board)}"
             android:padding="4dp"
             android:src="@drawable/baseline_thumb_up_alt_white_24"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
-            app:layout_constraintTop_toBottomOf="@id/ll_chips"
+            app:layout_constraintTop_toBottomOf="@id/rv_chips"
             tools:src="@drawable/baseline_thumb_up_alt_white_24" />
 
         <TextView
@@ -110,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{String.valueOf(post.likeCount)}"
+            android:text="@{String.valueOf(board.liked)}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
@@ -119,8 +133,8 @@
 
         <ImageView
             android:id="@+id/iv_comment"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginStart="8dp"
             android:padding="4dp"
             android:src="@drawable/baseline_chat_white_24"
@@ -133,7 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{String.valueOf(post.commentCount)}"
+            android:text="@{String.valueOf(board.getCommentCount())}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
@@ -146,21 +160,8 @@
             android:layout_height="32dp"
             android:src="@drawable/baseline_headset_mint_24"
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
-            app:layout_constraintEnd_toEndOf="@id/tv_date"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintTop_toTopOf="@id/iv_comment" />
-
-
-        <View
-            android:id="@+id/view_line"
-            android:layout_width="0dp"
-            android:layout_height="0.7dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:background="@color/gray"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_thumb" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

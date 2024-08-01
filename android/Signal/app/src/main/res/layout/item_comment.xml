@@ -5,9 +5,15 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="comment"
-            type="com.ongo.signal.data.model.main.CommentDTO" />
+            type="com.ongo.signal.data.model.main.CommentDTOItem" />
+
+        <variable
+            name="currentUserId"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,16 +26,17 @@
             android:layout_height="28dp"
             android:layout_margin="10dp"
             android:layout_marginTop="15dp"
-            app:imageUrl="@{comment.userProfile}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/baseline_more_vert_mint_24" />
+
+        <!--        app:imageUrl="@{comment.userProfile}"-->
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{comment.userName}"
+            android:text="@{comment.writer}"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
@@ -64,9 +71,12 @@
             android:id="@+id/tv_edit_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="수정"
+            android:padding="4dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/edit"
             android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="@{comment.userId == currentUserId ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/tv_content"
             app:layout_constraintEnd_toStartOf="@id/tv_delete_comment" />
 
@@ -75,8 +85,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:text="삭제"
+            android:padding="4dp"
+            android:text="@string/delete"
             android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="@{comment.userId == currentUserId ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/tv_content"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

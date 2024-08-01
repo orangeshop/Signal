@@ -5,15 +5,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ongo.signal.data.model.main.CommentDTO
+import com.ongo.signal.data.model.main.CommentDTOItem
 import com.ongo.signal.databinding.ItemCommentBinding
 
-class CommentAdapter : ListAdapter<CommentDTO, CommentAdapter.ViewHolder>(DiffUtilCallback()) {
+class CommentAdapter(
+    private val onCommentEditClick: (CommentDTOItem) -> Unit,
+    private val onCommentDeleteClick: (CommentDTOItem) -> Unit,
+    private val currentUserId: Int
+) :
+    ListAdapter<CommentDTOItem, CommentAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: CommentDTO) {
+        fun bind(comment: CommentDTOItem) {
             binding.comment = comment
+            binding.currentUserId = currentUserId
+            binding.tvEditComment.setOnClickListener { onCommentEditClick(comment) }
+            binding.tvDeleteComment.setOnClickListener { onCommentDeleteClick(comment) }
             binding.executePendingBindings()
         }
     }
@@ -27,12 +35,12 @@ class CommentAdapter : ListAdapter<CommentDTO, CommentAdapter.ViewHolder>(DiffUt
         holder.bind(getItem(position))
     }
 
-    class DiffUtilCallback : DiffUtil.ItemCallback<CommentDTO>() {
-        override fun areItemsTheSame(p0: CommentDTO, p1: CommentDTO): Boolean {
-            return p0.commentId == p1.commentId
+    class DiffUtilCallback : DiffUtil.ItemCallback<CommentDTOItem>() {
+        override fun areItemsTheSame(p0: CommentDTOItem, p1: CommentDTOItem): Boolean {
+            return p0.id == p1.id
         }
 
-        override fun areContentsTheSame(p0: CommentDTO, p1: CommentDTO): Boolean {
+        override fun areContentsTheSame(p0: CommentDTOItem, p1: CommentDTOItem): Boolean {
             return p0 == p1
         }
     }

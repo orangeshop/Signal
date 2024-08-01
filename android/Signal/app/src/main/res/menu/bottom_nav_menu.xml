@@ -14,7 +14,7 @@
         android:layout_gravity="center"/>
 
     <item
-        android:id="@+id/mapFragment"
+        android:id="@+id/matchFragment"
         android:icon="@drawable/baseline_map_24"
         android:title=""
         android:layout_gravity="center"/>

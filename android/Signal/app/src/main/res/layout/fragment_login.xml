@@ -17,8 +17,8 @@
         <ImageView
             android:id="@+id/iv_logo"
             android:layout_width="match_parent"
-            android:layout_marginStart="20dp"
             android:layout_height="300dp"
+            android:layout_marginStart="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/logo"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,9 +66,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiet_id"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:background="@drawable/background_edit_text"
+                android:singleLine="true"
                 android:textColor="@color/white"
+                android:text=""
                 tools:text="upsk1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -99,10 +101,12 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiet_password"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:background="@drawable/background_edit_text"
                 android:inputType="textPassword"
+                android:singleLine="true"
                 android:textColor="@color/white"
+                android:text=""
                 tools:text="upsk1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -114,7 +118,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="32dp"
-            android:background="@drawable/background_button"
+            android:background="@drawable/background_button_registration"
             android:fontFamily="@font/inter_bold"
             android:text="@string/login"
             android:textColor="@color/black"
@@ -131,7 +135,7 @@
             android:layout_marginTop="28dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="32dp"
-            android:background="@drawable/background_button"
+            android:background="@drawable/background_button_registration"
             android:fontFamily="@font/inter_bold"
             android:text="@string/signup"
             android:textColor="@color/black"

@@ -31,7 +31,7 @@
                 <EditText
                     android:id="@+id/et_search"
                     android:layout_width="0dp"
-                    android:layout_height="45dp"
+                    android:layout_height="48dp"
                     android:layout_margin="10dp"
                     android:autofillHints=""
                     android:background="@drawable/round_edittext"
@@ -58,10 +58,24 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_margin="15dp"
+                    android:onClick="@{()->fragment.searchKeyword()}"
                     android:src="@drawable/baseline_search_24"
                     app:layout_constraintBottom_toBottomOf="@id/et_search"
                     app:layout_constraintEnd_toEndOf="@id/et_search"
                     app:layout_constraintTop_toTopOf="@id/et_search" />
+
+                <ImageView
+                    android:id="@+id/iv_refresh"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="15dp"
+                    android:onClick="@{()->fragment.loadAllBoards()}"
+                    android:src="@drawable/baseline_refresh_24"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/et_search"
+                    app:layout_constraintEnd_toEndOf="@id/et_search"
+                    app:layout_constraintTop_toTopOf="@id/et_search"
+                    tools:visibility="visible" />
 
                 <HorizontalScrollView
                     android:id="@+id/hsv_chip"
@@ -76,63 +90,80 @@
                         android:id="@+id/chipGroup"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/et_search">
+                        app:layout_constraintTop_toBottomOf="@id/et_search"
+                        app:singleSelection="true">
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag1"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag1)}"
+                            android:text="@string/tag1" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag2"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag2)}"
+                            android:text="@string/tag2" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag3"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag3)}"
+                            android:text="@string/tag3" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag4"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag4)}"
+                            android:text="@string/tag4" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag5"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag5)}"
+                            android:text="@string/tag5" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag6"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag6)}"
+                            android:text="@string/tag6" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag7"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag7)}"
+                            android:text="@string/tag7" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tag8"
                             style="@style/CustomChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#TAG1" />
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag8)}"
+                            android:text="@string/tag8" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/tag9"
+                            style="@style/CustomChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->fragment.onChipClicked(@string/tag9)}"
+                            android:text="@string/tag9" />
 
                     </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>
@@ -143,11 +174,24 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/inter_extrabold"
-                    android:text="화제의 시그널"
+                    android:text="@string/hotSignal"
                     android:textColor="@color/white"
                     android:textSize="36sp"
                     app:layout_constraintStart_toStartOf="@id/hsv_chip"
                     app:layout_constraintTop_toBottomOf="@id/hsv_chip" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lav_fire"
+                    android:layout_width="48dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_hot_signal"
+                    app:layout_constraintStart_toEndOf="@id/tv_hot_signal"
+                    app:layout_constraintTop_toTopOf="@id/tv_hot_signal"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/fire"
+                    app:lottie_speed="0.5" />
 
                 <TextView
                     android:id="@+id/tv_first"
@@ -167,6 +211,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
                     android:text="으아아아앙아ㅏㄱ"
                     android:textColor="@color/white"
                     android:textSize="20sp"
@@ -203,6 +248,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
                     android:text="으아아아앙아ㅏㄱ"
                     android:textColor="@color/white"
                     android:textSize="20sp"
@@ -240,6 +286,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
                     android:text="으아아아앙아ㅏㄱ"
                     android:textColor="@color/white"
                     android:textSize="20sp"
@@ -277,7 +324,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/inter_extrabold"
-                    android:text="실시간 시그널"
+                    android:text="@string/realtime_signal"
                     android:textColor="@color/white"
                     android:textSize="36sp"
                     android:textStyle="bold"
@@ -289,7 +336,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_today_signal"
                     tools:itemCount="3"
                     tools:listitem="@layout/item_post" />
@@ -304,6 +351,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:backgroundTint="@color/mint"
+            android:foreground="@drawable/ripple_effect"
             android:onClick="@{()->fragment.onFABClicked()}"
             android:src="@drawable/baseline_edit__mint_24"
             app:borderWidth="1dp"

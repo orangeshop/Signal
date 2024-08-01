@@ -1,12 +1,26 @@
 package com.ongo.signal.data.model.chat
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
+import java.util.Date
 
-//data class ChatHomeDTO(var id: Int, val list: MutableList<ChatHomeChildDto>)
-@Entity(tableName = "chat_home_room")
-data class ChatHomeDTO (
-    @PrimaryKey var id: Int,
-    val list: MutableList<ChatHomeChildDto>
+@Entity(tableName = "chat_home_table")
+data class ChatHomeDTO(
+    @PrimaryKey(autoGenerate = false)
+    @SerializedName("chat_id") var chatId: Long,
+
+    @SerializedName("from_id") val fromId: Long,
+
+    @SerializedName("to_id") val toId: Long,
+
+    @SerializedName("from_name") val fromName: String,
+
+    @SerializedName("to_name") val toName: String,
+
+    @SerializedName("last_message") val lastMessage: String,
+
+    @SerializedName("sender_type") val senderType: String,
+
+    @SerializedName("send_at") var sendAt: Date // 직렬화 시 JSON 필드명
 )

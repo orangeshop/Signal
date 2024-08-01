@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="viewModel"
+            type="com.ongo.signal.ui.main.MainViewModel" />
+
+        <variable
             name="fragment"
             type="com.ongo.signal.ui.main.fragment.WritePostFragment" />
     </data>
@@ -39,6 +43,7 @@
             android:layout_marginTop="20dp"
             android:hint="@string/title"
             android:padding="10dp"
+            android:text="@{viewModel.selectedBoard != null ? viewModel.selectedBoard.title : null}"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintEnd_toStartOf="@id/gl"
@@ -63,6 +68,7 @@
             android:gravity="start"
             android:hint="@string/hint_content"
             android:padding="10dp"
+            android:text="@{viewModel.selectedBoard != null ? viewModel.selectedBoard.content : null}"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintBottom_toTopOf="@id/tv_reply"
@@ -105,7 +111,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/senior"
-                android:textColor="@color/mint"
                 android:textSize="12sp" />
 
             <com.google.android.material.chip.Chip
@@ -114,7 +119,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/junior"
-                android:textColor="@color/mint"
                 android:textSize="12sp" />
 
         </com.google.android.material.chip.ChipGroup>
@@ -134,16 +138,16 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_image"
             android:layout_width="0dp"
-            android:layout_height="100dp"
-            tools:background="@color/yellow"
-            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            tools:listitem="@layout/item_image"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/iv_image"
+            app:layout_constraintEnd_toStartOf="@id/iv_content_mic"
             app:layout_constraintStart_toStartOf="@id/et_title"
-            app:layout_constraintEnd_toStartOf="@id/iv_content_mic" />
+            app:spanCount="10"
+            tools:listitem="@layout/item_image_uri" />
 
         <ImageView
             android:id="@+id/iv_image"
@@ -160,6 +164,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:foreground="@drawable/ripple_effect"
             android:onClick="@{() -> fragment.onRegisterButtonClick()}"
             android:text="@string/regist"
             android:textColor="@color/black"

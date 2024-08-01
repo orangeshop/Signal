@@ -8,28 +8,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.ChatItemListBinding
 
-private const val TAG = "ChatHomeAdapter"
+private const val TAG = "ChatHomeAdapter_싸피"
 class ChatHomeAdapter(
-    private val chatItemClick: () -> Unit,
-    private val chatItemLongClick: () -> Boolean
+    private val chatItemClick: (item : ChatHomeDTO) -> Unit,
+    private val chatItemLongClick: (item : ChatHomeDTO) -> Boolean,
+    private val timeSetting: (item: String) -> String
 ): ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
-            if(item.list.size > 0) {
-                binding.chatItemTitle.text = item.list[0].name
-                binding.content.text = item.list[0].content
-                binding.Time.text = item.list[0].time
-//            binding.Alarm.text = item.list.get(0).alarm.toString()
-            }
+
+            binding.chatItemTitle.text = item.toName
+
+            binding.content.text = item.lastMessage
+
+            binding.Time.text = timeSetting(item.sendAt.toString())
+
             binding.chatHomeCl.setOnClickListener {
-                chatItemClick()
+                chatItemClick(item)
             }
 
             binding.chatHomeCl.setOnLongClickListener {
-                chatItemLongClick()
+                chatItemLongClick(item)
             }
         }
     }
+
+
 
     override fun onBindViewHolder(holder: ChatHomeListHolder, position: Int) {
         holder.bind(getItem(position))
@@ -48,10 +52,11 @@ class ChatHomeAdapter(
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<ChatHomeDTO>() {
             override fun areItemsTheSame(oldItem: ChatHomeDTO, newItem: ChatHomeDTO): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.chatId == newItem.chatId
             }
 
             override fun areContentsTheSame(oldItem: ChatHomeDTO, newItem: ChatHomeDTO): Boolean {
+
                 return oldItem == newItem
             }
         }

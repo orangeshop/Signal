@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatFragment"
-        android:label="ChatFragment" >
+        android:label="ChatFragment">
         <action
             android:id="@+id/action_chatFragment_to_chatAddFragment"
             app:destination="@id/chatAddFragment" />
@@ -16,55 +16,105 @@
             app:destination="@id/chatDetailFragment" />
     </fragment>
     <fragment
-        android:id="@+id/mapFragment"
+        android:id="@+id/matchFragment"
         android:name="com.ongo.signal.ui.match.MatchFragment"
-        android:label="MapFragment" />
+        android:label="MatchFragment" />
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.ongo.signal.ui.main.fragment.MainFragment"
-        android:label="MainFragment" >
+        android:label="MainFragment">
         <action
             android:id="@+id/action_mainFragment_to_postFragment"
-            app:destination="@id/postFragment" />
+            app:destination="@id/postFragment"
+            app:enterAnim="@anim/anim_slide_up"
+            app:exitAnim="@anim/anim_fade_out"
+            app:popEnterAnim="@anim/anim_slide_in_from_left_fade_in"
+            app:popExitAnim="@anim/anim_fade_out" />
         <action
             android:id="@+id/action_mainFragment_to_writePostFragment"
-            app:destination="@id/writePostFragment" />
+            app:destination="@id/writePostFragment"
+            app:enterAnim="@anim/anim_slide_in_from_right_fade_in"
+            app:exitAnim="@anim/anim_fade_out"
+            app:popEnterAnim="@anim/anim_slide_in_from_left_fade_in"
+            app:popExitAnim="@anim/anim_fade_out" />
     </fragment>
     <fragment
         android:id="@+id/myPageFragment"
         android:name="com.ongo.signal.ui.my.MyPageFragment"
-        android:label="MyPageFragment" >
+        android:label="MyPageFragment">
         <action
             android:id="@+id/action_myPageFragment_to_profileEditFragment"
             app:destination="@id/profileEditFragment" />
+        <action
+            android:id="@+id/action_myPageFragment_to_mySignalFragment"
+            app:destination="@id/mySignalFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/chatDetailFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatDetailFragment"
-        android:label="chatDetailFragment"/>
+        android:label="chatDetailFragment" />
     <fragment
         android:id="@+id/chatAddFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatAddFragment"
-        android:label="ChatAddFragment" />
-        android:name="com.ongo.signal.ui.chat.ChatDetailFragment"
-        android:label="chatDetailFragment"
-        />
+        android:label="ChatAddFragment" >
+        <action
+            android:id="@+id/action_chatAddFragment_to_chatDetailFragment"
+            app:destination="@id/chatDetailFragment" />
+    </fragment>
+
     <fragment
         android:id="@+id/postFragment"
         android:name="com.ongo.signal.ui.main.fragment.PostFragment"
-        android:label="PostFragment" />
+        android:label="PostFragment">
+        <action
+            android:id="@+id/action_postFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment"
+            app:enterAnim="@anim/anim_slide_in_from_right_fade_in"
+            app:exitAnim="@anim/anim_fade_out"
+            app:popEnterAnim="@anim/anim_slide_in_from_left_fade_in"
+            app:popExitAnim="@anim/anim_fade_out" />
+        <action
+            android:id="@+id/action_postFragment_to_writePostFragment"
+            app:destination="@id/writePostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
     <fragment
         android:id="@+id/writePostFragment"
         android:name="com.ongo.signal.ui.main.fragment.WritePostFragment"
-        android:label="WritePostFragment" >
+        android:label="WritePostFragment">
         <action
             android:id="@+id/action_writePostFragment_to_postFragment"
-            app:destination="@id/postFragment" />
+            app:destination="@id/postFragment"
+            app:enterAnim="@anim/anim_slide_in_from_right_fade_in"
+            app:exitAnim="@anim/anim_fade_out"
+            app:popEnterAnim="@anim/anim_slide_in_from_left_fade_in"
+            app:popExitAnim="@anim/anim_fade_out" />
+        <action
+            android:id="@+id/action_writePostFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileEditFragment"
         android:name="com.ongo.signal.ui.my.ProfileEditFragment"
         android:label="ProfileEditFragment" />
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.ongo.signal.ui.main.fragment.ReviewFragment"
+        android:label="ReviewFragment" >
+        <action
+            android:id="@+id/action_reviewFragment_to_matchReviewFragment"
+            app:destination="@id/matchReviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mySignalFragment"
+        android:name="com.ongo.signal.ui.my.MySignalFragment"
+        android:label="MySignalFragment" />
+    <fragment
+        android:id="@+id/matchReviewFragment"
+        android:name="com.ongo.signal.ui.match.MatchReviewFragment"
+        android:label="MatchReviewFragment" />
 
 </navigation>

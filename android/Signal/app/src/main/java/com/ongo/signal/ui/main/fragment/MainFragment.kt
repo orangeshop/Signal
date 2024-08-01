@@ -1,31 +1,41 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.app.Activity
+import android.animation.Animator
+import android.animation.AnimatorInflater
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.content.Intent
 import android.graphics.Color
-import android.speech.RecognizerIntent
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.FragmentMainBinding
 import com.ongo.signal.ui.main.MainViewModel
 import com.ongo.signal.ui.main.adapter.TagAdapter
 import com.ongo.signal.ui.main.adapter.TodayPostAdapter
+import com.ongo.signal.util.STTHelper
 import com.ongo.signal.util.TTSHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Locale
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
@@ -36,70 +46,185 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private lateinit var secondTagAdapter: TagAdapter
     private lateinit var thirdTagAdapter: TagAdapter
     private lateinit var ttsHelper: TTSHelper
+    private lateinit var sttHelper: STTHelper
     private lateinit var sttLauncher: ActivityResultLauncher<Intent>
-
+    private val handler = Handler(Looper.getMainLooper())
+    private val flipInterval = 3000L
 
     override fun init() {
         binding.fragment = this
         binding.viewModel = viewModel
         ttsHelper = TTSHelper(requireContext())
-        sttLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-                    val speechResults =
-                        result.data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                    val recognizedText = speechResults?.get(0).toString()
-                    binding.etSearch.setText(recognizedText)
-                }
-            }
+
         setUpAdapter()
         setUpSpannableText()
 
-        lifecycleScope.launch {
-            viewModel.posts.collectLatest { newPosts ->
-                todayPostAdapter.submitList(newPosts)
-                if (newPosts.isNotEmpty()) {
-                    Timber.d(newPosts[0].tags.toString())
-                    firstTagAdapter.submitList(newPosts[0].tags)
-                    if (newPosts.size > 1) {
-                        secondTagAdapter.submitList(newPosts[1].tags)
-                    }
-                    if (newPosts.size > 2) {
-                        thirdTagAdapter.submitList(newPosts[2].tags)
-                    }
+        sttLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
+                    binding.etSearch.setText(recognizedText)
                 }
+            }
+
+        sttHelper = STTHelper(sttLauncher)
+
+        observeBoards()
+        observeHotSignalBoards()
+
+        startFlippingViews()
+    }
+
+    private fun observeBoards() {
+        lifecycleScope.launch {
+            viewModel.boards.collectLatest { newBoards ->
+                Timber.d("New boards received: $newBoards")
+                todayPostAdapter.submitList(newBoards)
+                updateTagAdapters(newBoards)
             }
         }
     }
 
+    private fun observeHotSignalBoards() {
+        lifecycleScope.launch {
+            viewModel.hotSignalBoards.collectLatest { newHotBoards ->
+                Timber.d("New hot signal boards received: $newHotBoards")
+                updateHotSignalTitles(newHotBoards)
+            }
+        }
+    }
+
+    private fun updateHotSignalTitles(newHotBoards: List<BoardDTO>) {
+        if (newHotBoards.isNotEmpty()) {
+//            binding.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
+//            binding.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
+//            binding.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
+        }
+    }
+
+    private fun updateTagAdapters(newBoards: List<BoardDTO>) {
+        if (newBoards.isNotEmpty()) {
+            val firstBoardTags = newBoards[0].tags ?: emptyList()
+            firstTagAdapter.submitList(firstBoardTags)
+            if (newBoards.size > 1) {
+                val secondBoardTags = newBoards[1].tags ?: emptyList()
+                secondTagAdapter.submitList(secondBoardTags)
+            }
+            if (newBoards.size > 2) {
+                val thirdBoardTags = newBoards[2].tags ?: emptyList()
+                thirdTagAdapter.submitList(thirdBoardTags)
+            }
+        }
+    }
+
+    fun onChipClicked(tag: String) {
+        if (viewModel.selectedTag.value == tag) {
+            viewModel.clearSelectedTag()
+            viewModel.clearSearch()
+        } else {
+            viewModel.clearSelectedTag()
+            viewModel.setSelectedTag(tag)
+            viewModel.loadHotAndRecentSignalBoardsByTag(tag, 0, 10)
+        }
+    }
+
+    private fun startFlippingViews() {
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                flipViews()
+                handler.postDelayed(this, flipInterval)
+            }
+        }, flipInterval)
+    }
+
+    private fun flipViews() {
+        flipView(binding.tvFirstTitle, binding.rvFirst, 0)
+        flipView(binding.tvSecondTitle, binding.rvSecond, 1)
+        flipView(binding.tvThirdTitle, binding.rvThird, 2)
+    }
+
+    private fun flipView(titleView: View, recyclerView: RecyclerView, initialPosition: Int) {
+        val context = titleView.context
+        val flipOut = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
+        val flipIn = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
+        val flipOutRecycler =
+            AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
+        val flipInRecycler =
+            AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
+
+        flipOut.setTarget(titleView)
+        flipOutRecycler.setTarget(recyclerView)
+
+        flipOut.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                if (viewModel.hotSignalBoards.value.isNotEmpty()) {
+                    val currentPosition = (titleView.tag as? Int ?: initialPosition) + 3
+                    val nextPosition = currentPosition % viewModel.hotSignalBoards.value.size
+                    titleView.tag = nextPosition
+                    (titleView as TextView).text =
+                        viewModel.hotSignalBoards.value[nextPosition].title
+                    flipIn.setTarget(titleView)
+                    flipInRecycler.setTarget(recyclerView)
+                    flipIn.start()
+                    flipInRecycler.start()
+                }
+            }
+        })
+
+        flipOut.start()
+        flipOutRecycler.start()
+    }
+
     fun onFABClicked() {
+        viewModel.clearBoard()
         findNavController().navigate(R.id.action_mainFragment_to_writePostFragment)
     }
 
     fun onMicClicked() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "검색어를 말해주세요.")
-        }
-        sttLauncher.launch(intent)
+        sttHelper.startSpeechToText()
+    }
+
+    fun searchKeyword() {
+        val keyword = binding.etSearch.text.toString()
+        viewModel.searchBoard(keyword)
+        fadeOut(binding.ivSearch)
+        fadeOut(binding.ivMic)
+        fadeIn(binding.ivRefresh)
+    }
+
+    fun loadAllBoards() {
+        viewModel.clearSearch()
+        binding.etSearch.setText("")
+        fadeIn(binding.ivSearch)
+        fadeIn(binding.ivMic)
+        fadeOut(binding.ivRefresh)
+    }
+
+    private fun fadeOut(view: View) {
+        val fadeOut = AnimationUtils.loadAnimation(context, R.anim.anim_fade_out)
+        view.startAnimation(fadeOut)
+        view.visibility = View.GONE
+    }
+
+    private fun fadeIn(view: View) {
+        view.visibility = View.VISIBLE
+        val fadeIn = AnimationUtils.loadAnimation(context, R.anim.anim_slide_in_from_right_fade_in)
+        view.startAnimation(fadeIn)
     }
 
     private fun setUpAdapter() {
         todayPostAdapter = TodayPostAdapter(
             onEndReached = {
-                viewModel.loadPosts()
+//                viewModel.loadBoards()
             },
-            onItemClicked = { post ->
-                viewModel.selectPost(post)
+            onItemClicked = { board ->
+                viewModel.selectBoard(board)
                 findNavController().navigate(R.id.action_mainFragment_to_postFragment)
             },
             onTTSClicked = { content ->
                 ttsHelper.speak(content)
-            }
+            },
+            viewModel = viewModel
         )
 
         firstTagAdapter = TagAdapter()
@@ -131,19 +256,21 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (!recyclerView.canScrollVertically(1)) {
-                        viewModel.loadPosts()
+//                        viewModel.loadBoards()
                     }
                 }
             })
         }
     }
 
-    private fun getSpannableString(fullText: String, highlightText: String, highlightColor: String): SpannableString {
+    private fun getSpannableString(
+        fullText: String
+    ): SpannableString {
         val spannableString = SpannableString(fullText)
-        val start = fullText.indexOf(highlightText)
-        val end = start + highlightText.length
+        val start = fullText.indexOf("시그널")
+        val end = start + "시그널".length
         spannableString.setSpan(
-            ForegroundColorSpan(Color.parseColor(highlightColor)),
+            ForegroundColorSpan(Color.parseColor("#64FFCE")),
             start,
             end,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -152,8 +279,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     private fun setUpSpannableText() {
-        val hotSpannable = getSpannableString("화제의 시그널", "시그널", "#64FFCE")
-        val todaySpannable = getSpannableString("오늘의 시그널", "시그널", "#64FFCE")
+        val hotSpannable = getSpannableString("화제의 시그널")
+        val todaySpannable = getSpannableString("오늘의 시그널")
 
         binding.tvHotSignal.text = hotSpannable
         binding.tvTodaySignal.text = todaySpannable
@@ -161,8 +288,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     override fun onDestroyView() {
         ttsHelper.shutdown()
+        handler.removeCallbacksAndMessages(null)
         super.onDestroyView()
     }
-
 }
-

@@ -3,29 +3,57 @@ package com.ongo.signal.ui.main.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ongo.signal.data.model.main.PostDTO
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.ongo.signal.data.model.main.BoardDTO
+import com.ongo.signal.data.model.main.ImageItem
 import com.ongo.signal.databinding.ItemPostBinding
+import com.ongo.signal.ui.main.MainViewModel
 
 class TodayPostAdapter(
     private val onEndReached: () -> Unit,
-    private val onItemClicked: (PostDTO) -> Unit,
-    private val onTTSClicked: (String) -> Unit
-) : ListAdapter<PostDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
+    private val onItemClicked: (BoardDTO) -> Unit,
+    private val onTTSClicked: (String) -> Unit,
+    private val viewModel: MainViewModel
+) : ListAdapter<BoardDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(post: PostDTO) {
-            binding.post = post
+
+        private val chipAdapter = ChipAdapter()
+        private val imageUriAdapter = ImageAdapter({ }, false)
+
+        init {
+            binding.rvChips.apply {
+                layoutManager =
+                    LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = chipAdapter
+            }
+            binding.rvImages.apply {
+                layoutManager =
+                    StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                adapter = imageUriAdapter
+            }
+        }
+
+        fun bind(board: BoardDTO) {
+            binding.board = board
+            binding.viewModel = viewModel
             binding.executePendingBindings()
             binding.root.setOnClickListener {
-                onItemClicked(post)
+                onItemClicked(board)
             }
 
             binding.ivTts.setOnClickListener {
-                onTTSClicked(post.title)
+                onTTSClicked(board.title)
             }
+
+            chipAdapter.submitList(board.tags)
+            val boardImages = viewModel.boardImages.value[board.id] ?: emptyList()
+            val imageItems = boardImages.map { ImageItem.UrlItem(it.fileUrl) }
+            imageUriAdapter.submitList(imageItems)
         }
     }
 
@@ -41,12 +69,12 @@ class TodayPostAdapter(
         return ViewHolder(binding)
     }
 
-    class DiffUtilCallback : DiffUtil.ItemCallback<PostDTO>() {
-        override fun areItemsTheSame(p0: PostDTO, p1: PostDTO): Boolean {
-            return p0.postId == p1.postId
+    class DiffUtilCallback : DiffUtil.ItemCallback<BoardDTO>() {
+        override fun areItemsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
+            return p0.id == p1.id
         }
 
-        override fun areContentsTheSame(p0: PostDTO, p1: PostDTO): Boolean {
+        override fun areContentsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
             return p0 == p1
         }
     }
