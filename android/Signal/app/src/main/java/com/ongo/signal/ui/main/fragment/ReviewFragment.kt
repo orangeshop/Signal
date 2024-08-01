@@ -9,7 +9,10 @@ import com.ongo.signal.data.model.main.ReviewDTO
 import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
+@AndroidEntryPoint
 class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_review) {
 
     private lateinit var reviewAdapter: ReviewAdapter
@@ -57,8 +60,9 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     }
 
     fun onReview() {
-        viewModel.checkReviewPermission(25){
-
+        //user ID에 상대방 아이디를 넣으면 됩니다.
+        viewModel.checkReviewPermission(25) { isPossible ->
+            Timber.d("리뷰를 작성할 수 있으면 ${isPossible} 가 true가 됨")
         }
         findNavController().navigate(R.id.action_reviewFragment_to_matchReviewFragment)
     }

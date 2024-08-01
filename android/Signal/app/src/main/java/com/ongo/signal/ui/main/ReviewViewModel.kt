@@ -7,7 +7,6 @@ import com.ongo.signal.data.model.match.MatchHistoryResponse
 import com.ongo.signal.data.repository.match.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +20,11 @@ class ReviewViewModel @Inject constructor(
                 (it.proposeId == UserSession.userId && it.acceptId == userId)
                         || (it.proposeId == userId && it.acceptId == UserSession.userId)
             }
-            Timber.d("$matchList")
+            if (matchList.isNotEmpty()) {
+                onResult(true)
+            } else {
+                onResult(false)
+            }
         }
     }
 
