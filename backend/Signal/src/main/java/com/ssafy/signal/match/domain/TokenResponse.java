@@ -1,6 +1,5 @@
 package com.ssafy.signal.match.domain;
 
-
 import lombok.*;
 
 @Builder
