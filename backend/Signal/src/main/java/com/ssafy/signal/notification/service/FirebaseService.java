@@ -51,7 +51,7 @@ public class FirebaseService {
         boolean isRemote = true;
         path = isRemote ? path : prefix + path;
 
-        FileInputStream serviceAccount = new FileInputStream("backend/Signal/src/main/resources/firebase/firebase_service_key.json");
+        FileInputStream serviceAccount = new FileInputStream(path);
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccount)
                 .createScoped("https://www.googleapis.com/auth/cloud-platform");
         googleCredentials.refreshIfExpired();
