@@ -47,5 +47,20 @@ interface MatchApi {
         @Query("fromId") fromId: Long,
         @Query("toId") toId: Long,
         @Query("flag") flag: Int,
-    ) : Response<MatchAcceptResponse>
+    ): Response<MatchAcceptResponse>
+
+    @POST("call/propose")
+    suspend fun postProposeVideoCall(
+        @Query("fromId") fromId: Long,
+        @Query("toId") toId: Long,
+    ) : Response<MatchProposeResponse>
+
+    @POST("call/accept")
+    suspend fun postVideoCallAccept(
+        @Query("fromId") fromId: Long,
+        @Query("toId") toId: Long,
+        @Query("flag") flag: Int,
+    ): Response<MatchAcceptResponse>
+
+
 }
