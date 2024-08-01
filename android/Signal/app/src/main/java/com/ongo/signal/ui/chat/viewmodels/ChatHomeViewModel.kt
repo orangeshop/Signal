@@ -23,7 +23,6 @@ private const val TAG = "ChatHomeViewModel_싸피"
 @HiltViewModel
 class ChatHomeViewModel @Inject constructor(
     private val chatUseCases: ChatUseCases,
-
 ) : ViewModel() {
 
     private val _liveList = MutableLiveData<List<ChatHomeDTO>>()

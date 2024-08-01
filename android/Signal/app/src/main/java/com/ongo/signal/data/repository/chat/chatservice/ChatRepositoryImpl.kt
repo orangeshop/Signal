@@ -18,10 +18,19 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveChatRoom(chatRoom: ChatHomeCreate): Response<ChatHomeCreate> {
-        return chatApi.saveChatRoom(ChatHomeCreate(5, 8))
+        return chatApi.saveChatRoom(chatRoom)
     }
 
     override suspend fun getAllMessages(chat_id: Long): Response<MutableList<ChatHomeChildDto>> {
         return chatApi.getAllChatDetail(chat_id)
+    }
+
+    companion object {
+        private var instance: ChatRepositoryImpl? = null
+        fun getInstance(chatApi: ChatRoomApi): ChatRepositoryImpl {
+            return instance ?: synchronized(this) {
+                instance ?: ChatRepositoryImpl(chatApi).also { instance = it }
+            }
+        }
     }
 }
