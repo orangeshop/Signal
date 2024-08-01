@@ -71,4 +71,31 @@ class MatchRepositoryImpl @Inject constructor(
             Result.failure(Exception())
         }
     }
+
+    override suspend fun postProposeVideoCall(
+        fromId: Long,
+        toId: Long
+    ): Result<MatchProposeResponse?> {
+        val req = signalApi.postProposeVideoCall(fromId,toId)
+        Timber.d("영통 응답 확인 ${req}")
+        return if (req.isSuccessful) {
+            Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
+
+    override suspend fun postProposeVideoCallAccept(
+        fromId: Long,
+        toId: Long,
+        flag: Int
+    ): Result<MatchAcceptResponse?> {
+        val req = signalApi.postVideoCallAccept(fromId, toId, flag)
+        Timber.d("영통 수락 확인 ${req}")
+        return if (req.isSuccessful) {
+            Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
 }

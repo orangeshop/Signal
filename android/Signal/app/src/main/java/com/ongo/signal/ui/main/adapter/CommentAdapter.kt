@@ -8,12 +8,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.main.CommentDTOItem
 import com.ongo.signal.databinding.ItemCommentBinding
 
-class CommentAdapter : ListAdapter<CommentDTOItem, CommentAdapter.ViewHolder>(DiffUtilCallback()) {
+class CommentAdapter(
+    private val onCommentEditClick: (CommentDTOItem) -> Unit,
+    private val onCommentDeleteClick: (CommentDTOItem) -> Unit,
+    private val currentUserId: Int
+) :
+    ListAdapter<CommentDTOItem, CommentAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(comment: CommentDTOItem) {
             binding.comment = comment
+            binding.currentUserId = currentUserId
+            binding.tvEditComment.setOnClickListener { onCommentEditClick(comment) }
+            binding.tvDeleteComment.setOnClickListener { onCommentDeleteClick(comment) }
             binding.executePendingBindings()
         }
     }

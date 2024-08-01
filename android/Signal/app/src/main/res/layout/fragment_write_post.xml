@@ -146,7 +146,8 @@
             app:layout_constraintBottom_toTopOf="@id/iv_image"
             app:layout_constraintEnd_toStartOf="@id/iv_content_mic"
             app:layout_constraintStart_toStartOf="@id/et_title"
-            tools:listitem="@layout/item_image" />
+            app:spanCount="10"
+            tools:listitem="@layout/item_image_uri" />
 
         <ImageView
             android:id="@+id/iv_image"

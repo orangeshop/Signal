@@ -14,4 +14,5 @@
     <color name="radar_color">#02EB25</color>
     <color name="color_translate">#00000000</color>
     <color name="rippleColor">#40FFFFFF</color>
+    <color name="impossible_red">#DC160C</color>
 </resources>

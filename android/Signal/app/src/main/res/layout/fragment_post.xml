@@ -94,12 +94,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/tv_content"
+            app:spanCount="2"
             tools:itemCount="3"
-            tools:listitem="@layout/item_image" />
+            tools:listitem="@layout/item_image_post" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chip"
@@ -117,6 +118,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginTop="15dp"
+            android:onClick="@{()->fragment.onThumbClick(viewModel.selectedBoard)}"
             android:padding="4dp"
             android:src="@drawable/baseline_thumb_up_alt_white_24"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
@@ -173,13 +175,14 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/cl_comment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_line"
             tools:listitem="@layout/item_comment" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/backgroundColor"

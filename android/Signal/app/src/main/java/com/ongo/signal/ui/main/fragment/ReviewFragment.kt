@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.main.fragment
 
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
@@ -14,6 +15,7 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     override fun init() {
         setUpAdapter()
         populateReviewData()
+        binding.fragment = this
     }
 
     private fun setUpAdapter() {
@@ -49,5 +51,9 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             )
         )
         reviewAdapter.submitList(sampleReviews)
+    }
+
+    fun onReview() {
+        findNavController().navigate(R.id.action_reviewFragment_to_matchReviewFragment)
     }
 }
