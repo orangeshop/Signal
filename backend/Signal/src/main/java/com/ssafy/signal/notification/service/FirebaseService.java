@@ -48,7 +48,7 @@ public class FirebaseService {
         String prefix = "backend/Signal/";
         String path = "src/main/resources/firebase/firebase_service_key.json";
 
-        boolean isRemote = true;
+        boolean isRemote = false;
         path = isRemote ? prefix + path : path;
 
         FileInputStream serviceAccount = new FileInputStream(path);
@@ -56,6 +56,7 @@ public class FirebaseService {
                 .createScoped("https://www.googleapis.com/auth/cloud-platform");
         googleCredentials.refreshIfExpired();
         accessToken = googleCredentials.getAccessToken().getTokenValue();
+        log.info("Access token: " + accessToken);
     }
 
     public String getCurrentAccessToken() {
