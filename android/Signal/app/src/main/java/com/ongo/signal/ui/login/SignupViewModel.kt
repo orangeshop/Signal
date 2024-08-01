@@ -95,13 +95,23 @@ class SignupViewModel @Inject constructor(
         with(uiState) {
             if (isPossibleId == null) return Pair(false, "아이디 중복 확인을 해주세요")
             if (isPossibleId == false) return Pair(false, "사용 불가능한 아이디입니다.")
+            if (password.isBlank()) return Pair(false, "비밀번호를 입력해주세요")
+            if(checkPasswordStandard(password) == false)return Pair(false, "비밀번호는 문자, 특수문자. 숫자를 포함하여 8자 이상 입력해주세요.")
             if (password != passwordCheck) return Pair(false, "비밀번호와 비밀번호 확인이 다릅니다")
             if (userName.isBlank()) return Pair(false, "이름을 입력해주세요")
+
             return Pair(true, "${uiState}")
         }
 
     }
 
+    private fun checkPasswordStandard(password: String): Boolean {
+        // 최소 8자, 하나 이상의 문자, 하나 이상의 숫자, 하나 이상의 특수문자 포함 여부 확인
+        val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"
+        val passwordMatcher = Regex(passwordPattern)
+
+        return passwordMatcher.matches(password)
+    }
 
     private fun saveUserData(
         userId: Long,
