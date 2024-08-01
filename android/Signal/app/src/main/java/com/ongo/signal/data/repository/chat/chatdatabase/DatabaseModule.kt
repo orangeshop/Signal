@@ -27,4 +27,9 @@ object DatabaseModule {
     fun provideChatHomeDao(database: ChatHomeDatabase): ChatHomeDao {
         return database.chatHomeDao()
     }
+
+    @Provides
+    fun provideChatDetailDao(database: ChatHomeDatabase): ChatDetailDao {
+        return database.chatDetailDao()
+    }
 }

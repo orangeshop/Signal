@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -31,6 +32,8 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
+
+    private val viewModel: MainViewModel by viewModels()
 
     private lateinit var navHostFragment: NavHostFragment
     private val checker = PermissionChecker(this)
@@ -75,6 +78,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
 
         checkPermission()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -101,9 +105,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 return@OnCompleteListener
             }
             Timber.d("token 정보: ${task.result ?: "task.result is null"}")
-            if (task.result != null) {
-                uploadToken(task.result)
-            }
+            viewModel.postFCMToken(task.result)
         })
     }
 
@@ -136,11 +138,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private fun handleIntent(intent: Intent, navController: NavController) {
         if (intent.getBooleanExtra("matchNotification", false)) {
-            Timber.d("여기 오나?")
             val bundle = Bundle().apply {
                 putBoolean("matchNotification", true)
+                putLong("otherUserId", intent.getLongExtra("otherUserId",0))
+                putString("otherUserName", intent.getStringExtra("otherUserName") ?: "")
             }
-            navController.navigate(R.id.matchFragment,bundle)
+            navController.navigate(R.id.matchFragment, bundle)
         }
     }
 
@@ -151,9 +154,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     companion object {
         const val CHANNEL_ID = "ongo_channel"
-        fun uploadToken(token: String) {
-
-        }
     }
 
 }

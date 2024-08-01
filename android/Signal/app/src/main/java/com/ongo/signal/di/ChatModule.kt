@@ -1,6 +1,6 @@
 package com.ongo.signal.di
 
-import com.ongo.signal.data.repository.chat.ChatRoomRepository
+import com.ongo.signal.data.repository.chat.ChatRoomRepositoryImpl
 import com.ongo.signal.data.repository.chat.chatdatabase.ChatDetailDao
 import com.ongo.signal.data.repository.chat.chatdatabase.ChatHomeDao
 
@@ -19,8 +19,8 @@ object ChatModule {
     fun provideChatRepository(
         chatHomeDao: ChatHomeDao,
         chatDetailDao: ChatDetailDao
-    ): ChatRoomRepository {
-        return ChatRoomRepository(chatHomeDao, chatDetailDao)
+    ): ChatRoomRepositoryImpl {
+        return ChatRoomRepositoryImpl(chatHomeDao, chatDetailDao)
     }
 
 }

@@ -78,7 +78,7 @@ dependencies {
 
     //room
     implementation(libs.bundles.room)
-    kapt(libs.room.compiler)
+    kapt (libs.room.compiler)
     //paging
     implementation(libs.paging)
 
@@ -90,8 +90,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     //locations
     implementation(libs.locations)
-
-    //coil
-    implementation(libs.coil)
+    //datastore
+    implementation(libs.datastore)
 
 }

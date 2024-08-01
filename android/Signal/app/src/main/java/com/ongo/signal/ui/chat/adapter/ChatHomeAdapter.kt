@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.chat.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,25 +9,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.ChatItemListBinding
 
-private const val TAG = "ChatHomeAdapter"
+private const val TAG = "ChatHomeAdapter_싸피"
 class ChatHomeAdapter(
     private val chatItemClick: (item : ChatHomeDTO) -> Unit,
-    private val chatItemLongClick: () -> Boolean
+    private val chatItemLongClick: (item : ChatHomeDTO) -> Boolean,
+    private val timeSetting: (item: String) -> String
 ): ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
-//            if(item.list.size > 0) {
-//                binding.chatItemTitle.text = item.list[0].name
-//                binding.content.text = item.list[0].content
-//                binding.Time.text = item.list[0].time
-//            binding.Alarm.text = item.list.get(0).alarm.toString()
-//            }
+
+            binding.chatItemTitle.text = item.to_id.toString()
+
+            binding.content.text = item.last_message
+
+            binding.Time.text = timeSetting(item.send_at.toString())
+
             binding.chatHomeCl.setOnClickListener {
                 chatItemClick(item)
             }
 
             binding.chatHomeCl.setOnLongClickListener {
-                chatItemLongClick()
+                chatItemLongClick(item)
             }
 
 
@@ -56,6 +59,7 @@ class ChatHomeAdapter(
             }
 
             override fun areContentsTheSame(oldItem: ChatHomeDTO, newItem: ChatHomeDTO): Boolean {
+
                 return oldItem == newItem
             }
         }
