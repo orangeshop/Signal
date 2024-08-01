@@ -95,9 +95,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     private fun updateHotSignalTitles(newHotBoards: List<BoardDTO>) {
         if (newHotBoards.isNotEmpty()) {
-            binding.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
-            binding.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
-            binding.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
+//            binding.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
+//            binding.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
+//            binding.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
         }
     }
 

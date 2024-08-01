@@ -44,6 +44,6 @@ interface MatchRepository {
 
     suspend fun getMatchHistory(
         userId: Long,
-    ): Result<MatchHistoryResponse?>
+    ): Result<List<MatchHistoryResponse>?>
 
 }

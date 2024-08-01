@@ -66,5 +66,5 @@ interface MatchApi {
     @GET("match/history")
     suspend fun getMatchHistory(
         @Query("userId") userId: Long,
-    ): Response<MatchHistoryResponse>
+    ): Response<List<MatchHistoryResponse>>
 }

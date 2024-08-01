@@ -36,6 +36,7 @@ class LoginRepositoryImpl @Inject constructor(
 
     override suspend fun deleteUser(token: String): Int {
         val req = loginApi.postLogoutRequest(token = token)
+        Timber.d("로그아웃 ${req} 요청은 ${token}")
         return if (req.isSuccessful) {
             1
         } else {

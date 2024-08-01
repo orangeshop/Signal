@@ -100,7 +100,7 @@ class MatchRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMatchHistory(userId: Long): Result<MatchHistoryResponse?> {
+    override suspend fun getMatchHistory(userId: Long): Result<List<MatchHistoryResponse>?> {
         val req = matchApi.getMatchHistory(userId)
         Timber.d("매칭 이력 확인 $req")
         return if (req.isSuccessful) {
