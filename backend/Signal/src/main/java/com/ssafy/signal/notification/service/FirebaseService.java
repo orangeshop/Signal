@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -49,6 +50,13 @@ public class FirebaseService {
         String path = "src/main/resources/firebase/firebase_service_key.json";
 
         log.info("시스템 경로 : " + System.getProperty("user.dir"));
+        File dir = new File(System.getProperty("user.dir"));
+
+        String[] filenames = dir.list();
+        for (String filename : filenames) {
+            log.info("filename : " + filename);
+        }
+
         boolean isRemote = true;
         path = isRemote ? prefix + path : path;
 
