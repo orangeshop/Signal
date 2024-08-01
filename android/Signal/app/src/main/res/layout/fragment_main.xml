@@ -180,6 +180,19 @@
                     app:layout_constraintStart_toStartOf="@id/hsv_chip"
                     app:layout_constraintTop_toBottomOf="@id/hsv_chip" />
 
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lav_fire"
+                    android:layout_width="48dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_hot_signal"
+                    app:layout_constraintStart_toEndOf="@id/tv_hot_signal"
+                    app:layout_constraintTop_toTopOf="@id/tv_hot_signal"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/fire"
+                    app:lottie_speed="0.5" />
+
                 <TextView
                     android:id="@+id/tv_first"
                     android:layout_width="wrap_content"
