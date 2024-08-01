@@ -8,7 +8,6 @@ import com.ongo.signal.data.model.login.SignalUser
 import com.ongo.signal.data.repository.login.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,7 +39,9 @@ class LoginViewModel @Inject constructor(
                                 accessTokenExpireTime = it.accessTokenExpireTime,
                                 type = it.userInfo.type,
                                 userId = it.userInfo.userId,
-                                userName = it.userInfo.name
+                                userName = it.userInfo.name,
+                                refreshToken = it.refreshToken,
+                                refreshTokenExpireTime = it.refreshTokenExpireTime
                             )
                         )
                     } else {
@@ -59,7 +60,8 @@ class LoginViewModel @Inject constructor(
         userId: Long,
         userName: String,
         profileImage: String = "",
-        accessToken: String
+        accessToken: String,
+        refreshToken: String
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
             dataStoreClass.setIsLogin(true)
@@ -67,12 +69,7 @@ class LoginViewModel @Inject constructor(
             dataStoreClass.setUserName(userName)
             dataStoreClass.setProfileImage(profileImage)
             dataStoreClass.setAccessToken(accessToken)
-        }
-    }
-
-    private fun RegistFCMToken() {
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreClass.accessTokenData
+            dataStoreClass.setRefreshToken(refreshToken)
         }
     }
 }

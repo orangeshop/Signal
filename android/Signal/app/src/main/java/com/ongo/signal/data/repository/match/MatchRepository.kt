@@ -1,6 +1,7 @@
 package com.ongo.signal.data.repository.match
 
 import com.ongo.signal.data.model.match.MatchAcceptResponse
+import com.ongo.signal.data.model.match.MatchHistoryResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -40,5 +41,9 @@ interface MatchRepository {
         toId: Long,
         flag: Int,
     ): Result<MatchAcceptResponse?>
+
+    suspend fun getMatchHistory(
+        userId: Long,
+    ): Result<List<MatchHistoryResponse>?>
 
 }

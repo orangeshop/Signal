@@ -1,6 +1,7 @@
 package com.ongo.signal.network
 
 import com.ongo.signal.data.model.match.MatchAcceptResponse
+import com.ongo.signal.data.model.match.MatchHistoryResponse
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
@@ -53,7 +54,7 @@ interface MatchApi {
     suspend fun postProposeVideoCall(
         @Query("fromId") fromId: Long,
         @Query("toId") toId: Long,
-    ) : Response<MatchProposeResponse>
+    ): Response<MatchProposeResponse>
 
     @POST("call/accept")
     suspend fun postVideoCallAccept(
@@ -62,5 +63,8 @@ interface MatchApi {
         @Query("flag") flag: Int,
     ): Response<MatchAcceptResponse>
 
-
+    @GET("match/history")
+    suspend fun getMatchHistory(
+        @Query("userId") userId: Long,
+    ): Response<List<MatchHistoryResponse>>
 }

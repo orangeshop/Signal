@@ -22,6 +22,7 @@ class DataStoreClass(val context: Context) {
     private val userName = stringPreferencesKey("userName")
     private val profileImage = stringPreferencesKey("profileImage")
     private val accessToken = stringPreferencesKey("accessToken")
+    private val refreshToken = stringPreferencesKey("refreshToken")
 
 
     val isLoginData: Flow<Boolean> = context.dataStore.data
@@ -64,6 +65,14 @@ class DataStoreClass(val context: Context) {
             preferences[accessToken] ?: ""
         }
 
+    val refreshTokenData: Flow<String> = context.dataStore.data
+        .catch { _ ->
+            emit(emptyPreferences())
+        }
+        .map { preferences ->
+            preferences[refreshToken] ?: ""
+        }
+
     suspend fun setIsLogin(nowIsLogin: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[isLogin] = nowIsLogin
@@ -93,6 +102,12 @@ class DataStoreClass(val context: Context) {
     suspend fun setAccessToken(nowAccessToken: String) {
         context.dataStore.edit { preferences ->
             preferences[accessToken] = nowAccessToken
+        }
+    }
+
+    suspend fun setRefreshToken(nowRefreshToken: String) {
+        context.dataStore.edit { preferences ->
+            preferences[refreshToken] = nowRefreshToken
         }
     }
 

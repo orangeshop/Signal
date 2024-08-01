@@ -8,4 +8,6 @@ data class SignalUser(
     val type: String,
     val accessToken: String,
     val accessTokenExpireTime: String,
+    val refreshToken: String,
+    val refreshTokenExpireTime: String,
 )
