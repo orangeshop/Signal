@@ -8,7 +8,7 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
-    <output-test url="file://$MODULE_DIR$/../../backend/Signal/build/classes/java/test" />
+    <output-test url="file://$MODULE_DIR$/../../backend/Signal/out/test/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../backend/Signal/src/test" />
     <orderEntry type="jdk" jdkName="corretto-17" jdkType="JavaSDK" />
