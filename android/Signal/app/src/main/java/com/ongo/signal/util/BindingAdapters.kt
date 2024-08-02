@@ -25,4 +25,13 @@ object BindingAdapters {
             .load(uri)
             .into(view)
     }
+
+    @JvmStatic
+    @BindingAdapter("imageUrls")
+    fun loadImages(view: ImageView, urls: List<String>?) {
+        val url = urls?.firstOrNull()
+        Glide.with(view.context)
+            .load(url)
+            .into(view)
+    }
 }

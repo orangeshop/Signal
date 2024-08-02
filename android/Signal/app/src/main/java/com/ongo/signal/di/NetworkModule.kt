@@ -8,6 +8,7 @@ import com.ongo.signal.network.MatchApi
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepository
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.network.ChatRoomApi
+import com.ongo.signal.network.MyPageApi
 import com.ongo.signal.network.StompService
 import dagger.Module
 import dagger.Provides
@@ -50,7 +51,7 @@ object NetworkModule {
 //        .baseUrl("http://192.168.100.161:8080/") // 병현서버
 //        .baseUrl("http://192.168.100.95:8080/") // 인수서버
 //        .baseUrl("http://192.168.100.200:8080/") // 민수서버
-        
+
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
@@ -87,4 +88,8 @@ object NetworkModule {
     fun provideChatRepository(chatApi: ChatRoomApi): ChatRepository {
         return ChatRepositoryImpl(chatApi)
     }
+
+    @Provides
+    @Singleton
+    fun provideMyPageRepository(retrofit: Retrofit): MyPageApi = retrofit.create(MyPageApi::class.java)
 }

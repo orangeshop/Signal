@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="post"
-            type="com.ongo.signal.data.model.main.PostDTO" />
+            name="board"
+            type="com.ongo.signal.data.model.main.BoardDTO" />
     </data>
 
 
@@ -24,24 +25,38 @@
             android:background="#202020"
             android:padding="8dp">
 
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_extrabold"
+                android:text="@{board.title}"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="제목입니다." />
+
             <ImageView
                 android:id="@+id/iv_profile"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/baseline_add_mint_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/tv_title"
+                app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
             <TextView
                 android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="유저이름"
+                android:text="@{board.writer}"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@id/iv_profile"
                 app:layout_constraintStart_toEndOf="@id/iv_profile"
-                app:layout_constraintTop_toTopOf="@id/iv_profile" />
+                app:layout_constraintTop_toTopOf="@id/iv_profile"
+                tools:text="유저이름" />
 
             <ImageView
                 android:id="@+id/iv_more"
@@ -56,7 +71,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="blabla"
+                android:text="@{board.content}"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="@id/iv_more"
@@ -75,10 +90,11 @@
 
                 <ImageView
                     android:id="@+id/iv_content"
+                    imageUrls="@{board.imageUrls}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:src="@mipmap/ic_app_icon" />
+                    tools:src="@mipmap/ic_app_icon" />
             </com.google.android.material.card.MaterialCardView>
 
 
@@ -97,6 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:text="@{String.valueOf(board.liked)}"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
@@ -118,6 +135,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:text="@{String.valueOf(board.getCommentCount())}"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_comment"
