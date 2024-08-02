@@ -1,26 +1,63 @@
 package com.ongo.signal.ui.login
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentSignupBinding
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 @AndroidEntryPoint
 class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_signup) {
 
     private val viewModel: SignupViewModel by viewModels()
 
+    private val pickImageLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            result.data?.data?.let { imageUri ->
+                Glide.with(requireActivity())
+                    .load(imageUri)
+                    .transform(CircleCrop())
+                    .into(binding.ivBasicProfile)
+
+                val file = createFileFromUri(imageUri, requireContext())
+                val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                val imageFile = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+                viewModel.setImageFile(imageFile)
+            }
+        }
+    }
+
     override fun init() {
         initViews()
     }
 
     private fun initViews() {
+
+        binding.ivBasicProfile.setOnClickListener {
+            openGallery()
+        }
+
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -63,17 +100,47 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
         binding.btnComplete.setOnClickListener {
             val result = viewModel.checkUIState()
             if (result.first) {
-                Timber.d("회원가입 쐇다 ${viewModel.uiState}")
-                viewModel.postSignup {
-                    val intent = Intent(requireContext(), MainActivity::class.java)
-                    startActivity(intent)
-                    requireActivity().finish()
+                viewModel.postSignup { userId ->
+
+                    viewModel.uiState.imageFile?.let { imageFile ->
+                        viewModel.postProfileImage(userId,imageFile) {
+                            Timber.d("프사 처리하고 넘어가요")
+                            val intent = Intent(requireContext(), MainActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+                    } ?: run {
+                        Timber.d("프사 없이 넘어가요")
+                        val intent = Intent(requireContext(), MainActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
                 }
             } else {
                 makeToast("${result.second}")
             }
         }
-
-
     }
+
+    private fun createFileFromUri(uri: Uri, context: Context): File {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val file = File(context.cacheDir, "temp_image.jpg")
+        try {
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+            outputStream.close()
+            inputStream?.close()
+        } catch (e: IOException) {
+            Timber.e(e, "Failed to create file from URI")
+        }
+        return file
+    }
+
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.type = "image/*"
+        pickImageLauncher.launch(intent)
+    }
+
 }

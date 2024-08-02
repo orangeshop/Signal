@@ -10,6 +10,7 @@ import com.ongo.signal.data.repository.login.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -52,7 +53,11 @@ class SignupViewModel @Inject constructor(
         uiState = uiState.copy(isPossibleId = isPossible)
     }
 
-    fun postSignup(onSuccess: () -> Unit) {
+    fun setImageFile(imageFile: MultipartBody.Part) {
+        uiState = uiState.copy(imageFile = imageFile)
+    }
+
+    fun postSignup(onSuccess: (Long) -> Unit) {
         viewModelScope.launch(coroutineExceptionHandler) {
             loginRepository.postSignup(
                 request = SignupRequest(
@@ -66,18 +71,33 @@ class SignupViewModel @Inject constructor(
                     UserSession.userId = it.userInfo.userId
                     UserSession.userName = it.userInfo.name
                     UserSession.accessToken = it.accessToken
+                    UserSession.refreshToken = it.refreshToken
 
                     saveUserData(
                         userId = UserSession.userId!!,
                         userName = UserSession.userName!!,
-                        accessToken = UserSession.accessToken!!
+                        accessToken = UserSession.accessToken!!,
+                        refreshToken = UserSession.refreshToken!!,
                     )
 
-                    onSuccess()
+                    onSuccess(it.userInfo.userId)
                 }
             }
         }
     }
+
+    fun postProfileImage(
+        userId: Long,
+        imageFile: MultipartBody.Part,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            loginRepository.postProfileImage(userId, imageFile).onSuccess {
+                onSuccess()
+            }
+        }
+    }
+
 
     fun checkDuplicatedId(userId: String, onSuccess: (Boolean) -> Unit) {
         viewModelScope.launch {
@@ -96,7 +116,10 @@ class SignupViewModel @Inject constructor(
             if (isPossibleId == null) return Pair(false, "아이디 중복 확인을 해주세요")
             if (isPossibleId == false) return Pair(false, "사용 불가능한 아이디입니다.")
             if (password.isBlank()) return Pair(false, "비밀번호를 입력해주세요")
-            if(checkPasswordStandard(password) == false)return Pair(false, "비밀번호는 문자, 특수문자. 숫자를 포함하여 8자 이상 입력해주세요.")
+            if (checkPasswordStandard(password) == false) return Pair(
+                false,
+                "비밀번호는 문자, 특수문자. 숫자를 포함하여 8자 이상 입력해주세요."
+            )
             if (password != passwordCheck) return Pair(false, "비밀번호와 비밀번호 확인이 다릅니다")
             if (userName.isBlank()) return Pair(false, "이름을 입력해주세요")
 
@@ -117,7 +140,8 @@ class SignupViewModel @Inject constructor(
         userId: Long,
         userName: String,
         profileImage: String = "",
-        accessToken: String
+        accessToken: String,
+        refreshToken: String,
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
             dataStoreClass.setIsLogin(true)
@@ -125,6 +149,7 @@ class SignupViewModel @Inject constructor(
             dataStoreClass.setUserName(userName)
             dataStoreClass.setProfileImage(profileImage)
             dataStoreClass.setAccessToken(accessToken)
+            dataStoreClass.setRefreshToken(refreshToken)
         }
     }
 
