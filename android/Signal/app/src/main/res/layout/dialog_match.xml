@@ -10,27 +10,26 @@
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginEnd="4dp"
         android:fontFamily="@font/inter_bold"
         android:text="User1"
         android:textColor="@color/mint"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@id/tv_guide"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_guide"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
+        android:layout_marginStart="50dp"
         android:fontFamily="@font/inter_bold"
         android:text="@string/by_propose"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/tv_username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_username"
+        app:layout_constraintEnd_toEndOf="@id/btn_accept"
+        app:layout_constraintStart_toStartOf="@id/btn_deny"
         app:layout_constraintTop_toTopOf="@id/tv_username" />
 
     <androidx.appcompat.widget.AppCompatButton

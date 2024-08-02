@@ -54,7 +54,7 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 putExtra("matchNotification", true)
                 putExtra("otherUserId", nowMessage[0].toLong())
-                putExtra("otherUserName", nowMessage[1])
+                putExtra("otherUserName", nowMessage[2])
             }
 
             val mainPendingIntent: PendingIntent = PendingIntent.getActivity(

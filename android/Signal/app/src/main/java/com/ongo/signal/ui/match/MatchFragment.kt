@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.Window
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
@@ -58,8 +57,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             if (args.getBoolean("matchNotification")) {
                 args.remove("matchNotification")
                 viewModel.setOtherUserId(args.getLong("otherUserId", 0L))
-                Timber.d("서비스에서 가져온 값${args.getLong("otherUserId", 0L)}")
                 viewModel.setOtherUserName(args.getString("otherUserName", ""))
+                Timber.d("상대방 uid ${viewModel.otherUserId} 닉네임 : ${viewModel.otherUserName}")
                 showMatchingDialog()
             }
         }
@@ -80,7 +79,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         val btnDeny: Button = dialogView.findViewById(R.id.btn_deny)
         val btnAccept: Button = dialogView.findViewById(R.id.btn_accept)
 
-        tvUsername.text = "User1"
+        tvUsername.text = viewModel.otherUserName
 
         btnAccept.setOnClickListener {
             UserSession.userId?.let { userId ->
