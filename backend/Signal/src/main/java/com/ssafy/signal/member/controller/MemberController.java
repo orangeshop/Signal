@@ -1,6 +1,7 @@
 package com.ssafy.signal.member.controller;
 
 import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.dto.MemberDetailDto;
 import com.ssafy.signal.member.dto.MemberLoginDto;
 import com.ssafy.signal.member.json.duplicateJson;
 import com.ssafy.signal.member.jwt.JwtUtil;
@@ -186,6 +187,12 @@ public class MemberController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+    }
+
+    // 자기가 쓴 글, 댓글 확인하기
+    @GetMapping("/user/{userId}")
+    public MemberDetailDto getMemberWithPostsAndComments(@PathVariable Long userId) {
+        return memberService.getMemberWithPostsAndComments(userId);
     }
 }
 

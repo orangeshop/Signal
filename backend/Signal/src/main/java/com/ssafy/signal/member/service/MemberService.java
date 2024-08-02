@@ -1,7 +1,11 @@
 package com.ssafy.signal.member.service;
 
+import com.ssafy.signal.board.domain.BoardDto;
+import com.ssafy.signal.board.domain.BoardEntity;
+import com.ssafy.signal.board.domain.CommentDto;
+import com.ssafy.signal.board.domain.CommentEntity;
 import com.ssafy.signal.member.domain.Member;
-import com.ssafy.signal.member.domain.TokenBlacklist;
+import com.ssafy.signal.member.dto.MemberDetailDto;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.repository.MemberRepository;
@@ -16,12 +20,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -156,6 +159,25 @@ public class MemberService implements UserDetailsService {
 
     public void deleteMemberByLoginId(String loginId) {
         memberRepository.deleteByLoginId(loginId);
+    }
+
+
+    //내가 쓴 글, 댓글 조회
+    public MemberDetailDto getMemberWithPostsAndComments(Long userId) {
+        Member member = memberRepository.findMemberWithBoardsAndComments(userId);
+        if (member == null) {
+            throw new RuntimeException("Member not found");
+        }
+
+        List<BoardDto.SimpleBoardDto> boardDTOs = member.getBoards().stream()
+                .map(boardEntity -> new BoardDto.SimpleBoardDto(boardEntity.getId(), boardEntity.getTitle(), boardEntity.getContent()))
+                .collect(Collectors.toList());
+
+        List<CommentDto.SimpleCommentDto> commentDTOs = member.getComments().stream()
+                .map(commentEntity -> new CommentDto.SimpleCommentDto(commentEntity.getId(), commentEntity.getContent()))
+                .collect(Collectors.toList());
+
+        return new MemberDetailDto(member.getUserId(), member.getLoginId(), member.getName(), boardDTOs, commentDTOs);
     }
 
 }

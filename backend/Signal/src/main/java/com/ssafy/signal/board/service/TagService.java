@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 @Service
 public class TagService {
     private final TagRepository tagRepository;
-    private final CommentRepository commentRepository; // CommentRepository 주입
+    private final CommentRepository commentRepository;
 
     @Transactional
     public List<BoardDto> getBoardByTagRecent(String tag, int page, int limit) {
         TagEntity tagEntity = tagRepository.findByTagName(tag);
 
         if (tagEntity == null) {
-            return Collections.emptyList(); // 태그가 없는 경우 빈 리스트 반환
+            return Collections.emptyList();
         }
 
         // 태그에 해당하는 게시글을 생성 날짜 기준으로 내림차순 정렬
@@ -34,7 +34,6 @@ public class TagService {
                 .sorted(Comparator.comparing(BoardDto::getCreatedDate).reversed())
                 .collect(Collectors.toList());
 
-        // 페이지네이션 처리
         int start = page * limit;
         int end = Math.min(start + limit, boards.size());
         if (start >= end) {
