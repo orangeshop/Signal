@@ -48,6 +48,9 @@
         <action
             android:id="@+id/action_myPageFragment_to_mySignalFragment"
             app:destination="@id/mySignalFragment" />
+        <action
+            android:id="@+id/action_myPageFragment_to_myCommentSignalFragment"
+            app:destination="@id/myCommentSignalFragment" />
     </fragment>
 
     <fragment
@@ -116,5 +119,9 @@
         android:id="@+id/matchReviewFragment"
         android:name="com.ongo.signal.ui.match.MatchReviewFragment"
         android:label="MatchReviewFragment" />
+    <fragment
+        android:id="@+id/myCommentSignalFragment"
+        android:name="com.ongo.signal.ui.my.MyCommentSignalFragment"
+        android:label="MyCommentSignalFragment" />
 
 </navigation>
