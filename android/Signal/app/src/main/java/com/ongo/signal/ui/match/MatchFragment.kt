@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
@@ -93,7 +94,12 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     toId = viewModel.otherUserId!!,
                     1
                 ) {
-                    Timber.d("매칭이 수락되었습니다")
+                    UserSession.userId?.let { nowId ->
+                        viewModel.otherUserId?.let { otherId ->
+                            CreateChatRoom.Create(nowId, otherId)
+                        }
+                    }
+
                     dialog.dismiss()
                 }
             }
@@ -143,7 +149,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 ).addOnSuccessListener { currentLocation ->
                     lifecycleScope.launch {
                         Timber.d("매칭 쐈어요 아이디는 ${UserSession.userName} ${UserSession.userId}")
-                        while(true) {
+                        while (true) {
                             viewModel.postMatchRegistration(
                                 request = MatchRegistrationRequest(
                                     currentLocation.latitude,
