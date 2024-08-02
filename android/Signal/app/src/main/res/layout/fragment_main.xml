@@ -306,6 +306,22 @@
                     tools:listitem="@layout/item_tag"
                     tools:orientation="horizontal" />
 
+                <TextView
+                    android:id="@+id/tv_empty_message"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:text="이런 텅 비었어요!"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/tv_today_signal"
+                    app:layout_constraintEnd_toEndOf="@id/et_search"
+                    app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
+                    app:layout_constraintTop_toBottomOf="@id/hsv_chip"
+                    tools:visibility="visible" />
+
                 <View
                     android:id="@+id/view_line"
                     android:layout_width="0dp"
