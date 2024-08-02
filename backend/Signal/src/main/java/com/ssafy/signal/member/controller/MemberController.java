@@ -5,6 +5,7 @@ import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberDetailDto;
 import com.ssafy.signal.member.dto.MemberLoginDto;
+import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.json.duplicateJson;
 import com.ssafy.signal.member.jwt.JwtUtil;
 import com.ssafy.signal.member.jwt.json.ApiResponseJson;
@@ -62,9 +63,9 @@ public class MemberController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Member> getMemberById(@PathVariable("id") Long id) {
+    public ResponseEntity<findMemberDto> getMemberById(@PathVariable("id") Long id) {
         try {
-            Member member = memberService.getMemberById(id);
+            findMemberDto member = memberService.findMemberById(id);
             return ResponseEntity.ok(member);
         } catch (NoSuchElementException e) {
             // 예외가 발생한 경우 적절한 응답을 반환합니다.

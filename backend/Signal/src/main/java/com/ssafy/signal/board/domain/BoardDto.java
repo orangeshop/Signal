@@ -1,5 +1,6 @@
 package com.ssafy.signal.board.domain;
 
+import com.ssafy.signal.file.domain.FileDto;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -27,6 +28,8 @@ public class BoardDto {
     private List<CommentDto> comments;
     private List<TagDto> tags;
     private List<String> fileUrls;
+
+
 
     public BoardEntity toEntity(){
         return  BoardEntity.builder()
