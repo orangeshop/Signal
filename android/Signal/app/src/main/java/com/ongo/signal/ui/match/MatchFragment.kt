@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ongo.signal.R
@@ -88,7 +89,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
         btnAccept.setOnClickListener {
             UserSession.userId?.let { userId ->
-                Timber.d("매칭 수락할게요 !! ${userId} ${viewModel.otherUserId!!}")
                 viewModel.postProposeAccept(
                     fromId = userId,
                     toId = viewModel.otherUserId!!,
@@ -97,6 +97,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     UserSession.userId?.let { nowId ->
                         viewModel.otherUserId?.let { otherId ->
                             CreateChatRoom.Create(nowId, otherId)
+                            findNavController().navigate(R.id.action_matchFragment_to_chatFragment)
                         }
                     }
 

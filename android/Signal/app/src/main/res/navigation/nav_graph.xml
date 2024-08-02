@@ -18,7 +18,11 @@
     <fragment
         android:id="@+id/matchFragment"
         android:name="com.ongo.signal.ui.match.MatchFragment"
-        android:label="MatchFragment" />
+        android:label="MatchFragment" >
+        <action
+            android:id="@+id/action_matchFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.ongo.signal.ui.main.fragment.MainFragment"
