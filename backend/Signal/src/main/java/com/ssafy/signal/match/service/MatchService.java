@@ -1,5 +1,6 @@
 package com.ssafy.signal.match.service;
 
+import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.match.domain.*;
 import com.ssafy.signal.match.repository.LocationRepository;
 import com.ssafy.signal.match.repository.MatchRepository;
@@ -28,7 +29,7 @@ public class MatchService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final MatchRepository matchRepository;
-
+    private final FileRepository fileRepository;
     private final FirebaseService firebaseService;
 
     Map<Long,String> userTokens = new ConcurrentHashMap<>();
@@ -60,12 +61,16 @@ public class MatchService {
 
     public List<ReviewDto> getReview(long user_id)
     {
+        String url = Optional
+                .ofNullable(fileRepository.findAllByUser(Member.builder().userId(user_id).build()).getFileUrl())
+                .orElse("");
+
         return reviewRepository.findAllByUserId(Member
                         .builder()
                         .userId(user_id)
                         .build())
                 .stream()
-                .map(ReviewEntity::asReviewDto)
+                .map(review-> review.asReviewDto(url))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 

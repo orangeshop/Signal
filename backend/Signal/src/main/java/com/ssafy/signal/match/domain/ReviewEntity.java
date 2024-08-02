@@ -2,8 +2,12 @@ package com.ssafy.signal.match.domain;
 
 import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="review")
 @Entity
@@ -40,12 +44,23 @@ public class ReviewEntity {
     }
 
     public ReviewDto asReviewDto(){
-        return new ReviewDto(
-                review_id,
-                userId.getUserId(),
-                content,
-                writerId.getUserId(),
-                star
-        );
+        return ReviewDto.builder()
+                .review_id(review_id)
+                .user_id(userId.getUserId())
+                .content(content)
+                .writer_id(writerId.getUserId())
+                .star(star)
+                .build();
+    }
+
+    public ReviewDto asReviewDto(String url){
+        return ReviewDto.builder()
+                .review_id(review_id)
+                .user_id(userId.getUserId())
+                .content(content)
+                .writer_id(writerId.getUserId())
+                .star(star)
+                .url(url)
+                .build();
     }
 }
