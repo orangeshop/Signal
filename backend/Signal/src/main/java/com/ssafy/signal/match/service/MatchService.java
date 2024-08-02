@@ -35,8 +35,23 @@ public class MatchService {
     Map<Long,String> userTokens = new ConcurrentHashMap<>();
 
     public ReviewDto writeReview(ReviewDto reviewDto){
+        Member user = Member
+                .builder()
+                .userId(reviewDto.getUser_id())
+                .build();
+
+        Member writer = Member
+                .builder()
+                .userId(reviewDto.getWriter_id())
+                .build();
+        if(reviewRepository.existsByUserIdAndWriterId(user,writer))
+        {
+            log.error("Writer already write review");
+            return null;
+        }
+
         List<MatchDto> matchUsers = Optional.ofNullable(
-                        matchRepository.findAllByUserId(Member.builder().userId(reviewDto.getWriter_id()).build())
+                        matchRepository.findAllByUserId(writer)
                 ).orElse(new ArrayList<>())
                 .stream()
                 .map(MatchEntity::asMatchDto)
