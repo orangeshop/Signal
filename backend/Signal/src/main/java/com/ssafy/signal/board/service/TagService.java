@@ -4,14 +4,13 @@ import com.ssafy.signal.board.domain.*;
 import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
 import com.ssafy.signal.board.repository.TagRepository;
+import com.ssafy.signal.file.domain.FileEntity;
+import com.ssafy.signal.file.repository.FileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -19,6 +18,19 @@ import java.util.stream.Collectors;
 public class TagService {
     private final TagRepository tagRepository;
     private final CommentRepository commentRepository;
+    private final FileRepository fileRepository;
+
+    private BoardDto addFileUrl(BoardEntity board)
+    {
+        List<FileEntity> files = Optional.ofNullable(fileRepository
+                .findByBoardId(board.getId()))
+                .orElse(new ArrayList<>());
+        BoardDto boardDto = board.asBoardDto();
+        boardDto.setFileUrls(new ArrayList<>());
+        for(FileEntity file : files)
+            boardDto.getFileUrls().add(file.getFileUrl());
+        return boardDto;
+    }
 
     @Transactional
     public List<BoardDto> getBoardByTagRecent(String tag, int page, int limit) {
@@ -30,7 +42,7 @@ public class TagService {
 
         // 태그에 해당하는 게시글을 생성 날짜 기준으로 내림차순 정렬
         List<BoardDto> boards = tagEntity.getBoard().stream()
-                .map(BoardEntity::asBoardDto)
+                .map(this::addFileUrl)
                 .sorted(Comparator.comparing(BoardDto::getCreatedDate).reversed())
                 .collect(Collectors.toList());
 
