@@ -6,16 +6,13 @@ import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.member.domain.Member;
-<<<<<<< HEAD
 import com.ssafy.signal.member.service.MemberService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-=======
 import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.member.service.MemberService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
->>>>>>> 1c22c5853324a577ec3c9ff61ff847c494a884cc
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -83,16 +80,8 @@ public class FileService {
         file.setUser(memberService.getMemberById(userId));
         file.setFileName(multipartFile.getOriginalFilename());
         file.setFileUrl(url);
-<<<<<<< HEAD
         return fileRepository.save(file).asFileDto();
-=======
 
-        fileRepository.save(file);
-
-        // 업로드된 파일의 URL 반환
-
-        return new FileDto(null, null, null, null, null, url, null, null);
->>>>>>> 1c22c5853324a577ec3c9ff61ff847c494a884cc
     }
     // 파일 삭제하기
     @Transactional
@@ -125,7 +114,7 @@ public class FileService {
                 .collect(Collectors.toList());
     }
 
-<<<<<<< HEAD
+
     @Transactional
     public FileDto updateProfileFile(MultipartFile multipartFile, Long userId) throws IOException {
         // 새로운 파일 URL을 S3에 업로드하여 가져오기
@@ -169,7 +158,6 @@ public class FileService {
 
 
 
-=======
     public String getProfile(Long userId) {
         Member user = memberRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -182,5 +170,4 @@ public class FileService {
         return file.getFileUrl();
     }
 
->>>>>>> 1c22c5853324a577ec3c9ff61ff847c494a884cc
 }
