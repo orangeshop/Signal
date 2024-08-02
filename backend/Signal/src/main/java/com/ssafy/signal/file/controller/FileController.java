@@ -38,10 +38,9 @@ public class FileController {
 
     // 프로필 이미지 업로드
     @PostMapping("/user/{userId}/upload")
-    public String uploadProfileFile(@RequestParam("file") MultipartFile multipartFile,
-                                  @PathVariable("userId") Long userId) throws IOException {
+    public FileDto uploadProfileFile(@RequestParam("file") MultipartFile multipartFile,
+                                     @PathVariable("userId") Long userId) throws IOException {
 
-        // FileService를 통해 파일 업로드 및 URL 반환
         return fileService.uploadProfileFile(multipartFile, userId);
     }
 

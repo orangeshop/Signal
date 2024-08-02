@@ -52,7 +52,7 @@ public class FileService {
         return url;
     }
 
-    public String uploadProfileFile(MultipartFile multipartFile,  Long userId) throws IOException {
+    public FileDto uploadProfileFile(MultipartFile multipartFile,  Long userId) throws IOException {
         // S3에 파일 업로드 후 URL 가져오기
         String url = s3Uploader.upload(multipartFile, DIR_NAME);
 
@@ -62,11 +62,8 @@ public class FileService {
         file.setUser(memberService.getMemberById(userId));
         file.setFileName(multipartFile.getOriginalFilename());
         file.setFileUrl(url);
-
         fileRepository.save(file);
-
-        // 업로드된 파일의 URL 반환
-        return url;
+        return new FileDto(null, null, null, null, null, url, null, null);
     }
     // 파일 삭제하기
     public void deleteFile(Long id) throws  IOException{
@@ -97,4 +94,5 @@ public class FileService {
                 .map(FileEntity::getFileUrl)
                 .collect(Collectors.toList());
     }
+
 }
