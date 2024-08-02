@@ -1,7 +1,7 @@
 package com.ongo.signal.network
 
 
-import com.ongo.signal.data.model.chat.ChatHomeChildDto
+import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import retrofit2.Response
@@ -19,7 +19,7 @@ interface ChatRoomApi {
     suspend fun saveChatRoom(@Body chatRoom: ChatHomeCreateDTO) : Response<ChatHomeCreateDTO>
 
     @GET("/chat-room/messages")
-    suspend fun getAllChatDetail(@Query("chat_id") chat_id: Long): Response<MutableList<ChatHomeChildDto>>
+    suspend fun getAllChatDetail(@Query("chat_id") chat_id: Long): Response<MutableList<ChatHomeChildDTO>>
 
     @PATCH("/message/read")
     suspend fun readMessage(@Query("chat_id") chat_id: Long)

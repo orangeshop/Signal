@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.ChatItemListBinding
 
@@ -17,7 +18,7 @@ class ChatHomeAdapter(
     inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeDTO){
 
-            binding.chatItemTitle.text = item.toName
+            binding.chatItemTitle.text = if(UserSession.userName == item.toName)  item.fromName else item.toName;
 
             binding.content.text = item.lastMessage
 

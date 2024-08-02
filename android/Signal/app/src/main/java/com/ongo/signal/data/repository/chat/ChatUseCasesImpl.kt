@@ -2,8 +2,9 @@ package com.ongo.signal.data.repository.chat
 
 import android.util.Log
 import com.google.gson.Gson
-import com.ongo.signal.data.model.chat.ChatHomeChildDto
+import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
+import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepository
 import com.ongo.signal.network.StompService
 import kotlinx.coroutines.flow.Flow
@@ -41,20 +42,20 @@ class ChatUseCasesImpl @Inject constructor(
         chatRoomRepositoryImpl.insertChat(room)
     }
 
-    override suspend fun loadDetailList(id: Long): List<ChatHomeChildDto> {
+    override suspend fun loadDetailList(id: Long): List<ChatHomeChildDTO> {
         val serverMessageList = chatRepository.getAllMessages(id).body()
 
         if(serverMessageList != null){
             for(item in serverMessageList){
                 saveDetailList(item, id)
-                Log.d(TAG, "loadDetailList: ${item}")
+//                Log.d(TAG, "loadDetailList: ${item}")
             }
         }
 
         return chatRoomRepositoryImpl.getAllMessages(id)
     }
 
-    override suspend fun saveDetailList(message: ChatHomeChildDto, id: Long) {
+    override suspend fun saveDetailList(message: ChatHomeChildDTO, id: Long) {
         chatRoomRepositoryImpl.insertMessage(message)
 
     }
@@ -63,12 +64,14 @@ class ChatUseCasesImpl @Inject constructor(
         chatRepository.readMessage(id)
     }
 
+
+
     override fun timeSetting(): String {
         val now = System.currentTimeMillis()
         return SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
     }
 
-    override suspend fun stompSend(item: ChatHomeChildDto) {
+    override suspend fun stompSend(item: ChatHomeChildDTO) {
         val json: String = Gson().toJson(item)
 
         stompSession?.sendText(
@@ -88,7 +91,7 @@ class ChatUseCasesImpl @Inject constructor(
 
             newChatMessage.collect {
                 val json = it.bodyAsText
-                val stompGetMessage: ChatHomeChildDto = Gson().fromJson(json, ChatHomeChildDto::class.java)
+                val stompGetMessage: ChatHomeChildDTO = Gson().fromJson(json, ChatHomeChildDTO::class.java)
                 stompGetMessage.sendAt = ""
                 saveDetailList(stompGetMessage, stompGetMessage.chatId)
                 onSuccess(stompGetMessage.chatId)
@@ -108,4 +111,34 @@ class ChatUseCasesImpl @Inject constructor(
     override suspend fun stompDisconnect() {
         stompSession?.disconnect()
     }
+
+    override suspend fun saveLocalMessage(room: ChatHomeLocalCheckDTO) {
+        return chatRoomRepositoryImpl.saveLocalMessage(room)
+    }
+
+    override suspend fun getLastMessageIndex(chatId: Long): ChatHomeLocalCheckDTO? {
+        return chatRoomRepositoryImpl.getLastMessageIndex(chatId)
+    }
+
+    override fun updateLastReadMessageIndex(
+        chatId: Long,
+        lastReadMessageIndex: Long,
+        sendAt: String
+    ) {
+        return chatRoomRepositoryImpl.updateLastReadMessageIndex(chatId, lastReadMessageIndex, sendAt)
+    }
+
+    override fun updateTodayFirstMessage(
+        chatId: Long,
+        todayFirstSendMessageId: Long,
+        sendAt: String
+    ) {
+        return chatRoomRepositoryImpl.updateTodayFirstMessage(chatId, todayFirstSendMessageId, sendAt)
+    }
+
+    override fun updateMessageAmount(ChatId: Long, messageVolume: Long, sendAt: String) {
+        return chatRoomRepositoryImpl.updateMessageAmount(ChatId, messageVolume, sendAt)
+    }
+
+
 }

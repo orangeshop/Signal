@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "chat_detail_table")
-data class ChatHomeChildDto(
+data class ChatHomeChildDTO(
     @PrimaryKey(autoGenerate = false)
     @SerializedName("message_id") var messageId: Long,
 

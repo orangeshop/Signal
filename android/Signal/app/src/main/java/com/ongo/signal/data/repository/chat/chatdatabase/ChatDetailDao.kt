@@ -4,14 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ongo.signal.data.model.chat.ChatHomeChildDto
+import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 
 
 @Dao
 interface ChatDetailDao {
-    @Query("SELECT * FROM chat_detail_table where chatId = :id ")
-    suspend fun getAll(id : Long): List<ChatHomeChildDto>
+    @Query("SELECT * FROM chat_detail_table where chatId = :id order by messageId desc limit 300")
+    suspend fun getAll(id : Long): List<ChatHomeChildDTO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMessage(ChatHomeChildDtos: ChatHomeChildDto)
+    suspend fun insertMessage(chatHomeChildDtos: ChatHomeChildDTO)
 }
