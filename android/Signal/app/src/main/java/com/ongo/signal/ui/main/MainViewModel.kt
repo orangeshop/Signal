@@ -57,6 +57,12 @@ class MainViewModel @Inject constructor(
     private val _selectedTag = MutableStateFlow<String?>(null)
     val selectedTag: StateFlow<String?> = _selectedTag
 
+    private val _title = MutableStateFlow("")
+    val title: StateFlow<String> = _title
+
+    private val _content = MutableStateFlow("")
+    val content: StateFlow<String> = _content
+
     init {
         loadBoards()
         loadHotSignalBoards()
@@ -133,8 +139,10 @@ class MainViewModel @Inject constructor(
     fun loadHotAndRecentSignalBoardsByTag(tag: String, page: Int, limit: Int) {
         viewModelScope.launch {
             try {
-                val hotSignalDeferred = async { boardRepository.getHotSignalByTag(tag, page, limit) }
-                val recentSignalDeferred = async { boardRepository.getRecentSignalByTag(tag, page, limit) }
+                val hotSignalDeferred =
+                    async { boardRepository.getHotSignalByTag(tag, page, limit) }
+                val recentSignalDeferred =
+                    async { boardRepository.getRecentSignalByTag(tag, page, limit) }
 
                 val hotSignalResponse = hotSignalDeferred.await()
                 val recentSignalResponse = recentSignalDeferred.await()
@@ -155,12 +163,21 @@ class MainViewModel @Inject constructor(
                         _boards.value = recentSignalList
                         Timber.d("Updated boards: ${_boards.value}")
                     }
+                    loadImagesForBoards()
                 } else {
                     if (!hotSignalResponse.isSuccessful) {
-                        Timber.d("Hot signal response error: ${hotSignalResponse.errorBody().toString()}")
+                        Timber.d(
+                            "Hot signal response error: ${
+                                hotSignalResponse.errorBody().toString()
+                            }"
+                        )
                     }
                     if (!recentSignalResponse.isSuccessful) {
-                        Timber.d("Recent signal response error: ${recentSignalResponse.errorBody().toString()}")
+                        Timber.d(
+                            "Recent signal response error: ${
+                                recentSignalResponse.errorBody().toString()
+                            }"
+                        )
                     }
                 }
             } catch (e: Exception) {
@@ -213,6 +230,7 @@ class MainViewModel @Inject constructor(
         writer: String,
         title: String,
         content: String,
+        type: Int,
         tags: List<TagDTO>
     ): Deferred<Unit> {
         return viewModelScope.async {
@@ -221,6 +239,7 @@ class MainViewModel @Inject constructor(
                 writer = writer,
                 title = title,
                 content = content,
+                type = type,
                 tags = tags
             )
             Timber.d("Creating Board with title: $title, content: $content")
@@ -259,6 +278,7 @@ class MainViewModel @Inject constructor(
         boardId: Int,
         title: String,
         content: String,
+        type: Int,
         tags: List<TagDTO>
     ): Deferred<Unit> {
         return viewModelScope.async {
@@ -266,7 +286,8 @@ class MainViewModel @Inject constructor(
             currentBoard?.let {
                 val boardRequestDTO = UpdateBoardDTO(
                     title = title,
-                    content = content
+                    content = content,
+                    type = type
                 )
                 Timber.d("Updating Board with title: $title, content: $content")
                 Timber.d("BoardRequestDTO: $boardRequestDTO")
@@ -341,6 +362,7 @@ class MainViewModel @Inject constructor(
                 val response = boardRepository.deleteBoard(boardId)
                 if (response.isSuccessful) {
                     Timber.d("Board deleted successfully: ${response.body()}")
+                    _boards.value = _boards.value.filterNot { it.id == boardId }
                 } else {
                     Timber.d(response.errorBody().toString())
                 }
@@ -496,5 +518,13 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setTitle(title: String) {
+        _title.value = title
+    }
+
+    fun setContent(content: String) {
+        _content.value = content
     }
 }
