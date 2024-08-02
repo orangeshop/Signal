@@ -27,6 +27,7 @@ import com.ongo.signal.util.STTHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -57,6 +58,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         setUpSpinner()
         setupLaunchers()
         setUpImageAdapter()
+        observeViewModel()
 
         viewModel.selectedBoard.value?.let {
             binding.etTitle.setText(it.title)
@@ -78,8 +80,15 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
                     when (currentTarget) {
-                        R.id.iv_title_mic -> binding.etTitle.setText(recognizedText)
-                        R.id.iv_content_mic -> binding.etContent.setText(recognizedText)
+                        R.id.iv_title_mic -> {
+                            binding.etTitle.setText(recognizedText)
+                            viewModel.setTitle(recognizedText)
+                        }
+
+                        R.id.iv_content_mic -> {
+                            binding.etContent.setText(recognizedText)
+                            viewModel.setContent(recognizedText)
+                        }
                     }
                 }
             }
@@ -106,6 +115,24 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                     }
                 }
             }
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.title.collectLatest { title ->
+                if (binding.etTitle.text.toString() != title) {
+                    binding.etTitle.setText(title)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.content.collectLatest { content ->
+                if (binding.etContent.text.toString() != content) {
+                    binding.etContent.setText(content)
+                }
+            }
+        }
     }
 
     private fun setUpSpinner() {
@@ -149,6 +176,8 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     }
 
     fun showImagePickerPopupMenu(view: View) {
+        viewModel.setTitle(binding.etTitle.text.toString())
+        viewModel.setContent(binding.etContent.text.toString())
         PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_image_select) { item ->
             when (item.itemId) {
                 R.id.menu_take_photo -> {
@@ -215,16 +244,27 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         val userId = 3
         val writer = "admin"
         val tags = listOf(TagDTO(tagId = selectedTagId, tag = selectedTag))
+        val isChipChecked = if (binding.chipJunior.isChecked && binding.chipSenior.isChecked) {
+            0
+        } else if (binding.chipJunior.isChecked) {
+            1
+        } else if (binding.chipSenior.isChecked) {
+            2
+        } else {
+            0
+        }
 
         lifecycleScope.launch {
             if (viewModel.selectedBoard.value == null) {
-                viewModel.createBoard(userId, writer, title, content, tags).join()
+                viewModel.createBoard(userId, writer, title, content, type = isChipChecked, tags)
+                    .join()
                 Timber.d("Board created")
             } else {
                 viewModel.updateBoard(
                     boardId = viewModel.selectedBoard.value!!.id,
                     title = title,
                     content = content,
+                    type = isChipChecked,
                     tags = tags
                 ).join()
                 Timber.d("Board updated")
