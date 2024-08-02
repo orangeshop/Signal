@@ -51,7 +51,7 @@
             android:background="@drawable/background_cancel_button_ripple"
             android:fontFamily="@font/inter_light"
             android:paddingHorizontal="8dp"
-            android:text="매칭 신청"
+            android:text="@string/accept_matching"
             android:textColor="@color/mint"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"

@@ -40,7 +40,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val runtimePermissions = arrayOf(
-        Manifest.permission.POST_NOTIFICATIONS,
         Manifest.permission.CAMERA,
     )
 
@@ -137,10 +136,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private fun handleIntent(intent: Intent, navController: NavController) {
-        if (intent.getBooleanExtra("matchNotification", false)) {
+        val stringExtra = intent.getStringExtra("matchNotification")
+        stringExtra?.let { stExtra ->
             val bundle = Bundle().apply {
-                putBoolean("matchNotification", true)
-                putLong("otherUserId", intent.getLongExtra("otherUserId",0))
+                putString("matchNotification", stExtra)
+                putLong("otherUserId", intent.getLongExtra("otherUserId", 0))
                 putString("otherUserName", intent.getStringExtra("otherUserName") ?: "")
             }
             navController.navigate(R.id.matchFragment, bundle)

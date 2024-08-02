@@ -79,7 +79,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             viewModel.boards.collectLatest { newBoards ->
                 Timber.d("New boards received: $newBoards")
                 todayPostAdapter.submitList(newBoards)
-                updateTagAdapters(newBoards)
+//                updateTagAdapters(newBoards)
             }
         }
     }
@@ -88,38 +88,68 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         lifecycleScope.launch {
             viewModel.hotSignalBoards.collectLatest { newHotBoards ->
                 Timber.d("New hot signal boards received: $newHotBoards")
-                updateHotSignalTitles(newHotBoards)
+                if (newHotBoards.isEmpty()) {
+                    binding.tvFirst.visibility = View.GONE
+                    binding.tvFirstTitle.visibility = View.GONE
+                    binding.rvFirst.visibility = View.GONE
+                    binding.tvSecond.visibility = View.GONE
+                    binding.tvSecondTitle.visibility = View.GONE
+                    binding.rvSecond.visibility = View.GONE
+                    binding.tvThird.visibility = View.GONE
+                    binding.tvThirdTitle.visibility = View.GONE
+                    binding.rvThird.visibility = View.GONE
+                    binding.tvEmptyMessage.visibility = View.VISIBLE
+                    updateTagAdapters(emptyList())
+                } else {
+                    binding.tvFirst.visibility = View.VISIBLE
+                    binding.tvFirstTitle.visibility = View.VISIBLE
+                    binding.rvFirst.visibility = View.VISIBLE
+                    binding.tvSecond.visibility = View.VISIBLE
+                    binding.tvSecondTitle.visibility = View.VISIBLE
+                    binding.rvSecond.visibility = View.VISIBLE
+                    binding.tvThird.visibility = View.VISIBLE
+                    binding.tvThirdTitle.visibility = View.VISIBLE
+                    binding.rvThird.visibility = View.VISIBLE
+                    binding.tvEmptyMessage.visibility = View.GONE
+
+                    updateHotSignalTitles(newHotBoards)
+                    updateTagAdapters(newHotBoards)
+                }
             }
         }
     }
 
     private fun updateHotSignalTitles(newHotBoards: List<BoardDTO>) {
-        if (newHotBoards.isNotEmpty()) {
-            binding.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
-            binding.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
-            binding.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
-        }
+//        binding.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
+//        binding.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
+//        binding.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
     }
+
 
     private fun updateTagAdapters(newBoards: List<BoardDTO>) {
         if (newBoards.isNotEmpty()) {
-            val firstBoardTags = newBoards[0].tags ?: emptyList()
+            val firstBoardTags = newBoards.getOrNull(0)?.tags ?: emptyList()
+            Timber.d("First board tags: $firstBoardTags")
             firstTagAdapter.submitList(firstBoardTags)
-            if (newBoards.size > 1) {
-                val secondBoardTags = newBoards[1].tags ?: emptyList()
-                secondTagAdapter.submitList(secondBoardTags)
-            }
-            if (newBoards.size > 2) {
-                val thirdBoardTags = newBoards[2].tags ?: emptyList()
-                thirdTagAdapter.submitList(thirdBoardTags)
-            }
+            val secondBoardTags = newBoards.getOrNull(1)?.tags ?: emptyList()
+            Timber.d("Second board tags: $secondBoardTags")
+            secondTagAdapter.submitList(secondBoardTags)
+            val thirdBoardTags = newBoards.getOrNull(2)?.tags ?: emptyList()
+            Timber.d("Third board tags: $thirdBoardTags")
+            thirdTagAdapter.submitList(thirdBoardTags)
+        } else {
+            firstTagAdapter.submitList(emptyList())
+            secondTagAdapter.submitList(emptyList())
+            thirdTagAdapter.submitList(emptyList())
         }
     }
+
 
     fun onChipClicked(tag: String) {
         if (viewModel.selectedTag.value == tag) {
             viewModel.clearSelectedTag()
             viewModel.clearSearch()
+            viewModel.loadHotSignalBoards()
         } else {
             viewModel.clearSelectedTag()
             viewModel.setSelectedTag(tag)

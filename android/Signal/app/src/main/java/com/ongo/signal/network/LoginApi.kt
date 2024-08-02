@@ -4,7 +4,9 @@ import com.ongo.signal.data.model.login.FCMTokenResponse
 import com.ongo.signal.data.model.login.IDCheckResponse
 import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.LoginResponse
+import com.ongo.signal.data.model.login.ProfileImageResponse
 import com.ongo.signal.data.model.login.SignupRequest
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -27,7 +29,7 @@ interface LoginApi {
 
     @POST("/user/logout")
     suspend fun postLogoutRequest(
-        @Header("Authorization") token: String,
+        @Header("RefreshToken") token: String,
     ): Response<Void>
 
     @POST("/user/create")
@@ -39,4 +41,10 @@ interface LoginApi {
     suspend fun postCheckPossibleId(
         @Path("id") loginId: String,
     ): Response<IDCheckResponse>
+
+    @POST("/user/{user_id}/upload")
+    suspend fun postProfileImage(
+        @Path("user_id") userId: Long,
+        @Body file: MultipartBody.Part
+    ): Response<ProfileImageResponse>
 }

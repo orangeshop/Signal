@@ -43,7 +43,7 @@ object CreateChatRoom {
         retrofit.create(ChatRoomApi::class.java)
     }
 
-    fun Create(from : Int, to : Int){
+    fun Create(from : Long, to : Long){
         CoroutineScope(Dispatchers.IO).launch {
             chatRoomApi.saveChatRoom(ChatHomeCreateDTO(from, to))
             Log.d(TAG, "Create: 완료")

@@ -111,7 +111,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun loadHotSignalBoards() {
+    fun loadHotSignalBoards() {
         viewModelScope.launch {
             try {
                 val response = boardRepository.getHotSignal()
@@ -171,13 +171,20 @@ class MainViewModel @Inject constructor(
 
 
     fun setSelectedTag(tag: String) {
+        _hotSignalBoards.value = emptyList()
+        _boards.value = emptyList()
+
         _selectedTag.value = tag
         Timber.d(_selectedTag.value)
     }
 
     fun clearSelectedTag() {
+        _hotSignalBoards.value = emptyList()
+        _boards.value = emptyList()
+
         _selectedTag.value = null
     }
+
 
     fun searchBoard(keyword: String) {
         viewModelScope.launch {
