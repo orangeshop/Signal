@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.main.fragment
 
+import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,11 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         setUpAdapter()
         populateReviewData()
         binding.fragment = this
+
+        //user ID에 상대방 아이디를 넣으면 됩니다.
+        viewModel.checkReviewPermission(25) { isPossible ->
+            Timber.d("리뷰를 작성할 수 있으면 ${isPossible} 가 true가 됨")
+        }
     }
 
     private fun setUpAdapter() {
@@ -60,10 +66,6 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     }
 
     fun onReview() {
-        //user ID에 상대방 아이디를 넣으면 됩니다.
-        viewModel.checkReviewPermission(25) { isPossible ->
-            Timber.d("리뷰를 작성할 수 있으면 ${isPossible} 가 true가 됨")
-        }
         findNavController().navigate(R.id.action_reviewFragment_to_matchReviewFragment)
     }
 }
