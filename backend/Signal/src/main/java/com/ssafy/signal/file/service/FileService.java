@@ -52,9 +52,9 @@ public class FileService {
         return url;
     }
 
-    public String uploadProfileFile(MultipartFile multipartFile, String dirName, Long userId) throws IOException {
+    public String uploadProfileFile(MultipartFile multipartFile,  Long userId) throws IOException {
         // S3에 파일 업로드 후 URL 가져오기
-        String url = s3Uploader.upload(multipartFile, dirName);
+        String url = s3Uploader.upload(multipartFile, DIR_NAME);
 
         // 파일 정보를 DB에 저장
         FileEntity file = new FileEntity();

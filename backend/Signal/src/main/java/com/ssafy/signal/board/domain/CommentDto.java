@@ -41,4 +41,14 @@ public class CommentDto {
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SimpleCommentDto {
+        private Long id;
+        private String content;
+    }
 }

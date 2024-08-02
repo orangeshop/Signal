@@ -1,8 +1,13 @@
 package com.ssafy.signal.member.domain;
 
+import com.ssafy.signal.board.domain.BoardEntity;
+import com.ssafy.signal.board.domain.CommentEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -35,4 +40,10 @@ public class Member {
 
     @Column(name = "comment", nullable = true)
     private String comment;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardEntity> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentEntity> comments = new ArrayList<>() ;
 }
