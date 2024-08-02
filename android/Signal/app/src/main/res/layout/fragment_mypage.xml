@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="fragment"
+            type="com.ongo.signal.ui.my.MyPageFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,6 +55,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginStart="20dp"
+            android:onClick="@{()->fragment.goToProfileEdit()}"
             android:src="@drawable/usercircle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,6 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
+            android:onClick="@{()->fragment.goToProfileEdit()}"
             android:text="@string/edit_profile"
             android:textColor="@color/gray"
             android:textSize="16sp"
@@ -78,6 +83,7 @@
             android:layout_height="28dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="32dp"
+            android:onClick="@{()->fragment.goToMySignal()}"
             android:src="@drawable/baseline_my_signal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_profile_icon" />
@@ -88,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
+            android:onClick="@{()->fragment.goToMySignal()}"
             android:text="@string/my_signal"
             android:textColor="@color/gray"
             android:textSize="16sp"
@@ -102,6 +109,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="32dp"
+            android:onClick="@{()->fragment.goToMyCommentSignal()}"
             android:src="@drawable/baseline_herat_signal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_mysignal_icon" />
@@ -112,6 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
+            android:onClick="@{()->fragment.goToMyCommentSignal()}"
             android:text="@string/my_heart_signal"
             android:textColor="@color/gray"
             android:textSize="16sp"
