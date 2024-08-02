@@ -19,8 +19,8 @@ class SignalFirebaseService : FirebaseMessagingService() {
         val messageTitle = remoteMessage.data.get("title").toString()
         val messageContent = remoteMessage.data.get("body").toString()
         Timber.d("메시지옴 제목 : ${messageTitle} 내용 : ${messageContent}")
-        Timber.d("컨테인 확인 1 ${messageTitle.contains("테스트")} ${messageTitle.contains("테스트", true)}")
-
+        //승낙, 거부
+        
         if (messageTitle.contains("테스트")) {
             val mainIntent = Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

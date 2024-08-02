@@ -60,6 +60,8 @@ class DotCustomView @JvmOverloads constructor(
 
         originDots.find { it.userId == userId }?.let { dot ->
             dot.isFocused = true
+            originDots.remove(dot)
+            originDots.add(dot)
             showProfilePopup(dot)
         }
 
@@ -173,6 +175,16 @@ class DotCustomView @JvmOverloads constructor(
         popupWindow.isTouchable = false
 
 
-        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, x - 75, y - 180)
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
+
+        Timber.d("스크린 width ${screenWidth} height ${screenHeight}")
+
+        val xOffset = (screenWidth * 0.065).toInt()
+        val yOffset = (screenHeight * 0.08).toInt()
+
+
+        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, x - xOffset, y - yOffset)
     }
 }
