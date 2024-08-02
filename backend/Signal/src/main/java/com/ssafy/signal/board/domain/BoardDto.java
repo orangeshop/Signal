@@ -1,5 +1,6 @@
 package com.ssafy.signal.board.domain;
 
+import com.ssafy.signal.file.domain.FileDto;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -28,6 +29,8 @@ public class BoardDto {
     private List<TagDto> tags;
     private List<String> fileUrls;
 
+
+
     public BoardEntity toEntity(){
         return  BoardEntity.builder()
                 .id(id)
@@ -54,15 +57,5 @@ public class BoardDto {
                 .tags(tags.stream().map(TagDto::toEntity).toList())
                 .user(Member.builder().userId(userId).build()) // Member 객체 참조
                 .build();
-    }
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class SimpleBoardDto {
-        private Long id;
-        private String title;
-        private String content;
     }
 }

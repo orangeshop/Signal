@@ -23,7 +23,7 @@ public class FileEntity {
     @JoinColumn(name = "board_id" )
     private BoardEntity board;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private Member user;
 
@@ -51,7 +51,7 @@ public class FileEntity {
                 .fileName(fileName)
                 .fileType(fileType)
                 .fileUrl(fileUrl)
-                .boardId(board.getId())
+                .boardId(board ==  null ? null : board.getId())
                 .id(id)
                 .build();
     }

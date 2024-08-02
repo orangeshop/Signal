@@ -1,8 +1,11 @@
 package com.ssafy.signal.member.controller;
 
+import com.ssafy.signal.board.domain.BoardDto;
+import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberDetailDto;
 import com.ssafy.signal.member.dto.MemberLoginDto;
+import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.json.duplicateJson;
 import com.ssafy.signal.member.jwt.JwtUtil;
 import com.ssafy.signal.member.jwt.json.ApiResponseJson;
@@ -60,9 +63,9 @@ public class MemberController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Member> getMemberById(@PathVariable("id") Long id) {
+    public ResponseEntity<findMemberDto> getMemberById(@PathVariable("id") Long id) {
         try {
-            Member member = memberService.getMemberById(id);
+            findMemberDto member = memberService.findMemberById(id);
             return ResponseEntity.ok(member);
         } catch (NoSuchElementException e) {
             // 예외가 발생한 경우 적절한 응답을 반환합니다.
@@ -189,10 +192,16 @@ public class MemberController {
         }
     }
 
-    // 자기가 쓴 글, 댓글 확인하기
-    @GetMapping("/user/{userId}")
-    public MemberDetailDto getMemberWithPostsAndComments(@PathVariable Long userId) {
-        return memberService.getMemberWithPostsAndComments(userId);
+    // 자기가 쓴 글 확인하기
+    @GetMapping("/board/{userId}")
+    public List<BoardDto> getMemberWithPosts(@PathVariable Long userId) throws Exception{
+        return memberService.getMemberWithPosts(userId);
+    }
+
+    // 자기가 쓴 댓글의 글 확인하기
+    @GetMapping("/comment/{userId}")
+    public List<BoardDto> getMemberCommentedPosts(@PathVariable Long userId) throws Exception {
+        return memberService.getMemberCommentedPosts(userId);
     }
 }
 

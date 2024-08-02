@@ -60,7 +60,6 @@ public class FirebaseService {
                 .createScoped("https://www.googleapis.com/auth/cloud-platform");
         googleCredentials.refreshIfExpired();
         accessToken = googleCredentials.getAccessToken().getTokenValue();
-        log.info("Access token: " + accessToken);
     }
 
     public String getCurrentAccessToken() {

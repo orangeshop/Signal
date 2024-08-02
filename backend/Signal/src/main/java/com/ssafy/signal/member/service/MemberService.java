@@ -4,8 +4,12 @@ import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.board.domain.CommentEntity;
+import com.ssafy.signal.file.domain.FileEntity;
+import com.ssafy.signal.file.repository.FileRepository;
+import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberDetailDto;
+import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.repository.MemberRepository;
@@ -13,6 +17,7 @@ import com.ssafy.signal.member.repository.TokenBlacklistRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,9 +25,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.xml.stream.events.Comment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -38,7 +45,9 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final FileRepository fileRepository;
     private final TokenBlacklistRepository tokenBlacklistRepository;
+    private final FileService fileService;
 
 
     public Boolean chekcLoginId(String loginId) {
@@ -51,7 +60,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public Member saveMember(Member member) {
-        checkPasswordStrength(member.getPassword());
+//        checkPasswordStrength(member.getPassword());
 
         if (memberRepository.existsByLoginId(member.getLoginId())) {
             log.info("이미 등록된 아이디 = {}", member.getLoginId());
@@ -141,6 +150,17 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
     }
 
+    public findMemberDto findMemberById(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
+        String url = fileService.getProfile(id);
+
+        return findMemberDto.builder()
+                .userId(id)
+                .profileImage(url)
+                .name(member.getName())
+                .build();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         Member member = memberRepository.findByLoginId(loginId)
@@ -161,23 +181,41 @@ public class MemberService implements UserDetailsService {
         memberRepository.deleteByLoginId(loginId);
     }
 
+    private BoardDto addFileUrl(BoardEntity board)
+    {
+        List<FileEntity> files = Optional.ofNullable(fileRepository
+                        .findByBoardId(board.getId()))
+                .orElse(new ArrayList<>());
+        BoardDto boardDto = board.asBoardDto();
+        boardDto.setFileUrls(new ArrayList<>());
+        for(FileEntity file : files)
+            boardDto.getFileUrls().add(file.getFileUrl());
+        return boardDto;
+    }
 
-    //내가 쓴 글, 댓글 조회
-    public MemberDetailDto getMemberWithPostsAndComments(Long userId) {
-        Member member = memberRepository.findMemberWithBoardsAndComments(userId);
-        if (member == null) {
-            throw new RuntimeException("Member not found");
-        }
 
-        List<BoardDto.SimpleBoardDto> boardDTOs = member.getBoards().stream()
-                .map(boardEntity -> new BoardDto.SimpleBoardDto(boardEntity.getId(), boardEntity.getTitle(), boardEntity.getContent()))
+    //내가 쓴 글 조회
+    public List<BoardDto> getMemberWithPosts(Long userId) throws Exception {
+        Member member = memberRepository
+                .findById(userId)
+                .orElseThrow(()-> new Exception("Member Not found"));
+
+        return member.getBoards().stream()
+                .map(this::addFileUrl)
                 .collect(Collectors.toList());
+    }
 
-        List<CommentDto.SimpleCommentDto> commentDTOs = member.getComments().stream()
-                .map(commentEntity -> new CommentDto.SimpleCommentDto(commentEntity.getId(), commentEntity.getContent()))
+    // 내가 쓴 댓글의 게시글 조회
+    public List<BoardDto> getMemberCommentedPosts(Long userId) throws Exception {
+        Member member = memberRepository
+                .findById(userId)
+                .orElseThrow(() -> new Exception("Member Not found"));
+
+        return member.getComments().stream()
+                .map(CommentEntity::getBoardEntity) // 댓글에서 게시글을 가져옴
+                .distinct() // 중복된 게시글 제거
+                .map(this::addFileUrl) // 게시글에 대한 URL 추가
                 .collect(Collectors.toList());
-
-        return new MemberDetailDto(member.getUserId(), member.getLoginId(), member.getName(), boardDTOs, commentDTOs);
     }
 
 }

@@ -8,20 +8,12 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 public class MemberDetailDto {
 
     private Long userId;
     private String loginId;
     private String name;
-    private List<BoardDto.SimpleBoardDto> boards;
-    private List<CommentDto.SimpleCommentDto> comments;
+    private List<BoardDto> boards;
+    private List<CommentDto> comments;
 
-    public MemberDetailDto(Long userId, String loginId, String name, List<BoardDto.SimpleBoardDto> boards, List<CommentDto.SimpleCommentDto> comments) {
-        this.userId = userId;
-        this.loginId = loginId;
-        this.name = name;
-        this.boards = boards;
-        this.comments = comments;
-    }
 }
