@@ -97,7 +97,8 @@ public class MatchService {
         firebaseService.sendMessageTo(
                 to.getUserId(),
                 "요청",
-                body);
+                body,
+                0);
 
 
 
@@ -137,13 +138,15 @@ public class MatchService {
         if(flag == 1)
             firebaseService.sendMessageTo(
                     to.getUserId(),
-                    "요청",
-                    body);
+                    "승낙",
+                    body,
+                    0);
         else if(flag == 0)
             firebaseService.sendMessageTo(
                     to.getUserId(),
-                    "요청",
-                    body);
+                    "거부",
+                    body,
+                    0);
 
         return MatchResponse
                 .builder()
@@ -164,7 +167,8 @@ public class MatchService {
         firebaseService.sendMessageTo(
                 to.getUserId(),
                 "요청",
-                body);
+                body,
+                0);
 
 
         return MatchResponse
@@ -188,12 +192,14 @@ public class MatchService {
             firebaseService.sendMessageTo(
                     to.getUserId(),
                     "승낙",
-                    body);
+                    body,
+                    0);
         } else if (flag == 0) {
             firebaseService.sendMessageTo(
                     to.getUserId(),
                     "거부",
-                    body);
+                    body,
+                    0);
         }
 
         return MatchResponse
