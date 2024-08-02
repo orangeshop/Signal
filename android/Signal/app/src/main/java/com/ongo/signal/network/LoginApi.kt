@@ -4,6 +4,7 @@ import com.ongo.signal.data.model.login.FCMTokenResponse
 import com.ongo.signal.data.model.login.IDCheckResponse
 import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.LoginResponse
+import com.ongo.signal.data.model.login.ProfileImageResponse
 import com.ongo.signal.data.model.login.SignupRequest
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -45,5 +46,5 @@ interface LoginApi {
     suspend fun postProfileImage(
         @Path("user_id") userId: Long,
         @Body file: MultipartBody.Part
-    ): Response<String>
+    ): Response<ProfileImageResponse>
 }
