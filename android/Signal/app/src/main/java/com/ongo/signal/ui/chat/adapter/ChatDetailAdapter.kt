@@ -6,37 +6,58 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ongo.signal.data.model.chat.ChatHomeChildDto
+import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.model.chat.ChatHomeChildDTO
+import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.ChatDetailItemBinding
+import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf.Visibility
 
 private const val TAG = "ChatDetailAdapter_싸피"
 
 class ChatDetailAdapter(
-    private val timeSetting: (item: String) -> String
-) : ListAdapter<ChatHomeChildDto, RecyclerView.ViewHolder>(diffUtil) {
+    private val timeSetting: (item: String, target : Int) -> String,
+    private val todaySetting: (id: Long,item: Long, time: String) -> Boolean,
+    private val temp : Long
+) : ListAdapter<ChatHomeChildDTO, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(item: ChatHomeChildDto){
+        fun bind(item: ChatHomeChildDTO){
+
+
+
             binding.chatDetailItemMeTv.visibility = View.GONE
             binding.chatOtherReadMeTv.visibility = View.GONE
             binding.chatOtherTimeMeTv.visibility = View.GONE
 
-            binding.chatDetailItemTv.text = item.content
-            binding.chatOtherReadTv.text = item.isRead.toString()
-            binding.chatOtherTimeTv.text = timeSetting(item.sendAt)
+            binding.today.visibility = View.GONE
+
+
+            binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
+            binding.today.text = timeSetting(item.sendAt, 2)
+
+
+            binding.chatDetailItemTv.text = item.content+ item.messageId
+            binding.chatOtherReadTv.text = if(item.isRead == false) "1" else ""
+            binding.chatOtherTimeTv.text = timeSetting(item.sendAt, 1)
         }
     }
 
     inner class ChatHomeMeListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(item: ChatHomeChildDto){
+        fun bind(item: ChatHomeChildDTO){
             binding.chatDetailItemTv.visibility = View.GONE
             binding.chatOtherTimeTv.visibility = View.GONE
             binding.chatOtherReadTv.visibility = View.GONE
 
-            binding.chatDetailItemMeTv.text = item.content
-            binding.chatOtherReadMeTv.text = item.isRead.toString()
-            binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt)
+            binding.today.visibility = View.GONE
+
+            binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
+            binding.today.text = timeSetting(item.sendAt, 2)
+
+            binding.chatDetailItemMeTv.text = item.content + item.messageId
+            binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt, 1)
         }
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -60,20 +81,17 @@ class ChatDetailAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if(getItem(position).isFromSender){
-            return 2
-        }else{
-            return 1
-        }
+        val isFrom = UserSession.userId == temp
+        return if(isFrom == getItem(position).isFromSender) RIGHT else LEFT
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<ChatHomeChildDto>() {
-            override fun areItemsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
-                return oldItem.chatId == newItem.chatId
+        val diffUtil = object : DiffUtil.ItemCallback<ChatHomeChildDTO>() {
+            override fun areItemsTheSame(oldItem: ChatHomeChildDTO, newItem: ChatHomeChildDTO): Boolean {
+                return oldItem.messageId == newItem.messageId
             }
 
-            override fun areContentsTheSame(oldItem: ChatHomeChildDto, newItem: ChatHomeChildDto): Boolean {
+            override fun areContentsTheSame(oldItem: ChatHomeChildDTO, newItem: ChatHomeChildDTO): Boolean {
                 return oldItem == newItem
             }
         }

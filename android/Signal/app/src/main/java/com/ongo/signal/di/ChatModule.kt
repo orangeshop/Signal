@@ -3,6 +3,7 @@ package com.ongo.signal.di
 import com.ongo.signal.data.repository.chat.ChatRoomRepositoryImpl
 import com.ongo.signal.data.repository.chat.chatdatabase.ChatDetailDao
 import com.ongo.signal.data.repository.chat.chatdatabase.ChatHomeDao
+import com.ongo.signal.data.repository.chat.chatdatabase.ChatHomeLocalCheckDao
 
 import dagger.Module
 import dagger.Provides
@@ -18,9 +19,10 @@ object ChatModule {
     @Singleton
     fun provideChatRepository(
         chatHomeDao: ChatHomeDao,
-        chatDetailDao: ChatDetailDao
+        chatDetailDao: ChatDetailDao,
+        chatHomeLocalCheckDao: ChatHomeLocalCheckDao
     ): ChatRoomRepositoryImpl {
-        return ChatRoomRepositoryImpl(chatHomeDao, chatDetailDao)
+        return ChatRoomRepositoryImpl(chatHomeDao, chatDetailDao, chatHomeLocalCheckDao)
     }
 
 }

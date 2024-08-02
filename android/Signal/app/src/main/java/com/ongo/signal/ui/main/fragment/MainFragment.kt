@@ -89,31 +89,31 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             viewModel.hotSignalBoards.collectLatest { newHotBoards ->
                 Timber.d("New hot signal boards received: $newHotBoards")
                 if (newHotBoards.isEmpty()) {
-                    binding.tvFirst.visibility = View.GONE
-                    binding.tvFirstTitle.visibility = View.GONE
-                    binding.rvFirst.visibility = View.GONE
-                    binding.tvSecond.visibility = View.GONE
-                    binding.tvSecondTitle.visibility = View.GONE
-                    binding.rvSecond.visibility = View.GONE
-                    binding.tvThird.visibility = View.GONE
-                    binding.tvThirdTitle.visibility = View.GONE
-                    binding.rvThird.visibility = View.GONE
-                    binding.tvEmptyMessage.visibility = View.VISIBLE
-                    updateTagAdapters(emptyList())
+//                    binding.tvFirst.visibility = View.GONE
+//                    binding.tvFirstTitle.visibility = View.GONE
+//                    binding.rvFirst.visibility = View.GONE
+//                    binding.tvSecond.visibility = View.GONE
+//                    binding.tvSecondTitle.visibility = View.GONE
+//                    binding.rvSecond.visibility = View.GONE
+//                    binding.tvThird.visibility = View.GONE
+//                    binding.tvThirdTitle.visibility = View.GONE
+//                    binding.rvThird.visibility = View.GONE
+//                    binding.tvEmptyMessage.visibility = View.VISIBLE
+//                    updateTagAdapters(emptyList())
                 } else {
-                    binding.tvFirst.visibility = View.VISIBLE
-                    binding.tvFirstTitle.visibility = View.VISIBLE
-                    binding.rvFirst.visibility = View.VISIBLE
-                    binding.tvSecond.visibility = View.VISIBLE
-                    binding.tvSecondTitle.visibility = View.VISIBLE
-                    binding.rvSecond.visibility = View.VISIBLE
-                    binding.tvThird.visibility = View.VISIBLE
-                    binding.tvThirdTitle.visibility = View.VISIBLE
-                    binding.rvThird.visibility = View.VISIBLE
-                    binding.tvEmptyMessage.visibility = View.GONE
-
-                    updateHotSignalTitles(newHotBoards)
-                    updateTagAdapters(newHotBoards)
+//                    binding.tvFirst.visibility = View.VISIBLE
+//                    binding.tvFirstTitle.visibility = View.VISIBLE
+//                    binding.rvFirst.visibility = View.VISIBLE
+//                    binding.tvSecond.visibility = View.VISIBLE
+//                    binding.tvSecondTitle.visibility = View.VISIBLE
+//                    binding.rvSecond.visibility = View.VISIBLE
+//                    binding.tvThird.visibility = View.VISIBLE
+//                    binding.tvThirdTitle.visibility = View.VISIBLE
+//                    binding.rvThird.visibility = View.VISIBLE
+//                    binding.tvEmptyMessage.visibility = View.GONE
+//
+//                    updateHotSignalTitles(newHotBoards)
+//                    updateTagAdapters(newHotBoards)
                 }
             }
         }

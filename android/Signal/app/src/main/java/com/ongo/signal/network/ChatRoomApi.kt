@@ -1,14 +1,14 @@
 package com.ongo.signal.network
 
 
-import com.ongo.signal.data.model.chat.ChatHomeChildDto
-import com.ongo.signal.data.model.chat.ChatHomeCreate
+import com.ongo.signal.data.model.chat.ChatHomeChildDTO
+import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ChatRoomApi {
@@ -16,8 +16,11 @@ interface ChatRoomApi {
     suspend fun getChatRoomList(@Query("user_id") user_id: Long): Response<MutableList<ChatHomeDTO>>
 
     @POST("/chat-room/create")
-    suspend fun saveChatRoom(@Body chatRoom: ChatHomeCreate) : Response<ChatHomeCreate>
+    suspend fun saveChatRoom(@Body chatRoom: ChatHomeCreateDTO) : Response<ChatHomeCreateDTO>
 
     @GET("/chat-room/messages")
-    suspend fun getAllChatDetail(@Query("chat_id") chat_id: Long): Response<MutableList<ChatHomeChildDto>>
+    suspend fun getAllChatDetail(@Query("chat_id") chat_id: Long): Response<MutableList<ChatHomeChildDTO>>
+
+    @PATCH("/message/read")
+    suspend fun readMessage(@Query("chat_id") chat_id: Long)
 }
