@@ -181,7 +181,7 @@ class DotCustomView @JvmOverloads constructor(
 
         Timber.d("스크린 width ${screenWidth} height ${screenHeight}")
 
-        val xOffset = (screenWidth * 0.065).toInt()
+        val xOffset = (screenWidth * 0.077).toInt()
         val yOffset = (screenHeight * 0.08).toInt()
 
 
