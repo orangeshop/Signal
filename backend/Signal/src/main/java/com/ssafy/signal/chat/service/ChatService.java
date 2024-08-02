@@ -7,6 +7,7 @@ import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,10 @@ public class ChatService {
     private final MemberRepository memberRepository;
 
     public ChatRoomDto createChatRoom(ChatRoomDto chatRoomDto) {
+        chatRoomDto.setSend_at(DateTime.now().toDate());
         return chatRoomRepository
-                .save(chatRoomDto.asChatRoomEntity())
+                .save(chatRoomDto
+                        .asChatRoomEntity())
                 .asChatRoomDto();
     }
 

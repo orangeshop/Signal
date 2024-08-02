@@ -6,13 +6,21 @@ import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.member.domain.Member;
+<<<<<<< HEAD
 import com.ssafy.signal.member.service.MemberService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+=======
+import com.ssafy.signal.member.repository.MemberRepository;
+import com.ssafy.signal.member.service.MemberService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+>>>>>>> 1c22c5853324a577ec3c9ff61ff847c494a884cc
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,14 +29,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FileService {
 
     private final String DIR_NAME = "signal";
-    @Autowired
-    private FileRepository fileRepository;
+//    @Autowired
+//    private FileRepository fileRepository;
 
     @Autowired
+    @Lazy
     private MemberService memberService;
 
     @Autowired
@@ -36,6 +46,15 @@ public class FileService {
 
     @Autowired
     private S3Uploader s3Uploader;
+
+    private final MemberRepository memberRepository;
+    private final FileRepository fileRepository;
+
+    @Autowired
+    public FileService(MemberRepository memberRepository, FileRepository fileRepository) {
+        this.memberRepository = memberRepository;
+        this.fileRepository = fileRepository;
+    }
 
     public String uploadBoardFile(MultipartFile multipartFile, Long boardId) throws IOException {
         // S3에 파일 업로드 후 URL 가져오기
@@ -64,7 +83,16 @@ public class FileService {
         file.setUser(memberService.getMemberById(userId));
         file.setFileName(multipartFile.getOriginalFilename());
         file.setFileUrl(url);
+<<<<<<< HEAD
         return fileRepository.save(file).asFileDto();
+=======
+
+        fileRepository.save(file);
+
+        // 업로드된 파일의 URL 반환
+
+        return new FileDto(null, null, null, null, null, url, null, null);
+>>>>>>> 1c22c5853324a577ec3c9ff61ff847c494a884cc
     }
     // 파일 삭제하기
     @Transactional
@@ -97,6 +125,7 @@ public class FileService {
                 .collect(Collectors.toList());
     }
 
+<<<<<<< HEAD
     @Transactional
     public FileDto updateProfileFile(MultipartFile multipartFile, Long userId) throws IOException {
         // 새로운 파일 URL을 S3에 업로드하여 가져오기
@@ -140,4 +169,18 @@ public class FileService {
 
 
 
+=======
+    public String getProfile(Long userId) {
+        Member user = memberRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        FileEntity file = fileRepository.findAllByUser(user);
+
+        if (file == null) {
+            return null;
+        }
+
+        return file.getFileUrl();
+    }
+
+>>>>>>> 1c22c5853324a577ec3c9ff61ff847c494a884cc
 }

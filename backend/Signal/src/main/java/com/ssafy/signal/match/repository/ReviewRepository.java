@@ -9,4 +9,5 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<ReviewEntity,Long> {
     List<ReviewEntity> findAllByUserId(Member user_id);
     List<ReviewEntity> findAllByWriterId(Member writer_id);
+    Boolean existsByUserIdAndWriterId(Member user_id, Member writer_id);
 }
