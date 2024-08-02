@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extrabold"
-            android:text="@string/mission"
+            android:text="@string/type"
             android:textColor="@color/mint"
             android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_what"
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="@string/eating"
+                android:text="@string/junior"
                 android:textSize="18sp"
                 app:chipCornerRadius="30dp"
                 tools:visibility="gone" />
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="@string/drink_coffee"
+                android:text="@string/senior"
                 android:textSize="18sp"
                 app:chipCornerRadius="30dp"
                 tools:visibility="gone" />
