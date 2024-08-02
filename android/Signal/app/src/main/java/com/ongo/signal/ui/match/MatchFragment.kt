@@ -1,8 +1,14 @@
 package com.ongo.signal.ui.match
 
 import android.Manifest
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
 import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -48,7 +54,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
 
     override fun init() {
-        requireActivity().intent
         arguments?.let { args ->
             if (args.getBoolean("matchNotification")) {
                 args.remove("matchNotification")
@@ -63,34 +68,47 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     }
 
     private fun showMatchingDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("매칭 신청")
-            .setMessage("매칭이 신청되었습니다")
-            .setPositiveButton("수락") { dialog, _ ->
-                UserSession.userId?.let { userId ->
-                    Timber.d("매칭 수락할게요 !! ${userId} ${viewModel.otherUserId!!}")
-                    viewModel.postProposeAccept(
-                        fromId = userId,
-                        toId = viewModel.otherUserId!!,
-                        1
-                    ) {
-                        Timber.d("매칭이 수락되었습니다")
-                    }
-                }
-            }
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_match, null)
 
-            .setNegativeButton("거절") { dialog, _ ->
-                UserSession.userId?.let { userId ->
-                    viewModel.postProposeAccept(
-                        fromId = userId,
-                        toId = viewModel.otherUserId!!,
-                        0
-                    ) {
-                        Timber.d("매칭이 거절되었습니다")
-                    }
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val tvUsername: TextView = dialogView.findViewById(R.id.tv_username)
+        val btnDeny: Button = dialogView.findViewById(R.id.btn_deny)
+        val btnAccept: Button = dialogView.findViewById(R.id.btn_accept)
+
+        tvUsername.text = "User1"
+
+        btnAccept.setOnClickListener {
+            UserSession.userId?.let { userId ->
+                Timber.d("매칭 수락할게요 !! ${userId} ${viewModel.otherUserId!!}")
+                viewModel.postProposeAccept(
+                    fromId = userId,
+                    toId = viewModel.otherUserId!!,
+                    1
+                ) {
+                    Timber.d("매칭이 수락되었습니다")
+                    dialog.dismiss()
                 }
             }
-            .show()
+        }
+
+        btnDeny.setOnClickListener {
+            UserSession.userId?.let { userId ->
+                viewModel.postProposeAccept(
+                    fromId = userId,
+                    toId = viewModel.otherUserId!!,
+                    0
+                ) {
+                    Timber.d("매칭이 거절되었습니다")
+                    dialog.dismiss()
+                }
+            }
+        }
+        dialog.show()
     }
 
 
@@ -147,18 +165,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 }.addOnFailureListener { exception ->
                     makeToast("위치 좌표를 받아올 수 없습니다.")
                 }
-            }
-        }
-
-        binding.btnVideo.setOnClickListener {
-            viewModel.postProposeVideoCall(1,1){
-                Timber.d("영통 성공")
-            }
-        }
-        
-        binding.btnAccept.setOnClickListener { 
-            viewModel.postProposeVideoCallAccept(1,1, 1){
-                Timber.d("영통 수락 성공")
             }
         }
 
