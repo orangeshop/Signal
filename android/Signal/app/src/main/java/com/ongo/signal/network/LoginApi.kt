@@ -10,7 +10,9 @@ import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -42,9 +44,10 @@ interface LoginApi {
         @Path("id") loginId: String,
     ): Response<IDCheckResponse>
 
-    @POST("/user/{user_id}/upload")
+    @Multipart
+    @POST("/user/{userId}/upload")
     suspend fun postProfileImage(
-        @Path("user_id") userId: Long,
-        @Body file: MultipartBody.Part
+        @Path("userId") userId: Long,
+        @Part file: MultipartBody.Part
     ): Response<ProfileImageResponse>
 }

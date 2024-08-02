@@ -92,8 +92,11 @@ class SignupViewModel @Inject constructor(
         onSuccess: () -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            loginRepository.postProfileImage(userId, imageFile).onSuccess {
-                onSuccess()
+            loginRepository.postProfileImage(userId, imageFile).onSuccess { response ->
+                response?.let {
+                    UserSession.profileImage = response.fileUrl
+                    onSuccess()
+                }
             }
         }
     }

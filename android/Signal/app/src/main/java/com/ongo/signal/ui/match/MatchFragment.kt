@@ -11,8 +11,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.material.chip.Chip
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.CreateChatRoom
@@ -88,7 +90,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
         btnAccept.setOnClickListener {
             UserSession.userId?.let { userId ->
-                Timber.d("매칭 수락할게요 !! ${userId} ${viewModel.otherUserId!!}")
                 viewModel.postProposeAccept(
                     fromId = userId,
                     toId = viewModel.otherUserId!!,
@@ -97,6 +98,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     UserSession.userId?.let { nowId ->
                         viewModel.otherUserId?.let { otherId ->
                             CreateChatRoom.Create(nowId, otherId)
+                            findNavController().navigate(R.id.action_matchFragment_to_chatFragment)
                         }
                     }
 
@@ -138,6 +140,10 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 makeToast("권한을 허락해주셔야 매칭을 진행할 수 있습니다.")
                 return@setOnClickListener
             }
+            if (viewModel.selectType.isNullOrBlank()) {
+                makeToast("원하는 상대의 타입을 골라주세요.")
+                return@setOnClickListener
+            }
             // context 들고가는 작업은 view에서 꼭 할것
             // view 죽으면 viewmodel 에서 팅길 수 있음
             // when viewModel dead?
@@ -154,6 +160,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                 request = MatchRegistrationRequest(
                                     currentLocation.latitude,
                                     currentLocation.longitude,
+                                    viewModel.selectType!!,
                                     UserSession.userId!!
                                 ),
                                 onSuccess = { response ->
@@ -180,6 +187,25 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             }
         }
 
+        binding.cgChip.setOnCheckedStateChangeListener { group, checkedIds ->
+            when {
+                checkedIds.isEmpty() -> {
+                    viewModel.setMemberType("")
+                }
+
+                checkedIds.size == 2 -> {
+                    viewModel.setMemberType("모두")
+                }
+
+                else -> {
+                    val selectedChipId = checkedIds[0]
+                    val selectedChip: Chip? = group.findViewById(selectedChipId)
+                    val selectedType = selectedChip?.text.toString()
+                    viewModel.setMemberType(selectedType)
+                }
+            }
+            Timber.d("칩 확인 ${viewModel.selectType}")
+        }
     }
 
     private fun convertToDotList(responseList: List<MatchPossibleResponse>): List<Dot> {

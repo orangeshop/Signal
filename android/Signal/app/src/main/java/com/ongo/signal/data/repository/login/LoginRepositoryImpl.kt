@@ -70,6 +70,7 @@ class LoginRepositoryImpl @Inject constructor(
         userId: Long,
         imageFile: MultipartBody.Part
     ): Result<ProfileImageResponse?> {
+        Timber.d("프로필 이미지 등록 리퀘 ${userId} ${imageFile}")
         val req = loginApi.postProfileImage(userId, imageFile)
         Timber.d("프로필 이미지 등록 답변 ${req}")
         return if (req.isSuccessful) {

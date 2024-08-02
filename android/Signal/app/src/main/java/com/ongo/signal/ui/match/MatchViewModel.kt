@@ -28,6 +28,10 @@ class MatchViewModel @Inject constructor(
     val otherUserName: String?
         get() = _otherUserName
 
+    private var _selectType: String? = null
+    val selectType: String?
+        get() = _selectType
+
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
             Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
@@ -132,6 +136,10 @@ class MatchViewModel @Inject constructor(
 
     fun setOtherUserName(userName: String) {
         _otherUserName = userName
+    }
+
+    fun setMemberType(selectType: String) {
+        _selectType = selectType
     }
 
 
