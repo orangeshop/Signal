@@ -54,11 +54,14 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
     override fun init() {
         arguments?.let { args ->
-            if (args.getBoolean("matchNotification")) {
-                args.remove("matchNotification")
-                viewModel.setOtherUserId(args.getLong("otherUserId", 0L))
-                viewModel.setOtherUserName(args.getString("otherUserName", ""))
-                Timber.d("상대방 uid ${viewModel.otherUserId} 닉네임 : ${viewModel.otherUserName}")
+            viewModel.setOtherUserId(args.getLong("otherUserId", 0L))
+            viewModel.setOtherUserName(args.getString("otherUserName", ""))
+
+            val notyTitle = args.getString("matchNotification")
+            args.remove("matchNotification")
+            args.remove("otherUserId")
+            args.remove("otherUserName")
+            if (notyTitle == "요청") {
                 showMatchingDialog()
             }
         }
