@@ -24,6 +24,7 @@ import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
 import com.ongo.signal.util.PermissionChecker
 import com.ongo.signal.util.RadarView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -142,27 +143,30 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 ).addOnSuccessListener { currentLocation ->
                     lifecycleScope.launch {
                         Timber.d("매칭 쐈어요 아이디는 ${UserSession.userName} ${UserSession.userId}")
-                        viewModel.postMatchRegistration(
-                            request = MatchRegistrationRequest(
-                                currentLocation.latitude,
-                                currentLocation.longitude,
-                                UserSession.userId!!
-                            ),
-                            onSuccess = { response ->
-                                hideRequestMatchingWidget()
-                                showRadarWidget()
-                                viewModel.getMatchPossibleUser(
-                                    locationId = response.location_id,
-                                    onSuccess = { possibleUsers ->
-                                        possibleUsers.forEach { nowUser ->
-                                            Timber.d("현재 유저는 ${nowUser}")
+                        while(true) {
+                            viewModel.postMatchRegistration(
+                                request = MatchRegistrationRequest(
+                                    currentLocation.latitude,
+                                    currentLocation.longitude,
+                                    UserSession.userId!!
+                                ),
+                                onSuccess = { response ->
+                                    hideRequestMatchingWidget()
+                                    showRadarWidget()
+                                    viewModel.getMatchPossibleUser(
+                                        locationId = response.location_id,
+                                        onSuccess = { possibleUsers ->
+//                                            possibleUsers.forEach { nowUser ->
+//                                                Timber.d("현재 유저는 ${nowUser}")
+//                                            }
+                                            binding.cvDot.addDot(convertToDotList(possibleUsers))
+                                            possibleUserAdapter.submitList(possibleUsers.map { it.user })
                                         }
-                                        binding.cvDot.addDot(convertToDotList(possibleUsers))
-                                        possibleUserAdapter.submitList(possibleUsers.map { it.user })
-                                    }
-                                )
-                            }
-                        )
+                                    )
+                                }
+                            )
+                            delay(1000L)
+                        }
                     }
                 }.addOnFailureListener { exception ->
                     makeToast("위치 좌표를 받아올 수 없습니다.")

@@ -1,9 +1,17 @@
 package com.ongo.signal.ui.login
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
+import android.provider.MediaStore
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentSignupBinding
@@ -16,11 +24,30 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
 
     private val viewModel: SignupViewModel by viewModels()
 
+    private val pickImageLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            result.data?.data?.let { imageUri ->
+                Glide.with(requireActivity())
+                    .load(imageUri)
+                    .transform(CircleCrop())
+                    .into(binding.ivBasicProfile)
+                binding.ivBasicProfile.setImageURI(imageUri)
+            }
+        }
+    }
+
     override fun init() {
         initViews()
     }
 
     private fun initViews() {
+
+        binding.ivBasicProfile.setOnClickListener {
+            openGallery()
+        }
+
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -63,7 +90,6 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
         binding.btnComplete.setOnClickListener {
             val result = viewModel.checkUIState()
             if (result.first) {
-                Timber.d("회원가입 쐇다 ${viewModel.uiState}")
                 viewModel.postSignup {
                     val intent = Intent(requireContext(), MainActivity::class.java)
                     startActivity(intent)
@@ -73,7 +99,12 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
                 makeToast("${result.second}")
             }
         }
-
-
     }
+
+    private fun openGallery(){
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.type = "image/*"
+        pickImageLauncher.launch(intent)
+    }
+
 }

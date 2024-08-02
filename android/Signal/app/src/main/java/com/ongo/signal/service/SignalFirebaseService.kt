@@ -24,7 +24,7 @@ class SignalFirebaseService : FirebaseMessagingService() {
 
         if (messageTitle.contains("테스트")) {
             val mainIntent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
 
             val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
