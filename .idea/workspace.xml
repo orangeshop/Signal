@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Signal.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Signal.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Signal.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Signal.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/service/FileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/service/FileService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -272,6 +269,7 @@
       <workItem from="1722305912021" duration="13000" />
       <workItem from="1722500622964" duration="679000" />
       <workItem from="1722557442297" duration="4739000" />
+      <workItem from="1722569135262" duration="9038000" />
     </task>
     <task id="LOCAL-00001" summary="⭐feat : member model">
       <option name="closed" value="true" />
