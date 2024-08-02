@@ -20,16 +20,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
 
     override fun init() {
         initViews()
+        binding.fragment = this
     }
 
     private fun initViews() {
-        binding.ivProfileIcon.setOnClickListener {
-            goToProfileEdit()
-        }
-        binding.tvEditProfile.setOnClickListener {
-            goToProfileEdit()
-        }
-
         binding.ivLogout.setOnClickListener {
             UserSession.refreshToken?.let { refreshToken ->
                 viewModel.sendLogout(refreshToken) { successFlag ->
@@ -50,25 +44,26 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
                 }
             }
         }
-        binding.ivMysignalIcon.setOnClickListener {
-            goToMySignal()
-        }
-        binding.tvMySignal.setOnClickListener {
-            goToMySignal()
-        }
     }
 
-    private fun goToProfileEdit() {
+    fun goToProfileEdit() {
         parentFragmentManager.commit {
             (requireActivity() as MainActivity).hideBottomNavigation()
             findNavController().navigate(R.id.action_myPageFragment_to_profileEditFragment)
         }
     }
 
-    private fun goToMySignal() {
+    fun goToMySignal() {
         parentFragmentManager.commit {
             (requireActivity() as MainActivity).hideBottomNavigation()
             findNavController().navigate(R.id.action_myPageFragment_to_mySignalFragment)
+        }
+    }
+
+    fun goToMyCommentSignal() {
+        parentFragmentManager.commit {
+            (requireActivity() as MainActivity).hideBottomNavigation()
+            findNavController().navigate(R.id.action_myPageFragment_to_myCommentSignalFragment)
         }
     }
 
