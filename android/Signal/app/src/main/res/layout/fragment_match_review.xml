@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="fragment"
+            type="com.ongo.signal.ui.main.fragment.MatchReviewFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,8 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:progressTint="@color/yellow"
-            android:rating="3"
-            android:stepSize="1"
+            android:rating="2.5"
+            android:stepSize="0.5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_profile" />
@@ -81,8 +84,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
-            app:endIconMode="custom"
             app:endIconDrawable="@drawable/baseline_mic__white_24"
+            app:endIconMode="custom"
             app:endIconTint="@color/white"
             app:layout_constraintTop_toBottomOf="@id/tv_oneline_review">
 
@@ -104,6 +107,7 @@
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_button"
             android:fontFamily="@font/inter_extrabold"
+            android:onClick="@{() -> fragment.clickSubmit()}"
             android:text="@string/registration_review"
             android:textColor="@color/black"
             android:textSize="20sp"
