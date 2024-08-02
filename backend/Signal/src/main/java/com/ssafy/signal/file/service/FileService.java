@@ -5,12 +5,16 @@ import com.ssafy.signal.board.service.BoardService;
 import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
+import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.member.service.MemberService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -19,14 +23,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FileService {
 
     private final String DIR_NAME = "signal";
-    @Autowired
-    private FileRepository fileRepository;
+//    @Autowired
+//    private FileRepository fileRepository;
 
     @Autowired
+    @Lazy
     private MemberService memberService;
 
     @Autowired
@@ -34,6 +40,15 @@ public class FileService {
 
     @Autowired
     private S3Uploader s3Uploader;
+
+    private final MemberRepository memberRepository;
+    private final FileRepository fileRepository;
+
+    @Autowired
+    public FileService(MemberRepository memberRepository, FileRepository fileRepository) {
+        this.memberRepository = memberRepository;
+        this.fileRepository = fileRepository;
+    }
 
     public String uploadBoardFile(MultipartFile multipartFile, Long boardId) throws IOException {
         // S3에 파일 업로드 후 URL 가져오기
@@ -62,7 +77,11 @@ public class FileService {
         file.setUser(memberService.getMemberById(userId));
         file.setFileName(multipartFile.getOriginalFilename());
         file.setFileUrl(url);
+
         fileRepository.save(file);
+
+        // 업로드된 파일의 URL 반환
+
         return new FileDto(null, null, null, null, null, url, null, null);
     }
     // 파일 삭제하기
@@ -93,6 +112,18 @@ public class FileService {
         return fileRepository.findByBoardId(boardId).stream()
                 .map(FileEntity::getFileUrl)
                 .collect(Collectors.toList());
+    }
+
+    public String getProfile(Long userId) {
+        Member user = memberRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        FileEntity file = fileRepository.findAllByUser(user);
+
+        if (file == null) {
+            return null;
+        }
+
+        return file.getFileUrl();
     }
 
 }

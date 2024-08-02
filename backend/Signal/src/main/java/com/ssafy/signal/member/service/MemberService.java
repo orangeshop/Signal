@@ -6,8 +6,10 @@ import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.board.domain.CommentEntity;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
+import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberDetailDto;
+import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.repository.MemberRepository;
@@ -15,6 +17,7 @@ import com.ssafy.signal.member.repository.TokenBlacklistRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,6 +47,7 @@ public class MemberService implements UserDetailsService {
     private final TokenProvider tokenProvider;
     private final FileRepository fileRepository;
     private final TokenBlacklistRepository tokenBlacklistRepository;
+    private final FileService fileService;
 
 
     public Boolean chekcLoginId(String loginId) {
@@ -56,7 +60,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public Member saveMember(Member member) {
-        checkPasswordStrength(member.getPassword());
+//        checkPasswordStrength(member.getPassword());
 
         if (memberRepository.existsByLoginId(member.getLoginId())) {
             log.info("이미 등록된 아이디 = {}", member.getLoginId());
@@ -144,6 +148,17 @@ public class MemberService implements UserDetailsService {
 
     public Member getMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
+    }
+
+    public findMemberDto findMemberById(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
+        String url = fileService.getProfile(id);
+
+        return findMemberDto.builder()
+                .userId(id)
+                .profileImage(url)
+                .name(member.getName())
+                .build();
     }
 
     @Override

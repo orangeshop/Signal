@@ -10,6 +10,7 @@ import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.service.FileService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +22,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DuplicateService {
     private final BoardService boardService;
-    private final FileService fileService;
+    private FileService fileService;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+
+    @Autowired
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
+    }
 
     @Transactional
     public BoardDto getPost(Long id) {
