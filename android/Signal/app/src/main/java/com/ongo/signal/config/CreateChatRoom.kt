@@ -3,7 +3,7 @@ package com.ongo.signal.config
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.ongo.signal.data.model.chat.ChatHomeCreate
+import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ private const val TAG = "CreateChatRoom_싸피"
 
 interface ChatRoomApi {
     @POST("/chat-room/create")
-    suspend fun saveChatRoom(@Body chatRoom: ChatHomeCreate) : Response<ChatHomeCreate>
+    suspend fun saveChatRoom(@Body chatRoom: ChatHomeCreateDTO) : Response<ChatHomeCreateDTO>
 }
 
 
@@ -43,9 +43,9 @@ object CreateChatRoom {
         retrofit.create(ChatRoomApi::class.java)
     }
 
-    fun Create(from : Int, to : Int){
+    fun Create(from : Long, to : Long){
         CoroutineScope(Dispatchers.IO).launch {
-            chatRoomApi.saveChatRoom(ChatHomeCreate(from, to))
+            chatRoomApi.saveChatRoom(ChatHomeCreateDTO(from, to))
             Log.d(TAG, "Create: 완료")
         }
     }

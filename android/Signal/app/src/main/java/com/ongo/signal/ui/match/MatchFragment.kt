@@ -1,8 +1,13 @@
 package com.ongo.signal.ui.match
 
 import android.Manifest
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -10,6 +15,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
@@ -19,6 +25,7 @@ import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
 import com.ongo.signal.util.PermissionChecker
 import com.ongo.signal.util.RadarView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -48,13 +55,15 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
 
     override fun init() {
-        requireActivity().intent
         arguments?.let { args ->
-            if (args.getBoolean("matchNotification")) {
-                args.remove("matchNotification")
-                viewModel.setOtherUserId(args.getLong("otherUserId", 0L))
-                Timber.d("서비스에서 가져온 값${args.getLong("otherUserId", 0L)}")
-                viewModel.setOtherUserName(args.getString("otherUserName", ""))
+            viewModel.setOtherUserId(args.getLong("otherUserId", 0L))
+            viewModel.setOtherUserName(args.getString("otherUserName", ""))
+
+            val notyTitle = args.getString("matchNotification")
+            args.remove("matchNotification")
+            args.remove("otherUserId")
+            args.remove("otherUserName")
+            if (notyTitle == "요청") {
                 showMatchingDialog()
             }
         }
@@ -63,34 +72,52 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
     }
 
     private fun showMatchingDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("매칭 신청")
-            .setMessage("매칭이 신청되었습니다")
-            .setPositiveButton("수락") { dialog, _ ->
-                UserSession.userId?.let { userId ->
-                    Timber.d("매칭 수락할게요 !! ${userId} ${viewModel.otherUserId!!}")
-                    viewModel.postProposeAccept(
-                        fromId = userId,
-                        toId = viewModel.otherUserId!!,
-                        1
-                    ) {
-                        Timber.d("매칭이 수락되었습니다")
-                    }
-                }
-            }
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_match, null)
 
-            .setNegativeButton("거절") { dialog, _ ->
-                UserSession.userId?.let { userId ->
-                    viewModel.postProposeAccept(
-                        fromId = userId,
-                        toId = viewModel.otherUserId!!,
-                        0
-                    ) {
-                        Timber.d("매칭이 거절되었습니다")
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val tvUsername: TextView = dialogView.findViewById(R.id.tv_username)
+        val btnDeny: Button = dialogView.findViewById(R.id.btn_deny)
+        val btnAccept: Button = dialogView.findViewById(R.id.btn_accept)
+
+        tvUsername.text = viewModel.otherUserName
+
+        btnAccept.setOnClickListener {
+            UserSession.userId?.let { userId ->
+                Timber.d("매칭 수락할게요 !! ${userId} ${viewModel.otherUserId!!}")
+                viewModel.postProposeAccept(
+                    fromId = userId,
+                    toId = viewModel.otherUserId!!,
+                    1
+                ) {
+                    UserSession.userId?.let { nowId ->
+                        viewModel.otherUserId?.let { otherId ->
+                            CreateChatRoom.Create(nowId, otherId)
+                        }
                     }
+
+                    dialog.dismiss()
                 }
             }
-            .show()
+        }
+
+        btnDeny.setOnClickListener {
+            UserSession.userId?.let { userId ->
+                viewModel.postProposeAccept(
+                    fromId = userId,
+                    toId = viewModel.otherUserId!!,
+                    0
+                ) {
+                    Timber.d("매칭이 거절되었습니다")
+                    dialog.dismiss()
+                }
+            }
+        }
+        dialog.show()
     }
 
 
@@ -122,43 +149,34 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 ).addOnSuccessListener { currentLocation ->
                     lifecycleScope.launch {
                         Timber.d("매칭 쐈어요 아이디는 ${UserSession.userName} ${UserSession.userId}")
-                        viewModel.postMatchRegistration(
-                            request = MatchRegistrationRequest(
-                                currentLocation.latitude,
-                                currentLocation.longitude,
-                                UserSession.userId!!
-                            ),
-                            onSuccess = { response ->
-                                hideRequestMatchingWidget()
-                                showRadarWidget()
-                                viewModel.getMatchPossibleUser(
-                                    locationId = response.location_id,
-                                    onSuccess = { possibleUsers ->
-                                        possibleUsers.forEach { nowUser ->
-                                            Timber.d("현재 유저는 ${nowUser}")
+                        while (true) {
+                            viewModel.postMatchRegistration(
+                                request = MatchRegistrationRequest(
+                                    currentLocation.latitude,
+                                    currentLocation.longitude,
+                                    UserSession.userId!!
+                                ),
+                                onSuccess = { response ->
+                                    hideRequestMatchingWidget()
+                                    showRadarWidget()
+                                    viewModel.getMatchPossibleUser(
+                                        locationId = response.location_id,
+                                        onSuccess = { possibleUsers ->
+//                                            possibleUsers.forEach { nowUser ->
+//                                                Timber.d("현재 유저는 ${nowUser}")
+//                                            }
+                                            binding.cvDot.addDot(convertToDotList(possibleUsers))
+                                            possibleUserAdapter.submitList(possibleUsers.map { it.user })
                                         }
-                                        binding.cvDot.addDot(convertToDotList(possibleUsers))
-                                        possibleUserAdapter.submitList(possibleUsers.map { it.user })
-                                    }
-                                )
-                            }
-                        )
+                                    )
+                                }
+                            )
+                            delay(1000L)
+                        }
                     }
                 }.addOnFailureListener { exception ->
                     makeToast("위치 좌표를 받아올 수 없습니다.")
                 }
-            }
-        }
-
-        binding.btnVideo.setOnClickListener {
-            viewModel.postProposeVideoCall(1,1){
-                Timber.d("영통 성공")
-            }
-        }
-        
-        binding.btnAccept.setOnClickListener { 
-            viewModel.postProposeVideoCallAccept(1,1, 1){
-                Timber.d("영통 수락 성공")
             }
         }
 

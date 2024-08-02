@@ -7,13 +7,13 @@ import com.google.gson.reflect.TypeToken
 
 class Converters {
     @TypeConverter
-    fun fromChatHomeChildDtoList(value: List<ChatHomeChildDto>): String {
+    fun fromChatHomeChildDtoList(value: List<ChatHomeChildDTO>): String {
         return Gson().toJson(value)
     }
 
     @TypeConverter
-    fun toChatHomeChildDtoList(value: String): List<ChatHomeChildDto> {
-        val listType = object : TypeToken<List<ChatHomeChildDto>>() {}.type
+    fun toChatHomeChildDtoList(value: String): List<ChatHomeChildDTO> {
+        val listType = object : TypeToken<List<ChatHomeChildDTO>>() {}.type
         return Gson().fromJson(value, listType)
     }
 }

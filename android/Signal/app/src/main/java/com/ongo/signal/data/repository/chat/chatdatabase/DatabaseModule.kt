@@ -32,4 +32,9 @@ object DatabaseModule {
     fun provideChatDetailDao(database: ChatHomeDatabase): ChatDetailDao {
         return database.chatDetailDao()
     }
+
+    @Provides
+    fun provideChatHomeLocalCheckDao(database: ChatHomeDatabase): ChatHomeLocalCheckDao {
+        return database.chatHomeLocalCheck()
+    }
 }

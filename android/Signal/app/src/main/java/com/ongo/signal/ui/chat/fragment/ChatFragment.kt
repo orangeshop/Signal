@@ -13,6 +13,7 @@ import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 private const val TAG = "ChatFragment_싸피"
 
@@ -33,6 +34,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             var check = true
 
+
             lifecycleScope.launch {
                 while (check) {
                     chatViewModel.loadChats()
@@ -42,6 +44,8 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             chatViewModel.stompDisconnect()
             chatViewModel.clearMessageList()
+            chatViewModel.preDay = ""
+            chatViewModel.firstInit = true
 
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
@@ -71,6 +75,17 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             )
             binding.chatHomeList.adapter = chatHomeAdapter
 
+            binding.btnVideo.setOnClickListener {
+//                viewModel.postProposeVideoCall(1, 1) {
+//                    Timber.d("영통 성공")
+//                }
+            }
+
+            binding.btnAccept.setOnClickListener {
+//                viewModel.postProposeVideoCallAccept(1, 1, 1) {
+//                    Timber.d("영통 수락 성공")
+//                }
+            }
 
 
             lifecycleOwner?.let {
