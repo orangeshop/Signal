@@ -18,10 +18,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 public class NotificationController {
     private final FirebaseService firebaseService;
-    Map<Long,String> userTokens = new ConcurrentHashMap<>();
 
     @PostMapping("/token/regist")
     public TokenResponse registerToken(@RequestParam("userId") long user_id, @RequestParam("token") String token) {
         return firebaseService.registToken(user_id, token);
+    }
+
+    @GetMapping("/noti/test")
+    public void notiTest(@RequestParam("userId") long userId) throws IOException {
+        firebaseService.sendMessageTo(userId,"테스트 알림","서버에서 보내는 테스트 알림입니다.",0);
     }
 }

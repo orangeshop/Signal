@@ -5,8 +5,11 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 import com.ssafy.signal.notification.domain.FcmMessage.Message;
 import com.ssafy.signal.notification.domain.FcmMessage;
+import com.ssafy.signal.notification.domain.NotiFailEntity;
 import com.ssafy.signal.notification.domain.TokenResponse;
+import com.ssafy.signal.notification.repository.NotiFailRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springdoc.core.providers.ObjectMapperProvider;
@@ -21,22 +24,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class FirebaseService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/signal-d51bd/messages:send";
     public final ObjectMapperProvider objectMapperProvider;
     private String accessToken;
-    @Autowired private ResourceLoader resourceLoader;
+    private final ResourceLoader resourceLoader;
+    private final NotiFailRepository notiFailRepository;
+
     Map<Long,String> userTokens = new ConcurrentHashMap<>();
 
-    public FirebaseService(ObjectMapperProvider objectMapperProvider) {
-        this.objectMapperProvider = objectMapperProvider;
-
-    }
 
     @PostConstruct
     public void init() throws IOException {
@@ -48,7 +51,7 @@ public class FirebaseService {
         }
     }
 
-    @Scheduled(fixedRate = 300000)  // 50분(3000초)마다 갱신
+    @Scheduled(fixedRate = 3000000)  // 50분(3000초)마다 갱신
     public void getAccessToken() throws IOException {
         Resource resource = resourceLoader.getResource("classpath:firebase/firebase_service_key.json");
         InputStream inputStream = resource.getInputStream();
@@ -64,7 +67,7 @@ public class FirebaseService {
         return accessToken;
     }
 
-    public String sendMessageTo(long user_id,String title, String body) throws IOException
+    public Response sendMessageTo(long user_id,String title, String body,int cnt) throws IOException
     {
         String targetToken = userTokens.get(user_id);
         if(targetToken == null) return null;
@@ -79,8 +82,13 @@ public class FirebaseService {
                 .build();
         Response response = client.newCall(request).execute();
 
-        log.info(response.body().string());
-        return message;
+        if(response.code() >= 400) {
+            log.error(response.body().string());
+            getAccessToken();
+            saveFailNoti(user_id,title,body,cnt+1);
+        }
+        else log.info(response.body().string());
+        return response;
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
@@ -94,5 +102,39 @@ public class FirebaseService {
         userTokens.put(user_id,token);
         log.info("User "+user_id+" has been registered.");
         return TokenResponse.builder().user_id(user_id).token(token).build();
+    }
+
+
+    private void saveFailNoti(long user_id, String title, String body,int cnt) {
+        notiFailRepository.save(
+                NotiFailEntity.builder()
+                        .userId(user_id)
+                        .token(userTokens.getOrDefault(user_id,""))
+                        .title(title)
+                        .body(body)
+                        .failureCount(cnt)
+                        .build()
+        );
+    }
+
+    @Scheduled(fixedRate = 1000 * 20)
+    private void handleErrorNotification() throws IOException {
+        List<NotiFailEntity> notiFails = notiFailRepository.findAll();
+
+        for(NotiFailEntity event : notiFails) {
+            if(event.getFailureCount() > 10)
+            {
+                notiFailRepository.delete(event);
+                continue;
+            }
+
+            Response response = sendMessageTo(event.getUserId(), event.getTitle(),
+                    event.getBody(), event.getFailureCount());
+
+            if(response == null) continue;
+            if(response.code() >= 200 && response.code() < 300) {
+                notiFailRepository.delete(event);
+            }
+        }
     }
 }

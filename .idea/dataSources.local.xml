@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal" created-in="IU-241.18034.62">
-    <data-source name="s11p12d211@stg-yswa-kr-practice-db-master.mariadb.database.azure.com" uuid="a615cbf4-7397-410c-9e4d-b85334ba677d">
-      <database-info product="MySQL" version="5.6.47.0" jdbc-version="4.2" driver-name="MariaDB Connector/J" driver-version="3.3.3" dbms="MARIADB" exact-version="10.3.23" exact-driver-version="3.3">
-        <extra-name-characters>#@</extra-name-characters>
-        <identifier-quote-string>`</identifier-quote-string>
-      </database-info>
-      <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower" />
-      <secret-storage>master_key</secret-storage>
-      <user-name>S11P12D211</user-name>
-      <schema-mapping>
-        <introspection-scope>
-          <node kind="schema">
-            <name qname="@" />
-            <name qname="information_schema" />
-            <name qname="s11p12d211" />
-          </node>
-        </introspection-scope>
-      </schema-mapping>
-    </data-source>
     <data-source name="S11P12D211@stg-yswa-kr-practice-db-master.mariadb.database.azure.com" uuid="39f88bbd-8821-4795-a4e8-e009598a8476">
       <database-info product="MySQL" version="5.6.47.0" jdbc-version="4.2" driver-name="MariaDB Connector/J" driver-version="3.3.3" dbms="MARIADB" exact-version="10.3.23" exact-driver-version="3.3">
         <extra-name-characters>#@</extra-name-characters>

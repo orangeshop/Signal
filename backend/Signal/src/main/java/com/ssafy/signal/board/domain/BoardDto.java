@@ -55,4 +55,14 @@ public class BoardDto {
                 .user(Member.builder().userId(userId).build()) // Member 객체 참조
                 .build();
     }
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SimpleBoardDto {
+        private Long id;
+        private String title;
+        private String content;
+    }
 }
