@@ -2,12 +2,16 @@ package com.ssafy.signal.match.domain;
 
 import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
 @Getter
+@AllArgsConstructor
+@Builder
 @Table(name = "location")
 public class LocationEntity {
     @Id
@@ -24,22 +28,18 @@ public class LocationEntity {
     @Column
     public double longitude;
 
-    public LocationEntity(double latitude, double longitude,long user_id)
-    {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.userId = Member
-                .builder()
-                .userId(user_id)
-                .build();
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(name="member_type")
+    public MemberType memberType;
 
     public LocationDto asLocationDto() {
-        return new LocationDto(
-                location_id,
-                latitude,
-                longitude,
-                userId.getUserId()
-        );
+        return LocationDto
+                .builder()
+                .location_id(location_id)
+                .latitude(latitude)
+                .user_id(userId.getUserId())
+                .longitude(longitude)
+                .memberType(memberType)
+                .build();
     }
 }
