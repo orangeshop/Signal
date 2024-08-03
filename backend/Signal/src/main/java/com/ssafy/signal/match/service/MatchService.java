@@ -32,8 +32,6 @@ public class MatchService {
     private final FileRepository fileRepository;
     private final FirebaseService firebaseService;
 
-    Map<Long,String> userTokens = new ConcurrentHashMap<>();
-
     public ReviewDto writeReview(ReviewDto reviewDto){
         Member user = Member
                 .builder()
@@ -241,44 +239,25 @@ public class MatchService {
         locationRepository.deleteAllByUserId(Member.builder().userId(user_id).build());
     }
 
-    public List<Member> getNearUser(long location_id)
-    {
-        LocationDto myLocation = locationRepository
-                .findById(location_id)
-                .orElseThrow()
-                .asLocationDto();
+    private boolean isNearUser(MatchListResponse response,LocationDto meLocation){
+        if(response.getDist() > NEAR_DISTANCE) return false;
+        return meLocation.getUser_id() != response.getUser().getUserId();
+    }
 
-        List<Long> users = locationRepository
-                .findAll()
-                .stream()
-                .map(LocationEntity::asLocationDto)
-                .filter(location->
-                        {
-                            if (location.getLocation_id() == location_id ||
-                                    !(getDistance(myLocation.getLatitude(),
-                                            myLocation.getLongitude(),
-                                            location.getLatitude(),
-                                            location.getLongitude()) <= NEAR_DISTANCE)) return false;
+    private boolean isValidMember(Member me, LocationDto myLocation, MatchListResponse response){
+        Member you = memberRepository
+                .findById(response.getUser().getUserId())
+                .orElse(Member.builder().type("None").build());
 
-                            Member user = memberRepository
-                                    .findById(location.getUser_id())
-                                    .orElse(Member.builder().type("None").build());
+        if(you.getType().equals("None")) return false;
 
-                            if(user.getType().equals("None")) return false;
-
-                            if (myLocation.getMemberType() == MemberType.모두) return true;
-
-                            return myLocation.getMemberType().name().equals(user.getType());
-                        }
-                )
-                .map(LocationDto::getUser_id)
-                .toList();
-
-        return memberRepository
-                .findAllById(users)
-                .stream()
-                .map(this::hideSecretInfo)
-                .toList();
+        if(!(response.getLocation().getMemberType() == MemberType.모두) &&
+                !response.getLocation().getMemberType().name().equals(me.getType()))
+            return false;
+        if(!(myLocation.getMemberType() == MemberType.모두) &&
+                !myLocation.getMemberType().name().equals(you.getType()))
+            return false;
+        return true;
     }
 
     public List<MatchListResponse> getMatchUser(long location_id)
@@ -287,6 +266,10 @@ public class MatchService {
                 .findById(location_id)
                 .orElseThrow()
                 .asLocationDto();
+
+        Member me = memberRepository
+                .findById(myLocation.getUser_id())
+                .orElseThrow();
 
         List<LocationDto> locations = locationRepository
                 .findAll()
@@ -308,11 +291,8 @@ public class MatchService {
                         myLocation.getLatitude(),
                         myLocation.getLongitude()
                 ))
-                .filter(matchListResponse ->
-                        matchListResponse.getDist() <= NEAR_DISTANCE &&
-                        matchListResponse.getLocation().getLocation_id() != location_id &&
-                        myLocation.getUser_id() != matchListResponse.getLocation().getUser_id()
-                        )
+                .filter(res->isNearUser(res,myLocation))
+                .filter(res->isValidMember(me,myLocation,res))
                 .toList();
     }
 
@@ -325,16 +305,6 @@ public class MatchService {
                 .name(member.getName())
                 .comment(member.getComment())
                 .build();
-    }
-
-    private double getDistance(double lat1, double lon1, double lat2, double lon2) {
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-
-        double a = Math.sin(dLat/2)* Math.sin(dLat/2)+ Math.cos(Math.toRadians(lat1))* Math.cos(Math.toRadians(lat2))* Math.sin(dLon/2)* Math.sin(dLon/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-        return EARTH_RADIUS * c;
     }
 
     private MatchDto saveMatch(long from_id,long to_id)
@@ -357,6 +327,7 @@ public class MatchService {
         }
         return true;
     }
+
     public List<MatchDto> getMatch(long user_id)
     {
         List<ReviewDto>  reviews = Optional.ofNullable(
