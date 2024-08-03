@@ -117,7 +117,7 @@ class DataStoreClass(val context: Context) {
         }
     }
 
-    suspend fun setPassword(nowUserPassword: String) {
+    suspend fun setUserPassword(nowUserPassword: String) {
         context.dataStore.edit { preferences ->
             preferences[userPassword] = nowUserPassword
         }

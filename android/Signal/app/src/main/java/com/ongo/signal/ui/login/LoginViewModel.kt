@@ -24,8 +24,6 @@ class LoginViewModel @Inject constructor(
         CoroutineExceptionHandler { coroutineContext, throwable ->
             Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
         }
-    private var tempUserId = ""
-    private var tempUserPassword = ""
 
     fun checkLogin(onLogin: (SignalUser?, String, String) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -97,7 +95,7 @@ class LoginViewModel @Inject constructor(
             dataStoreClass.setUserId(userId)
             dataStoreClass.setUserLoginId(userLoginId)
             dataStoreClass.setUserName(userName)
-            dataStoreClass.setPassword(userPassword)
+            dataStoreClass.setUserPassword(userPassword)
             dataStoreClass.setProfileImage(profileImage)
             dataStoreClass.setAccessToken(accessToken)
             dataStoreClass.setRefreshToken(refreshToken)
