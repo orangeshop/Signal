@@ -1,7 +1,9 @@
 package com.ongo.signal.ui.my
 
+import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.repository.login.LoginRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
@@ -14,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
-    private val myPageRepository: MyPageRepository
+    private val myPageRepository: MyPageRepository,
+    private val dataStoreClass: DataStoreClass,
 ) : ViewModel() {
 
     private val coroutineExceptionHandler =
@@ -28,6 +31,7 @@ class MyPageViewModel @Inject constructor(
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
             if (loginRepository.deleteUser(token = "Bearer $token") == 1) {
+                dataStoreClass.clearData()
                 onSuccess(1)
             }
         }

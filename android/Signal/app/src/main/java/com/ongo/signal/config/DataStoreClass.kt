@@ -19,7 +19,9 @@ class DataStoreClass(val context: Context) {
 
     //TODO Proto 파일로 바꿔서 저장
     private val userId = longPreferencesKey("userId")
+    private val userLoginId = stringPreferencesKey("userLoginId")
     private val userName = stringPreferencesKey("userName")
+    private val userPassword = stringPreferencesKey("userPassword")
     private val profileImage = stringPreferencesKey("profileImage")
     private val accessToken = stringPreferencesKey("accessToken")
     private val refreshToken = stringPreferencesKey("refreshToken")
@@ -41,12 +43,28 @@ class DataStoreClass(val context: Context) {
             preferences[userId] ?: -1
         }
 
+    val userLoginIdData: Flow<String> = context.dataStore.data
+        .catch { _ ->
+            emit(emptyPreferences())
+        }
+        .map { preferences ->
+            preferences[userLoginId] ?: ""
+        }
+
     val userNameData: Flow<String> = context.dataStore.data
         .catch { _ ->
             emit(emptyPreferences())
         }
         .map { preferences ->
             preferences[userName] ?: ""
+        }
+
+    val userPasswordData: Flow<String> = context.dataStore.data
+        .catch { _ ->
+            emit(emptyPreferences())
+        }
+        .map { preferences ->
+            preferences[userPassword] ?: ""
         }
 
     val profileImageData: Flow<String> = context.dataStore.data
@@ -85,10 +103,23 @@ class DataStoreClass(val context: Context) {
         }
     }
 
+    suspend fun setUserLoginId(nowUserLoginId: String) {
+        context.dataStore.edit { preferences ->
+            preferences[userLoginId] = nowUserLoginId
+        }
+    }
+
+
 
     suspend fun setUserName(nowUserName: String) {
         context.dataStore.edit { preferences ->
             preferences[userName] = nowUserName
+        }
+    }
+
+    suspend fun setPassword(nowUserPassword: String) {
+        context.dataStore.edit { preferences ->
+            preferences[userPassword] = nowUserPassword
         }
     }
 

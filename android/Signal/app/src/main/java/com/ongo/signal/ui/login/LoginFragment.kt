@@ -7,6 +7,7 @@ import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.login.LoginRequest
+import com.ongo.signal.data.model.login.SignalUser
 import com.ongo.signal.databinding.FragmentLoginBinding
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +19,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     private val viewModel: LoginViewModel by viewModels()
 
     override fun init() {
+        checkLogin()
         initViews()
+    }
+
+    private fun checkLogin() {
+        viewModel.checkLogin { signalUser, userLoginId, userPassword ->
+            successLogin(signalUser, userLoginId, userPassword)
+        }
     }
 
     private fun initViews() {
@@ -44,31 +52,41 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 ),
                 onSuccess = { isSuccess, signalUser ->
                     if (isSuccess) {
-                        signalUser?.let {
-                            UserSession.userId = signalUser.userId
-                            UserSession.userName = signalUser.userName
-                            UserSession.accessToken = signalUser.accessToken
-                            UserSession.refreshToken = signalUser.refreshToken
-
-                            Timber.d("로그인 완료 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
-
-                            viewModel.saveUserData(
-                                userId = signalUser.userId,
-                                userName = signalUser.userName,
-                                profileImage = "",
-                                accessToken = signalUser.accessToken,
-                                refreshToken = signalUser.refreshToken
-                            )
-                            val intent = Intent(requireContext(), MainActivity::class.java)
-                            startActivity(intent)
-                            requireActivity().finish()
-                        }
+                        successLogin(signalUser, binding.tietId.text.toString(), binding.tietPassword.text.toString())
                     } else {
                         makeToast("아이디나 비밀번호를 확인해주세요")
                     }
                 }
             )
 
+        }
+    }
+
+    private fun successLogin(
+        signalUser: SignalUser?,
+        userLoginId: String,
+        userPassword: String,
+    ) {
+        signalUser?.let {
+            UserSession.userId = signalUser.userId
+            UserSession.userName = signalUser.userName
+            UserSession.accessToken = signalUser.accessToken
+            UserSession.refreshToken = signalUser.refreshToken
+
+            Timber.d("로그인 완료 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
+
+            viewModel.saveUserData(
+                userId = signalUser.userId,
+                userLoginId = userLoginId,
+                userName = signalUser.userName,
+                userPassword = userPassword,
+                profileImage = "",
+                accessToken = signalUser.accessToken,
+                refreshToken = signalUser.refreshToken
+            )
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
         }
     }
 }
