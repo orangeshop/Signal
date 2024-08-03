@@ -1,5 +1,7 @@
 package com.ongo.signal.ui.chat.fragment
 
+import android.os.Build.VERSION_CODES.P
+import android.text.TextUtils.substring
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -16,9 +18,12 @@ import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.text.Typography.tm
 
 private const val TAG = "ChatDetailFragment_싸피"
 
@@ -30,12 +35,15 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     private lateinit var chatDetailAdapter: ChatDetailAdapter
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
+    private val todayTitleChecker = mutableSetOf<Long>()
+
+
 
     override fun init() {
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
 
         binding.apply {
-
+            
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
 
             chatDetailAdapter = ChatDetailAdapter(
@@ -55,34 +63,49 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                     if (date != null) {
                         val time = outputFormat.format(date)
                         result = chatViewModel.timeSetting(time, target)
-
                     }
-
                     result
-
                 },
                 todaySetting = {id, item, time ->
                     var result = false
 
-                    Log.d(TAG, "todaySettingtodaySettingtodaySetting:${id} ${chatViewModel.preDay} ${time}")
+                    /*
+                    리스트가 마운트 될 때 배열에 날이 바뀌는 인덱스를 넣어야 함
+                    그리고 해당 인덱스가 있는지 뽑아내는 방식이면 충분할 듯 함
+                    로컬 배열에 값을 넣자
+                    * */
 
-                    /** 스크롤 다운 시
-                     *
-                     * pre : 08-01
-                     * nex : 08-02
-                     *
-                     * 스크롤 업 시
-                     *
-                     * pre : 08-02
-                     * nxt : 08-01
-                     *
-                     * */
+                    var tmp = chatViewModel.messageList.value?.get(chatViewModel.messageList.value!!.lastIndex)?.sendAt
 
-                    if(chatViewModel.preDay != time){
+
+//                    
+                    for(item in chatViewModel.messageList.value!!){
+                        if (tmp != null) {
+
+                            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+                            inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+                            val outputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
+                            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
+                            outputFormat.timeZone = TimeZone.getDefault()
+
+                            val preDay = inputFormat.parse(tmp)
+                            val preDayOutput = outputFormat.format(preDay)
+
+
+                            val Today = inputFormat.parse(item.sendAt)
+                            val todayOutput = outputFormat.format(Today)
+
+                            if(preDayOutput.substring(1,8) != todayOutput.substring(1,8)){
+                                todayTitleChecker.add(item.messageId)
+                            }
+                        }
+                        tmp = item.sendAt
+                    }
+                    if(todayTitleChecker.contains(id)){
                         result = true
                     }
 
-                    chatViewModel.preDay = time
                     result
                 }, chatViewModel.chatRoomFromID
             )
@@ -92,17 +115,15 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList){
-                            binding.chatDetailRv.scrollToPosition(
-                                chatList.lastIndex
-                            )
+                        binding.chatDetailRv.scrollToPosition(
+                            chatList.lastIndex
+                        )
                     }
                 })
             }
 
-
             binding.chatDetailBtn.setOnClickListener {
                 if(binding.etSearch.text.toString() != "") {
-                    Log.d(TAG, "init: ${chatViewModel.timeSetting(Date(System.currentTimeMillis()).toString(), 1)}}")
                     val message = ChatHomeChildDTO(
                         0,
                         chatViewModel.chatRoomNumber,

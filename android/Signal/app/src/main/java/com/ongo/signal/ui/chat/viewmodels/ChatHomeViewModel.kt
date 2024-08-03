@@ -36,11 +36,6 @@ class ChatHomeViewModel @Inject constructor(
     var chatRoomFromID : Long = 0
     var chatRoomToID : Long = 0
 
-    var preDay : String = ""
-    var preNum : Long = 0
-
-    var firstInit = true
-
     fun clearMessageList() {
         _messageList.value = emptyList()
     }
@@ -141,7 +136,8 @@ class ChatHomeViewModel @Inject constructor(
 
     fun timeSetting(time : String, target: Int) : String {
 
-//        Log.d(TAG, "timeSetting: ${time}")
+
+        Log.d(TAG, "timeSetting: ${time}")
         
         // DateTimeFormatter을 사용하여 입력된 날짜 문자열을 ZonedDateTime 객체로 파싱
         val inputFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
