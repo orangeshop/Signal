@@ -88,64 +88,64 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         lifecycleScope.launch {
             viewModel.hotSignalBoards.collectLatest { newHotBoards ->
                 Timber.d("New hot signal boards received: $newHotBoards")
-                when (newHotBoards.size) {
-                    0 -> {
-                        binding.tvFirst.visibility = View.GONE
-                        binding.tvFirstTitle.visibility = View.GONE
-                        binding.rvFirst.visibility = View.GONE
-                        binding.tvSecond.visibility = View.GONE
-                        binding.tvSecondTitle.visibility = View.GONE
-                        binding.rvSecond.visibility = View.GONE
-                        binding.tvThird.visibility = View.GONE
-                        binding.tvThirdTitle.visibility = View.GONE
-                        binding.rvThird.visibility = View.GONE
-                    }
-                    1 -> {
-                        binding.tvFirst.visibility = View.VISIBLE
-                        binding.tvFirstTitle.visibility = View.VISIBLE
-                        binding.rvFirst.visibility = View.VISIBLE
-                        binding.tvSecond.visibility = View.GONE
-                        binding.tvSecondTitle.visibility = View.GONE
-                        binding.rvSecond.visibility = View.GONE
-                        binding.tvThird.visibility = View.GONE
-                        binding.tvThirdTitle.visibility = View.GONE
-                        binding.rvThird.visibility = View.GONE
-                    }
-                    2 -> {
-                        binding.tvFirst.visibility = View.VISIBLE
-                        binding.tvFirstTitle.visibility = View.VISIBLE
-                        binding.rvFirst.visibility = View.VISIBLE
-                        binding.tvSecond.visibility = View.VISIBLE
-                        binding.tvSecondTitle.visibility = View.VISIBLE
-                        binding.rvSecond.visibility = View.VISIBLE
-                        binding.tvThird.visibility = View.GONE
-                        binding.tvThirdTitle.visibility = View.GONE
-                        binding.rvThird.visibility = View.GONE
-                    }
-                    else -> {
-                        binding.tvFirst.visibility = View.VISIBLE
-                        binding.tvFirstTitle.visibility = View.VISIBLE
-                        binding.rvFirst.visibility = View.VISIBLE
-                        binding.tvSecond.visibility = View.VISIBLE
-                        binding.tvSecondTitle.visibility = View.VISIBLE
-                        binding.rvSecond.visibility = View.VISIBLE
-                        binding.tvThird.visibility = View.VISIBLE
-                        binding.tvThirdTitle.visibility = View.VISIBLE
-                        binding.rvThird.visibility = View.VISIBLE
-                    }
-                }
+//                when (newHotBoards.size) {
+//                    0 -> {
+//                        binding.tvFirst.visibility = View.GONE
+//                        binding.tvFirstTitle.visibility = View.GONE
+//                        binding.rvFirst.visibility = View.GONE
+//                        binding.tvSecond.visibility = View.GONE
+//                        binding.tvSecondTitle.visibility = View.GONE
+//                        binding.rvSecond.visibility = View.GONE
+//                        binding.tvThird.visibility = View.GONE
+//                        binding.tvThirdTitle.visibility = View.GONE
+//                        binding.rvThird.visibility = View.GONE
+//                    }
+//                    1 -> {
+//                        binding.tvFirst.visibility = View.VISIBLE
+//                        binding.tvFirstTitle.visibility = View.VISIBLE
+//                        binding.rvFirst.visibility = View.VISIBLE
+//                        binding.tvSecond.visibility = View.GONE
+//                        binding.tvSecondTitle.visibility = View.GONE
+//                        binding.rvSecond.visibility = View.GONE
+//                        binding.tvThird.visibility = View.GONE
+//                        binding.tvThirdTitle.visibility = View.GONE
+//                        binding.rvThird.visibility = View.GONE
+//                    }
+//                    2 -> {
+//                        binding.tvFirst.visibility = View.VISIBLE
+//                        binding.tvFirstTitle.visibility = View.VISIBLE
+//                        binding.rvFirst.visibility = View.VISIBLE
+//                        binding.tvSecond.visibility = View.VISIBLE
+//                        binding.tvSecondTitle.visibility = View.VISIBLE
+//                        binding.rvSecond.visibility = View.VISIBLE
+//                        binding.tvThird.visibility = View.GONE
+//                        binding.tvThirdTitle.visibility = View.GONE
+//                        binding.rvThird.visibility = View.GONE
+//                    }
+//                    else -> {
+//                        binding.tvFirst.visibility = View.VISIBLE
+//                        binding.tvFirstTitle.visibility = View.VISIBLE
+//                        binding.rvFirst.visibility = View.VISIBLE
+//                        binding.tvSecond.visibility = View.VISIBLE
+//                        binding.tvSecondTitle.visibility = View.VISIBLE
+//                        binding.rvSecond.visibility = View.VISIBLE
+//                        binding.tvThird.visibility = View.VISIBLE
+//                        binding.tvThirdTitle.visibility = View.VISIBLE
+//                        binding.rvThird.visibility = View.VISIBLE
+//                    }
+//                }
 
-                updateHotSignalTitles(newHotBoards)
-                updateTagAdapters(newHotBoards)
+//                updateHotSignalTitles(newHotBoards)
+//                updateTagAdapters(newHotBoards)
             }
         }
     }
 
     private fun updateHotSignalTitles(newHotBoards: List<BoardDTO>) {
         binding?.let {
-            it.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
-            it.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
-            it.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
+//            it.tvFirstTitle.text = newHotBoards.getOrNull(0)?.title ?: ""
+//            it.tvSecondTitle.text = newHotBoards.getOrNull(1)?.title ?: ""
+//            it.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
         }
     }
 

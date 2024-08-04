@@ -36,6 +36,10 @@ firebaseMessagingKtx = "24.0.0"
 locations = "21.0.1"
 #datastore
 datastore = "1.1.1"
+#webrtc
+permisisonx = "1.6.1"
+webrtc = "1.0.5"
+
 
 
 [libraries]
@@ -75,39 +79,44 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 
 #room
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room"}
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room"}
-room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 #paging
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 
 #squareup
-moshi-kotlin = {group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi"}
-converter-scalars = {group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit2"}
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit2" }
 
 #krossbow
-krossbow-stomp-core = {group = "org.hildan.krossbow", name = "krossbow-stomp-core", version.ref = "krossbow"}
-krossbow-websocket-builtin = {group = "org.hildan.krossbow", name = "krossbow-websocket-builtin", version.ref = "krossbow"}
-krossbow-websocket-okhttp = {group = "org.hildan.krossbow", name = "krossbow-websocket-okhttp", version.ref = "krossbow"}
-krossbow-stomp-moshi = {group = "org.hildan.krossbow", name = "krossbow-stomp-moshi", version.ref = "krossbow"}
+krossbow-stomp-core = { group = "org.hildan.krossbow", name = "krossbow-stomp-core", version.ref = "krossbow" }
+krossbow-websocket-builtin = { group = "org.hildan.krossbow", name = "krossbow-websocket-builtin", version.ref = "krossbow" }
+krossbow-websocket-okhttp = { group = "org.hildan.krossbow", name = "krossbow-websocket-okhttp", version.ref = "krossbow" }
+krossbow-stomp-moshi = { group = "org.hildan.krossbow", name = "krossbow-stomp-moshi", version.ref = "krossbow" }
 
 #fcm
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 
 #locations
-locations = {group = "com.google.android.gms", name= "play-services-location", version.ref = "locations"}
+locations = { group = "com.google.android.gms", name = "play-services-location", version.ref = "locations" }
 
 #datastore
-datastore = {group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore"}
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+#webrtc
+webrtc = { group = "com.mesibo.api", name = "webrtc", version.ref = "webrtc" }
+permissionx = { group = "com.guolindev.permissionx", name = "permissionx", version.ref = "permisisonx" }
 
 
 [bundles]
-network = ["retrofit2","okhttp3","okhttp3-logging","gson"]
+network = ["retrofit2", "okhttp3", "okhttp3-logging", "gson"]
 room = ["room-ktx", "room-runtime"]
 squareup = ["moshi-kotlin", "converter-scalars"]
 krossbow = ["krossbow-stomp-core", "krossbow-websocket-builtin", "krossbow-websocket-okhttp"]
+webrtc = ["webrtc", "permissionx"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

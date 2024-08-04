@@ -78,7 +78,7 @@ dependencies {
 
     //room
     implementation(libs.bundles.room)
-    kapt (libs.room.compiler)
+    kapt(libs.room.compiler)
     //paging
     implementation(libs.paging)
 
@@ -92,5 +92,7 @@ dependencies {
     implementation(libs.locations)
     //datastore
     implementation(libs.datastore)
+    //webrtc
+    implementation(libs.bundles.webrtc)
 
 }
