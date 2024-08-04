@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="com.ongo.signal.ui.main.MainViewModel" />
+            name="boardViewModel"
+            type="com.ongo.signal.ui.main.BoardViewModel" />
 
         <variable
             name="fragment"
@@ -43,7 +43,7 @@
             android:layout_marginTop="20dp"
             android:hint="@string/title"
             android:padding="10dp"
-            android:text="@{viewModel.selectedBoard != null ? viewModel.selectedBoard.title : viewModel.title}"
+            android:text="@{boardViewModel.selectedBoard != null ? boardViewModel.selectedBoard.title : boardViewModel.title}"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintEnd_toStartOf="@id/gl"
@@ -68,7 +68,7 @@
             android:gravity="start"
             android:hint="@string/hint_content"
             android:padding="10dp"
-            android:text="@{viewModel.selectedBoard != null ? viewModel.selectedBoard.content : viewModel.content}"
+            android:text="@{boardViewModel.selectedBoard != null ? boardViewModel.selectedBoard.content : boardViewModel.content}"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             app:layout_constraintBottom_toTopOf="@id/tv_reply"
