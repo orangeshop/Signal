@@ -1,6 +1,6 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +17,7 @@ import timber.log.Timber
 class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_review) {
 
     private lateinit var reviewAdapter: ReviewAdapter
-    private val viewModel: ReviewViewModel by viewModels()
+    private val viewModel: ReviewViewModel by activityViewModels()
 
     override fun init() {
         setUpAdapter()

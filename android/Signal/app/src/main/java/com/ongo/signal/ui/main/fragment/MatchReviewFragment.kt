@@ -22,7 +22,7 @@ class MatchReviewFragment :
                 }
             }
         sttHelper = STTHelper(sttLauncher)
-
+        binding.fragment = this
     }
 
     fun clickSubmit() {
