@@ -26,22 +26,25 @@ interface MainApi {
     suspend fun writeBoard(@Body boardRequestDTO: BoardRequestDTO): Response<BoardDTO>
 
     @GET("board")
-    suspend fun readBoard(): Response<List<BoardDTO>>
+    suspend fun readBoard(
+        @Query("page") pageNum: Int,
+        @Query("limit") limit: Int
+    ): Response<List<BoardDTO>>
 
     @GET("board/{no}")
-    suspend fun readBoardById(@Path("no") boardId: Int): Response<BoardDTO>
+    suspend fun readBoardById(@Path("no") boardId: Long): Response<BoardDTO>
 
     @PUT("board/update/{no}")
     suspend fun updateBoard(
-        @Path("no") boardId: Int,
+        @Path("no") boardId: Long,
         @Body updateBoardDTO: UpdateBoardDTO
     ): Response<BoardDTO>
 
     @DELETE("delete/{no}")
-    suspend fun deleteBoard(@Path("no") boardId: Int): Response<ResponseBody>
+    suspend fun deleteBoard(@Path("no") boardId: Long): Response<ResponseBody>
 
     @GET("comment/{boardId}")
-    suspend fun readComments(@Path("boardId") boardId: Int): Response<CommentDTO>
+    suspend fun readComments(@Path("boardId") boardId: Long): Response<CommentDTO>
 
     @POST("comment/{boardId}")
     suspend fun writeComment(
