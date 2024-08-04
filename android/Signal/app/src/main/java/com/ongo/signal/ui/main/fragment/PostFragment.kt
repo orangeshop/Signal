@@ -4,16 +4,18 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.CommentDTOItem
+import com.ongo.signal.data.model.main.CommentRequestDTO
 import com.ongo.signal.databinding.FragmentPostBinding
-import com.ongo.signal.ui.main.MainViewModel
+import com.ongo.signal.ui.main.BoardViewModel
+import com.ongo.signal.ui.main.CommentViewModel
 import com.ongo.signal.ui.main.adapter.ChipAdapter
 import com.ongo.signal.ui.main.adapter.CommentAdapter
 import com.ongo.signal.ui.main.adapter.PostImageAdapter
@@ -21,7 +23,6 @@ import com.ongo.signal.util.PopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
@@ -29,23 +30,31 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private lateinit var commentAdapter: CommentAdapter
     private lateinit var chipAdapter: ChipAdapter
     private lateinit var imageAdapter: PostImageAdapter
-    private val viewModel: MainViewModel by activityViewModels()
+
+    private val boardViewModel: BoardViewModel by activityViewModels()
+    private val commentViewModel: CommentViewModel by activityViewModels()
+
     private var selectedCommentId: Long? = null
 
     override fun init() {
-        binding.viewModel = viewModel
+        binding.boardViewModel = boardViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        setupAdapters()
+        observeViewModelData()
+        loadInitialData()
+
+        binding.fragment = this
+    }
+
+    private fun setupAdapters() {
         commentAdapter = CommentAdapter(
-            onCommentEditClick = { comment ->
-                onCommentEditClick(comment)
-            },
-            onCommentDeleteClick = { comment ->
-                onCommentDeleteClick(comment.id)
-            },
-            currentUserId = viewModel.currentUserId.value
+            onCommentEditClick = ::onCommentEditClick,
+            onCommentDeleteClick = ::onCommentDeleteClick,
+            currentUserId = boardViewModel.currentUserId
         )
         chipAdapter = ChipAdapter()
+        imageAdapter = PostImageAdapter()
 
         binding.rvComment.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -58,52 +67,37 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             adapter = chipAdapter
         }
 
-        setupImageAdapter()
-
-        viewModel.selectedBoard.value?.id?.let { boardId ->
-            viewModel.loadBoardDetails(boardId)
-            viewModel.loadComments(boardId)
+        binding.rvImages.apply {
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            adapter = imageAdapter
         }
+    }
 
-        Timber.d(viewModel.selectedBoard.value?.imageUrls.toString())
-        Timber.d(viewModel.selectedBoard.value?.id.toString())
-        Timber.d(viewModel.selectedBoard.value?.title ?: "title is Null")
-        Timber.d(viewModel.selectedBoard.value?.content ?: "content is Null")
-        Timber.d(viewModel.selectedBoard.value.toString())
-
+    private fun observeViewModelData() {
         lifecycleScope.launch {
-            viewModel.selectedBoard.collectLatest { board ->
+            boardViewModel.selectedBoard.collectLatest { board ->
                 board?.let {
-                    val imageUrls = it.imageUrls
-                    val comments = it.comments
-                    val tags = it.tags
-
-                    Timber.d(comments.toString())
-                    imageAdapter.submitList(imageUrls)
-                    commentAdapter.submitList(comments)
-                    chipAdapter.submitList(tags)
+                    imageAdapter.submitList(it.imageUrls)
+                    commentAdapter.submitList(it.comments)
+                    chipAdapter.submitList(it.tags)
                 }
             }
         }
 
         lifecycleScope.launch {
-            viewModel.comments.collectLatest { comments ->
+            commentViewModel.comments.collectLatest { comments ->
                 commentAdapter.submitList(comments)
             }
         }
-
-        binding.fragment = this
     }
 
-    private fun setupImageAdapter() {
-        imageAdapter = PostImageAdapter()
-
-        binding.rvImages.apply {
-            layoutManager =
-                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            adapter = imageAdapter
+    private fun loadInitialData() {
+        boardViewModel.selectedBoard.value?.id?.let { boardId ->
+            boardViewModel.loadBoardDetails(boardId)
+            commentViewModel.loadComments(boardId)
         }
     }
+
 
     fun showPopupMenu(view: View) {
         PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_menu) { item ->
@@ -114,7 +108,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 }
 
                 R.id.action_delete -> {
-                    viewModel.selectedBoard.value?.id?.let { viewModel.deleteBoard(it) }
+                    boardViewModel.selectedBoard.value?.id?.let { boardViewModel.deleteBoard(it) }
                     findNavController().navigate(R.id.action_postFragment_to_mainFragment)
                     true
                 }
@@ -125,25 +119,28 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     private fun onCommentEditClick(comment: CommentDTOItem) {
-        selectedCommentId = comment.id.toLong()
+        selectedCommentId = comment.id
         binding.etComment.setText(comment.content)
         showKeyboard()
     }
 
-    private fun onCommentDeleteClick(commentId: Int) {
-        val boardId = viewModel.selectedBoard.value?.id ?: return
-        viewModel.deleteComment(boardId, commentId.toLong())
+    private fun onCommentDeleteClick(comment: CommentDTOItem) {
+        val boardId = boardViewModel.selectedBoard.value?.id ?: return
+        commentViewModel.deleteComment(boardId, comment.id)
     }
 
     fun createComment() {
         val content = binding.etComment.text.toString()
         val writer = "홍길동"
-        val boardId = viewModel.selectedBoard.value?.id ?: return
+        val boardId = boardViewModel.selectedBoard.value?.id ?: return
+        val userId = boardViewModel.currentUserId
+
         if (selectedCommentId != null) {
-            viewModel.updateComment(boardId.toLong(), selectedCommentId!!, content)
+            val commentRequest = CommentRequestDTO(boardId, userId.toLong(), content)
+            commentViewModel.updateComment(boardId, selectedCommentId!!, commentRequest)
             selectedCommentId = null
         } else {
-            viewModel.createComment(boardId.toLong(), writer, content)
+            commentViewModel.createComment(CommentDTOItem(boardId = boardId, userId = userId.toLong(), writer = writer, content = content))
         }
         binding.etComment.text.clear()
         hideKeyboard()
@@ -166,9 +163,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         findNavController().navigate(R.id.action_postFragment_to_reviewFragment)
     }
 
-    fun onThumbClick(board: BoardDTO?) {
-        if (board != null) {
-            viewModel.onThumbClick(board)
-        }
-    }
+//    fun onThumbClick(board: BoardDTO?) {
+//        if (board != null) {
+//            viewModel.onThumbClick(board)
+//        }
+//    }
 }
