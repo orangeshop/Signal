@@ -32,6 +32,7 @@ radarview = "1.0.2"
 gms = "4.4.2"
 firebase-bom = "33.1.2"
 firebaseMessagingKtx = "24.0.0"
+firebase-database = "20.2.2"
 #location
 locations = "21.0.1"
 #datastore
@@ -99,6 +100,7 @@ krossbow-stomp-moshi = { group = "org.hildan.krossbow", name = "krossbow-stomp-m
 #fcm
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebase-database" }
 
 #locations
 locations = { group = "com.google.android.gms", name = "play-services-location", version.ref = "locations" }
