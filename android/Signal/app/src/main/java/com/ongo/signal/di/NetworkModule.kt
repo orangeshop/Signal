@@ -51,7 +51,6 @@ object NetworkModule {
 //        .baseUrl("http://192.168.100.161:8080/") // 병현서버
 //        .baseUrl("http://192.168.100.95:8080/") // 인수서버
 //        .baseUrl("http://192.168.100.200:8080/") // 민수서버
-
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
@@ -82,7 +81,6 @@ object NetworkModule {
         return retrofit.create(ChatRoomApi::class.java)
     }
 
-
     @Provides
     @Singleton
     fun provideChatRepository(chatApi: ChatRoomApi): ChatRepository {
@@ -91,5 +89,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMyPageRepository(retrofit: Retrofit): MyPageApi = retrofit.create(MyPageApi::class.java)
+    fun provideMyPageRepository(retrofit: Retrofit): MyPageApi =
+        retrofit.create(MyPageApi::class.java)
 }
