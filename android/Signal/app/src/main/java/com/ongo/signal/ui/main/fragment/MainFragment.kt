@@ -16,31 +16,33 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.chip.Chip
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.FragmentMainBinding
-import com.ongo.signal.ui.main.MainViewModel
+import com.ongo.signal.ui.main.BoardViewModel
 import com.ongo.signal.ui.main.adapter.TagAdapter
 import com.ongo.signal.ui.main.adapter.TodayPostAdapter
+import com.ongo.signal.util.KeyboardUtils
 import com.ongo.signal.util.STTHelper
+import com.ongo.signal.util.SpannableStringUtils
 import com.ongo.signal.util.TTSHelper
+import com.ongo.signal.util.ViewAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
-    private val viewModel: MainViewModel by activityViewModels()
+    private val boardViewModel: BoardViewModel by activityViewModels()
     private lateinit var todayPostAdapter: TodayPostAdapter
     private lateinit var firstTagAdapter: TagAdapter
     private lateinit var secondTagAdapter: TagAdapter
@@ -53,7 +55,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     override fun init() {
         binding.fragment = this
-        binding.viewModel = viewModel
+        binding.boardViewModel = boardViewModel
         ttsHelper = TTSHelper(requireContext())
 
         setUpAdapter()
@@ -76,70 +78,82 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     private fun observeBoards() {
         lifecycleScope.launch {
-            viewModel.boards.collectLatest { newBoards ->
-                Timber.d("New boards received: $newBoards")
-                todayPostAdapter.submitList(newBoards)
-//                updateTagAdapters(newBoards)
-            }
+            boardViewModel.items
+                .distinctUntilChanged()
+                .collectLatest { data ->
+                    Timber.d("MainFragment - observeBoards - paging data received: $data")
+                    todayPostAdapter.submitData(data)
+                }
         }
     }
+
 
     private fun observeHotSignalBoards() {
         lifecycleScope.launch {
-            viewModel.hotSignalBoards.collectLatest { newHotBoards ->
-                Timber.d("New hot signal boards received: $newHotBoards")
-                when (newHotBoards.size) {
-                    0 -> {
-                        binding.tvFirst.visibility = View.GONE
-                        binding.tvFirstTitle.visibility = View.GONE
-                        binding.rvFirst.visibility = View.GONE
-                        binding.tvSecond.visibility = View.GONE
-                        binding.tvSecondTitle.visibility = View.GONE
-                        binding.rvSecond.visibility = View.GONE
-                        binding.tvThird.visibility = View.GONE
-                        binding.tvThirdTitle.visibility = View.GONE
-                        binding.rvThird.visibility = View.GONE
-                    }
-                    1 -> {
-                        binding.tvFirst.visibility = View.VISIBLE
-                        binding.tvFirstTitle.visibility = View.VISIBLE
-                        binding.rvFirst.visibility = View.VISIBLE
-                        binding.tvSecond.visibility = View.GONE
-                        binding.tvSecondTitle.visibility = View.GONE
-                        binding.rvSecond.visibility = View.GONE
-                        binding.tvThird.visibility = View.GONE
-                        binding.tvThirdTitle.visibility = View.GONE
-                        binding.rvThird.visibility = View.GONE
-                    }
-                    2 -> {
-                        binding.tvFirst.visibility = View.VISIBLE
-                        binding.tvFirstTitle.visibility = View.VISIBLE
-                        binding.rvFirst.visibility = View.VISIBLE
-                        binding.tvSecond.visibility = View.VISIBLE
-                        binding.tvSecondTitle.visibility = View.VISIBLE
-                        binding.rvSecond.visibility = View.VISIBLE
-                        binding.tvThird.visibility = View.GONE
-                        binding.tvThirdTitle.visibility = View.GONE
-                        binding.rvThird.visibility = View.GONE
-                    }
-                    else -> {
-                        binding.tvFirst.visibility = View.VISIBLE
-                        binding.tvFirstTitle.visibility = View.VISIBLE
-                        binding.rvFirst.visibility = View.VISIBLE
-                        binding.tvSecond.visibility = View.VISIBLE
-                        binding.tvSecondTitle.visibility = View.VISIBLE
-                        binding.rvSecond.visibility = View.VISIBLE
-                        binding.tvThird.visibility = View.VISIBLE
-                        binding.tvThirdTitle.visibility = View.VISIBLE
-                        binding.rvThird.visibility = View.VISIBLE
-                    }
-                }
-
-                updateHotSignalTitles(newHotBoards)
-                updateTagAdapters(newHotBoards)
+            boardViewModel.hotBoards.collectLatest { newHotBoards ->
+                Timber.d("MainFragment - New hot signal boards received: $newHotBoards")
+                updateHotSignalViews(newHotBoards)
             }
         }
     }
+
+    private fun updateHotSignalViews(newHotBoards: List<BoardDTO>) {
+        binding?.let { binding ->
+            when (newHotBoards.size) {
+                0 -> {
+                    binding.tvFirst.visibility = View.GONE
+                    binding.tvFirstTitle.visibility = View.GONE
+                    binding.rvFirst.visibility = View.GONE
+                    binding.tvSecond.visibility = View.GONE
+                    binding.tvSecondTitle.visibility = View.GONE
+                    binding.rvSecond.visibility = View.GONE
+                    binding.tvThird.visibility = View.GONE
+                    binding.tvThirdTitle.visibility = View.GONE
+                    binding.rvThird.visibility = View.GONE
+                }
+
+                1 -> {
+                    binding.tvFirst.visibility = View.VISIBLE
+                    binding.tvFirstTitle.visibility = View.VISIBLE
+                    binding.rvFirst.visibility = View.VISIBLE
+                    binding.tvSecond.visibility = View.GONE
+                    binding.tvSecondTitle.visibility = View.GONE
+                    binding.rvSecond.visibility = View.GONE
+                    binding.tvThird.visibility = View.GONE
+                    binding.tvThirdTitle.visibility = View.GONE
+                    binding.rvThird.visibility = View.GONE
+                }
+
+                2 -> {
+                    binding.tvFirst.visibility = View.VISIBLE
+                    binding.tvFirstTitle.visibility = View.VISIBLE
+                    binding.rvFirst.visibility = View.VISIBLE
+                    binding.tvSecond.visibility = View.VISIBLE
+                    binding.tvSecondTitle.visibility = View.VISIBLE
+                    binding.rvSecond.visibility = View.VISIBLE
+                    binding.tvThird.visibility = View.GONE
+                    binding.tvThirdTitle.visibility = View.GONE
+                    binding.rvThird.visibility = View.GONE
+                }
+
+                else -> {
+                    binding.tvFirst.visibility = View.VISIBLE
+                    binding.tvFirstTitle.visibility = View.VISIBLE
+                    binding.rvFirst.visibility = View.VISIBLE
+                    binding.tvSecond.visibility = View.VISIBLE
+                    binding.tvSecondTitle.visibility = View.VISIBLE
+                    binding.rvSecond.visibility = View.VISIBLE
+                    binding.tvThird.visibility = View.VISIBLE
+                    binding.tvThirdTitle.visibility = View.VISIBLE
+                    binding.rvThird.visibility = View.VISIBLE
+                }
+            }
+
+            updateHotSignalTitles(newHotBoards)
+            updateTagAdapters(newHotBoards)
+        }
+    }
+
 
     private fun updateHotSignalTitles(newHotBoards: List<BoardDTO>) {
         binding?.let {
@@ -152,13 +166,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private fun updateTagAdapters(newBoards: List<BoardDTO>) {
         if (newBoards.isNotEmpty()) {
             val firstBoardTags = newBoards.getOrNull(0)?.tags ?: emptyList()
-            Timber.d("First board tags: $firstBoardTags")
             firstTagAdapter.submitList(firstBoardTags)
             val secondBoardTags = newBoards.getOrNull(1)?.tags ?: emptyList()
-            Timber.d("Second board tags: $secondBoardTags")
             secondTagAdapter.submitList(secondBoardTags)
             val thirdBoardTags = newBoards.getOrNull(2)?.tags ?: emptyList()
-            Timber.d("Third board tags: $thirdBoardTags")
             thirdTagAdapter.submitList(thirdBoardTags)
         } else {
             firstTagAdapter.submitList(emptyList())
@@ -167,16 +178,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         }
     }
 
-
     fun onChipClicked(tag: String) {
-        if (viewModel.selectedTag.value == tag) {
-            viewModel.clearSelectedTag()
-            viewModel.clearSearch()
-            viewModel.loadHotSignalBoards()
+        if (boardViewModel.selectedTag.value == tag) {
+            boardViewModel.clearBoards()
         } else {
-            viewModel.clearSelectedTag()
-            viewModel.setSelectedTag(tag)
-            viewModel.loadHotAndRecentSignalBoardsByTag(tag, 0, 10)
+            boardViewModel.setSelectedTag(tag)
         }
     }
 
@@ -190,12 +196,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     private fun flipViews() {
-        flipView(binding.tvFirstTitle, binding.rvFirst, 0)
-        flipView(binding.tvSecondTitle, binding.rvSecond, 1)
-        flipView(binding.tvThirdTitle, binding.rvThird, 2)
+        binding?.let {
+            flipView(it.tvFirstTitle, it.rvFirst, 0)
+            flipView(it.tvSecondTitle, it.rvSecond, 1)
+            flipView(it.tvThirdTitle, it.rvThird, 2)
+        }
     }
 
-    private fun flipView(titleView: View, recyclerView: RecyclerView, initialPosition: Int) {
+    private fun flipView(titleView: View, recyclerView: RecyclerView, position: Int) {
         val context = titleView.context
         val flipOut = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
         val flipIn = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
@@ -210,12 +218,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         flipOut.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                if (viewModel.hotSignalBoards.value.isNotEmpty()) {
-                    val currentPosition = (titleView.tag as? Int ?: initialPosition) + 3
-                    val nextPosition = currentPosition % viewModel.hotSignalBoards.value.size
-                    titleView.tag = nextPosition
-                    (titleView as TextView).text =
-                        viewModel.hotSignalBoards.value[nextPosition].title
+                if (boardViewModel.hotBoards.value.isNotEmpty()) {
+                    val newPosition = position % boardViewModel.hotBoards.value.size
+                    titleView.tag = newPosition
+                    (titleView as TextView).text = boardViewModel.hotBoards.value[newPosition].title
                     flipIn.setTarget(titleView)
                     flipInRecycler.setTarget(recyclerView)
                     flipIn.start()
@@ -229,7 +235,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     fun onFABClicked() {
-        viewModel.clearBoard()
+        boardViewModel.clearBoard()
         findNavController().navigate(R.id.action_mainFragment_to_writePostFragment)
     }
 
@@ -238,54 +244,50 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     fun onTitleClicked(position: Int) {
-        val board = viewModel.hotSignalBoards.value.getOrNull(position)
+        val board = boardViewModel.hotBoards.value.getOrNull(position)
         board?.let {
-            viewModel.selectBoard(it)
+            boardViewModel.selectBoard(it)
             findNavController().navigate(R.id.action_mainFragment_to_postFragment)
         }
     }
 
     fun searchKeyword() {
         val keyword = binding.etSearch.text.toString()
-        viewModel.searchBoard(keyword)
+        boardViewModel.searchBoard(keyword)
+        KeyboardUtils.hideKeyboard(binding.etSearch)
         fadeOut(binding.ivSearch)
         fadeOut(binding.ivMic)
         fadeIn(binding.ivRefresh)
     }
 
     fun loadAllBoards() {
-        viewModel.clearSearch()
+        boardViewModel.clearBoards()
         binding.etSearch.setText("")
+        KeyboardUtils.hideKeyboard(binding.etSearch)
+        binding.chipGroup.clearCheck()
         fadeIn(binding.ivSearch)
         fadeIn(binding.ivMic)
         fadeOut(binding.ivRefresh)
     }
 
     private fun fadeOut(view: View) {
-        val fadeOut = AnimationUtils.loadAnimation(context, R.anim.anim_fade_out)
-        view.startAnimation(fadeOut)
-        view.visibility = View.GONE
+        ViewAnimation.fadeOut(view, requireContext())
     }
 
     private fun fadeIn(view: View) {
-        view.visibility = View.VISIBLE
-        val fadeIn = AnimationUtils.loadAnimation(context, R.anim.anim_slide_in_from_right_fade_in)
-        view.startAnimation(fadeIn)
+        ViewAnimation.fadeIn(view, requireContext())
     }
 
     private fun setUpAdapter() {
         todayPostAdapter = TodayPostAdapter(
-            onEndReached = {
-//                viewModel.loadBoards()
-            },
             onItemClicked = { board ->
-                viewModel.selectBoard(board)
+                boardViewModel.selectBoard(board)
                 findNavController().navigate(R.id.action_mainFragment_to_postFragment)
             },
             onTTSClicked = { content ->
                 ttsHelper.speak(content)
             },
-            viewModel = viewModel
+            viewModel = boardViewModel
         )
 
         firstTagAdapter = TagAdapter()
@@ -312,36 +314,20 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         binding.rvPost.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = todayPostAdapter
-
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (!recyclerView.canScrollVertically(1)) {
-//                        viewModel.loadBoards()
-                    }
-                }
-            })
         }
     }
 
-    private fun getSpannableString(
-        fullText: String
-    ): SpannableString {
-        val spannableString = SpannableString(fullText)
-        val start = fullText.indexOf("시그널")
-        val end = start + "시그널".length
-        spannableString.setSpan(
-            ForegroundColorSpan(Color.parseColor("#64FFCE")),
-            start,
-            end,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        return spannableString
-    }
-
     private fun setUpSpannableText() {
-        val hotSpannable = getSpannableString("화제의 시그널")
-        val todaySpannable = getSpannableString("오늘의 시그널")
+        val hotSpannable = SpannableStringUtils.getSpannableString(
+            getString(R.string.hotSignal),
+            "시그널",
+            "#64FFCE"
+        )
+        val todaySpannable = SpannableStringUtils.getSpannableString(
+            getString(R.string.realtime_signal),
+            "시그널",
+            "#64FFCE"
+        )
 
         binding.tvHotSignal.text = hotSpannable
         binding.tvTodaySignal.text = todaySpannable
