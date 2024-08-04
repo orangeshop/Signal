@@ -13,7 +13,7 @@ interface ChatUseCases {
     fun timeSetting(): String
 
 
-    suspend fun stompSend(item: ChatHomeChildDTO)
+    suspend fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit)
     suspend fun stompGet(chatRoomNumber: Long, onSuccess: (Long) -> Unit)
     suspend fun connectedWebSocket(chatRoomNumber: Long)
     suspend fun stompDisconnect()

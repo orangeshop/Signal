@@ -79,7 +79,6 @@ class ChatHomeViewModel @Inject constructor(
             for(message in messageList.value!!){
                 message.isRead = true
             }
-//            loadDetailList(id)
         }
     }
 
@@ -103,18 +102,16 @@ class ChatHomeViewModel @Inject constructor(
 
     fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            chatUseCases.stompSend(item)
-            delay(500)
-            onSuccess()
+            chatUseCases.stompSend(item){
+                onSuccess()
+            }
         }
     }
 
     fun stompGet(chatRoomNumber: Long) {
         viewModelScope.launch {
             chatUseCases.stompGet(chatRoomNumber){ id ->
-                Log.d(TAG, "stompGet: id ${id}")
                 loadDetailList(id)
-
             }
         }
     }

@@ -26,7 +26,6 @@ class ChatUseCasesImpl @Inject constructor(
 
     private var stompSession: StompSession? = null
 
-
     override suspend fun loadChats(): List<ChatHomeDTO> {
         val serverChatList = chatRepository.getChatList().body()
         if (serverChatList != null) {
@@ -48,7 +47,6 @@ class ChatUseCasesImpl @Inject constructor(
         if(serverMessageList != null){
             for(item in serverMessageList){
                 saveDetailList(item, id)
-//                Log.d(TAG, "loadDetailList: ${item}")
             }
         }
 
@@ -71,13 +69,15 @@ class ChatUseCasesImpl @Inject constructor(
         return SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
     }
 
-    override suspend fun stompSend(item: ChatHomeChildDTO) {
+    override suspend fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit) {
 //        val json: String = Gson().toJson(item)
 
         stompSession?.sendText(
             "/app/chat/send",
             "{\"message_id\":${item.messageId},\"chat_id\":${item.chatId},\"is_from_sender\":${item.isFromSender},\"content\":\"${item.content}\",\"is_read\":${item.isRead},\"send_at\":null}"
         )
+
+        onSuccess()
     }
 
     override suspend fun stompGet(chatRoomNumber: Long, onSuccess: (Long) -> Unit){
@@ -95,7 +95,6 @@ class ChatUseCasesImpl @Inject constructor(
                 stompGetMessage.sendAt = ""
                 saveDetailList(stompGetMessage, stompGetMessage.chatId)
                 onSuccess(stompGetMessage.chatId)
-                readMessage(chatRoomNumber)
             }
         }
     }

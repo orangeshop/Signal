@@ -9,7 +9,7 @@ import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 
 @Dao
 interface ChatDetailDao {
-    @Query("SELECT * FROM chat_detail_table where chatId = :id order by messageId desc limit 300")
+    @Query("SELECT * FROM chat_detail_table where chatId = :id order by messageId desc limit 50")
     suspend fun getAll(id : Long): List<ChatHomeChildDTO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

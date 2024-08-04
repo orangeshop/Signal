@@ -69,9 +69,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                     * */
 
                     var tmp = chatViewModel.messageList.value?.get(chatViewModel.messageList.value!!.lastIndex)?.sendAt
-
-
-//                    
+                    
                     for(item in chatViewModel.messageList.value!!){
                         if (tmp != null) {
 
@@ -84,7 +82,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                             val preDay = inputFormat.parse(tmp)
                             val preDayOutput = outputFormat.format(preDay)
-
 
                             val Today = inputFormat.parse(item.sendAt)
                             val todayOutput = outputFormat.format(Today)
@@ -108,16 +105,12 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList){
-
                         chatViewModel.readMessage(chatViewModel.chatRoomNumber)
+                        val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
 
                         if(chatList.isNotEmpty() && check == false){
 
-
-                            val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
-
                             if(isFrom != chatList.get(chatList.lastIndex).isFromSender) {
-                                Log.d(TAG, "init: 상대가 보냄")
                                 lifecycleScope.launch {
                                     binding.newMessage.visibility = View.VISIBLE
                                     binding.newMessageTv.text = chatList.get(chatList.lastIndex).content
@@ -131,6 +124,15 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         if(chatList.isNotEmpty() && check){
                             binding.chatDetailRv.smoothScrollToPosition(chatList.lastIndex)
                             check = false
+                        }
+
+                        if(chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom){
+                            lifecycleScope.launch {
+                                chatViewModel.messageList.value?.let { it1 ->
+                                    binding.chatDetailRv.smoothScrollToPosition(
+                                        it1.lastIndex )
+                                }
+                            }
                         }
                     }
                 })
@@ -147,7 +149,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             binding.etSearch.setOnClickListener {
-                
+
             }
 
             binding.chatDetailBtn.setOnClickListener {
@@ -164,13 +166,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                     binding.etSearch.text.clear()
 
                     chatViewModel.stompSend(message){
-                        // 헤당 부분 콜백을 받아서 처리되도록 수정해야함
-                        lifecycleScope.launch {
-                            chatViewModel.messageList.value?.let { it1 ->
-                                binding.chatDetailRv.smoothScrollToPosition(
-                                    it1.lastIndex )
-                            }
-                        }
+
                     }
                 }
             }
