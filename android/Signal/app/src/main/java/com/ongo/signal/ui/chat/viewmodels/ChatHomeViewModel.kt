@@ -75,6 +75,11 @@ class ChatHomeViewModel @Inject constructor(
     fun readMessage(id: Long){
         viewModelScope.launch {
             chatUseCases.readMessage(id)
+
+            for(message in messageList.value!!){
+                message.isRead = true
+            }
+//            loadDetailList(id)
         }
     }
 
@@ -137,7 +142,7 @@ class ChatHomeViewModel @Inject constructor(
     fun timeSetting(time : String, target: Int) : String {
 
 
-        Log.d(TAG, "timeSetting: ${time}")
+//        Log.d(TAG, "timeSetting: ${time}")
         
         // DateTimeFormatter을 사용하여 입력된 날짜 문자열을 ZonedDateTime 객체로 파싱
         val inputFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)

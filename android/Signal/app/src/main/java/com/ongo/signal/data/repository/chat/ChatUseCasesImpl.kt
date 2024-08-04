@@ -1,6 +1,5 @@
 package com.ongo.signal.data.repository.chat
 
-import android.util.Log
 import com.google.gson.Gson
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
@@ -12,6 +11,7 @@ import org.hildan.krossbow.stomp.StompSession
 import org.hildan.krossbow.stomp.frame.StompFrame
 import org.hildan.krossbow.stomp.headers.StompSubscribeHeaders
 import org.hildan.krossbow.stomp.sendText
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -72,7 +72,7 @@ class ChatUseCasesImpl @Inject constructor(
     }
 
     override suspend fun stompSend(item: ChatHomeChildDTO) {
-        val json: String = Gson().toJson(item)
+//        val json: String = Gson().toJson(item)
 
         stompSession?.sendText(
             "/app/chat/send",
@@ -104,7 +104,7 @@ class ChatUseCasesImpl @Inject constructor(
         try {
             stompSession = stompService.connect("ws://13.125.47.74:8080/chat")
         } catch (e: Exception) {
-            Log.d(TAG, "ConnectedWebSocket: $e")
+            Timber.tag(TAG).d("ConnectedWebSocket: %s", e)
         }
     }
 

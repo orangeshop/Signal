@@ -1,8 +1,7 @@
 package com.ongo.signal.ui.chat.fragment
 
-import android.os.Build.VERSION_CODES.P
-import android.text.TextUtils.substring
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -10,7 +9,6 @@ import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
-import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.FragmentChatDetailBinding
 import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
@@ -18,12 +16,9 @@ import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import kotlin.text.Typography.tm
 
 private const val TAG = "ChatDetailFragment_싸피"
 
@@ -36,8 +31,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     private lateinit var chatDetailAdapter: ChatDetailAdapter
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
     private val todayTitleChecker = mutableSetOf<Long>()
-
-
 
     override fun init() {
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
@@ -111,15 +104,50 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             )
 
             binding.chatDetailRv.adapter = chatDetailAdapter
-
+            var check = true
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList){
-                        binding.chatDetailRv.scrollToPosition(
-                            chatList.lastIndex
-                        )
+
+                        chatViewModel.readMessage(chatViewModel.chatRoomNumber)
+
+                        if(chatList.isNotEmpty() && check == false){
+
+
+                            val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
+
+                            if(isFrom != chatList.get(chatList.lastIndex).isFromSender) {
+                                Log.d(TAG, "init: 상대가 보냄")
+                                lifecycleScope.launch {
+                                    binding.newMessage.visibility = View.VISIBLE
+                                    binding.newMessageTv.text = chatList.get(chatList.lastIndex).content
+                                    delay(2000)
+                                    binding.newMessageTv.text = ""
+                                    binding.newMessage.visibility = View.GONE
+                                }
+                            }
+                        }
+
+                        if(chatList.isNotEmpty() && check){
+                            binding.chatDetailRv.smoothScrollToPosition(chatList.lastIndex)
+                            check = false
+                        }
                     }
                 })
+            }
+
+            binding.newMessage.setOnClickListener {
+                binding.newMessage.visibility = View.GONE
+                lifecycleScope.launch {
+                    chatViewModel.messageList.value?.let { it1 ->
+                        binding.chatDetailRv.smoothScrollToPosition(
+                            it1.lastIndex )
+                    }
+                }
+            }
+
+            binding.etSearch.setOnClickListener {
+                
             }
 
             binding.chatDetailBtn.setOnClickListener {

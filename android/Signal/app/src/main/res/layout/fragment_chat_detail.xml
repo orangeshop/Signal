@@ -24,6 +24,28 @@
             app:layout_constraintBottom_toTopOf="@id/chat_detail_ll"
         />
 
+        <LinearLayout
+            android:id="@+id/new_message"
+            android:layout_height="30dp"
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:layout_margin="20dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/chat_detail_ll">
+
+            <TextView
+
+                android:id="@+id/new_message_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdasdasdasdasdad"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/chat_detail_ll"
