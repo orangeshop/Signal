@@ -45,6 +45,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             chatViewModel.stompDisconnect()
             chatViewModel.clearMessageList()
+
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
                     check = false

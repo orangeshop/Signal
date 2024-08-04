@@ -1,6 +1,5 @@
 package com.ongo.signal.ui.chat.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,7 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 import com.ongo.signal.data.repository.chat.ChatUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.time.ZoneId
@@ -133,6 +132,16 @@ class ChatHomeViewModel @Inject constructor(
         viewModelScope.launch {
             chatUseCases.saveLocalMessage(room)
         }
+    }
+
+    suspend fun getLastReadMessage(id : Long) : Long{
+        var test= CompletableDeferred<Long>()
+
+        viewModelScope.launch {
+
+            test.complete(chatUseCases.getLastMessageIndex(id)?.lastReadMessageIndex ?: 0)
+        }
+        return test.await()
     }
 
 
