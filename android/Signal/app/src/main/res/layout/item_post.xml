@@ -10,8 +10,8 @@
             type="com.ongo.signal.data.model.main.BoardDTO" />
 
         <variable
-            name="viewModel"
-            type="com.ongo.signal.ui.main.MainViewModel" />
+            name="boardViewModel"
+            type="com.ongo.signal.ui.main.BoardViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -114,12 +114,12 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="15dp"
-            android:onClick="@{() -> viewModel.onThumbClick(board)}"
             android:padding="4dp"
             android:src="@drawable/baseline_thumb_up_alt_white_24"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/rv_chips"
             tools:src="@drawable/baseline_thumb_up_alt_white_24" />
+<!--        android:onClick="@{() -> viewModel.onThumbClick(board)}"-->
 
         <TextView
             android:id="@+id/tv_like"
