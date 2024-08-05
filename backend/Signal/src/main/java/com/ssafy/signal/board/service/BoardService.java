@@ -107,7 +107,11 @@ public class BoardService {
         BoardEntity boardEntity = boardEntityOptional.get();
 
         // 2. 엔티티의 업데이트 메서드 호출
-        boardEntity.update(boardDto.getTitle(), boardDto.getContent(), boardDto.getReference(), boardDto.getLiked(), boardDto.getType());
+        boardEntity.update(boardDto.getTitle() == null? boardEntity.getTitle():boardDto.getTitle()
+                , boardDto.getContent() == null? boardEntity.getContent():boardDto.getContent()
+                , boardDto.getReference() == null? boardEntity.getReference():boardDto.getReference()
+                , boardDto.getLiked() == null? boardEntity.getLiked():boardDto.getLiked()
+                , boardDto.getType() == null? boardEntity.getType():boardDto.getType());
         // 필요에 따라 다른 필드들도 업데이트
 
         // 3. 엔티티 저장 (업데이트된 엔티티를 저장하면 JPA가 자동으로 업데이트 처리)

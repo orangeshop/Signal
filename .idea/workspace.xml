@@ -4,8 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="ff09088d-f74c-4b03-935d-4c1dea20b90d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+=======
+    <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" afterDir="false" />
+>>>>>>> b4587d66b4eb625b82213f9dabc1bd98868fbfef
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +55,7 @@
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
+<<<<<<< HEAD
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.SignalApplication.executor": "Run",
     "git-widget-placeholder": "backend",
@@ -72,6 +80,14 @@
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+=======
+    "Spring Boot.SignalApplication.executor": "Run",
+    "git-widget-placeholder": "member",
+
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
+>>>>>>> b4587d66b4eb625b82213f9dabc1bd98868fbfef
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="ff09088d-f74c-4b03-935d-4c1dea20b90d" name="Changes" comment="" />
