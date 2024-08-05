@@ -124,7 +124,7 @@ public class MemberService implements UserDetailsService {
         Member existingMember = memberRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
 
         if (updatedMember.getPassword() != null && !updatedMember.getPassword().isEmpty()) {
-            checkPasswordStrength(updatedMember.getPassword());
+            // checkPasswordStrength(updatedMember.getPassword());
             existingMember.setPassword(passwordEncoder.encode(updatedMember.getPassword()));
         }
         if (updatedMember.getType() != null && !updatedMember.getType().isEmpty()) {
