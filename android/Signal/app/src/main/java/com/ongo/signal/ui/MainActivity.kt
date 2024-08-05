@@ -91,13 +91,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkPermission() {
-        if (!checker.checkPermission(this, runtimePermissions)) {
-            checker.setOnGrantedListener {
+        getCameraAndMicPermission {
+            if (!checker.checkPermission(this, runtimePermissions)) {
+                checker.setOnGrantedListener {
+                    initFCM()
+                }
+                checker.requestPermissionLauncher.launch(runtimePermissions)
+            } else {
                 initFCM()
             }
-            checker.requestPermissionLauncher.launch(runtimePermissions)
-        } else {
-            initFCM()
         }
     }
 
