@@ -1,6 +1,7 @@
 package com.ongo.signal.data.repository.main.board
 
 import com.ongo.signal.data.model.main.BoardDTO
+import com.ongo.signal.data.model.main.BoardDetailDTO
 import com.ongo.signal.data.model.main.BoardImagesDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
@@ -12,7 +13,7 @@ interface BoardRepository {
 
     suspend fun writeBoard(boardRequestDTO: BoardRequestDTO): Response<BoardDTO>
     suspend fun readBoard(pageNum: Int, limit: Int): Response<List<BoardDTO>>
-    suspend fun readBoardById(boardId: Long): Response<BoardDTO>
+    suspend fun readBoardById(boardId: Long): Response<BoardDetailDTO>
     suspend fun updateBoard(boardId: Long, updateBoardDTO: UpdateBoardDTO): Response<BoardDTO>
     suspend fun deleteBoard(boardId: Long): Response<ResponseBody>
     suspend fun uploadImage(boardId: Long, image: MultipartBody.Part): Response<ResponseBody>
