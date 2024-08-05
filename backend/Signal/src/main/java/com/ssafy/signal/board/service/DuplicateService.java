@@ -8,6 +8,8 @@ import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
 import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.service.FileService;
+import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.dto.findMemberDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class DuplicateService {
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
         // 게시글 작성자의 userId 가져오기
-        Long userId = boardEntity.getUser().getUserId();
+        Member member = boardEntity.getUser();
 
         // 댓글 조회
         List<CommentDto> comments = commentRepository.findByBoardId(id).stream()
@@ -48,9 +50,15 @@ public class DuplicateService {
         // 파일 URL 조회 (게시판용)
         List<String> fileUrls = fileService.getFilesByBoardId(id); // boardId로 파일 URL 가져오기
 
+        String profileUrl = fileService.getProfile(member.getUserId());
 
+        findMemberDto profile = findMemberDto.builder()
+                .userId(member.getUserId())
+                .name(member.getName())
+                .profileImage(profileUrl)
+                .build();
         // BoardDto 생성
-        return boardEntity.asBoardDto(comments, fileUrls);
+        return boardEntity.asBoardDto(comments, fileUrls, profile);
     }
 
 }
