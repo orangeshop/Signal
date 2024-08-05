@@ -4,21 +4,22 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.CommentDTOItem
 import com.ongo.signal.data.model.main.CommentRequestDTO
 import com.ongo.signal.databinding.FragmentPostBinding
-import com.ongo.signal.ui.main.BoardViewModel
-import com.ongo.signal.ui.main.CommentViewModel
+import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.ui.main.viewmodel.CommentViewModel
 import com.ongo.signal.ui.main.adapter.ChipAdapter
 import com.ongo.signal.ui.main.adapter.CommentAdapter
 import com.ongo.signal.ui.main.adapter.PostImageAdapter
+import com.ongo.signal.util.KeyboardUtils
 import com.ongo.signal.util.PopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -78,7 +79,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             boardViewModel.selectedBoard.collectLatest { board ->
                 board?.let {
                     imageAdapter.submitList(it.imageUrls)
-                    commentAdapter.submitList(it.comments)
                     chipAdapter.submitList(it.tags)
                 }
             }
@@ -109,7 +109,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
                 R.id.action_delete -> {
                     boardViewModel.selectedBoard.value?.id?.let { boardViewModel.deleteBoard(it) }
-                    findNavController().navigate(R.id.action_postFragment_to_mainFragment)
+                    findNavController().popBackStack()
                     true
                 }
 
@@ -121,7 +121,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private fun onCommentEditClick(comment: CommentDTOItem) {
         selectedCommentId = comment.id
         binding.etComment.setText(comment.content)
-        showKeyboard()
+        KeyboardUtils.showKeyboard(binding.etComment)
     }
 
     private fun onCommentDeleteClick(comment: CommentDTOItem) {
@@ -140,32 +140,20 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             commentViewModel.updateComment(boardId, selectedCommentId!!, commentRequest)
             selectedCommentId = null
         } else {
-            commentViewModel.createComment(CommentDTOItem(boardId = boardId, userId = userId.toLong(), writer = writer, content = content))
+            commentViewModel.createComment(
+                CommentDTOItem(
+                    boardId = boardId,
+                    userId = userId.toLong(),
+                    writer = writer,
+                    content = content
+                )
+            )
         }
         binding.etComment.text.clear()
-        hideKeyboard()
-    }
-
-    private fun showKeyboard() {
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        binding.etComment.requestFocus()
-        imm.showSoftInput(binding.etComment, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    private fun hideKeyboard() {
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.etComment.windowToken, 0)
+        KeyboardUtils.hideKeyboard(binding.etComment)
     }
 
     fun onProfileClick() {
         findNavController().navigate(R.id.action_postFragment_to_reviewFragment)
     }
-
-//    fun onThumbClick(board: BoardDTO?) {
-//        if (board != null) {
-//            viewModel.onThumbClick(board)
-//        }
-//    }
 }
