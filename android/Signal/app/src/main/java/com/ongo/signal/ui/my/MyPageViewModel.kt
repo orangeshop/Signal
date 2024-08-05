@@ -1,10 +1,10 @@
 package com.ongo.signal.ui.my
 
-import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.data.model.main.BoardDTO
+import com.ongo.signal.data.model.my.MyProfileData
 import com.ongo.signal.data.repository.login.LoginRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,4 +75,18 @@ class MyPageViewModel @Inject constructor(
             }
         }
     }
+
+    fun getMyProfile(
+        token: String,
+        onSuccess: (MyProfileData) -> Unit
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            myPageRepository.getMyProfile(token).onSuccess { myProfileResponse ->
+                myProfileResponse?.let {
+                    onSuccess(myProfileResponse.myProfileData)
+                }
+            }
+        }
+    }
+
 }

@@ -19,8 +19,17 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     private val viewModel: MyPageViewModel by viewModels()
 
     override fun init() {
+        getMyProfile()
         initViews()
         binding.fragment = this
+    }
+
+    private fun getMyProfile() {
+        UserSession.accessToken?.let {
+            viewModel.getMyProfile(it) { myProfileData ->
+                Timber.d("데이터 성공적으로 받아왔어요 ${myProfileData}")
+            }
+        }
     }
 
     private fun initViews() {
