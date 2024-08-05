@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.main
+package com.ongo.signal.ui.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +27,7 @@ class CommentViewModel @Inject constructor(
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     _comments.value = response.body() ?: CommentDTO()
+                    Timber.d(response.body().toString())
                 } else {
                     Timber.e("Failed to load comments: ${response.errorBody()?.string()}")
                 }
