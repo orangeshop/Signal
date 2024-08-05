@@ -9,6 +9,7 @@ import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.LoginDto;
 import com.ssafy.signal.member.dto.MyProfileDto;
+import com.ssafy.signal.member.dto.MypageUpdateDto;
 import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
@@ -128,7 +129,7 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public Member updateMember(Long userId, Member updatedMember) {
+    public MypageUpdateDto updateMember(Long userId, Member updatedMember) {
         Member existingMember = memberRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
 
         if (updatedMember.getPassword() != null && !updatedMember.getPassword().isEmpty()) {
@@ -144,8 +145,16 @@ public class MemberService implements UserDetailsService {
         if (updatedMember.getComment() != null && !updatedMember.getComment().isEmpty()) {
             existingMember.setComment(updatedMember.getComment());
         }
+        Member member1 = memberRepository.save(existingMember);
 
-        return memberRepository.save(existingMember);
+        return MypageUpdateDto.builder()
+                .userId(member1.getUserId())
+                .loginId(member1.getLoginId())
+                .password(member1.getPassword())
+                .name(member1.getName())
+                .type(member1.getType())
+                .comment(member1.getComment())
+                .build();
     }
 
     public MyProfileDto getUserInfo(String loginId) {
