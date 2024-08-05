@@ -31,6 +31,9 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageList = MutableLiveData<List<ChatHomeChildDTO>>()
     val messageList: LiveData<List<ChatHomeChildDTO>> = _messageList
 
+//    private val _messageList = MutableLiveData<List<List<ChatHomeChildDTO>>>()
+//    val messageList: LiveData<List<List<ChatHomeChildDTO>>> = _messageList
+
     var chatRoomNumber : Long = 0
     var chatRoomFromID : Long = 0
     var chatRoomToID : Long = 0
@@ -65,10 +68,27 @@ class ChatHomeViewModel @Inject constructor(
      *
      **/
 
-    fun loadDetailList(id: Long) {
+    fun loadDetailList(id: Long, loading: Long = 100) {
         viewModelScope.launch {
-            _messageList.value = chatUseCases.loadDetailList(id).sortedBy { it.messageId }
+            _messageList.value = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
         }
+
+//        val updatedMessages = mutableListOf<List<ChatHomeChildDTO>>()
+//        val listSize = liveList.value?.size ?: 0
+//        viewModelScope.launch {
+//            for (i in 0 until listSize) {
+//                val details = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
+//                updatedMessages.add(details)
+//            }
+//        }
+//
+//        _messageList.value = updatedMessages
+
+
+//        viewModelScope.launch {
+//            _messageList.value = chatUseCases.loadDetailListNoId(loading).sortedBy { it.messageId }
+//        }
+
     }
 
     fun readMessage(id: Long){
@@ -79,6 +99,24 @@ class ChatHomeViewModel @Inject constructor(
                 message.isRead = true
             }
         }
+
+//        viewModelScope.launch {
+//
+//            chatUseCases.readMessage(id)
+//
+//            val updatedMessages = _messageList.value?.map {
+//                it.map { message ->
+//                    if (message.chatId == id) {
+//                        message.copy(isRead = true)
+//                    } else {
+//                        message
+//                    }
+//                }
+//            }
+//
+//            // 3. 업데이트된 메시지 리스트를 _messageList에 설정
+//            _messageList.value = updatedMessages.orEmpty()
+//        }
     }
 
 //    fun appendDetailList(message: ChatHomeChildDto) {

@@ -19,13 +19,22 @@ class ChatRoomRepositoryImpl @Inject constructor(
         chatHomeDao.insertAll(room)
     }
 
-    suspend fun getAllMessages(ID: Long): List<ChatHomeChildDTO> = chatDetailDao.getAll(ID)
+    suspend fun getAllMessages(ID: Long, loading: Long): List<ChatHomeChildDTO> =
+        chatDetailDao.getAll(ID, loading)
+
+    suspend fun getAllMessagesNoId(loading: Long): List<ChatHomeChildDTO> =
+        chatDetailDao.getAllMessage(loading)
 
     suspend fun insertMessage(message: ChatHomeChildDTO) {
         chatDetailDao.insertMessage(message)
     }
 
-    suspend fun saveLocalMessage(room : ChatHomeLocalCheckDTO){
+    suspend fun insertMessageList(message: List<ChatHomeChildDTO>) {
+        chatDetailDao.insertListMessage(message)
+    }
+
+
+    suspend fun saveLocalMessage(room: ChatHomeLocalCheckDTO) {
         chatHomeLocalCheckDao.saveLocalMessage(room)
     }
 
@@ -33,15 +42,23 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatHomeLocalCheckDao.getLastMessageIndex(chatId)
     }
 
-    fun updateLastReadMessageIndex(chatId: Long, lastReadMessageIndex: Long, sendAt: String){
-        return chatHomeLocalCheckDao.updateLastReadMessageIndex(chatId, lastReadMessageIndex, sendAt)
+    fun updateLastReadMessageIndex(chatId: Long, lastReadMessageIndex: Long, sendAt: String) {
+        return chatHomeLocalCheckDao.updateLastReadMessageIndex(
+            chatId,
+            lastReadMessageIndex,
+            sendAt
+        )
     }
 
-    fun updateTodayFirstMessage(chatId: Long, todayFirstSendMessageId: Long, sendAt: String){
-        return chatHomeLocalCheckDao.updateTodayFirstMessage(chatId, todayFirstSendMessageId, sendAt)
+    fun updateTodayFirstMessage(chatId: Long, todayFirstSendMessageId: Long, sendAt: String) {
+        return chatHomeLocalCheckDao.updateTodayFirstMessage(
+            chatId,
+            todayFirstSendMessageId,
+            sendAt
+        )
     }
 
-    fun updateMessageAmount(chatId: Long, messageVolume: Long, sendAt: String){
+    fun updateMessageAmount(chatId: Long, messageVolume: Long, sendAt: String) {
         return chatHomeLocalCheckDao.updateMessageAmount(chatId, messageVolume, sendAt)
     }
 

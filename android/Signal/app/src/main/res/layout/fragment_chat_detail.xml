@@ -25,11 +25,12 @@
         <LinearLayout
             android:id="@+id/new_message"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_margin="20dp"
-            android:background="@color/white"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
             android:orientation="horizontal"
             android:visibility="gone"
+            tools:visibility="visible"
+            android:background="@drawable/new_message"
             app:layout_constraintBottom_toTopOf="@id/chat_detail_ll"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -40,7 +41,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="New message"
+                android:gravity="start"
                 android:textColor="@color/black" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+            />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:src="@drawable/baseline_arrow_drop_down_24"
+            />
         </LinearLayout>
 
         <LinearLayout

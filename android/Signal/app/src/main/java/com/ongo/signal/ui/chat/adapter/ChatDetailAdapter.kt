@@ -52,8 +52,6 @@ class ChatDetailAdapter(
             binding.chatDetailItemMeTv.text = item.content
             binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt, 1)
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

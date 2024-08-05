@@ -35,7 +35,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             var check = true
 
-
             lifecycleScope.launch {
                 while (check) {
                     chatViewModel.loadChats()
@@ -45,6 +44,8 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             chatViewModel.stompDisconnect()
             chatViewModel.clearMessageList()
+
+//            chatViewModel.loadDetailList(1, 100)
 
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {

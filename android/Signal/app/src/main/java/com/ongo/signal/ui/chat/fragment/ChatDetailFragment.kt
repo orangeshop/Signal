@@ -1,9 +1,14 @@
 package com.ongo.signal.ui.chat.fragment
 
+import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.WindowManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -32,13 +37,13 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
     private val todayTitleChecker = mutableSetOf<Long>()
 
+
     override fun init() {
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
 
         binding.apply {
 
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
-
 
             chatDetailAdapter = ChatDetailAdapter(
                 timeSetting = { time, target ->
@@ -126,7 +131,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         if (chatList.isNotEmpty() && check) {
                             lifecycleScope.launch {
-                                binding.chatDetailRv.smoothScrollToPosition(
+                                binding.chatDetailRv.scrollToPosition(
                                     if (chatViewModel.getLastReadMessage(chatViewModel.chatRoomNumber) + 300 <= chatList.lastIndex) chatList.lastIndex else chatList.lastIndex
                                 )
                             }
@@ -147,6 +152,34 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 })
             }
 
+
+
+
+            binding.etSearch.setOnClickListener {
+                lifecycleScope.launch {
+                    val manager = binding.chatDetailRv.layoutManager as LinearLayoutManager
+                    manager.apply {
+                        val num = findLastVisibleItemPosition()
+                        Log.d(TAG, "init: ${num}")
+
+                        delay(1000)
+                        chatViewModel.messageList.value?.let { it1 ->
+                            binding.chatDetailRv.smoothScrollToPosition(
+                                num
+                            )
+                        }
+                    }
+
+//                    chatViewModel.messageList.value?.let { it1 ->
+//                        binding.chatDetailRv.smoothScrollToPosition(
+//                            it1.lastIndex
+//                        )
+//                    }
+                }
+            }
+
+
+
             binding.newMessage.setOnClickListener {
                 binding.newMessage.visibility = View.GONE
                 binding.newMessageTv.text = ""
@@ -160,9 +193,16 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 }
             }
 
-            binding.etSearch.setOnClickListener {
+            binding.chatDetailRv.setOnScrollChangeListener{v,scrollX,scrollY,oldScrollX,oldScrollY ->
+                if(scrollY > oldScrollY){
 
+                    Log.d(TAG, "init: ${scrollX} ${oldScrollY}")
+//                    lifecycleScope.launch {
+//                        chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, 100)
+//                    }
+                }
             }
+
 
             binding.chatDetailBtn.setOnClickListener {
                 if (binding.etSearch.text.toString() != "") {

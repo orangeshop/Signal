@@ -41,17 +41,30 @@ class ChatUseCasesImpl @Inject constructor(
         chatRoomRepositoryImpl.insertChat(room)
     }
 
-    override suspend fun loadDetailList(id: Long): List<ChatHomeChildDTO> {
+    override suspend fun loadDetailList(id: Long, loading: Long): List<ChatHomeChildDTO> {
         val serverMessageList = chatRepository.getAllMessages(id).body()
+//
+//        if(serverMessageList != null){
+//            for(item in serverMessageList){
+//                saveDetailList(item, id)
+//            }
+//        }
 
-        if(serverMessageList != null){
-            for(item in serverMessageList){
-                saveDetailList(item, id)
-            }
+        if (serverMessageList != null) {
+            chatRoomRepositoryImpl.insertMessageList(serverMessageList.toMutableList())
         }
 
-        return chatRoomRepositoryImpl.getAllMessages(id)
+        return chatRoomRepositoryImpl.getAllMessages(id, loading)
     }
+
+    override suspend fun loadDetailListNetwork(id: Long): List<ChatHomeChildDTO> {
+        return chatRepository.getAllMessages(id).body()?.toMutableList() ?: emptyList()
+    }
+
+    override suspend fun loadDetailListNoId(limit: Long): List<ChatHomeChildDTO> {
+        return chatRoomRepositoryImpl.getAllMessagesNoId(limit)
+    }
+
 
     override suspend fun saveDetailList(message: ChatHomeChildDTO, id: Long) {
         chatRoomRepositoryImpl.insertMessage(message)

@@ -23,4 +23,5 @@ interface ChatRoomApi {
 
     @PATCH("/message/read")
     suspend fun readMessage(@Query("chat_id") chat_id: Long)
+
 }
