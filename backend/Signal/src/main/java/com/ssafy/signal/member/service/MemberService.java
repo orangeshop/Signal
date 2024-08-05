@@ -88,7 +88,7 @@ public class MemberService implements UserDetailsService {
                     .password(member.getPassword())
                     .type(member.getType())
                     .name(member.getName())
-                    .comment(member.getComment())
+                    .comment(member.getComment() == null? "" : member.getComment())
                     .build();
 
             checkPassword(password, member);
@@ -159,7 +159,7 @@ public class MemberService implements UserDetailsService {
                 .type(myProfile.getType())
                 .name(myProfile.getName())
                 .profileImage(url)
-                .comment(myProfile.getComment())
+                .comment(myProfile.getComment() == null? "" : myProfile.getComment())
                 .build();
     }
 
