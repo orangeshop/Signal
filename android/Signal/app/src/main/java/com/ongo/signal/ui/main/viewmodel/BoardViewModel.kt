@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.ongo.signal.data.model.main.BoardDTO
+import com.ongo.signal.data.model.main.BoardDetailDTO
 import com.ongo.signal.data.model.main.BoardPagingSource
 import com.ongo.signal.data.model.main.BoardRequestDTO
+import com.ongo.signal.data.model.main.MemberDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.data.repository.main.board.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +29,9 @@ class BoardViewModel @Inject constructor(
 
     private val _selectedBoard = MutableStateFlow<BoardDTO?>(null)
     val selectedBoard: StateFlow<BoardDTO?> = _selectedBoard
+
+    private val _selectedBoardDetail = MutableStateFlow<BoardDetailDTO?>(null)
+    val selectedBoardDetail: StateFlow<BoardDetailDTO?> = _selectedBoardDetail
 
     private val _selectedTag = MutableStateFlow<String?>(null)
     val selectedTag: StateFlow<String?> = _selectedTag
@@ -197,12 +202,17 @@ class BoardViewModel @Inject constructor(
     }
 
     fun loadBoardDetails(boardId: Long) {
+        Timber.d("loadBoardDetails called with boardId: $boardId")
         viewModelScope.launch {
             runCatching {
                 boardRepository.readBoardById(boardId)
             }.onSuccess { response ->
                 if (response.isSuccessful) {
-                    _selectedBoard.value = response.body()
+                    val boardDetailDTO = response.body()
+                    boardDetailDTO?.let {
+                        Timber.d("BoardDetailDTO loaded: $it")
+                        _selectedBoardDetail.value = it
+                    }
                 } else {
                     Timber.e("Failed to load board details: ${response.errorBody()?.string()}")
                 }
@@ -260,6 +270,7 @@ class BoardViewModel @Inject constructor(
 
     fun clearBoard() {
         _selectedBoard.value = null
+        _selectedBoardDetail.value = null
         _title.value = ""
         _content.value = ""
     }
