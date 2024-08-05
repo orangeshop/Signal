@@ -114,4 +114,6 @@ public class BoardEntity extends TimeEntity{
     public void incrementLiked() {
         this.liked++;
     }
+
+    public Long getLiked() {return liked;}
 }
