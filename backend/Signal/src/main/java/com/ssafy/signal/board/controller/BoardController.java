@@ -35,7 +35,8 @@ public class BoardController {
 
     /* 게시글 목록 조회(화제의 시그널) */
     @GetMapping("/board/liked")
-    public ResponseEntity<List<BoardDto>> listLiked(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(value="limit", defaultValue = "3") int limit) {
+
+    public ResponseEntity<List<BoardDto>> listLiked(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(value = "limit",defaultValue = "3") int limit) {
         List<BoardDto> boardList = boardService.getBoardListLiked(pageNum, limit);
         Integer[] pageList = boardService.getPageList(pageNum); // 페이지 목록 필요시 사용할 수 있습니다.
 

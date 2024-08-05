@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8038807d-9bb0-44f4-81a5-3509383a8896" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MypageUpdateDto.java" afterDir="false" />
+    <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,41 +36,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;Spring Boot.SignalApplication.executor&quot;: &quot;Run&quot;,
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/S11P12D211&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-  },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mariadb&quot;
-    ]
-=======
-    &quot;git-widget-placeholder&quot;: &quot;member&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; 35d99b7ddc934706318b5c1c06331dd59fa36847
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "Spring Boot.SignalApplication.executor": "Run",
+    "git-widget-placeholder": "member",
+
+    "node.js.selected.package.tslint": "(autodetect)"
   }
-}</component>
+}]]></component>
   <component name="TaskManager">
     <servers />
   </component>
