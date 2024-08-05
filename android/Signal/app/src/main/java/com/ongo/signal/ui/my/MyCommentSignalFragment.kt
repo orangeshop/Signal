@@ -9,7 +9,8 @@ import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.my.adapter.PreviewPostAdapter
 import timber.log.Timber
 
-class MyCommentSignalFragment:BaseFragment<FragmentMyCommentSignalBinding>(R.layout.fragment_my_comment_signal) {
+class MyCommentSignalFragment :
+    BaseFragment<FragmentMyCommentSignalBinding>(R.layout.fragment_my_comment_signal) {
 
     private val previewPostAdapter = PreviewPostAdapter(onClick = {})
     private val viewModel: MyPageViewModel by activityViewModels()
@@ -21,6 +22,7 @@ class MyCommentSignalFragment:BaseFragment<FragmentMyCommentSignalBinding>(R.lay
         binding.ivBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding.fragment = this
     }
 
     fun popBackStack() {
