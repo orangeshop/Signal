@@ -75,7 +75,7 @@ interface MainApi {
     @POST("board/{boardId}/like")
     suspend fun boardLike(
         @Path("boardId") boardId: Long
-    ): Response<ResponseBody>
+    ): Response<Long>
 
     @GET("files")
     suspend fun getBoardImages(): Response<BoardImagesDTO>
