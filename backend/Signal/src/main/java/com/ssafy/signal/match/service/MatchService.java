@@ -1,5 +1,7 @@
 package com.ssafy.signal.match.service;
 
+import com.ssafy.signal.file.domain.FileDto;
+import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.match.domain.*;
 import com.ssafy.signal.match.repository.LocationRepository;
@@ -76,9 +78,9 @@ public class MatchService {
 
     public List<ReviewDto> getReview(long user_id)
     {
-        String url = Optional
-                .ofNullable(fileRepository.findAllByUser(Member.builder().userId(user_id).build()).getFileUrl())
-                .orElse("");
+        FileEntity file = fileRepository.findAllByUser(
+                        Member.builder().userId(user_id).build());
+        String url = file == null ? "" : file.getFileUrl();
 
         return reviewRepository.findAllByUserId(Member
                         .builder()
