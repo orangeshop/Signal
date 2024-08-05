@@ -16,7 +16,7 @@
     <string name="my_page">마이 페이지</string>
     <string name="edit_profile">프로필 수정</string>
     <string name="my_signal">내가 쓴 시그널</string>
-    <string name="my_heart_signal">내가 댓글을 남긴 시그널</string>
+    <string name="my_comment_signal">내가 댓글을 남긴 시그널</string>
     <string name="info">정보</string>
     <string name="logout">로그아웃</string>
     <string name="edit">수정</string>
@@ -47,11 +47,11 @@
     <string name="tag7">음식</string>
     <string name="tag8">스포츠</string>
     <string name="tag9">가족</string>
-    <string name="my_comment_signal">내가 댓글을 남긴 시그널</string>
     <string name="accept_matching">매칭 신청</string>
     <string name="accept">수락</string>
     <string name="deny">거절</string>
     <string name="by_propose">님이 매칭을 신청하셨습니다.</string>
+    <string name="signal">시그널</string>
 
     <string-array name="tag_array">
         <item>자유</item>
