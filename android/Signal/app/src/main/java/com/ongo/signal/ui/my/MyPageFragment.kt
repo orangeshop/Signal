@@ -70,7 +70,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     fun goToProfileEdit() {
         parentFragmentManager.commit {
             (requireActivity() as MainActivity).hideBottomNavigation()
-            findNavController().navigate(R.id.action_myPageFragment_to_profileEditFragment)
+            findNavController().navigate(MyPageFragmentDirections.actionMyPageFragmentToProfileEditFragment(argNumber = 111))
         }
     }
 
