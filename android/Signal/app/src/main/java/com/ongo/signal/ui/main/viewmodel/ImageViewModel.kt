@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.main
+package com.ongo.signal.ui.main.viewmodel
 
 import android.content.Context
 import android.net.Uri
@@ -46,9 +46,11 @@ class ImageViewModel @Inject constructor(
     }
 
     fun uploadImage(boardId: Long, uri: Uri, context: Context) {
+        Timber.d("uploadImage called with boardId: $boardId, uri: $uri")
         viewModelScope.launch {
             runCatching {
                 val file = createFileFromUri(uri, context)
+                Timber.d("File created: ${file.absolutePath}")
                 val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
                 imageRepository.uploadImage(boardId, body)
@@ -84,7 +86,10 @@ class ImageViewModel @Inject constructor(
 
     private fun addImageUrlToBoard(boardId: Long, url: String) {
         _boardImages.value = _boardImages.value.toMutableMap().apply {
-            this[boardId] = this[boardId]?.plus(BoardImagesItemDTO(boardId = boardId, fileUrl = url)) ?: listOf(BoardImagesItemDTO(boardId = boardId, fileUrl = url))
+            this[boardId] =
+                this[boardId]?.plus(BoardImagesItemDTO(boardId = boardId, fileUrl = url)) ?: listOf(
+                    BoardImagesItemDTO(boardId = boardId, fileUrl = url)
+                )
         }
     }
 }
