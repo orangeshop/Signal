@@ -84,21 +84,12 @@
         <action
             android:id="@+id/action_postFragment_to_writePostFragment"
             app:destination="@id/writePostFragment" />
-        <action
-            android:id="@+id/action_postFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/writePostFragment"
         android:name="com.ongo.signal.ui.main.fragment.WritePostFragment"
         android:label="WritePostFragment">
-        <action
-            android:id="@+id/action_writePostFragment_to_postFragment"
-            app:destination="@id/postFragment"
-            app:enterAnim="@anim/anim_slide_in_from_right_fade_in"
-            app:exitAnim="@anim/anim_fade_out"
-            app:popEnterAnim="@anim/anim_slide_in_from_left_fade_in"
-            app:popExitAnim="@anim/anim_fade_out" />
         <action
             android:id="@+id/action_writePostFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -111,6 +102,7 @@
         android:id="@+id/reviewFragment"
         android:name="com.ongo.signal.ui.main.fragment.ReviewFragment"
         android:label="ReviewFragment" >
+
         <action
             android:id="@+id/action_reviewFragment_to_matchReviewFragment"
             app:destination="@id/matchReviewFragment" />
@@ -119,13 +111,14 @@
         android:id="@+id/mySignalFragment"
         android:name="com.ongo.signal.ui.my.MySignalFragment"
         android:label="MySignalFragment" />
-    <fragment
-        android:id="@+id/matchReviewFragment"
-        android:name="com.ongo.signal.ui.match.MatchReviewFragment"
-        android:label="MatchReviewFragment" />
+
     <fragment
         android:id="@+id/myCommentSignalFragment"
         android:name="com.ongo.signal.ui.my.MyCommentSignalFragment"
         android:label="MyCommentSignalFragment" />
+    <fragment
+        android:id="@+id/matchReviewFragment"
+        android:name="com.ongo.signal.ui.main.fragment.MatchReviewFragment"
+        android:label="MatchReviewFragment" />
 
 </navigation>
