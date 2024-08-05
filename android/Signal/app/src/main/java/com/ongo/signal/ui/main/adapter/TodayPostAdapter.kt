@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.ItemPostBinding
-import com.ongo.signal.ui.main.BoardViewModel
+import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 
 class TodayPostAdapter(
     private val onItemClicked: (BoardDTO) -> Unit,
