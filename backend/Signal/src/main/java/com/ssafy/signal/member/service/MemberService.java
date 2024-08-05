@@ -155,7 +155,6 @@ public class MemberService implements UserDetailsService {
         return MyProfileDto.builder()
                 .userId(myProfile.getUserId())
                 .loginId(myProfile.getLoginId())
-                .password(myProfile.getPassword())
                 .type(myProfile.getType())
                 .name(myProfile.getName())
                 .profileImage(url)
