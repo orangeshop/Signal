@@ -1,4 +1,4 @@
-package com.ssafy.signal.match.domain;
+package com.ssafy.signal.review.domain;
 
 import com.ssafy.signal.member.domain.Member;
 import jakarta.persistence.*;

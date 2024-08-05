@@ -1,15 +1,16 @@
 package com.ssafy.signal.match.service;
 
-import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.match.domain.*;
 import com.ssafy.signal.match.repository.LocationRepository;
 import com.ssafy.signal.match.repository.MatchRepository;
-import com.ssafy.signal.match.repository.ReviewRepository;
+import com.ssafy.signal.review.repository.ReviewRepository;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.notification.service.FirebaseService;
+import com.ssafy.signal.review.domain.ReviewDto;
+import com.ssafy.signal.review.domain.ReviewEntity;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,77 +18,19 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class MatchService {
-    private static final int EARTH_RADIUS = 6371;
     private final int NEAR_DISTANCE = 10;
 
     private final LocationRepository locationRepository;
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final MatchRepository matchRepository;
-    private final FileRepository fileRepository;
     private final FirebaseService firebaseService;
-
-    public ReviewDto writeReview(ReviewDto reviewDto){
-        Member user = Member
-                .builder()
-                .userId(reviewDto.getUser_id())
-                .build();
-
-        Member writer = Member
-                .builder()
-                .userId(reviewDto.getWriter_id())
-                .build();
-        if(reviewRepository.existsByUserIdAndWriterId(user,writer))
-        {
-            log.error("Writer already write review");
-            return null;
-        }
-
-        List<MatchDto> matchUsers = Optional.ofNullable(
-                        matchRepository.findAllByUserId(writer)
-                ).orElse(new ArrayList<>())
-                .stream()
-                .map(MatchEntity::asMatchDto)
-                .filter(match -> (reviewDto.getUser_id() == match.getProposeId() &&
-                        reviewDto.getWriter_id() == match.getAcceptId())
-                        ||
-                        (reviewDto.getUser_id() == match.getAcceptId() &&
-                                reviewDto.getWriter_id() == match.getProposeId())
-                )
-                .toList();
-
-        if(matchUsers.isEmpty())
-        {
-            log.error("No match found for user " + reviewDto.getWriter_id());
-            return null;
-        }
-
-        return reviewRepository
-                .save(reviewDto.asReviewEntity())
-                .asReviewDto();
-    }
-
-    public List<ReviewDto> getReview(long user_id)
-    {
-        FileEntity file = fileRepository.findAllByUser(
-                        Member.builder().userId(user_id).build());
-        String url = file == null ? "" : file.getFileUrl();
-
-        return reviewRepository.findAllByUserId(Member
-                        .builder()
-                        .userId(user_id)
-                        .build())
-                .stream()
-                .map(review-> review.asReviewDto(url))
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
 
     @Transactional
     public LocationDto saveLocation(LocationDto locationDto) {
@@ -114,11 +57,8 @@ public class MatchService {
         to = locationRepository.findByUserId(to).getUserId();
 
         String body = makeMessageBody(from,to);
-        firebaseService.sendMessageTo(
-                to.getUserId(),
-                "요청",
-                body,
-                0);
+        firebaseService.sendMessageTo(to.getUserId(), "요청",
+                body, 0);
 
 
 
@@ -155,18 +95,10 @@ public class MatchService {
 
 
         String body = makeMessageBody(from,to);
-        if(flag == 1)
-            firebaseService.sendMessageTo(
-                    to.getUserId(),
-                    "승낙",
-                    body,
-                    0);
-        else if(flag == 0)
-            firebaseService.sendMessageTo(
-                    to.getUserId(),
-                    "거부",
-                    body,
-                    0);
+
+
+        firebaseService.sendMessageTo(to.getUserId(), makeTitle(flag),
+                body, 0);
 
         return MatchResponse
                 .builder()
@@ -206,21 +138,8 @@ public class MatchService {
         Member from = memberRepository.findById(from_id).orElseThrow();
         Member to = memberRepository.findById(to_id).orElseThrow();
 
-        String body = makeMessageBody(from,to);
-
-        if (flag == 1) {
-            firebaseService.sendMessageTo(
-                    to.getUserId(),
-                    "승낙",
-                    body,
-                    0);
-        } else if (flag == 0) {
-            firebaseService.sendMessageTo(
-                    to.getUserId(),
-                    "거부",
-                    body,
-                    0);
-        }
+        firebaseService.sendMessageTo(to.getUserId(), makeTitle(flag),
+                makeMessageBody(from,to), 0);
 
         return MatchResponse
                 .builder()
@@ -300,13 +219,9 @@ public class MatchService {
 
     private Member hideSecretInfo(Member member)
     {
-        return Member
-                .builder()
-                .userId(member.getUserId())
-                .type(member.getType())
-                .name(member.getName())
-                .comment(member.getComment())
-                .build();
+        member.setPassword("");
+        member.setLoginId("");
+        return member;
     }
 
     private MatchDto saveMatch(long from_id,long to_id)
@@ -351,8 +266,8 @@ public class MatchService {
                 .toList();
     }
 
-    private String makeMessageBody(Member from,Member to)
-    {
+    private String makeTitle(int flag) { return flag == 1 ? "승낙" : "거부";}
+    private String makeMessageBody(Member from,Member to) {
         return from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment();
     }
 }
