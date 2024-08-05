@@ -3,9 +3,9 @@ package com.ssafy.signal.member.controller;
 import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.member.domain.Member;
-import com.ssafy.signal.member.dto.MemberDetailDto;
 import com.ssafy.signal.member.dto.MemberLoginDto;
 import com.ssafy.signal.member.dto.MyProfileDto;
+import com.ssafy.signal.member.dto.MypageUpdateDto;
 import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.json.duplicateJson;
 import com.ssafy.signal.member.jwt.JwtUtil;
@@ -126,7 +126,8 @@ public class MemberController {
 
 
     @PutMapping("/{id}")
-    public Member updateMember(@RequestBody Member member, @PathVariable("id") Long id) {
+    public MypageUpdateDto updateMember(@RequestBody Member member, @PathVariable("id") Long id) {
+
         return memberService.updateMember(id, member);
     }
 
