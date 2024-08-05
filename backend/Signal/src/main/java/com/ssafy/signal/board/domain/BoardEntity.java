@@ -1,6 +1,7 @@
 package com.ssafy.signal.board.domain;
 
 import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.dto.findMemberDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -87,13 +88,14 @@ public class BoardEntity extends TimeEntity{
                 .build();
     }
 
-    public BoardDto asBoardDto(List<CommentDto> comments, List<String> fileUrls )
+    public BoardDto asBoardDto(List<CommentDto> comments, List<String> fileUrls, findMemberDto profile )
     {
         return BoardDto.builder()
                 .createdDate(getCreatedDate())
                 .modifiedDate(getModifiedDate())
                 .content(content)
                 .id(id)
+                .member(profile)
                 .writer(writer)
                 .title(title)
                 .userId(user.getUserId())
