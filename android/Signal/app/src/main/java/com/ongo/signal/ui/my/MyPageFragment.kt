@@ -5,6 +5,8 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -12,6 +14,7 @@ import com.ongo.signal.databinding.FragmentMypageBinding
 import com.ongo.signal.ui.LoginActivity
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_mypage) {
@@ -34,7 +37,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
                         //TODO place홀더 로딩 이미지 찾아보기
                         Glide.with(requireActivity())
                             .load(myProfileData.profileImage)
-                            .circleCrop()
+                            .apply(RequestOptions.bitmapTransform(CircleCrop()))
                             .into(ivProfile)
                     }
 
@@ -70,7 +73,12 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     fun goToProfileEdit() {
         parentFragmentManager.commit {
             (requireActivity() as MainActivity).hideBottomNavigation()
-            findNavController().navigate(MyPageFragmentDirections.actionMyPageFragmentToProfileEditFragment(argNumber = 111))
+            Timber.d("주기전 데이터 확인 ${viewModel.userData}")
+            findNavController().navigate(
+                MyPageFragmentDirections.actionMyPageFragmentToProfileEditFragment(
+                    profileData = viewModel.userData
+                )
+            )
         }
     }
 

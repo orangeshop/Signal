@@ -21,7 +21,7 @@ class MyPageViewModel @Inject constructor(
     private val dataStoreClass: DataStoreClass,
 ) : ViewModel() {
 
-    private lateinit var userData:MyProfileData
+    lateinit var userData:MyProfileData
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->

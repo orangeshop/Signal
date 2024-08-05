@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.gms.google.services)
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {

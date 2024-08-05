@@ -109,9 +109,8 @@
         android:label="ProfileEditFragment" >
 
         <argument
-            android:name="arg_number"
-            app:argType="integer"
-            android:defaultValue="5"
+            android:name="profile_data"
+            app:argType="com.ongo.signal.data.model.my.MyProfileData"
             />
     </fragment>
     <fragment
