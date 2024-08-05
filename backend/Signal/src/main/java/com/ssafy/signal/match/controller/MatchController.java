@@ -2,7 +2,7 @@ package com.ssafy.signal.match.controller;
 
 import com.ssafy.signal.match.domain.*;
 import com.ssafy.signal.match.service.MatchService;
-import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.review.domain.ReviewDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,16 +12,6 @@ import java.util.List;
 @RestController
 public class MatchController {
     private final MatchService matchService;
-
-    @PostMapping("/review")
-    public ReviewDto review(@RequestBody ReviewDto reviewDto) {
-        return matchService.writeReview(reviewDto);
-    }
-
-    @GetMapping("/review")
-    public List<ReviewDto> getReviews(@RequestParam("userId") long userId) {
-        return matchService.getReview(userId);
-    }
 
     @PostMapping("/location")
     public LocationDto location(@RequestBody LocationDto locationDto) {

@@ -11,4 +11,7 @@ import java.util.List;
 public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> {
     @Query("SELECT c FROM ChatRoomEntity c WHERE c.to_id = :user_id OR c.from_id = :user_id")
     List<ChatRoomEntity> findChatRoomsByUserId(@Param("user_id") Member user_id);
+
+    @Query("SELECT c FROM ChatRoomEntity c WHERE c.to_id = :to_id AND c.from_id = :from_id")
+    ChatRoomEntity findChatRoomsByUserId(@Param("from_id") Member from_id, @Param("to_id") Member to_id);
 }

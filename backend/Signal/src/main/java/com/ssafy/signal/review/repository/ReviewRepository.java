@@ -1,6 +1,6 @@
-package com.ssafy.signal.match.repository;
+package com.ssafy.signal.review.repository;
 
-import com.ssafy.signal.match.domain.ReviewEntity;
+import com.ssafy.signal.review.domain.ReviewEntity;
 import com.ssafy.signal.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 

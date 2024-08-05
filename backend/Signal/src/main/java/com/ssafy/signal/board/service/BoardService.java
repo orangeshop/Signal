@@ -206,11 +206,13 @@ public class BoardService {
     }
 
     @Transactional
-    public void incrementLikedCount(Long id) {
+    public Long incrementLikedCount(Long id) {
         BoardEntity boardEntity = boardRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
         boardEntity.incrementLiked();
         boardRepository.save(boardEntity);
+        return boardEntity.getLiked();  // 증가된 좋아요 수 반환
     }
+
 
 }

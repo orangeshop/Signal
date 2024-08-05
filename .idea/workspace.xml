@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/CommentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +99,7 @@
     &quot;Spring Boot.SignalApplication.executor&quot;: &quot;Run&quot;,
     &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
     &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;member&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/S11P12D211&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -372,5 +373,16 @@
     <MESSAGE value="⭐feat : 유저 전체 설계" />
     <MESSAGE value="⭐feat : access token" />
     <option name="LAST_COMMIT_MESSAGE" value="⭐feat : access token" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/service/FileService.java</url>
+          <line>82</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
