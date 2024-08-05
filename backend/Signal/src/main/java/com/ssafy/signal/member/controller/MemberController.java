@@ -124,6 +124,7 @@ public class MemberController {
         return new ApiResponseJson(HttpStatus.OK, foundMember);
     }
 
+
     @PutMapping("/{id}")
     public Member updateMember(@RequestBody Member member, @PathVariable("id") Long id) {
         return memberService.updateMember(id, member);

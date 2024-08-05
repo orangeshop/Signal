@@ -13,4 +13,5 @@ public class MyProfileDto {
     private String type;
     private String name;
     private String profileImage;
+    private String comment;
 }
