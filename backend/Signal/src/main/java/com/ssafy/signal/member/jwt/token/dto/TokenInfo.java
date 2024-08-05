@@ -1,6 +1,7 @@
 package com.ssafy.signal.member.jwt.token.dto;
 
 import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.dto.LoginDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -16,6 +17,6 @@ public class TokenInfo {
     private Date accessTokenExpireTime;
     private String refreshToken;
     private Date refreshTokenExpireTime;
-    private Member member;
+    private LoginDto member;
     private String tokenId;
 }
