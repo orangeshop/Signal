@@ -158,16 +158,13 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             binding.etSearch.setOnClickListener {
                 lifecycleScope.launch {
                     val manager = binding.chatDetailRv.layoutManager as LinearLayoutManager
+
                     manager.apply {
                         val num = findLastVisibleItemPosition()
-                        Log.d(TAG, "init: ${num}")
-
-                        delay(1000)
-                        chatViewModel.messageList.value?.let { it1 ->
-                            binding.chatDetailRv.smoothScrollToPosition(
-                                num
-                            )
-                        }
+                        delay(500)
+                        binding.chatDetailRv.scrollToPosition(
+                            if(num <= 15) 0 else num
+                        )
                     }
 
 //                    chatViewModel.messageList.value?.let { it1 ->
@@ -196,7 +193,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             binding.chatDetailRv.setOnScrollChangeListener{v,scrollX,scrollY,oldScrollX,oldScrollY ->
                 if(scrollY > oldScrollY){
 
-                    Log.d(TAG, "init: ${scrollX} ${oldScrollY}")
+//                    Log.d(TAG, "init: ${scrollX} ${oldScrollY}")
 //                    lifecycleScope.launch {
 //                        chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, 100)
 //                    }
