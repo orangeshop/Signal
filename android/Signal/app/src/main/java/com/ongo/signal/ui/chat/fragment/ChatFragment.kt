@@ -72,17 +72,17 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             )
             binding.chatHomeList.adapter = chatHomeAdapter
 
-            binding.btnVideo.setOnClickListener {
-//                viewModel.postProposeVideoCall(1, 1) {
-//                    Timber.d("영통 성공")
-//                }
-            }
-
-            binding.btnAccept.setOnClickListener {
-//                viewModel.postProposeVideoCallAccept(1, 1, 1) {
-//                    Timber.d("영통 수락 성공")
-//                }
-            }
+//            binding.btnVideo.setOnClickListener {
+////                viewModel.postProposeVideoCall(1, 1) {
+////                    Timber.d("영통 성공")
+////                }
+//            }
+//
+//            binding.btnAccept.setOnClickListener {
+////                viewModel.postProposeVideoCallAccept(1, 1, 1) {
+////                    Timber.d("영통 수락 성공")
+////                }
+//            }
 
 
             lifecycleOwner?.let {
