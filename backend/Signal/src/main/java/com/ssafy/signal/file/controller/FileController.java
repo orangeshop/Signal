@@ -44,6 +44,7 @@ public class FileController {
         return fileService.uploadProfileFile(multipartFile, userId);
     }
 
+    // 파일 삭제
     @DeleteMapping("/delete")
     public String deleteFile(@RequestParam("fileId") Long id) throws IOException {
         fileService.deleteFile(id);
@@ -55,6 +56,14 @@ public class FileController {
     public ResponseEntity<List<FileDto>> getAllFiles() {
         List<FileDto> files = fileService.getAllFiles();
         return ResponseEntity.ok(files);
+    }
+
+    // 프로필 이미지 수정
+    @PutMapping("/user/{userId}/upload")
+    public FileDto updateProfileFile(@RequestParam("file") MultipartFile multipartFile,
+                                     @PathVariable("userId") Long userId) throws IOException {
+
+        return fileService.updateProfileFile(multipartFile, userId);
     }
 
 }

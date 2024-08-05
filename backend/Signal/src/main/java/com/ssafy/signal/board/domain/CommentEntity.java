@@ -19,8 +19,8 @@ public class CommentEntity extends TimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false) // 게시판과의 관계 설정
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "board_id", nullable = false)
     private BoardEntity boardEntity;
 
     @Column(nullable = false)

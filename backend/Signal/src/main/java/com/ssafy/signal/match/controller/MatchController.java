@@ -32,14 +32,10 @@ public class MatchController {
     public void deleteLocation(@RequestParam("locationId") long locationId) {
         matchService.deleteLocation(locationId);
     }
+
     @DeleteMapping("/location/user")
     public void deleteLocations(@RequestParam("userId") long user_id) {
         matchService.deleteLocationByUserId(user_id);
-    }
-
-    @GetMapping("/match")
-    public List<Member> getNearUser(@RequestParam("locationId") long locationId) {
-        return matchService.getNearUser(locationId);
     }
 
     @GetMapping("/match-test")

@@ -148,7 +148,7 @@ public class BoardService {
     }
 
     public Integer[] getPageList(Integer curPageNum) {
-        Integer[] pageList = new Integer[BLOCK_PAGE_NUM_COUNT];
+        Integer[] pageList = new Integer[100];
 
         // 총 게시글 갯수
         Double postsTotalCount = Double.valueOf(this.getBoardCount());
@@ -165,7 +165,7 @@ public class BoardService {
         curPageNum = (curPageNum <= 3) ? 1 : curPageNum - 2;
 
         // 페이지 번호 할당
-        for (int val = curPageNum, idx = 0; val <= blockLastPageNum; val++, idx++) {
+        for (int val = curPageNum, idx = 0; val < blockLastPageNum; val++, idx++) {
             pageList[idx] = val;
         }
 
