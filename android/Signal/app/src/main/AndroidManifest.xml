@@ -62,7 +62,9 @@
             android:exported="true" />
         <activity
             android:name=".ui.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true" />
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

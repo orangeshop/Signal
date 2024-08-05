@@ -120,9 +120,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                                     binding.newMessage.visibility = View.VISIBLE
                                     binding.newMessageTv.text =
                                         chatList.get(chatList.lastIndex).content
-                                    delay(2000)
-                                    binding.newMessageTv.text = ""
-                                    binding.newMessage.visibility = View.GONE
                                 }
                             }
                         }
@@ -152,6 +149,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             binding.newMessage.setOnClickListener {
                 binding.newMessage.visibility = View.GONE
+                binding.newMessageTv.text = ""
+
                 lifecycleScope.launch {
                     chatViewModel.messageList.value?.let { it1 ->
                         binding.chatDetailRv.smoothScrollToPosition(
