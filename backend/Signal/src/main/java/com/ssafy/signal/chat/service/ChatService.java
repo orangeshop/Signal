@@ -24,6 +24,14 @@ public class ChatService {
     private final MemberRepository memberRepository;
 
     public ChatRoomDto createChatRoom(ChatRoomDto chatRoomDto) {
+        Member from = Member.builder().userId(chatRoomDto.getFrom_id()).build();
+        Member to = Member.builder().userId(chatRoomDto.getTo_id()).build();
+
+        ChatRoomEntity chatRoom = chatRoomRepository.findChatRoomsByUserId(from,to);
+        chatRoom = chatRoom == null ? chatRoomRepository.findChatRoomsByUserId(to,from) : chatRoom;
+
+        if(chatRoom != null) return chatRoom.asChatRoomDto();
+
         chatRoomDto.setSend_at(DateTime.now().toDate());
         return chatRoomRepository
                 .save(chatRoomDto
