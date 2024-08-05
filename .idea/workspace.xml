@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8038807d-9bb0-44f4-81a5-3509383a8896" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Signal.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Signal.iml" afterDir="false" />
+    <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,40 +38,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Gradle.Build Signal.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "Spring Boot.SignalApplication.executor": "Run",
-    "git-widget-placeholder": "member",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "Facets",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.17701149",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
+    "git-widget-placeholder": "Merging member",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration name="SignalApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="Signal.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssafy.signal.SignalApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Spring Boot.SignalApplication" />
-      </list>
-    </recent_temporary>
-  </component>
   <component name="TaskManager">
     <servers />
   </component>
