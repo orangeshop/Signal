@@ -2,6 +2,7 @@ package com.ssafy.signal.member.jwt.token;
 
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.domain.TokenBlacklist;
+import com.ssafy.signal.member.dto.LoginDto;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.jwt.token.dto.TokenValidationResult;
 import com.ssafy.signal.member.principle.UserPrinciple;
@@ -51,7 +52,7 @@ public class TokenProvider {
         this.tokenBlacklistService = tokenBlacklistService;
     }
 
-    public TokenInfo createToken(Member member) {
+    public TokenInfo createToken(LoginDto member) {
         long currentTime = (new Date()).getTime();
         Date accessTokenExpirationTime = new Date(currentTime + this.accessTokenValidationInMilliseconds);
         String tokenId = UUID.randomUUID().toString();
@@ -180,7 +181,16 @@ public class TokenProvider {
                 LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
                 tokenBlacklistService.blacklistToken(refreshToken, expirationTime);
 
-                return createToken(member);
+                LoginDto member1 = LoginDto.builder()
+                        .userId(member.getUserId())
+                        .loginId(member.getLoginId())
+                        .password(member.getPassword())
+                        .type(member.getType())
+                        .name(member.getName())
+                        .comment(member.getComment())
+                        .build();
+
+                return createToken(member1);
             } catch (ExpiredJwtException e) {
                 throw new IllegalArgumentException("Refresh token이 만료되었습니다.");
             } catch (JwtException | IllegalArgumentException e) {

@@ -1,6 +1,7 @@
 package com.ssafy.signal.board.domain;
 
 import com.ssafy.signal.file.domain.FileDto;
+import com.ssafy.signal.member.dto.findMemberDto;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,6 +19,7 @@ public class BoardDto {
     private Long id;
     private String writer;
     private Long userId; // 새로운 필드 추가
+    private findMemberDto member;
     private String title;
     private String content;
     private Long reference;
