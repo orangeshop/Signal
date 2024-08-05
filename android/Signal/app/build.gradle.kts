@@ -88,6 +88,7 @@ dependencies {
     //fcm
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.database)
     //locations
     implementation(libs.locations)
     //datastore

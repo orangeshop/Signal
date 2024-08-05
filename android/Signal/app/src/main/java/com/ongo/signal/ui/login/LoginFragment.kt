@@ -10,13 +10,18 @@ import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.SignalUser
 import com.ongo.signal.databinding.FragmentLoginBinding
 import com.ongo.signal.ui.MainActivity
+import com.ongo.signal.ui.video.repository.VideoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
 
     private val viewModel: LoginViewModel by viewModels()
+
+    @Inject
+    lateinit var videoRepository: VideoRepository
 
     override fun init() {
         checkLogin()
@@ -52,7 +57,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 ),
                 onSuccess = { isSuccess, signalUser ->
                     if (isSuccess) {
-                        successLogin(signalUser, binding.tietId.text.toString(), binding.tietPassword.text.toString())
+                        successLogin(
+                            signalUser,
+                            binding.tietId.text.toString(),
+                            binding.tietPassword.text.toString()
+                        )
                     } else {
                         makeToast("아이디나 비밀번호를 확인해주세요")
                     }
@@ -84,9 +93,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 accessToken = signalUser.accessToken,
                 refreshToken = signalUser.refreshToken
             )
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
+
+            videoRepository.login(
+                UserSession.userId.toString(), userPassword
+            ) { isDone, reason ->
+                if(!isDone){
+                    makeToast(reason.toString())
+                } else{
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    startActivity(intent)
+                    requireActivity().finish()
+                }
+            }
         }
     }
 }
