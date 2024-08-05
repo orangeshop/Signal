@@ -78,9 +78,11 @@ public class BoardController {
 
     /* 좋아요 버튼 클릭 */
     @PostMapping("/board/{no}/like")
-    public ResponseEntity<String> likePost(@PathVariable("no") Long no) {
-        boardService.incrementLikedCount(no);  // 좋아요 카운트 증가
-        return ResponseEntity.ok("Liked Successfully");
+    public ResponseEntity<Long> likePost(@PathVariable("no") Long no) {
+        Long likedCount = boardService.incrementLikedCount(no);  // 좋아요 카운트 증가 및 반환
+        return ResponseEntity.ok(likedCount);  // 증가된 좋아요 수 반환
     }
+
+
 
 }

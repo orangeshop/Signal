@@ -18,7 +18,7 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping("/comment/{boardId}")
-    public List<CommentDto> getCommentsByBoardId(@PathVariable Long boardId) {
+    public List<CommentDto> getCommentsByBoardId(@PathVariable("boardId")  Long boardId) {
         return commentService.getCommentsByBoardId(boardId);
     }
 
