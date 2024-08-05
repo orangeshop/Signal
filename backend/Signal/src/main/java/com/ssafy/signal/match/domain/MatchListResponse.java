@@ -10,12 +10,14 @@ public class MatchListResponse {
     Member user;
     LocationDto location;
 
-    private double dist;
+    private String url;
 
+    private double dist;
     private int quadrant;
 
     public static MatchListResponse asMatchResponse(
-            Member user,LocationDto location, double reference_lat, double reference_lon)
+            Member user,LocationDto location, double reference_lat,
+            double reference_lon, String url)
     {
         int quadrant = getQuadrant(location, reference_lat, reference_lon);
 
@@ -26,6 +28,7 @@ public class MatchListResponse {
                 .builder()
                 .user(user)
                 .location(location)
+                .url(url)
                 .dist(getDistance(target_lat, target_lon, reference_lat, reference_lon))
                 .quadrant(quadrant)
                 .build();

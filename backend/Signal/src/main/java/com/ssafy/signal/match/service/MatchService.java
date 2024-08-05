@@ -31,6 +31,7 @@ public class MatchService {
     private final MemberRepository memberRepository;
     private final MatchRepository matchRepository;
     private final FirebaseService firebaseService;
+    private final FileRepository fileRepository;
 
     @Transactional
     public LocationDto saveLocation(LocationDto locationDto) {
@@ -181,6 +182,15 @@ public class MatchService {
         return true;
     }
 
+    private String getProfileImage(long user_id)
+    {
+        return Optional
+                .ofNullable(fileRepository.findAllByUser(makeMember(user_id)))
+                .orElse(new FileEntity())
+                .asFileDto()
+                .getFileUrl() ;
+    }
+
     public List<MatchListResponse> getMatchUser(long location_id)
     {
         LocationDto myLocation = locationRepository
@@ -210,7 +220,8 @@ public class MatchService {
                         userMap.get(location.getUser_id()),
                         location,
                         myLocation.getLatitude(),
-                        myLocation.getLongitude()
+                        myLocation.getLongitude(),
+                        getProfileImage(location.getUser_id())
                 ))
                 .filter(res->isNearUser(res,myLocation))
                 .filter(res->isValidMember(me,myLocation,res))
@@ -266,6 +277,9 @@ public class MatchService {
                 .toList();
     }
 
+    private Member makeMember(long user_id) {
+        return Member.builder().userId(user_id).build();
+    }
     private String makeTitle(int flag) { return flag == 1 ? "승낙" : "거부";}
     private String makeMessageBody(Member from,Member to) {
         return from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment();
