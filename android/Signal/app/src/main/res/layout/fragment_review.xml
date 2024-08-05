@@ -5,9 +5,15 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="fragment"
             type="com.ongo.signal.ui.main.fragment.ReviewFragment" />
+
+        <variable
+            name="reviewViewModel"
+            type="com.ongo.signal.ui.main.ReviewViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,6 +50,7 @@
             android:layout_height="36dp"
             android:onClick="@{()->fragment.onReview()}"
             android:src="@drawable/baseline_add_comment_24"
+            android:visibility="@{reviewViewModel.isReviewVisible ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/tv_username"
             app:layout_constraintEnd_toStartOf="@id/tv_username" />
 
@@ -104,12 +111,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_extrabold"
-            android:text="()"
             android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_review_list"
             app:layout_constraintStart_toEndOf="@id/tv_review_list"
-            app:layout_constraintTop_toTopOf="@id/tv_review_list" />
+            app:layout_constraintTop_toTopOf="@id/tv_review_list"
+            app:listSize="@{reviewViewModel.reviewList}" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_review"

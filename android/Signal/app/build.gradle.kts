@@ -78,7 +78,7 @@ dependencies {
 
     //room
     implementation(libs.bundles.room)
-    kapt (libs.room.compiler)
+    kapt(libs.room.compiler)
     //paging
     implementation(libs.paging)
 
@@ -88,9 +88,12 @@ dependencies {
     //fcm
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.database)
     //locations
     implementation(libs.locations)
     //datastore
     implementation(libs.datastore)
+    //webrtc
+    implementation(libs.bundles.webrtc)
 
 }

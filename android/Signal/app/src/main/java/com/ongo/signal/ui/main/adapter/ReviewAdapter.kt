@@ -6,13 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.main.ReviewDTO
+import com.ongo.signal.data.model.review.ReviewRequestDTO
+import com.ongo.signal.data.model.review.ReviewResponseItemDTO
 import com.ongo.signal.databinding.ItemReviewBinding
 
-class ReviewAdapter : ListAdapter<ReviewDTO, ReviewAdapter.ViewHolder>(DiffUtilCallback()) {
+class ReviewAdapter : ListAdapter<ReviewResponseItemDTO, ReviewAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(review: ReviewDTO) {
+        fun bind(review: ReviewResponseItemDTO) {
             binding.review = review
             binding.executePendingBindings()
         }
@@ -27,12 +29,12 @@ class ReviewAdapter : ListAdapter<ReviewDTO, ReviewAdapter.ViewHolder>(DiffUtilC
         holder.bind(getItem(position))
     }
 
-    class DiffUtilCallback : DiffUtil.ItemCallback<ReviewDTO>() {
-        override fun areItemsTheSame(p0: ReviewDTO, p1: ReviewDTO): Boolean {
+    class DiffUtilCallback : DiffUtil.ItemCallback<ReviewResponseItemDTO>() {
+        override fun areItemsTheSame(p0: ReviewResponseItemDTO, p1: ReviewResponseItemDTO): Boolean {
             return p0.reviewId == p1.reviewId
         }
 
-        override fun areContentsTheSame(p0: ReviewDTO, p1: ReviewDTO): Boolean {
+        override fun areContentsTheSame(p0: ReviewResponseItemDTO, p1: ReviewResponseItemDTO): Boolean {
             return p0 == p1
         }
     }

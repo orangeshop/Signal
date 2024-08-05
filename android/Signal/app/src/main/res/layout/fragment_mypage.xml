@@ -121,7 +121,7 @@
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_extralight"
             android:onClick="@{()->fragment.goToMyCommentSignal()}"
-            android:text="@string/my_heart_signal"
+            android:text="@string/my_comment_signal"
             android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_heart_icon"

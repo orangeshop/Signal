@@ -7,4 +7,5 @@ interface MyPageRepository {
 
     suspend fun getMySignal(userId: Long): Response<List<BoardDTO>>
     suspend fun getMyCommentSignal(userId: Long): Response<List<BoardDTO>>
+
 }

@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="fragment"
             type="com.ongo.signal.ui.main.fragment.PostFragment" />
+
         <variable
             name="boardViewModel"
-            type="com.ongo.signal.ui.main.BoardViewModel" />
+            type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -131,11 +134,11 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_marginTop="15dp"
+                        android:onClick="@{() -> boardViewModel.onThumbClick(boardViewModel.selectedBoard)}"
                         android:padding="4dp"
                         android:src="@drawable/baseline_thumb_up_alt_white_24"
                         app:layout_constraintStart_toStartOf="@id/iv_profile"
                         app:layout_constraintTop_toBottomOf="@id/rv_chip" />
-                    <!--        android:onClick="@{()->fragment.onThumbClick(viewModel.selectedBoard)}"-->
 
                     <TextView
                         android:id="@+id/tv_like"

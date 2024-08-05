@@ -4,13 +4,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.main.TagDTO
 import com.ongo.signal.databinding.FragmentMySignalBinding
 import com.ongo.signal.ui.MainActivity
-import com.ongo.signal.ui.main.adapter.ChipAdapter
 import com.ongo.signal.ui.my.adapter.PreviewPostAdapter
 import timber.log.Timber
-import java.util.Date
 
 class MySignalFragment : BaseFragment<FragmentMySignalBinding>(R.layout.fragment_my_signal) {
 
@@ -20,7 +17,6 @@ class MySignalFragment : BaseFragment<FragmentMySignalBinding>(R.layout.fragment
     override fun init() {
         loadData()
         binding.rvPostPreview.adapter = previewPostAdapter
-        binding.fragment = this
     }
 
     fun popBackStack() {
