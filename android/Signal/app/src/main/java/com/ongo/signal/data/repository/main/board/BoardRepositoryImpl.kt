@@ -43,7 +43,7 @@ class BoardRepositoryImpl @Inject constructor(private val mainApi: MainApi) : Bo
         return mainApi.uploadImage(boardId, image)
     }
 
-    override suspend fun boardLike(boardId: Long): Response<ResponseBody> {
+    override suspend fun boardLike(boardId: Long): Response<Long> {
         return mainApi.boardLike(boardId)
     }
 

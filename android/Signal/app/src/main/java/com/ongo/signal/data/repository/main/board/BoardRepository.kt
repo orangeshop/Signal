@@ -16,7 +16,7 @@ interface BoardRepository {
     suspend fun updateBoard(boardId: Long, updateBoardDTO: UpdateBoardDTO): Response<BoardDTO>
     suspend fun deleteBoard(boardId: Long): Response<ResponseBody>
     suspend fun uploadImage(boardId: Long, image: MultipartBody.Part): Response<ResponseBody>
-    suspend fun boardLike(boardId: Long): Response<ResponseBody>
+    suspend fun boardLike(boardId: Long): Response<Long>
     suspend fun getBoardImages(): Response<BoardImagesDTO>
     suspend fun searchBoard(keyword: String): Response<List<BoardDTO>>
     suspend fun getHotSignal(): Response<List<BoardDTO>>
