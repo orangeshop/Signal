@@ -7,7 +7,6 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,8 +17,8 @@ import com.ongo.signal.data.model.main.ImageItem
 import com.ongo.signal.data.model.main.TagDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.databinding.FragmentWritePostBinding
-import com.ongo.signal.ui.main.BoardViewModel
-import com.ongo.signal.ui.main.ImageViewModel
+import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.ui.main.viewmodel.ImageViewModel
 import com.ongo.signal.ui.main.adapter.ImageAdapter
 import com.ongo.signal.util.ImagePickerHelper
 import com.ongo.signal.util.PopupMenuHelper
