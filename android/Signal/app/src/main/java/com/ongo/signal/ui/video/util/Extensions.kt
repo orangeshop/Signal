@@ -11,7 +11,8 @@ fun AppCompatActivity.getCameraAndMicPermission(success: () -> Unit) {
         PermissionX.init(this)
             .permissions(
                 android.Manifest.permission.CAMERA,
-                android.Manifest.permission.RECORD_AUDIO
+                android.Manifest.permission.RECORD_AUDIO,
+                android.Manifest.permission.POST_NOTIFICATIONS
             )
             .request { allGranted, _, _ ->
 
