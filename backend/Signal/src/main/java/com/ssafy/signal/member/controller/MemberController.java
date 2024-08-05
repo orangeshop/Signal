@@ -5,6 +5,7 @@ import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberDetailDto;
 import com.ssafy.signal.member.dto.MemberLoginDto;
+import com.ssafy.signal.member.dto.MyProfileDto;
 import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.json.duplicateJson;
 import com.ssafy.signal.member.jwt.JwtUtil;
@@ -113,15 +114,16 @@ public class MemberController {
     }
 
 
-    @GetMapping("/userinfo")
+    @GetMapping("/mypage")
     public ApiResponseJson getUserInfo(@AuthenticationPrincipal UserPrinciple userPrinciple) {
 
         log.info("요청 아이디 : {}", userPrinciple.getLoginId());
 
-        Member foundMember = memberService.getUserInfo(userPrinciple.getLoginId());
+        MyProfileDto foundMember = memberService.getUserInfo(userPrinciple.getLoginId());
 
         return new ApiResponseJson(HttpStatus.OK, foundMember);
     }
+
 
     @PutMapping("/{id}")
     public Member updateMember(@RequestBody Member member, @PathVariable("id") Long id) {

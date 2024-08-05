@@ -9,6 +9,7 @@ import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.MemberDetailDto;
+import com.ssafy.signal.member.dto.MyProfileDto;
 import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
@@ -60,7 +61,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public Member saveMember(Member member) {
-//        checkPasswordStrength(member.getPassword());
+        checkPasswordStrength(member.getPassword());
 
         if (memberRepository.existsByLoginId(member.getLoginId())) {
             log.info("이미 등록된 아이디 = {}", member.getLoginId());
@@ -123,6 +124,7 @@ public class MemberService implements UserDetailsService {
         Member existingMember = memberRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
 
         if (updatedMember.getPassword() != null && !updatedMember.getPassword().isEmpty()) {
+            checkPasswordStrength(updatedMember.getPassword());
             existingMember.setPassword(passwordEncoder.encode(updatedMember.getPassword()));
         }
         if (updatedMember.getType() != null && !updatedMember.getType().isEmpty()) {
@@ -138,8 +140,19 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(existingMember);
     }
 
-    public Member getUserInfo(String loginId) {
-        return findMemberByLoginId(loginId);
+    public MyProfileDto getUserInfo(String loginId) {
+        Member myProfile = findMemberByLoginId(loginId);
+        String url = fileService.getProfile(myProfile.getUserId());
+
+        return MyProfileDto.builder()
+                .userId(myProfile.getUserId())
+                .loginId(myProfile.getLoginId())
+                .password(myProfile.getPassword())
+                .type(myProfile.getType())
+                .name(myProfile.getName())
+                .profileImage(url)
+                .comment(myProfile.getComment())
+                .build();
     }
 
     public List<Member> getAllMembers() {
