@@ -1,18 +1,14 @@
-package com.ongo.signal.ui.main
+package com.ongo.signal.ui.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.BoardPagingSource
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.data.repository.main.board.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -67,7 +63,7 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun loadBoardsByTag(tag: String) {
+    private fun loadBoardsByTag(tag: String) {
         Timber.d("loading boards with tag: $tag")
         viewModelScope.launch {
             Pager(
@@ -135,7 +131,7 @@ class BoardViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     val newBoard = response.body()
                     Timber.d("Board created: $newBoard")
-                    clearBoards()
+                    _selectedBoard.value = newBoard
                 } else {
                     Timber.e("Failed to create board: ${response.errorBody()?.string()}")
                 }
@@ -216,6 +212,29 @@ class BoardViewModel @Inject constructor(
         }
     }
 
+    fun onThumbClick(board: BoardDTO) {
+        viewModelScope.launch {
+            runCatching {
+                boardRepository.boardLike(board.id)
+            }.onSuccess { response ->
+                if (response.isSuccessful) {
+                    response.body()?.let { newLikeCount ->
+                        val updatedBoard = board.copy(liked = newLikeCount)
+                        _selectedBoard.value = updatedBoard
+                        _items.emit(_items.replayCache.first().map {
+                            if (it.id == board.id) updatedBoard else it
+                        })
+                        Timber.d("Board liked: $newLikeCount")
+                    }
+                } else {
+                    Timber.e("Failed to like board: ${response.errorBody()?.string()}")
+                }
+            }.onFailure { e ->
+                Timber.e(e, "Failed to like board")
+            }
+        }
+    }
+
     fun clearBoards() {
         viewModelScope.launch {
             _items.emit(PagingData.empty())
@@ -223,7 +242,6 @@ class BoardViewModel @Inject constructor(
             setSelectedTag(null)
         }
     }
-
 
     fun setSelectedTag(tag: String?) {
         _selectedTag.value = tag
