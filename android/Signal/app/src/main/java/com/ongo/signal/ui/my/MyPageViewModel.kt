@@ -81,7 +81,7 @@ class MyPageViewModel @Inject constructor(
         onSuccess: (MyProfileData) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            myPageRepository.getMyProfile(token).onSuccess { myProfileResponse ->
+            myPageRepository.getMyProfile("Bearer $token").onSuccess { myProfileResponse ->
                 myProfileResponse?.let {
                     onSuccess(myProfileResponse.myProfileData)
                 }
