@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.my
 
+import android.service.autofill.UserData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.DataStoreClass
@@ -19,6 +20,8 @@ class MyPageViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository,
     private val dataStoreClass: DataStoreClass,
 ) : ViewModel() {
+
+    private lateinit var userData:MyProfileData
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -83,7 +86,8 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch(coroutineExceptionHandler) {
             myPageRepository.getMyProfile("Bearer $token").onSuccess { myProfileResponse ->
                 myProfileResponse?.let {
-                    onSuccess(myProfileResponse.myProfileData)
+                    userData = myProfileResponse.myProfileData
+                    onSuccess(userData)
                 }
             }
         }

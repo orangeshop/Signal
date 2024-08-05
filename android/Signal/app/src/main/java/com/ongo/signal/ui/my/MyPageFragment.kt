@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -11,7 +12,6 @@ import com.ongo.signal.databinding.FragmentMypageBinding
 import com.ongo.signal.ui.LoginActivity
 import com.ongo.signal.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_mypage) {
@@ -27,7 +27,19 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     private fun getMyProfile() {
         UserSession.accessToken?.let {
             viewModel.getMyProfile(it) { myProfileData ->
-                Timber.d("데이터 성공적으로 받아왔어요 ${myProfileData}")
+                with(binding) {
+                    if (myProfileData.profileImage == "null") {
+                        ivProfile.setImageResource(R.drawable.basic_profile)
+                    } else {
+                        //TODO place홀더 로딩 이미지 찾아보기
+                        Glide.with(requireActivity())
+                            .load(myProfileData.profileImage)
+                            .circleCrop()
+                            .into(ivProfile)
+                    }
+
+                    tvUsername.text = myProfileData.name
+                }
             }
         }
     }
