@@ -24,6 +24,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MatchService {
+    private final int DENY = 0;
+    private final int APPROVAL = 1;
+    private final int REQUEST = 2;
+
     private final int NEAR_DISTANCE = 10;
 
     private final LocationRepository locationRepository;
@@ -49,8 +53,8 @@ public class MatchService {
     }
 
     public MatchResponse proposeMatch(long from_id,long to_id) throws Exception{
-        Member from = Member.builder().userId(from_id).build();
-        Member to = Member.builder().userId(to_id).build();
+        Member from = makeMember(from_id);
+        Member to = makeMember(to_id);
 
         if(!locationRepository.existsByUserId(from) || !locationRepository.existsByUserId(to)) throw new Exception("User Not Found");
 
@@ -58,7 +62,7 @@ public class MatchService {
         to = locationRepository.findByUserId(to).getUserId();
 
         String body = makeMessageBody(from,to);
-        firebaseService.sendMessageTo(to.getUserId(), "요청",
+        firebaseService.sendMessageTo(to.getUserId(), makeTitle(REQUEST),
                 body, 0);
 
 
@@ -76,8 +80,8 @@ public class MatchService {
 
     @Transactional
     public MatchResponse acceptMatch(long from_id,long to_id, int flag) throws Exception{
-        Member from = Member.builder().userId(from_id).build();
-        Member to = Member.builder().userId(to_id).build();
+        Member from = makeMember(from_id);
+        Member to = makeMember(to_id);
         if(!locationRepository.existsByUserId(from) || !locationRepository.existsByUserId(to)) throw new Exception("User Not Found");
 
 
@@ -87,7 +91,7 @@ public class MatchService {
         from = locationRepository.findByUserId(from).getUserId();
         to = locationRepository.findByUserId(to).getUserId();
 
-        if(flag == 1)
+        if(flag == APPROVAL)
         {
             locationRepository.deleteById(fromLocation.getLocation_id());
             locationRepository.deleteById(toLocation.getLocation_id());
@@ -119,7 +123,7 @@ public class MatchService {
         String body = makeMessageBody(from,to);
         firebaseService.sendMessageTo(
                 to.getUserId(),
-                "요청",
+                makeTitle(REQUEST),
                 body,
                 0);
 
@@ -158,7 +162,7 @@ public class MatchService {
 
     @Transactional
     public void deleteLocationByUserId(long user_id) {
-        locationRepository.deleteAllByUserId(Member.builder().userId(user_id).build());
+        locationRepository.deleteAllByUserId(makeMember(user_id));
     }
 
     private boolean isNearUser(MatchListResponse response,LocationDto meLocation){
@@ -259,8 +263,7 @@ public class MatchService {
     public List<MatchDto> getMatch(long user_id)
     {
         List<ReviewDto>  reviews = Optional.ofNullable(
-                reviewRepository.findAllByWriterId(Member.builder().userId(user_id).build()
-                ))
+                reviewRepository.findAllByWriterId(makeMember(user_id)))
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(ReviewEntity::asReviewDto)
@@ -268,9 +271,7 @@ public class MatchService {
 
 
         return matchRepository
-                .findAllByUserId(Member.builder()
-                        .userId(user_id)
-                        .build())
+                .findAllByUserId(makeMember(user_id))
                 .stream()
                 .map(MatchEntity::asMatchDto)
                 .filter(matchDto -> filterMatch(matchDto,reviews,user_id))
@@ -280,7 +281,14 @@ public class MatchService {
     private Member makeMember(long user_id) {
         return Member.builder().userId(user_id).build();
     }
-    private String makeTitle(int flag) { return flag == 1 ? "승낙" : "거부";}
+    private String makeTitle(int flag) {
+        switch (flag){
+            case APPROVAL : return "승낙";
+            case DENY : return "거부";
+            case REQUEST : return "요청";
+            default: return "ERROR";
+        }
+    }
     private String makeMessageBody(Member from,Member to) {
         return from.getUserId()+" "+to.getUserId() +" "+from.getName()+" "+from.getType()+" "+from.getComment();
     }
