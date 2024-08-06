@@ -1,7 +1,6 @@
 package com.ongo.signal.data.repository.main.board
 
 import com.ongo.signal.data.model.main.BoardDTO
-import com.ongo.signal.data.model.main.BoardDetailDTO
 import com.ongo.signal.data.model.main.BoardImagesDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
@@ -22,7 +21,7 @@ class BoardRepositoryImpl @Inject constructor(private val mainApi: MainApi) : Bo
         return mainApi.readBoard(pageNum, limit)
     }
 
-    override suspend fun readBoardById(boardId: Long): Response<BoardDetailDTO> {
+    override suspend fun readBoardById(boardId: Long): Response<BoardDTO> {
         return mainApi.readBoardById(boardId)
     }
 
@@ -37,20 +36,20 @@ class BoardRepositoryImpl @Inject constructor(private val mainApi: MainApi) : Bo
         return mainApi.deleteBoard(boardId)
     }
 
-    override suspend fun uploadImage(
-        boardId: Long,
-        image: MultipartBody.Part
-    ): Response<ResponseBody> {
-        return mainApi.uploadImage(boardId, image)
-    }
+//    override suspend fun uploadImage(
+//        boardId: Long,
+//        image: MultipartBody.Part
+//    ): Response<ResponseBody> {
+//        return mainApi.uploadImage(boardId, image)
+//    }
 
     override suspend fun boardLike(boardId: Long): Response<Long> {
         return mainApi.boardLike(boardId)
     }
 
-    override suspend fun getBoardImages(): Response<BoardImagesDTO> {
-        return mainApi.getBoardImages()
-    }
+//    override suspend fun getBoardImages(): Response<BoardImagesDTO> {
+//        return mainApi.getBoardImages()
+//    }
 
     override suspend fun searchBoard(keyword: String): Response<List<BoardDTO>> {
         return mainApi.searchBoard(keyword)
