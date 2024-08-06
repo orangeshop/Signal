@@ -1,7 +1,6 @@
 package com.ongo.signal.network
 
 import com.ongo.signal.data.model.main.BoardDTO
-import com.ongo.signal.data.model.main.BoardDetailDTO
 import com.ongo.signal.data.model.main.BoardImagesDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.CommentDTO
@@ -33,7 +32,7 @@ interface MainApi {
     ): Response<List<BoardDTO>>
 
     @GET("board/{no}")
-    suspend fun readBoardById(@Path("no") boardId: Long): Response<BoardDetailDTO>
+    suspend fun readBoardById(@Path("no") boardId: Long): Response<BoardDTO>
 
     @PUT("board/update/{no}")
     suspend fun updateBoard(
