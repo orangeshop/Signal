@@ -21,7 +21,7 @@ class TodayPostAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         private val chipAdapter = ChipAdapter()
-        private val imageUriAdapter = ImageAdapter({ }, false)
+        private val postImageAdapter = PostImageAdapter()
 
         init {
             binding.rvChips.apply {
@@ -32,7 +32,7 @@ class TodayPostAdapter(
             binding.rvImages.apply {
                 layoutManager =
                     StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                adapter = imageUriAdapter
+                adapter = postImageAdapter
             }
         }
 
@@ -49,6 +49,7 @@ class TodayPostAdapter(
             }
 
             chipAdapter.submitList(board.tags)
+            postImageAdapter.submitList(board.imageUrls)
         }
     }
 
