@@ -22,14 +22,19 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     private val viewModel: MyPageViewModel by viewModels()
 
     override fun init() {
-        getMyProfile()
         initViews()
         binding.fragment = this
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getMyProfile()
     }
 
     private fun getMyProfile() {
         UserSession.accessToken?.let {
             viewModel.getMyProfile(it) { myProfileData ->
+                Timber.d("프로필 받아옴 ${myProfileData}")
                 with(binding) {
                     if (myProfileData.profileImage == "null") {
                         ivProfile.setImageResource(R.drawable.basic_profile)
