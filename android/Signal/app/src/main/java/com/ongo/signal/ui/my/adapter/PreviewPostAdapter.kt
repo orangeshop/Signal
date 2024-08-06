@@ -9,7 +9,7 @@ import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.ItemPostPreviewBinding
 
 class PreviewPostAdapter(
-    private val onClick: () -> Unit,
+    private val onClick: (BoardDTO) -> Unit,
 ) : ListAdapter<BoardDTO, PreviewPostAdapter.ViewHolder>(DiffUtilCallback()) {
 
     inner class ViewHolder(private val binding: ItemPostPreviewBinding) :
@@ -19,7 +19,7 @@ class PreviewPostAdapter(
             binding.board = boardDTO
             binding.executePendingBindings()
             binding.root.setOnClickListener {
-                onClick()
+                onClick(boardDTO)
             }
         }
     }
