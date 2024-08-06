@@ -27,6 +27,7 @@ public class ChatController {
     public void send(MessageDto message) throws Exception {
         message = chatService.saveMessage(message);
         chatService.updateLastMessage(message);
+        chatService.sendMsgNotification(message);
         messagingTemplate.convertAndSend("/topic/" + message.getChat_id(), message);
     }
 

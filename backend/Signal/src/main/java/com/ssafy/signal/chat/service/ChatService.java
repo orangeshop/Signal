@@ -5,12 +5,14 @@ import com.ssafy.signal.chat.repository.ChatRoomRepository;
 import com.ssafy.signal.chat.repository.MessageRepository;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.repository.MemberRepository;
+import com.ssafy.signal.notification.service.FirebaseService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,10 +24,11 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
+    private final FirebaseService firebaseService;
 
     public ChatRoomDto createChatRoom(ChatRoomDto chatRoomDto) {
-        Member from = Member.builder().userId(chatRoomDto.getFrom_id()).build();
-        Member to = Member.builder().userId(chatRoomDto.getTo_id()).build();
+        Member from = makeMember(chatRoomDto.getFrom_id());
+        Member to = makeMember(chatRoomDto.getTo_id());
 
         ChatRoomEntity chatRoom = chatRoomRepository.findChatRoomsByUserId(from,to);
         chatRoom = chatRoom == null ? chatRoomRepository.findChatRoomsByUserId(to,from) : chatRoom;
@@ -46,17 +49,11 @@ public class ChatService {
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
 
         for(ChatRoomEntity chatRoom : chatRooms) {
-            long from_id = chatRoom.getFrom_id().getUserId();
-            long to_id = chatRoom.getTo_id().getUserId();
+            Member from = chatRoom.getFrom_id();
+            Member to = chatRoom.getTo_id();
 
-            String from_name="",to_name="";
-            if(memberRepository.findById(from_id).isPresent()) {
-                from_name = memberRepository.findById(from_id).get().getName();
-            }
-
-            if(memberRepository.findById(to_id).isPresent()) {
-                to_name = memberRepository.findById(to_id).get().getName();
-            }
+            String from_name = from.getName();
+            String to_name = to.getName();
 
             chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name));
         }
@@ -107,5 +104,22 @@ public class ChatService {
             message.setIs_read(true);
             messageRepository.save(message);
         }
+    }
+
+    public void sendMsgNotification(MessageDto messageDto)throws IOException {
+        ChatRoomDto chat = chatRoomRepository
+                .findById(messageDto.getChat_id())
+                .orElseThrow()
+                .asChatRoomDto();
+
+        Member from = makeMember(chat.getFrom_id());
+
+        firebaseService.sendMessageTo(chat.getTo_id(), from.getName(),messageDto.getContent(),0);
+    }
+
+    private Member makeMember(long user_id){
+        return memberRepository
+                .findById(user_id)
+                .orElseThrow();
     }
 }
