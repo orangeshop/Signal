@@ -1,14 +1,13 @@
 package com.ongo.signal.ui.chat.fragment
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Intent
 import android.view.View
-import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -18,14 +17,22 @@ import com.ongo.signal.databinding.FragmentChatDetailBinding
 import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
+import com.ongo.signal.ui.video.CallActivity
+import com.ongo.signal.ui.video.repository.VideoRepository
+import com.ongo.signal.ui.video.service.VideoService
+import com.ongo.signal.ui.video.service.VideoServiceRepository
+import com.ongo.signal.ui.video.util.DataModel
+import com.ongo.signal.ui.video.util.DataModelType
+import com.ongo.signal.ui.video.util.getCameraAndMicPermission
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import javax.inject.Inject
 
 private const val TAG = "ChatDetailFragment_싸피"
 
@@ -33,15 +40,29 @@ private const val TAG = "ChatDetailFragment_싸피"
  * 해당 클래스는 채팅 내역을 보여주는 화면입니다.
  *
  */
-class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.fragment_chat_detail) {
+@AndroidEntryPoint
+class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.fragment_chat_detail),
+    VideoService.Listener {
 
     private lateinit var chatDetailAdapter: ChatDetailAdapter
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
     private val todayTitleChecker = mutableSetOf<Long>()
-    override fun init() {
 
+    //video
+    @Inject
+    lateinit var videoRepository: VideoRepository
+
+    @Inject
+    lateinit var videoServiceRepository: VideoServiceRepository
+
+    override fun init() {
+        startVideoService()
     }
 
+    private fun startVideoService() {
+        VideoService.listener = this
+        videoServiceRepository.startService(UserSession.userId.toString())
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onResume() {
@@ -65,7 +86,10 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         // 원하는 출력 형식의 포맷터
                         val outputFormat =
-                            SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT' yyyy", Locale.ENGLISH).apply {
+                            SimpleDateFormat(
+                                "EEE MMM dd HH:mm:ss 'GMT' yyyy",
+                                Locale.ENGLISH
+                            ).apply {
                                 timeZone = TimeZone.getTimeZone("GMT")
                             }
 
@@ -142,10 +166,10 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             }
                         }
 
-                        if(chatList.size > 1) {
+                        if (chatList.size > 1) {
                             progressBar.progress = chatList.size
                         }
-                        if(progressBar.progress == chatList.size && chatList.size != 0){
+                        if (progressBar.progress == chatList.size && chatList.size != 0) {
                             progressBar.visibility = View.GONE
                         }
 
@@ -227,7 +251,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             chatDetailAdd.setOnClickListener {
-                webRtc()
+                playWebRtc()
             }
         }
     }
@@ -239,8 +263,45 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         }
     }
 
-    fun webRtc(){
+    private fun playWebRtc() {
+        getCameraAndMicPermission {
+            videoRepository.sendConnectionRequest("${chatViewModel.chatRoomToID}", true) {
+                if (it) {
+                    Timber.d("성공적으로 영통 보냄")
+                    startActivity(Intent(requireContext(), CallActivity::class.java).apply {
+                        putExtra("target", "25")
+                        putExtra("isVideoCall", true)
+                        putExtra("isCaller", true)
+                    })
 
+                }
+            }
+        }
+    }
+
+    override fun onCallReceived(model: DataModel) {
+        requireActivity().runOnUiThread {
+            binding.apply {
+                val isVideoCall = model.type == DataModelType.StartVideoCall
+                val isVideoCallText = if (isVideoCall) "Video" else "Audio"
+                incomingCallTitleTv.text = "${model.sender} 님이 $isVideoCallText 영상통화를 요청합니다."
+                incomingCallLayout.isVisible = true
+                acceptButton.setOnClickListener {
+                    getCameraAndMicPermission {
+                        incomingCallLayout.isVisible = false
+                        //create an intent to go to video call activity
+                        startActivity(Intent(requireContext(), CallActivity::class.java).apply {
+                            putExtra("target", model.sender)
+                            putExtra("isVideoCall", isVideoCall)
+                            putExtra("isCaller", false)
+                        })
+                    }
+                }
+                declineButton.setOnClickListener {
+                    incomingCallLayout.isVisible = false
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -260,6 +321,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun onDestroy() {
         super.onDestroy()
+        videoServiceRepository.stopService()
         (requireActivity() as? MainActivity)?.showBottomNavigation()
     }
 }
