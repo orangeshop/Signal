@@ -31,6 +31,7 @@ class MyPageViewModel @Inject constructor(
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
             if (loginRepository.deleteUser(token = "Bearer $token") == 1) {
+                Timber.d("logout")
                 dataStoreClass.clearData()
                 onSuccess(1)
             }
@@ -43,16 +44,17 @@ class MyPageViewModel @Inject constructor(
         onError: (Throwable) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            try {
-                val response = myPageRepository.getMySignal(userId)
+            runCatching {
+                myPageRepository.getMySignal(userId)
+            }.onSuccess { response ->
                 if (response.isSuccessful) {
                     response.body()?.let { onSuccess(it) }
                     Timber.d(response.body().toString())
                 } else {
                     onError(Throwable("Failed to get signals"))
                 }
-            } catch (e: Exception) {
-                onError(e)
+            }.onFailure { exception ->
+                onError(exception)
             }
         }
     }
@@ -63,15 +65,17 @@ class MyPageViewModel @Inject constructor(
         onError: (Throwable) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            try {
-                val response = myPageRepository.getMyCommentSignal(userId)
+            runCatching {
+                myPageRepository.getMyCommentSignal(userId)
+            }.onSuccess { response ->
                 if (response.isSuccessful) {
                     response.body()?.let { onSuccess(it) }
+                    Timber.d(response.body().toString())
                 } else {
                     onError(Throwable("Failed to get comment signals"))
                 }
-            } catch (e: Exception) {
-                onError(e)
+            }.onFailure { exception ->
+                onError(exception)
             }
         }
     }
