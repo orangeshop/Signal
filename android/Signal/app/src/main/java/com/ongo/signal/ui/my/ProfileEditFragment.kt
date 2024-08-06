@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -87,7 +88,6 @@ class ProfileEditFragment :
                     if (viewModel.profileEditUiState.isProfileImageChanged) {
 
                         if (viewModel.profileEditUiState.isProfileImageExisted) {
-                            Timber.d("풋 할거에요")
                             viewModel.putProfileImage(
                                 userId,
                                 viewModel.profileEditUiState.imageFile!!
@@ -95,7 +95,6 @@ class ProfileEditFragment :
                                 onSuccessEditProfile()
                             }
                         } else {
-                            Timber.d("포스트 할거에요")
                             viewModel.postProfileImage(
                                 userId,
                                 viewModel.profileEditUiState.imageFile!!
@@ -106,7 +105,6 @@ class ProfileEditFragment :
                     } else {
                         onSuccessEditProfile()
                     }
-
                 }
 
             }
@@ -158,7 +156,7 @@ class ProfileEditFragment :
             else cgChip.check(R.id.chip_senior)
 
         }
-        Timber.d("프로필 이그지스트 셋팅 ${user.profileImage}")
+
         viewModel.setMyProfileEditUiState(
             ProfileEditUiState(
                 name = user.name,

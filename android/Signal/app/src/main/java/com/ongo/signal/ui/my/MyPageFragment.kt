@@ -1,6 +1,7 @@
 package com.ongo.signal.ui.my
 
 import android.content.Intent
+import android.view.View
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -40,6 +41,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
                         ivProfile.setImageResource(R.drawable.basic_profile)
                     } else {
                         //TODO place홀더 로딩 이미지 찾아보기
+                        binding.ivProfile.visibility = View.VISIBLE
+                        binding.pbLoading.visibility = View.GONE
                         Glide.with(requireActivity())
                             .load(myProfileData.profileImage)
                             .apply(RequestOptions.bitmapTransform(CircleCrop()))
