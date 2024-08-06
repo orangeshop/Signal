@@ -2,16 +2,24 @@ package com.ongo.signal.ui.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
-import com.ongo.signal.data.model.main.BoardDetailDTO
 import com.ongo.signal.data.model.main.BoardPagingSource
 import com.ongo.signal.data.model.main.BoardRequestDTO
-import com.ongo.signal.data.model.main.MemberDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.data.repository.main.board.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,9 +38,6 @@ class BoardViewModel @Inject constructor(
     private val _selectedBoard = MutableStateFlow<BoardDTO?>(null)
     val selectedBoard: StateFlow<BoardDTO?> = _selectedBoard
 
-    private val _selectedBoardDetail = MutableStateFlow<BoardDetailDTO?>(null)
-    val selectedBoardDetail: StateFlow<BoardDetailDTO?> = _selectedBoardDetail
-
     private val _selectedTag = MutableStateFlow<String?>(null)
     val selectedTag: StateFlow<String?> = _selectedTag
 
@@ -42,14 +47,12 @@ class BoardViewModel @Inject constructor(
     private val _content = MutableStateFlow("")
     val content: StateFlow<String> = _content
 
-    val currentUserId = 3
-
     init {
         loadHotBoards()
         loadBoards()
     }
 
-    private fun loadBoards() {
+    fun loadBoards() {
         viewModelScope.launch {
             Pager(
                 config = PagingConfig(
@@ -63,7 +66,7 @@ class BoardViewModel @Inject constructor(
             ).flow.cachedIn(viewModelScope)
                 .collectLatest { pagingData ->
                     _items.emit(pagingData)
-                    Timber.d("loadItems: ${items}")
+                    Timber.d("loadItems: $items")
                 }
         }
     }
@@ -128,38 +131,44 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun createBoard(boardRequestDTO: BoardRequestDTO) {
+    fun createBoard(boardRequestDTO: BoardRequestDTO, onSuccess: (BoardDTO?) -> Unit) {
         viewModelScope.launch {
             runCatching {
                 boardRepository.writeBoard(boardRequestDTO)
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     val newBoard = response.body()
-                    Timber.d("Board created: $newBoard")
+                    Timber.d("Board created in boardViewModel: $newBoard")
                     _selectedBoard.value = newBoard
+                    onSuccess(newBoard)
                 } else {
                     Timber.e("Failed to create board: ${response.errorBody()?.string()}")
+                    onSuccess(null)
                 }
             }.onFailure { e ->
                 Timber.e(e, "Failed to create board")
+                onSuccess(null)
             }
         }
     }
 
-    fun updateBoard(boardId: Long, updateBoardDTO: UpdateBoardDTO) {
+    fun updateBoard(boardId: Long, updateBoardDTO: UpdateBoardDTO, onSuccess: (BoardDTO?) -> Unit) {
         viewModelScope.launch {
             runCatching {
                 boardRepository.updateBoard(boardId, updateBoardDTO)
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     val updatedBoard = response.body()
-                    Timber.d("Board updated: $updatedBoard")
-                    clearBoards()
+                    _selectedBoard.value = updatedBoard
+                    Timber.d("Board updated in boardViewModel: $updatedBoard")
+                    onSuccess(updatedBoard)
                 } else {
                     Timber.e("Failed to update board: ${response.errorBody()?.string()}")
+                    onSuccess(null)
                 }
             }.onFailure { e ->
                 Timber.e(e, "Failed to update board")
+                onSuccess(null)
             }
         }
     }
@@ -210,8 +219,7 @@ class BoardViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     val boardDetailDTO = response.body()
                     boardDetailDTO?.let {
-                        Timber.d("BoardDetailDTO loaded: $it")
-                        _selectedBoardDetail.value = it
+                        _selectedBoard.value = it
                     }
                 } else {
                     Timber.e("Failed to load board details: ${response.errorBody()?.string()}")
@@ -270,7 +278,6 @@ class BoardViewModel @Inject constructor(
 
     fun clearBoard() {
         _selectedBoard.value = null
-        _selectedBoardDetail.value = null
         _title.value = ""
         _content.value = ""
     }
@@ -281,5 +288,30 @@ class BoardViewModel @Inject constructor(
 
     fun setContent(content: String) {
         _content.value = content
+    }
+
+    fun updateBoardCommentCount(boardId: Long) {
+        viewModelScope.launch {
+            runCatching {
+                boardRepository.readBoardById(boardId)
+            }.onSuccess { response ->
+                if (response.isSuccessful) {
+                    response.body()?.let { updatedBoard ->
+                        _items.emit(_items.replayCache.first().map {
+                            if (it.id == boardId) updatedBoard else it
+                        })
+                        Timber.d("Board updated with new comment count: $updatedBoard")
+                    }
+                } else {
+                    Timber.e(
+                        "Failed to update board comment count: ${
+                            response.errorBody()?.string()
+                        }"
+                    )
+                }
+            }.onFailure { e ->
+                Timber.e(e, "Failed to update board comment count")
+            }
+        }
     }
 }
