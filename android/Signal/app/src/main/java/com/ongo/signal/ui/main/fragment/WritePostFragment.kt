@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.ImageItem
 import com.ongo.signal.data.model.main.TagDTO
@@ -63,7 +64,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
 
     private fun setUpSpinner() {
         val adapter = ArrayAdapter.createFromResource(
-            requireContext(),
+            requireActivity(),
             R.array.tag_array,
             R.layout.item_spinnner
         )
@@ -128,7 +129,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             }
 
         imagePickerHelper =
-            ImagePickerHelper(requireContext(), cameraLauncher, galleryLauncher) { uri ->
+            ImagePickerHelper(requireActivity(), cameraLauncher, galleryLauncher) { uri ->
                 imageAdapter.addImage(ImageItem.UriItem(uri))
             }
     }
@@ -204,43 +205,62 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             if (boardViewModel.selectedBoard.value == null) {
                 userId?.let {
                     val boardRequestDTO =
-                        BoardRequestDTO(userId.toLong(), writer, title, content, isChipChecked, tags)
-                    boardViewModel.createBoard(boardRequestDTO)
-                    Timber.d("Board created")
+                        BoardRequestDTO(
+                            userId.toLong(),
+                            writer,
+                            title,
+                            content,
+                            isChipChecked,
+                            tags
+                        )
+                    boardViewModel.createBoard(boardRequestDTO) { newBoard ->
+                        if (newBoard != null) {
+                            uploadImagesAndNavigate(newBoard)
+                        } else {
+                            Timber.e("Failed to create board")
+                        }
+                    }
                 }
             } else {
                 val updateBoardDTO = UpdateBoardDTO(title, content, isChipChecked)
-                boardViewModel.updateBoard(boardViewModel.selectedBoard.value!!.id, updateBoardDTO)
-                Timber.d("Board updated")
+                boardViewModel.updateBoard(
+                    boardViewModel.selectedBoard.value!!.id,
+                    updateBoardDTO
+                ) { updatedBoard ->
+                    if (updatedBoard != null) {
+                        uploadImagesAndNavigate(updatedBoard)
+                    } else {
+                        Timber.e("Failed to update board")
+                    }
+                }
             }
-            uploadImagesAndNavigate()
         }
     }
 
-    private fun uploadImagesAndNavigate() {
-        Timber.d(boardViewModel.selectedBoard.toString())
-        val boardId = boardViewModel.selectedBoard.value?.id
+    private fun uploadImagesAndNavigate(board: BoardDTO) {
+        Timber.tag("selectedBoard").d(board.toString())
+        val boardId = board.id
         val imageItems = imageAdapter.currentList
         val uriItems = imageItems.filterIsInstance<ImageItem.UriItem>()
         if (uriItems.isEmpty()) {
             Timber.d("uriItem isEmpty")
+            boardViewModel.clearBoards()
             findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
         } else {
             val uploadTasks = uriItems.map { item ->
                 viewLifecycleOwner.lifecycleScope.async {
-                    if (boardId != null) {
-                        imageViewModel.uploadImage(boardId, item.uri, requireContext())
-                    }
+                    Timber.d("Uploading image: ${item.uri}")
+                    imageViewModel.uploadImage(boardId, item.uri, requireContext())
                 }
             }
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    Timber.d("await")
+                    Timber.d("Awaiting upload tasks")
                     uploadTasks.awaitAll()
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to upload all images")
                 } finally {
-                    Timber.d("image upload")
+                    Timber.d("Image upload completed")
                     findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
                 }
             }
