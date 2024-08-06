@@ -46,7 +46,10 @@ public class DuplicateService {
 
         // 댓글 조회
         List<CommentDto> comments = commentRepository.findByBoardId(id).stream()
-                .map(CommentEntity::asCommentDto)
+                .map(comment ->{
+                    String url = fileService.getProfile(comment.getUserId().getUserId());
+                    return comment.asCommentDto(url);
+                })
                 .collect(Collectors.toList());
 
         // 파일 URL 조회 (게시판용)
@@ -83,7 +86,10 @@ public class DuplicateService {
 
                     // 댓글 정보 가져오기
                     List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
-                            .map(CommentEntity::asCommentDto)
+                            .map(comment ->{
+                                String url = fileService.getProfile(comment.getUserId().getUserId());
+                                return comment.asCommentDto(url);
+                            })
                             .collect(Collectors.toList());
 
                     // 파일 URL 가져오기 (게시판용)
@@ -114,7 +120,10 @@ public class DuplicateService {
 
                     // 댓글 정보 가져오기
                     List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
-                            .map(CommentEntity::asCommentDto)
+                            .map(comment ->{
+                                String url = fileService.getProfile(comment.getUserId().getUserId());
+                                return comment.asCommentDto(url);
+                            })
                             .collect(Collectors.toList());
 
                     // 파일 URL 가져오기 (게시판용)

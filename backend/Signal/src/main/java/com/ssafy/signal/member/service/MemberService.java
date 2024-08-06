@@ -2,7 +2,9 @@ package com.ssafy.signal.member.service;
 
 import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.BoardEntity;
+import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.board.domain.CommentEntity;
+import com.ssafy.signal.board.repository.CommentRepository;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.file.service.FileService;
@@ -49,6 +51,7 @@ public class MemberService implements UserDetailsService {
     private final FileRepository fileRepository;
     private final TokenBlacklistRepository tokenBlacklistRepository;
     private final FileService fileService;
+    private final CommentRepository commentRepository;
 
 
     public Boolean chekcLoginId(String loginId) {
@@ -210,27 +213,14 @@ public class MemberService implements UserDetailsService {
         memberRepository.deleteByLoginId(loginId);
     }
 
-    private BoardDto addFileUrl(BoardEntity board)
-    {
-        List<FileEntity> files = Optional.ofNullable(fileRepository
-                        .findByBoardId(board.getId()))
-                .orElse(new ArrayList<>());
-        BoardDto boardDto = board.asBoardDto();
-        boardDto.setFileUrls(new ArrayList<>());
-        for(FileEntity file : files)
-            boardDto.getFileUrls().add(file.getFileUrl());
-        return boardDto;
-    }
-
-
     //내가 쓴 글 조회
     public List<BoardDto> getMemberWithPosts(Long userId) throws Exception {
         Member member = memberRepository
                 .findById(userId)
-                .orElseThrow(()-> new Exception("Member Not found"));
+                .orElseThrow(() -> new Exception("Member Not found"));
 
         return member.getBoards().stream()
-                .map(this::addFileUrl)
+                .map(this::addFileUrlAndComments)
                 .collect(Collectors.toList());
     }
 
@@ -243,8 +233,34 @@ public class MemberService implements UserDetailsService {
         return member.getComments().stream()
                 .map(CommentEntity::getBoardEntity) // 댓글에서 게시글을 가져옴
                 .distinct() // 중복된 게시글 제거
-                .map(this::addFileUrl) // 게시글에 대한 URL 추가
+                .map(this::addFileUrlAndComments) // 게시글에 대한 URL 추가
                 .collect(Collectors.toList());
+    }
+
+    private BoardDto addFileUrlAndComments(BoardEntity boardEntity) {
+        // 파일 URL 가져오기 (게시판용)
+        List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
+
+        // 댓글 정보 가져오기
+        List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
+                .map(comment ->{
+                    String url = fileService.getProfile(comment.getUserId().getUserId());
+                    return comment.asCommentDto(url);
+                })
+                .collect(Collectors.toList());
+
+        // 게시글 작성자의 정보 가져오기
+        Member member = boardEntity.getUser();
+        String profileUrl = fileService.getProfile(member.getUserId());
+
+        findMemberDto profile = findMemberDto.builder()
+                .userId(member.getUserId())
+                .name(member.getName())
+                .profileImage(profileUrl)
+                .build();
+
+        // BoardDto 생성 및 반환
+        return boardEntity.asBoardDto(comments, fileUrls, profile);
     }
 
 }
