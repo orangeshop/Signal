@@ -8,6 +8,8 @@ import com.ongo.signal.data.model.main.BoardImagesDTO
 import com.ongo.signal.data.model.main.BoardImagesItemDTO
 import com.ongo.signal.data.repository.main.image.ImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -45,30 +47,30 @@ class ImageViewModel @Inject constructor(
         }
     }
 
-    fun uploadImage(boardId: Long, uri: Uri, context: Context) {
+    fun uploadImage(boardId: Long, uri: Uri, context: Context): Deferred<Result<String?>> = viewModelScope.async {
         Timber.d("uploadImage called with boardId: $boardId, uri: $uri")
-        viewModelScope.launch {
-            runCatching {
-                val file = createFileFromUri(uri, context)
-                Timber.d("File created: ${file.absolutePath}")
-                val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
-                imageRepository.uploadImage(boardId, body)
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    val imageUrl = response.body()?.string()
-                    if (imageUrl != null) {
-                        addImageUrlToBoard(boardId, imageUrl)
-                    }
-                    Timber.d("Image uploaded: $imageUrl")
-                } else {
-                    Timber.e("Failed to upload image: ${response.errorBody()?.string()}")
-                }
-            }.onFailure { e ->
-                Timber.e(e, "Failed to upload image")
+        runCatching {
+            val file = createFileFromUri(uri, context)
+            Timber.d("File created: ${file.absolutePath}")
+            val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+            imageRepository.uploadImage(boardId, body)
+        }.mapCatching { response ->
+            if (response.isSuccessful) {
+                val imageUrl = response.body()?.string()
+                Timber.d("Image uploaded: $imageUrl")
+                imageUrl
+            } else {
+                val error = response.errorBody()?.string()
+                Timber.e("Failed to upload image: $error")
+                null
             }
+        }.onFailure { e ->
+            Timber.e(e, "Failed to upload image")
         }
     }
+
+
 
     private fun createFileFromUri(uri: Uri, context: Context): File {
         val inputStream = context.contentResolver.openInputStream(uri)
