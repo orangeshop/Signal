@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.ImageItem
 import com.ongo.signal.data.model.main.TagDTO
@@ -133,7 +134,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     }
 
     private fun observeViewModel() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             boardViewModel.title.collectLatest { title ->
                 if (binding.etTitle.text.toString() != title) {
                     binding.etTitle.setText(title)
@@ -141,7 +142,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             boardViewModel.content.collectLatest { content ->
                 if (binding.etContent.text.toString() != content) {
                     binding.etContent.setText(content)
@@ -189,7 +190,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     fun onRegisterButtonClick() {
         val title = binding.etTitle.text.toString()
         val content = binding.etContent.text.toString()
-        val userId = boardViewModel.currentUserId
+        val userId = UserSession.userId
         val writer = "admin"
         val tags = listOf(TagDTO(tagId = selectedTagId, tag = selectedTag))
         val isChipChecked = when {
@@ -199,12 +200,14 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             else -> 0
         }.toLong()
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             if (boardViewModel.selectedBoard.value == null) {
-                val boardRequestDTO =
-                    BoardRequestDTO(userId.toLong(), writer, title, content, isChipChecked, tags)
-                boardViewModel.createBoard(boardRequestDTO)
-                Timber.d("Board created")
+                userId?.let {
+                    val boardRequestDTO =
+                        BoardRequestDTO(userId.toLong(), writer, title, content, isChipChecked, tags)
+                    boardViewModel.createBoard(boardRequestDTO)
+                    Timber.d("Board created")
+                }
             } else {
                 val updateBoardDTO = UpdateBoardDTO(title, content, isChipChecked)
                 boardViewModel.updateBoard(boardViewModel.selectedBoard.value!!.id, updateBoardDTO)
@@ -224,13 +227,13 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
         } else {
             val uploadTasks = uriItems.map { item ->
-                lifecycleScope.async {
+                viewLifecycleOwner.lifecycleScope.async {
                     if (boardId != null) {
                         imageViewModel.uploadImage(boardId, item.uri, requireContext())
                     }
                 }
             }
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     Timber.d("await")
                     uploadTasks.awaitAll()
