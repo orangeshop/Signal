@@ -12,6 +12,7 @@ public class ReviewDto {
     private long review_id;
     private long user_id;
     private String content;
+    private String name;
 
     private long writer_id;
     private int star;

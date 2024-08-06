@@ -4,6 +4,7 @@ import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.match.domain.MatchDto;
 import com.ssafy.signal.match.domain.MatchEntity;
+import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.review.domain.ReviewDto;
 import com.ssafy.signal.match.repository.MatchRepository;
 import com.ssafy.signal.review.repository.ReviewRepository;
@@ -25,6 +26,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MatchRepository matchRepository;
     private final FileRepository fileRepository;
+    private final MemberRepository memberRepository;
 
     public ReviewDto writeReview(ReviewDto reviewDto){
         Member user = Member
@@ -68,8 +70,8 @@ public class ReviewService {
 
     public List<ReviewDto> getReview(long user_id)
     {
-        FileEntity file = fileRepository.findAllByUser(
-                Member.builder().userId(user_id).build());
+        Member user = memberRepository.findById(user_id).orElseThrow();
+        FileEntity file = fileRepository.findAllByUser(user);
         String url = file == null ? "" : file.getFileUrl();
 
         return reviewRepository.findAllByUserId(Member
@@ -77,7 +79,7 @@ public class ReviewService {
                         .userId(user_id)
                         .build())
                 .stream()
-                .map(review-> review.asReviewDto(url))
+                .map(review-> review.asReviewDto(url,user.getName()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

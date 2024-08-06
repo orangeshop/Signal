@@ -53,11 +53,12 @@ public class ReviewEntity {
                 .build();
     }
 
-    public ReviewDto asReviewDto(String url){
+    public ReviewDto asReviewDto(String url,String name){
         return ReviewDto.builder()
                 .review_id(review_id)
                 .user_id(userId.getUserId())
                 .content(content)
+                .name(name)
                 .writer_id(writerId.getUserId())
                 .star(star)
                 .url(url)
