@@ -1,9 +1,11 @@
 package com.ongo.signal.ui.chat.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
@@ -45,7 +47,10 @@ class ChatHomeViewModel @Inject constructor(
 
     fun loadChats() {
         viewModelScope.launch {
-            _liveList.value = chatUseCases.loadChats().sortedByDescending { it.sendAt }
+            _liveList.value = UserSession.userId?.let { chatUseCases.loadChats(it.toLong(), ).sortedByDescending { it.sendAt } }
+//            _liveList.value =
+//                UserSession.userId?.let { chatUseCases.loadChats(it, UserSession.userId!!).sortedByDescending { it.sendAt } }
+            Log.d(TAG, "loadChats: ${liveList} ${chatRoomFromID}")
         }
     }
 

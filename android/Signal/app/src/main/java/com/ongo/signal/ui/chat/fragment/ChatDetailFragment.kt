@@ -64,7 +64,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         videoServiceRepository.startService(UserSession.userId.toString())
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "NewApi")
     override fun onResume() {
         super.onResume()
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
@@ -156,46 +156,46 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
 
-                        if (chatList.isNotEmpty() && check == false) {
-                            if (isFrom != chatList.get(chatList.lastIndex).isFromSender) {
-                                lifecycleScope.launch {
-                                    newMessage.visibility = View.VISIBLE
-                                    newMessageTv.text =
-                                        chatList.get(chatList.lastIndex).content
-                                }
-                            }
-                        }
-
-                        if (chatList.size > 1) {
+                        if (chatList.size >= 1) {
                             progressBar.progress = chatList.size
                         }
                         if (progressBar.progress == chatList.size && chatList.size != 0) {
                             progressBar.visibility = View.GONE
                         }
 
+
+
+                        /** 리스트가 채워져있고 처음이 아니라면 진입
+                         *  상대가 메시지를 보낼 시 하단에 미리 알림 띄움
+                         * */
+                        if (chatList.isNotEmpty() && check == false) {
+
+                            if (isFrom != chatList[chatList.lastIndex].isFromSender && chatDetailRv.canScrollVertically(1)) {
+                                lifecycleScope.launch {
+                                    newMessage.visibility = View.VISIBLE
+                                    newMessageTv.text =
+                                        chatList[chatList.lastIndex].content
+                                }
+                            }else if(isFrom != chatList[chatList.lastIndex].isFromSender && !chatDetailRv.canScrollVertically(1)){
+                                scrollPositionBottom()
+                            }
+                        }
+
+
                         if (chatList.isNotEmpty() && check) {
                             lifecycleScope.launch {
-                                chatDetailRv.scrollToPosition(
-                                    if (chatViewModel.getLastReadMessage(chatViewModel.chatRoomNumber) + 300 <= chatList.lastIndex) {
-                                        chatList.lastIndex
-
-                                    } else {
-                                        chatList.lastIndex
-                                    }
-                                )
+                                chatDetailRv.scrollToPosition(chatList.lastIndex)
                             }
                             check = false
                         }
 
                         if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom) {
-                            lifecycleScope.launch {
-                                chatViewModel.messageList.value?.let { it1 ->
-                                    chatDetailRv.smoothScrollToPosition(
-                                        it1.lastIndex
-                                    )
-                                }
-                            }
+                            scrollPositionBottom()
                         }
+
+//                        if (chatList.isNotEmpty() && !chatDetailRv.canScrollVertically(1)) {
+//                            scrollPositionBottom()
+//                        }
                     }
                 })
             }
@@ -209,14 +209,16 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 lifecycleScope.launch {
                     val manager = chatDetailRv.layoutManager as LinearLayoutManager
 
+
                     manager.apply {
                         val num = findLastVisibleItemPosition()
-                        delay(100)
+                        delay(500)
                         chatDetailRv.scrollToPosition(
                             if (num <= 15) 0 else num
                         )
                     }
                 }
+
                 false
             }
 
@@ -224,13 +226,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 newMessage.visibility = View.GONE
                 newMessageTv.text = ""
 
-                lifecycleScope.launch {
-                    chatViewModel.messageList.value?.let { it1 ->
-                        binding.chatDetailRv.smoothScrollToPosition(
-                            it1.lastIndex
-                        )
-                    }
-                }
+                scrollPositionBottom()
             }
 
             chatDetailBtn.setOnClickListener {
@@ -252,6 +248,16 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             chatDetailAdd.setOnClickListener {
                 playWebRtc()
+            }
+        }
+    }
+
+    fun scrollPositionBottom() {
+        lifecycleScope.launch {
+            chatViewModel.messageList.value?.let { it1 ->
+                binding.chatDetailRv.smoothScrollToPosition(
+                    it1.lastIndex
+                )
             }
         }
     }
