@@ -5,16 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ongo.signal.R
 import com.ongo.signal.data.model.main.CommentDTOItem
 import com.ongo.signal.databinding.ItemCommentBinding
-import com.ongo.signal.util.BindingAdapters
-import timber.log.Timber
 
 class CommentAdapter(
     private val onCommentEditClick: (CommentDTOItem) -> Unit,
     private val onCommentDeleteClick: (CommentDTOItem) -> Unit,
-    private val currentUserId: Int
+    private val currentUserId: Long
 ) :
     ListAdapter<CommentDTOItem, CommentAdapter.ViewHolder>(DiffUtilCallback()) {
 
@@ -26,8 +23,6 @@ class CommentAdapter(
             binding.tvEditComment.setOnClickListener { onCommentEditClick(comment) }
             binding.tvDeleteComment.setOnClickListener { onCommentDeleteClick(comment) }
             binding.executePendingBindings()
-
-            Timber.d("Binding comment with ID: ${comment.id}, URL: ${comment.url}")
         }
     }
 
