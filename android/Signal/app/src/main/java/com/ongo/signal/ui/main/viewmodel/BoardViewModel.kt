@@ -52,7 +52,7 @@ class BoardViewModel @Inject constructor(
         loadBoards()
     }
 
-    fun loadBoards() {
+    private fun loadBoards() {
         viewModelScope.launch {
             Pager(
                 config = PagingConfig(
@@ -180,6 +180,8 @@ class BoardViewModel @Inject constructor(
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     Timber.d("Board deleted")
+                    loadBoards()
+                    loadHotBoards()
                     clearBoards()
                 } else {
                     Timber.e("Failed to delete board: ${response.errorBody()?.string()}")
