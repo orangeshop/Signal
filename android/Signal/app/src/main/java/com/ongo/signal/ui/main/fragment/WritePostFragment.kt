@@ -150,6 +150,20 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            boardViewModel.selectedBoard.collectLatest { selectedBoard ->
+                selectedBoard?.let {
+                    val imageUrls = it.imageUrls
+                    if (imageUrls != null) {
+                        if (imageUrls.isNotEmpty()) {
+                            val imageItems = imageUrls.map { url -> ImageItem.UrlItem(url) }
+                            imageAdapter.submitList(imageItems)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun setupListeners() {
@@ -250,19 +264,24 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             val uploadTasks = uriItems.map { item ->
                 viewLifecycleOwner.lifecycleScope.async {
                     Timber.d("Uploading image: ${item.uri}")
-                    imageViewModel.uploadImage(boardId, item.uri, requireContext())
+                    imageViewModel.uploadImage(boardId, item.uri, requireContext()).await()
                 }
             }
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     Timber.d("Awaiting upload tasks")
-                    uploadTasks.awaitAll()
+                    val results = uploadTasks.awaitAll()
+                    val failedUploads = results.filter { it.isFailure }
+                    if (failedUploads.isNotEmpty()) {
+                        Timber.e("One or more images failed to upload")
+                    } else {
+                        val imageUrls = results.mapNotNull { it.getOrNull() }
+                        Timber.d("All images uploaded successfully: $imageUrls")
+                        boardViewModel.clearBoards()
+                        findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
+                    }
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to upload all images")
-                } finally {
-                    Timber.d("Image upload completed")
-                    boardViewModel.clearBoards()
-                    findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
                 }
             }
         }
