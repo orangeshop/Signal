@@ -13,6 +13,7 @@ data class BoardDTO(
     val modifiedDate: String? = null,
     val reference: Long = 0,
     val title: String,
+    val member: MemberDTO,
     val type: Long? = 0,
     val userId: Long,
     val writer: String,
@@ -21,10 +22,6 @@ data class BoardDTO(
 ) {
     fun getFormattedCreatedDate(): String? {
         return createdDate?.let { formatDate(it) }
-    }
-
-    fun getFormattedModifiedDate(): String? {
-        return modifiedDate?.let { formatDate(it) }
     }
 
     private fun formatDate(dateTime: String): String {
