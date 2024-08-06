@@ -113,8 +113,14 @@ public class ChatService {
                 .asChatRoomDto();
 
         Member from = makeMember(chat.getFrom_id());
+        Member to = makeMember(chat.getTo_id());
 
-        firebaseService.sendMessageTo(chat.getTo_id(), from.getName(),messageDto.getContent(),0);
+        boolean isFromSender = messageDto.getIs_from_sender();
+
+        long destUserId = isFromSender ? to.getUserId() : from.getUserId();
+        String destUserName = isFromSender ? to.getName() : from.getName();
+
+        firebaseService.sendMessageTo(destUserId, destUserName,messageDto.getContent(),0);
     }
 
     private Member makeMember(long user_id){
