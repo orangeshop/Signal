@@ -8,7 +8,7 @@ import retrofit2.Response
 
 interface CommentRepository {
 
-    suspend fun readComments(boardId: Int): Response<CommentDTO>
+    suspend fun readComments(boardId: Long): Response<CommentDTO>
     suspend fun writeComment(boardId: Long, commentDto: CommentDTOItem): Response<CommentDTOItem>
     suspend fun updateComment(
         boardId: Long,
