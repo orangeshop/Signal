@@ -20,14 +20,21 @@ class CommentViewModel @Inject constructor(
     private val _comments = MutableStateFlow(CommentDTO())
     val comments: StateFlow<CommentDTO> = _comments
 
+    private var onCommentChanged: ((Long) -> Unit)? = null
+
+    fun setOnCommentChangedListener(listener: (Long) -> Unit) {
+        onCommentChanged = listener
+    }
+
     fun loadComments(boardId: Long) {
         viewModelScope.launch {
             runCatching {
                 commentRepository.readComments(boardId)
             }.onSuccess { response ->
                 if (response.isSuccessful) {
-                    _comments.value = response.body() ?: CommentDTO()
-                    Timber.d(response.body().toString())
+                    val comments = response.body() ?: CommentDTO()
+                    _comments.value = comments
+                    Timber.tag("load comment").d(response.body().toString())
                 } else {
                     Timber.e("Failed to load comments: ${response.errorBody()?.string()}")
                 }
@@ -44,6 +51,7 @@ class CommentViewModel @Inject constructor(
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     loadComments(commentDto.boardId)
+                    onCommentChanged?.invoke(commentDto.boardId)
                     Timber.d("Comment created: ${response.body()}")
                 } else {
                     Timber.e("Failed to create comment: ${response.errorBody()?.string()}")
@@ -78,6 +86,7 @@ class CommentViewModel @Inject constructor(
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     loadComments(boardId)
+                    onCommentChanged?.invoke(boardId)
                     Timber.d("Comment deleted")
                 } else {
                     Timber.e("Failed to delete comment: ${response.errorBody()?.string()}")
