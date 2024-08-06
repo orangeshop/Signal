@@ -23,11 +23,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.FragmentMainBinding
 import com.ongo.signal.ui.main.adapter.TagAdapter
 import com.ongo.signal.ui.main.adapter.TodayPostAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.ui.main.viewmodel.CommentViewModel
 import com.ongo.signal.util.KeyboardUtils
 import com.ongo.signal.util.STTHelper
 import com.ongo.signal.util.SpannableStringUtils
@@ -43,6 +45,7 @@ import timber.log.Timber
 class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     private val boardViewModel: BoardViewModel by activityViewModels()
+    private val commentViewModel: CommentViewModel by activityViewModels()
     private lateinit var todayPostAdapter: TodayPostAdapter
     private lateinit var firstTagAdapter: TagAdapter
     private lateinit var secondTagAdapter: TagAdapter
@@ -72,22 +75,29 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
         observeBoards()
         observeHotSignalBoards()
+        observeComments()
 
         startFlippingViews()
+        Timber.tag("userId").d(UserSession.userId.toString())
+    }
+
+    private fun observeComments() {
+        commentViewModel.setOnCommentChangedListener { boardId ->
+            boardViewModel.updateBoardCommentCount(boardId)
+        }
     }
 
     private fun observeBoards() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             boardViewModel.items.collectLatest { newBoards ->
                 Timber.d("New boards received: $newBoards")
                 todayPostAdapter.submitData(newBoards)
-//                updateTagAdapters(newBoards)
             }
         }
     }
 
     private fun observeHotSignalBoards() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             boardViewModel.hotBoards.collectLatest { newHotBoards ->
                 Timber.d("MainFragment - New hot signal boards received: $newHotBoards")
                 if (isAdded && view != null) {
@@ -168,7 +178,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private fun updateTagAdapters(newBoards: List<BoardDTO>) {
         if (newBoards.isNotEmpty()) {
             val firstBoardTags = newBoards.getOrNull(0)?.tags ?: emptyList()
-            Timber.d("First board tags: $firstBoardTags")
+            firstTagAdapter.submitList(firstBoardTags)
             val secondBoardTags = newBoards.getOrNull(1)?.tags ?: emptyList()
             secondTagAdapter.submitList(secondBoardTags)
             val thirdBoardTags = newBoards.getOrNull(2)?.tags ?: emptyList()
@@ -195,7 +205,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 if (isAdded && view != null) {
                     flipViews()
                 }
-
                 handler.postDelayed(this, flipInterval)
             }
         }, flipInterval)
@@ -207,7 +216,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             flipView(it.tvSecondTitle, it.rvSecond, 1)
             flipView(it.tvThirdTitle, it.rvThird, 2)
         }
-
     }
 
     private fun flipView(titleView: View, recyclerView: RecyclerView, position: Int) {
@@ -295,6 +303,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         todayPostAdapter = TodayPostAdapter(
             onItemClicked = { board ->
                 boardViewModel.selectBoard(board)
+                Timber.d(boardViewModel.selectedBoard.toString())
                 findNavController().navigate(R.id.action_mainFragment_to_postFragment)
             },
             onTTSClicked = { content ->
@@ -341,7 +350,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             getString(R.string.signal),
             "#64FFCE"
         )
-
 
         binding?.tvHotSignal?.text = hotSpannable
         binding?.tvTodaySignal?.text = todaySpannable
