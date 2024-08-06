@@ -81,6 +81,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
+                android:id="@+id/chat_detail_add"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/baseline_add_mint_24" />

@@ -122,7 +122,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
 
-            binding.chatDetailRv.adapter = chatDetailAdapter
+            chatDetailRv.adapter = chatDetailAdapter
             var check = true
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
@@ -135,8 +135,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         if (chatList.isNotEmpty() && check == false) {
                             if (isFrom != chatList.get(chatList.lastIndex).isFromSender) {
                                 lifecycleScope.launch {
-                                    binding.newMessage.visibility = View.VISIBLE
-                                    binding.newMessageTv.text =
+                                    newMessage.visibility = View.VISIBLE
+                                    newMessageTv.text =
                                         chatList.get(chatList.lastIndex).content
                                 }
                             }
@@ -151,7 +151,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         if (chatList.isNotEmpty() && check) {
                             lifecycleScope.launch {
-                                binding.chatDetailRv.scrollToPosition(
+                                chatDetailRv.scrollToPosition(
                                     if (chatViewModel.getLastReadMessage(chatViewModel.chatRoomNumber) + 300 <= chatList.lastIndex) {
                                         chatList.lastIndex
 
@@ -166,7 +166,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom) {
                             lifecycleScope.launch {
                                 chatViewModel.messageList.value?.let { it1 ->
-                                    binding.chatDetailRv.smoothScrollToPosition(
+                                    chatDetailRv.smoothScrollToPosition(
                                         it1.lastIndex
                                     )
                                 }
@@ -183,12 +183,12 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 etSearch.setSelection(etSearch.text.length)
 
                 lifecycleScope.launch {
-                    val manager = binding.chatDetailRv.layoutManager as LinearLayoutManager
+                    val manager = chatDetailRv.layoutManager as LinearLayoutManager
 
                     manager.apply {
                         val num = findLastVisibleItemPosition()
                         delay(100)
-                        binding.chatDetailRv.scrollToPosition(
+                        chatDetailRv.scrollToPosition(
                             if (num <= 15) 0 else num
                         )
                     }
@@ -196,9 +196,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 false
             }
 
-            binding.newMessage.setOnClickListener {
-                binding.newMessage.visibility = View.GONE
-                binding.newMessageTv.text = ""
+            newMessage.setOnClickListener {
+                newMessage.visibility = View.GONE
+                newMessageTv.text = ""
 
                 lifecycleScope.launch {
                     chatViewModel.messageList.value?.let { it1 ->
@@ -209,21 +209,25 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 }
             }
 
-            binding.chatDetailBtn.setOnClickListener {
-                if (binding.etSearch.text.toString() != "") {
+            chatDetailBtn.setOnClickListener {
+                if (etSearch.text.toString() != "") {
                     val message = ChatHomeChildDTO(
                         0,
                         chatViewModel.chatRoomNumber,
                         chatViewModel.chatRoomFromID == UserSession.userId,
-                        binding.etSearch.text.toString(),
+                        etSearch.text.toString(),
                         false,
                         chatViewModel.timeSetting(Date(System.currentTimeMillis()).toString(), 1)
                     )
 
-                    binding.etSearch.text.clear()
+                    etSearch.text.clear()
 
                     chatViewModel.stompSend(message) {}
                 }
+            }
+
+            chatDetailAdd.setOnClickListener {
+                webRtc()
             }
         }
     }
@@ -231,12 +235,12 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     fun loading() {
         lifecycleScope.launch {
             binding.chatDetailRv.visibility = View.GONE
-
-
-
-//            binding.progressBar.visibility = View.GONE
             binding.chatDetailRv.visibility = View.VISIBLE
         }
+    }
+
+    fun webRtc(){
+
     }
 
     override fun onPause() {
