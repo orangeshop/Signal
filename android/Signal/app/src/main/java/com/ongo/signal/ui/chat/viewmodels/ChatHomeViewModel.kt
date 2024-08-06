@@ -10,6 +10,9 @@ import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 import com.ongo.signal.data.repository.chat.ChatUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.time.ZoneId
@@ -31,8 +34,6 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageList = MutableLiveData<List<ChatHomeChildDTO>>()
     val messageList: LiveData<List<ChatHomeChildDTO>> = _messageList
 
-//    private val _messageList = MutableLiveData<List<List<ChatHomeChildDTO>>>()
-//    val messageList: LiveData<List<List<ChatHomeChildDTO>>> = _messageList
 
     var chatRoomNumber : Long = 0
     var chatRoomFromID : Long = 0
@@ -68,27 +69,11 @@ class ChatHomeViewModel @Inject constructor(
      *
      **/
 
-    fun loadDetailList(id: Long, loading: Long = 100) {
-        viewModelScope.launch {
-            _messageList.value = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
+    suspend fun loadDetailList(id: Long, loading: Long = 100) {
+        CoroutineScope(Dispatchers.IO).launch {
+//            _messageList.value = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
+            _messageList.postValue( chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId })
         }
-
-//        val updatedMessages = mutableListOf<List<ChatHomeChildDTO>>()
-//        val listSize = liveList.value?.size ?: 0
-//        viewModelScope.launch {
-//            for (i in 0 until listSize) {
-//                val details = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
-//                updatedMessages.add(details)
-//            }
-//        }
-//
-//        _messageList.value = updatedMessages
-
-
-//        viewModelScope.launch {
-//            _messageList.value = chatUseCases.loadDetailListNoId(loading).sortedBy { it.messageId }
-//        }
-
     }
 
     fun readMessage(id: Long){
@@ -148,7 +133,9 @@ class ChatHomeViewModel @Inject constructor(
     fun stompGet(chatRoomNumber: Long) {
         viewModelScope.launch {
             chatUseCases.stompGet(chatRoomNumber){ id ->
-                loadDetailList(id)
+                viewModelScope.launch {
+                    loadDetailList(id)
+                }
             }
         }
     }
@@ -187,7 +174,7 @@ class ChatHomeViewModel @Inject constructor(
 
 
 //        Log.d(TAG, "timeSetting: ${time}")
-        
+
         // DateTimeFormatter을 사용하여 입력된 날짜 문자열을 ZonedDateTime 객체로 파싱
         val inputFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
         val zonedDateTime = ZonedDateTime.parse(time, inputFormatter)

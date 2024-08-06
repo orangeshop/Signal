@@ -27,7 +27,6 @@ class ChatDetailAdapter(
 
             binding.today.visibility = View.GONE
 
-
             binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
             binding.today.text = timeSetting(item.sendAt, 2)
 
@@ -35,6 +34,7 @@ class ChatDetailAdapter(
             binding.chatDetailItemTv.text = item.content
             binding.chatOtherReadTv.text = if(item.isRead == false) "1" else ""
             binding.chatOtherTimeTv.text = timeSetting(item.sendAt, 1)
+
         }
     }
 
@@ -51,6 +51,7 @@ class ChatDetailAdapter(
 
             binding.chatDetailItemMeTv.text = item.content
             binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt, 1)
+
         }
     }
 

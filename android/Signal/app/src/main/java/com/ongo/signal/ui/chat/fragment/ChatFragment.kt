@@ -55,7 +55,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     chatViewModel.chatRoomToID = it.toId
                     UserSession.userId
 
-                    chatViewModel.loadDetailList(it.chatId)
+                    lifecycleScope.launch {
+                        chatViewModel.loadDetailList(it.chatId)
+                    }
+
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {
