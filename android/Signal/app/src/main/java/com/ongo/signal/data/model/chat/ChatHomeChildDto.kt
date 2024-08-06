@@ -15,7 +15,7 @@ data class ChatHomeChildDTO(
 
     @SerializedName("content") val content: String,
 
-    @SerializedName("is_read") val isRead: Boolean,
+    @SerializedName("is_read") var isRead: Boolean,
 
     @SerializedName("send_at") var sendAt: String // 날짜를 문자열로 직렬화
 )

@@ -8,22 +8,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
-import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.ChatDetailItemBinding
-import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf.Visibility
 
 private const val TAG = "ChatDetailAdapter_싸피"
 
 class ChatDetailAdapter(
     private val timeSetting: (item: String, target : Int) -> String,
     private val todaySetting: (id: Long,item: Long, time: String) -> Boolean,
-    private val temp : Long
+    private val fromID : Long
 ) : ListAdapter<ChatHomeChildDTO, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: ChatHomeChildDTO){
-
-
 
             binding.chatDetailItemMeTv.visibility = View.GONE
             binding.chatOtherReadMeTv.visibility = View.GONE
@@ -31,14 +27,14 @@ class ChatDetailAdapter(
 
             binding.today.visibility = View.GONE
 
-
             binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
             binding.today.text = timeSetting(item.sendAt, 2)
 
 
-            binding.chatDetailItemTv.text = item.content+ item.messageId
+            binding.chatDetailItemTv.text = item.content
             binding.chatOtherReadTv.text = if(item.isRead == false) "1" else ""
             binding.chatOtherTimeTv.text = timeSetting(item.sendAt, 1)
+
         }
     }
 
@@ -53,11 +49,10 @@ class ChatDetailAdapter(
             binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
             binding.today.text = timeSetting(item.sendAt, 2)
 
-            binding.chatDetailItemMeTv.text = item.content + item.messageId
+            binding.chatDetailItemMeTv.text = item.content
             binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt, 1)
+
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -81,7 +76,7 @@ class ChatDetailAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val isFrom = UserSession.userId == temp
+        val isFrom = UserSession.userId == fromID
         return if(isFrom == getItem(position).isFromSender) RIGHT else LEFT
     }
 
