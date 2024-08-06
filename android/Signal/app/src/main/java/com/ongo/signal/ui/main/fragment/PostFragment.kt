@@ -1,8 +1,6 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.content.Context
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -10,15 +8,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.main.BoardDTO
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.CommentDTOItem
 import com.ongo.signal.data.model.main.CommentRequestDTO
 import com.ongo.signal.databinding.FragmentPostBinding
-import com.ongo.signal.ui.main.viewmodel.BoardViewModel
-import com.ongo.signal.ui.main.viewmodel.CommentViewModel
 import com.ongo.signal.ui.main.adapter.ChipAdapter
 import com.ongo.signal.ui.main.adapter.CommentAdapter
 import com.ongo.signal.ui.main.adapter.PostImageAdapter
+import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.ui.main.viewmodel.CommentViewModel
 import com.ongo.signal.util.KeyboardUtils
 import com.ongo.signal.util.PopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,22 +37,25 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private var selectedCommentId: Long? = null
 
     override fun init() {
-        binding.boardViewModel = boardViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
+        binding.apply {
+            boardViewModel = this@PostFragment.boardViewModel
+            userSession = UserSession
+            fragment = this@PostFragment
+        }
 
         setupAdapters()
         observeViewModelData()
         loadInitialData()
-
-        binding.fragment = this
     }
 
     private fun setupAdapters() {
-        commentAdapter = CommentAdapter(
-            onCommentEditClick = ::onCommentEditClick,
-            onCommentDeleteClick = ::onCommentDeleteClick,
-            currentUserId = boardViewModel.currentUserId
-        )
+        commentAdapter = UserSession.userId?.let {
+            CommentAdapter(
+                onCommentEditClick = ::onCommentEditClick,
+                onCommentDeleteClick = ::onCommentDeleteClick,
+                currentUserId = it
+            )
+        }!!
         chipAdapter = ChipAdapter()
         imageAdapter = PostImageAdapter()
 
@@ -64,8 +65,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         }
 
         binding.rvChip.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = chipAdapter
         }
 
@@ -76,19 +76,26 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     private fun observeViewModelData() {
-        lifecycleScope.launch {
-            boardViewModel.selectedBoardDetail.collectLatest { board ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            boardViewModel.selectedBoard.collectLatest { board ->
                 board?.let {
                     Timber.d("BoardDetailDTO received in fragment: $it")
-                    imageAdapter.submitList(it.fileUrls)
-                    chipAdapter.submitList(it.tags)
+                    binding.let { binding ->
+                        imageAdapter.submitList(it.imageUrls)
+                        chipAdapter.submitList(it.tags)
+                        binding.tvComment.text = it.comments?.size?.toString() ?: "0"
+                    }
                 }
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             commentViewModel.comments.collectLatest { comments ->
-                commentAdapter.submitList(comments)
+                binding.let { binding ->
+                    Timber.tag("comments").d("submit")
+                    commentAdapter.submitList(comments)
+                    binding.tvComment.text = comments.size.toString()
+                }
             }
         }
     }
@@ -122,7 +129,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private fun onCommentEditClick(comment: CommentDTOItem) {
         selectedCommentId = comment.id
         binding.etComment.setText(comment.content)
-        KeyboardUtils.showKeyboard(binding.etComment)
+        binding.etComment.let { KeyboardUtils.showKeyboard(it) }
     }
 
     private fun onCommentDeleteClick(comment: CommentDTOItem) {
@@ -131,27 +138,38 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     fun createComment() {
-        val content = binding.etComment.text.toString()
-        val writer = "홍길동"
-        val boardId = boardViewModel.selectedBoard.value?.id ?: return
-        val userId = boardViewModel.currentUserId
+        binding.let { binding ->
+            val content = binding.etComment.text.toString()
+            val writer = "홍길동"
+            val boardId = boardViewModel.selectedBoard.value?.id ?: return
+            val userId = UserSession.userId
 
-        if (selectedCommentId != null) {
-            val commentRequest = CommentRequestDTO(boardId, userId.toLong(), content)
-            commentViewModel.updateComment(boardId, selectedCommentId!!, commentRequest)
-            selectedCommentId = null
-        } else {
-            commentViewModel.createComment(
-                CommentDTOItem(
-                    boardId = boardId,
-                    userId = userId.toLong(),
-                    writer = writer,
-                    content = content
-                )
-            )
+            if (content.isEmpty()) {
+                makeToast("댓글을 입력해주세요.")
+            } else {
+                if (selectedCommentId != null) {
+                    val commentRequest = userId?.let { CommentRequestDTO(boardId, it, content) }
+                    if (commentRequest != null) {
+                        commentViewModel.updateComment(boardId, selectedCommentId!!, commentRequest)
+                    }
+                    selectedCommentId = null
+                } else {
+                    if (userId != null) {
+                        commentViewModel.createComment(
+                            CommentDTOItem(
+                                boardId = boardId,
+                                userId = userId.toLong(),
+                                writer = writer,
+                                content = content
+                            )
+                        )
+                    }
+                }
+                binding.etComment.text.clear()
+            }
+
+            KeyboardUtils.hideKeyboard(binding.etComment)
         }
-        binding.etComment.text.clear()
-        KeyboardUtils.hideKeyboard(binding.etComment)
     }
 
     fun onProfileClick() {
