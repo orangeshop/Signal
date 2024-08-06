@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.ReviewViewModel
@@ -36,6 +37,22 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         }
 
         loadReviews()
+    }
+
+    fun makeChat() {
+        val writerId = boardViewModel.selectedBoard.value?.userId
+        val userId = UserSession.userId
+
+        if (userId != null) {
+            if (writerId != null) {
+                CreateChatRoom.Create(userId, writerId)
+                findNavController().navigate(R.id.action_reviewFragment_to_chatFragment)
+            } else {
+                Timber.d("writerId is null")
+            }
+        } else {
+            Timber.d("userId is null")
+        }
     }
 
     private fun loadReviews() {
