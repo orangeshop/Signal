@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match){
+class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
 
     private lateinit var radarView: RadarView
     private val checker = PermissionChecker(this)
@@ -95,11 +95,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     toId = viewModel.otherUserId!!,
                     1
                 ) {
-                    UserSession.userId?.let { nowId ->
-                        viewModel.otherUserId?.let { otherId ->
-                            CreateChatRoom.Create(nowId, otherId)
-                            findNavController().navigate(R.id.action_matchFragment_to_chatFragment)
-                        }
+                    viewModel.otherUserId?.let { otherId ->
+                        CreateChatRoom.Create(userId, otherId)
+                        findNavController().navigate(R.id.action_matchFragment_to_chatFragment)
                     }
 
                     dialog.dismiss()
@@ -253,7 +251,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.locationId?.let{
+        viewModel.locationId?.let {
             viewModel.deleteMatchRegistration(it)
         }
         radarView.stop()

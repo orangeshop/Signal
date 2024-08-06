@@ -33,7 +33,7 @@ object CreateChatRoom {
     // Retrofit 인스턴스를 제공하는 객체
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://192.168.100.95:8080/") // API 서버의 기본 URL
+            .baseUrl("http://13.125.47.74:8080/") // API 서버의 기본 URL
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
