@@ -4,12 +4,14 @@ import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.board.domain.CommentEntity;
+import com.ssafy.signal.board.repository.CommentRepository;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.member.domain.Member;
-import com.ssafy.signal.member.dto.MemberDetailDto;
+import com.ssafy.signal.member.dto.LoginDto;
 import com.ssafy.signal.member.dto.MyProfileDto;
+import com.ssafy.signal.member.dto.MypageUpdateDto;
 import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
@@ -49,6 +51,7 @@ public class MemberService implements UserDetailsService {
     private final FileRepository fileRepository;
     private final TokenBlacklistRepository tokenBlacklistRepository;
     private final FileService fileService;
+    private final CommentRepository commentRepository;
 
 
     public Boolean chekcLoginId(String loginId) {
@@ -61,7 +64,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public Member saveMember(Member member) {
-//        checkPasswordStrength(member.getPassword());
+        checkPasswordStrength(member.getPassword());
 
         if (memberRepository.existsByLoginId(member.getLoginId())) {
             log.info("이미 등록된 아이디 = {}", member.getLoginId());
@@ -83,9 +86,18 @@ public class MemberService implements UserDetailsService {
         try {
             Member member = findMemberByLoginId(loginId);
 
+            LoginDto member1 = LoginDto.builder()
+                    .userId(member.getUserId())
+                    .loginId(member.getLoginId())
+                    .password(member.getPassword())
+                    .type(member.getType())
+                    .name(member.getName())
+                    .comment(member.getComment() == null? "" : member.getComment())
+                    .build();
+
             checkPassword(password, member);
 
-            return tokenProvider.createToken(member);
+            return tokenProvider.createToken(member1);
         } catch (IllegalArgumentException | BadCredentialsException exception) {
 //            throw new IllegalArgumentException("계정이 존재하지 않거나 비밀번호가 잘못되었습니다.");
 
@@ -120,10 +132,11 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public Member updateMember(Long userId, Member updatedMember) {
+    public MypageUpdateDto updateMember(Long userId, Member updatedMember) {
         Member existingMember = memberRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
 
         if (updatedMember.getPassword() != null && !updatedMember.getPassword().isEmpty()) {
+            // checkPasswordStrength(updatedMember.getPassword());
             existingMember.setPassword(passwordEncoder.encode(updatedMember.getPassword()));
         }
         if (updatedMember.getType() != null && !updatedMember.getType().isEmpty()) {
@@ -135,8 +148,16 @@ public class MemberService implements UserDetailsService {
         if (updatedMember.getComment() != null && !updatedMember.getComment().isEmpty()) {
             existingMember.setComment(updatedMember.getComment());
         }
+        Member member1 = memberRepository.save(existingMember);
 
-        return memberRepository.save(existingMember);
+        return MypageUpdateDto.builder()
+                .userId(member1.getUserId())
+                .loginId(member1.getLoginId())
+                .password(member1.getPassword())
+                .name(member1.getName())
+                .type(member1.getType())
+                .comment(member1.getComment())
+                .build();
     }
 
     public MyProfileDto getUserInfo(String loginId) {
@@ -146,10 +167,10 @@ public class MemberService implements UserDetailsService {
         return MyProfileDto.builder()
                 .userId(myProfile.getUserId())
                 .loginId(myProfile.getLoginId())
-                .password(myProfile.getPassword())
                 .type(myProfile.getType())
                 .name(myProfile.getName())
                 .profileImage(url)
+                .comment(myProfile.getComment() == null? "" : myProfile.getComment())
                 .build();
     }
 
@@ -192,27 +213,14 @@ public class MemberService implements UserDetailsService {
         memberRepository.deleteByLoginId(loginId);
     }
 
-    private BoardDto addFileUrl(BoardEntity board)
-    {
-        List<FileEntity> files = Optional.ofNullable(fileRepository
-                        .findByBoardId(board.getId()))
-                .orElse(new ArrayList<>());
-        BoardDto boardDto = board.asBoardDto();
-        boardDto.setFileUrls(new ArrayList<>());
-        for(FileEntity file : files)
-            boardDto.getFileUrls().add(file.getFileUrl());
-        return boardDto;
-    }
-
-
     //내가 쓴 글 조회
     public List<BoardDto> getMemberWithPosts(Long userId) throws Exception {
         Member member = memberRepository
                 .findById(userId)
-                .orElseThrow(()-> new Exception("Member Not found"));
+                .orElseThrow(() -> new Exception("Member Not found"));
 
         return member.getBoards().stream()
-                .map(this::addFileUrl)
+                .map(this::addFileUrlAndComments)
                 .collect(Collectors.toList());
     }
 
@@ -225,8 +233,34 @@ public class MemberService implements UserDetailsService {
         return member.getComments().stream()
                 .map(CommentEntity::getBoardEntity) // 댓글에서 게시글을 가져옴
                 .distinct() // 중복된 게시글 제거
-                .map(this::addFileUrl) // 게시글에 대한 URL 추가
+                .map(this::addFileUrlAndComments) // 게시글에 대한 URL 추가
                 .collect(Collectors.toList());
+    }
+
+    private BoardDto addFileUrlAndComments(BoardEntity boardEntity) {
+        // 파일 URL 가져오기 (게시판용)
+        List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
+
+        // 댓글 정보 가져오기
+        List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
+                .map(comment ->{
+                    String url = fileService.getProfile(comment.getUserId().getUserId());
+                    return comment.asCommentDto(url);
+                })
+                .collect(Collectors.toList());
+
+        // 게시글 작성자의 정보 가져오기
+        Member member = boardEntity.getUser();
+        String profileUrl = fileService.getProfile(member.getUserId());
+
+        findMemberDto profile = findMemberDto.builder()
+                .userId(member.getUserId())
+                .name(member.getName())
+                .profileImage(profileUrl)
+                .build();
+
+        // BoardDto 생성 및 반환
+        return boardEntity.asBoardDto(comments, fileUrls, profile);
     }
 
 }

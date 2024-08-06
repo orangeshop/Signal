@@ -4,21 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="⭐feat : access token">
-      <change afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MyProfileDto.java" afterDir="false" />
+    <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/DuplicateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/DuplicateService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ChangesViewManager">
-    <option name="groupingKeys">
-      <option value="directory" />
-    </option>
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$/backend/Signal">
@@ -38,11 +32,6 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="Signal" type="f1a62948:ProjectNode" />
               </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="Signal" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
             </expand>
             <select />
           </tree_state>
@@ -53,30 +42,18 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JUnit5 Test Class" />
-        <option value="package-info" />
-        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="S11P12D211-85-member-model" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
-  <component name="KubernetesApiPersistence">{}</component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 7
 }</component>
-  <component name="ProjectId" id="2jGU3SXNxnXPOJWAgsCgngfgHhz" />
+  <component name="ProjectId" id="2kEL7KgfXXXsxE1zXNggnS5DNEx" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -84,140 +61,21 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Application.SignalApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Signal [:SignalApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Signal [bootJar].executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MemberControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TokenProviderTest.createToken.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TokenProviderTest.validateTokenNotValid.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TokenProviderTest.validateTokenValid.executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;Spring Boot.SignalApplication.executor&quot;: &quot;Run&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;member&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/S11P12D211&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-  },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mariadb&quot;
-    ]
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\SSAFY\Desktop\S11P12D211\backend\Signal" />
-      <recent name="C:\Users\SSAFY\Desktop\S11P12D211\backend\Signal\src\main\java\com\ssafy\signal" />
-    </key>
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="com.ssafy.signal.member.jwt.token" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Spring Boot.SignalApplication">
-    <configuration name="SignalApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.SignalApplication" />
-      <module name="Signal.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Signal [bootJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/backend/Signal" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="bootJar" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="TokenProviderTest.createToken" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Signal.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.member.jwt.filter.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.ssafy.signal.member.jwt.token" />
-      <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.member.jwt.token.TokenProviderTest" />
-      <option name="METHOD_NAME" value="createToken" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TokenProviderTest.validateTokenNotValid" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Signal.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.member.jwt.filter.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.ssafy.signal.member.jwt.token" />
-      <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.member.jwt.token.TokenProviderTest" />
-      <option name="METHOD_NAME" value="validateTokenNotValid" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TokenProviderTest.validateTokenValid" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Signal.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.ssafy.signal.member.jwt.filter.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.ssafy.signal.member.jwt.token" />
-      <option name="MAIN_CLASS_NAME" value="com.ssafy.signal.member.jwt.token.TokenProviderTest" />
-      <option name="METHOD_NAME" value="validateTokenValid" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="SignalApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Signal.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssafy.signal.SignalApplication" />
@@ -225,21 +83,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Gradle.Signal [bootJar]" />
-        <item itemvalue="Application.SignalApplication" />
-        <item itemvalue="JUnit.TokenProviderTest.validateTokenNotValid" />
-        <item itemvalue="JUnit.TokenProviderTest.validateTokenValid" />
-        <item itemvalue="JUnit.TokenProviderTest.createToken" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -252,128 +95,17 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="0dc3a6cc-ff20-415c-b718-4a74eacb1740" name="Changes" comment="" />
-      <created>1721012707404</created>
+      <changelist id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="" />
+      <created>1722846618323</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1721012707404</updated>
-      <workItem from="1721178036953" duration="24608000" />
-      <workItem from="1721260417880" duration="25130000" />
-      <workItem from="1721346757460" duration="22415000" />
-      <workItem from="1721697192426" duration="11902000" />
-      <workItem from="1721782639577" duration="1977000" />
-      <workItem from="1721786471611" duration="10613000" />
-      <workItem from="1721871745913" duration="12184000" />
-      <workItem from="1721893175335" duration="2221000" />
-      <workItem from="1721952911018" duration="603000" />
-      <workItem from="1721962940052" duration="982000" />
-      <workItem from="1721965763684" duration="780000" />
-      <workItem from="1722305912021" duration="13000" />
-      <workItem from="1722500622964" duration="679000" />
-      <workItem from="1722557442297" duration="4739000" />
-      <workItem from="1722569135262" duration="9502000" />
-      <workItem from="1722581592654" duration="6736000" />
-      <workItem from="1722815436410" duration="3238000" />
+      <updated>1722846618323</updated>
+      <workItem from="1722846618976" duration="745000" />
+      <workItem from="1722904748852" duration="4032000" />
     </task>
-    <task id="LOCAL-00001" summary="⭐feat : member model">
-      <option name="closed" value="true" />
-      <created>1721017733784</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1721017733784</updated>
-    </task>
-    <task id="LOCAL-00002" summary="⭐feat : member model">
-      <option name="closed" value="true" />
-      <created>1721017907880</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1721017907880</updated>
-    </task>
-    <task id="LOCAL-00003" summary="⭐feat : member model">
-      <option name="closed" value="true" />
-      <created>1721018117899</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1721018117899</updated>
-    </task>
-    <task id="LOCAL-00004" summary="⭐feat : 유저 전체 설계">
-      <option name="closed" value="true" />
-      <created>1721116744842</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1721116744842</updated>
-    </task>
-    <task id="LOCAL-00005" summary="⭐feat : 유저 전체 설계">
-      <option name="closed" value="true" />
-      <created>1721116847378</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1721116847378</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="Branch">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="origin/S11P12D211-85-member-model" />
-                </option>
-              </RecentGroup>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="origin/develop" />
-                </option>
-              </RecentGroup>
-            </list>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="CUSTOM_BOOLEAN_PROPERTIES">
-                <map>
-                  <entry key="Show.Git.Branches" value="true" />
-                </map>
-              </option>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="origin/S11P12D211-85-member-model" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="⭐feat : backend" />
-    <MESSAGE value="⭐feat : member model" />
-    <MESSAGE value="⭐feat : 유저 전체 설계" />
-    <MESSAGE value="⭐feat : access token" />
-    <option name="LAST_COMMIT_MESSAGE" value="⭐feat : access token" />
   </component>
 </project>

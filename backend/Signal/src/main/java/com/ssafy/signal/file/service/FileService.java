@@ -164,7 +164,7 @@ public class FileService {
         FileEntity file = fileRepository.findAllByUser(user);
 
         if (file == null) {
-            return null;
+            return "";
         }
 
         return file.getFileUrl();

@@ -6,11 +6,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class MyProfileDto {
+public class LoginDto {
     private Long userId;
     private String loginId;
+    private String password;
     private String type;
     private String name;
-    private String profileImage;
     private String comment;
 }

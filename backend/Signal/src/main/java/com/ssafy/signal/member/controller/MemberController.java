@@ -3,9 +3,9 @@ package com.ssafy.signal.member.controller;
 import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.member.domain.Member;
-import com.ssafy.signal.member.dto.MemberDetailDto;
 import com.ssafy.signal.member.dto.MemberLoginDto;
 import com.ssafy.signal.member.dto.MyProfileDto;
+import com.ssafy.signal.member.dto.MypageUpdateDto;
 import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.json.duplicateJson;
 import com.ssafy.signal.member.jwt.JwtUtil;
@@ -124,8 +124,10 @@ public class MemberController {
         return new ApiResponseJson(HttpStatus.OK, foundMember);
     }
 
+
     @PutMapping("/{id}")
-    public Member updateMember(@RequestBody Member member, @PathVariable("id") Long id) {
+    public MypageUpdateDto updateMember(@RequestBody Member member, @PathVariable("id") Long id) {
+
         return memberService.updateMember(id, member);
     }
 
@@ -195,13 +197,13 @@ public class MemberController {
 
     // 자기가 쓴 글 확인하기
     @GetMapping("/board/{userId}")
-    public List<BoardDto> getMemberWithPosts(@PathVariable Long userId) throws Exception{
+    public List<BoardDto> getMemberWithPosts(@PathVariable("userId") Long userId) throws Exception{
         return memberService.getMemberWithPosts(userId);
     }
 
     // 자기가 쓴 댓글의 글 확인하기
     @GetMapping("/comment/{userId}")
-    public List<BoardDto> getMemberCommentedPosts(@PathVariable Long userId) throws Exception {
+    public List<BoardDto> getMemberCommentedPosts(@PathVariable("userId") Long userId) throws Exception {
         return memberService.getMemberCommentedPosts(userId);
     }
 }

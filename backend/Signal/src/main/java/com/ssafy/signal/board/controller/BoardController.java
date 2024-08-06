@@ -26,19 +26,16 @@ public class BoardController {
 
     /* 게시글 목록 조회(오늘의 시그널) */
     @GetMapping("/board")
-    public ResponseEntity<List<BoardDto>> listToday(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(defaultValue = "3") int limit) {
-        List<BoardDto> boardList = boardService.getBoardList(pageNum, limit);
-        Integer[] pageList = boardService.getPageList(pageNum);
-
+    public ResponseEntity<List<BoardDto>> listToday(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(value="limit", defaultValue = "3") int limit) {
+        List<BoardDto> boardList = duplicateService.getBoardList(pageNum, limit);
         return ResponseEntity.ok().body(boardList);
     }
 
     /* 게시글 목록 조회(화제의 시그널) */
     @GetMapping("/board/liked")
-    public ResponseEntity<List<BoardDto>> listLiked(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(defaultValue = "3") int limit) {
-        List<BoardDto> boardList = boardService.getBoardListLiked(pageNum, limit);
-        Integer[] pageList = boardService.getPageList(pageNum); // 페이지 목록 필요시 사용할 수 있습니다.
 
+    public ResponseEntity<List<BoardDto>> listLiked(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(value = "limit",defaultValue = "3") int limit) {
+        List<BoardDto> boardList = duplicateService.getBoardListLiked(pageNum, limit);
         return ResponseEntity.ok().body(boardList);
     }
     /* 게시글 상세 */
@@ -78,9 +75,11 @@ public class BoardController {
 
     /* 좋아요 버튼 클릭 */
     @PostMapping("/board/{no}/like")
-    public ResponseEntity<String> likePost(@PathVariable("no") Long no) {
-        boardService.incrementLikedCount(no);  // 좋아요 카운트 증가
-        return ResponseEntity.ok("Liked Successfully");
+    public ResponseEntity<Long> likePost(@PathVariable("no") Long no) {
+        Long likedCount = boardService.incrementLikedCount(no);  // 좋아요 카운트 증가 및 반환
+        return ResponseEntity.ok(likedCount);  // 증가된 좋아요 수 반환
     }
+
+
 
 }

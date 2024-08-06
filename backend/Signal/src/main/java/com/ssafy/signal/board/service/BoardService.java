@@ -5,6 +5,8 @@ import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
 import com.ssafy.signal.board.repository.TagRepository;
 import com.ssafy.signal.file.service.FileService;
+import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.dto.findMemberDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
@@ -29,61 +31,10 @@ public class BoardService {
     private BoardRepository boardRepository;
     @Autowired
     private CommentRepository commentRepository;
-    @Autowired
-    private TagRepository tagRepository;
-
 
     private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
     private static final int PAGE_POST_COUNT = 4; // 한 페이지에 존재하는 게시글 수
 
-    // 생성된 순서대로 게시글 정렬 (오늘의 시그널)
-    @Transactional
-    public List<BoardDto> getBoardList(Integer pageNum, int limit) {
-        List<BoardDto> boards = new ArrayList<>(boardRepository
-                .findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "createdDate")))
-                .getContent())
-                .stream()
-                .map(BoardEntity::asBoardDto)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        for(BoardDto board : boards)
-        {
-            long id = board.getId();
-            List<CommentDto> comments = commentRepository
-                    .findByBoardId(id)
-                    .stream()
-                    .map(CommentEntity::asCommentDto)
-                    .toList();
-
-            board.setComments(comments);
-        }
-
-        return boards;
-    }
-    // 인기순 (liked)으로 정렬 - 화제의 시그널
-    @Transactional
-    public List<BoardDto> getBoardListLiked(Integer pageNum, int limit) {
-        List<BoardDto> boards = new ArrayList<>(boardRepository
-                .findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "liked")))
-                .getContent())
-                .stream()
-                .map(BoardEntity::asBoardDto)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        for(BoardDto board : boards)
-        {
-            long id = board.getId();
-            List<CommentDto> comments = commentRepository
-                    .findByBoardId(id)
-                    .stream()
-                    .map(CommentEntity::asCommentDto)
-                    .toList();
-
-            board.setComments(comments);
-        }
-
-        return boards;
-    }
 
     @Transactional
     public Long getBoardCount() {
@@ -107,7 +58,11 @@ public class BoardService {
         BoardEntity boardEntity = boardEntityOptional.get();
 
         // 2. 엔티티의 업데이트 메서드 호출
-        boardEntity.update(boardDto.getTitle(), boardDto.getContent(), boardDto.getReference(), boardDto.getLiked(), boardDto.getType());
+        boardEntity.update(boardDto.getTitle() == null? boardEntity.getTitle():boardDto.getTitle()
+                , boardDto.getContent() == null? boardEntity.getContent():boardDto.getContent()
+                , boardDto.getReference() == null? boardEntity.getReference():boardDto.getReference()
+                , boardDto.getLiked() == null? boardEntity.getLiked():boardDto.getLiked()
+                , boardDto.getType() == null? boardEntity.getType():boardDto.getType());
         // 필요에 따라 다른 필드들도 업데이트
 
         // 3. 엔티티 저장 (업데이트된 엔티티를 저장하면 JPA가 자동으로 업데이트 처리)
@@ -206,11 +161,13 @@ public class BoardService {
     }
 
     @Transactional
-    public void incrementLikedCount(Long id) {
+    public Long incrementLikedCount(Long id) {
         BoardEntity boardEntity = boardRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
         boardEntity.incrementLiked();
         boardRepository.save(boardEntity);
+        return boardEntity.getLiked();  // 증가된 좋아요 수 반환
     }
+
 
 }

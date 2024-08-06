@@ -33,12 +33,16 @@ public class CommentService {
         List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId);
         List<CommentDto> commentDtoList = new ArrayList<>();
 
-
         for (CommentEntity commentEntity : commentEntities) {
-            FileEntity file = fileRepository.findAllByUser(commentEntity.getUserId());
-            String url =  file == null ? null : file.getFileUrl();
-            commentDtoList.add(commentEntity.asCommentDto(url));
+            // userId를 기준으로 FileEntity에서 파일 정보 조회
+            Optional<FileEntity> optionalFileEntity = fileRepository.findByUser_UserId(commentEntity.getUserId().getUserId());
+            String url = optionalFileEntity.map(FileEntity::getFileUrl).orElse(null);
+
+            // CommentDto 생성 시 url을 포함
+            CommentDto commentDto = commentEntity.asCommentDto(url);
+            commentDtoList.add(commentDto);
         }
+
         return commentDtoList;
     }
 
@@ -73,7 +77,6 @@ public class CommentService {
 
         return commentEntity.asCommentDto();
     }
-
 
 
     public CommentEntity getCommentById(Long id) {
