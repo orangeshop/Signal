@@ -14,6 +14,10 @@
         <variable
             name="boardViewModel"
             type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
+
+        <variable
+            name="userSession"
+            type="com.ongo.signal.config.UserSession" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -57,7 +61,7 @@
                         android:layout_height="32dp"
                         android:onClick="@{(view) -> fragment.showPopupMenu(view)}"
                         android:src="@drawable/baseline_more_vert_mint_24"
-                        android:visibility="@{boardViewModel.selectedBoard.userId == boardViewModel.currentUserId ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{boardViewModel.selectedBoard.userId == userSession.userId ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@id/tv_title"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tv_title" />
@@ -70,13 +74,14 @@
                         android:onClick="@{()->fragment.onProfileClick()}"
                         app:layout_constraintStart_toStartOf="@id/tv_title"
                         app:layout_constraintTop_toBottomOf="@id/tv_title"
-                        app:profile="@{boardViewModel.selectedBoardDetail.member.profileImage}"
+                        app:profile="@{boardViewModel.selectedBoard.member.profileImage}"
                         tools:src="@drawable/baseline_more_vert_mint_24" />
 
                     <TextView
                         android:id="@+id/tv_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:text="@{boardViewModel.selectedBoard.writer}"
                         android:textColor="@color/white"
                         android:textSize="20sp"
