@@ -16,8 +16,6 @@ interface MatchRepository {
         request: MatchRegistrationRequest
     ): Result<MatchRegistrationResponse?>
 
-    suspend fun deleteMatchRegistration(userId: Long): Response<Int>
-
     suspend fun getMatchPossibleUser(locationId: Long): Result<List<MatchPossibleResponse>?>
 
     suspend fun postProposeMatch(
@@ -46,4 +44,7 @@ interface MatchRepository {
         userId: Long,
     ): Result<List<MatchHistoryResponse>?>
 
+    suspend fun deleteMatching(
+        locationId: Long,
+    ) : Result<Boolean>
 }

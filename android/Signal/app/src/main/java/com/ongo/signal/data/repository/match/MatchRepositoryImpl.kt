@@ -32,10 +32,6 @@ class MatchRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteMatchRegistration(userId: Long): Response<Int> {
-        return matchApi.deleteMatchRegistration(userId)
-    }
-
     override suspend fun getMatchPossibleUser(locationId: Long): Result<List<MatchPossibleResponse>?> {
         val req = matchApi.getMatchPossibleUser(locationId)
         return if (req.isSuccessful) {
@@ -77,7 +73,7 @@ class MatchRepositoryImpl @Inject constructor(
         fromId: Long,
         toId: Long
     ): Result<MatchProposeResponse?> {
-        val req = matchApi.postProposeVideoCall(fromId,toId)
+        val req = matchApi.postProposeVideoCall(fromId, toId)
         Timber.d("영통 응답 확인 ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -105,6 +101,16 @@ class MatchRepositoryImpl @Inject constructor(
         Timber.d("매칭 이력 확인 $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
+
+    override suspend fun deleteMatching(locationId: Long): Result<Boolean> {
+        val req = matchApi.deleteMatching(locationId)
+        Timber.d("매칭 삭제 확인${req}")
+        return if (req.isSuccessful) {
+            Result.success(true)
         } else {
             Result.failure(Exception())
         }
