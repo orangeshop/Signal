@@ -27,9 +27,7 @@ public class BoardController {
     /* 게시글 목록 조회(오늘의 시그널) */
     @GetMapping("/board")
     public ResponseEntity<List<BoardDto>> listToday(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(value="limit", defaultValue = "3") int limit) {
-        List<BoardDto> boardList = boardService.getBoardList(pageNum, limit);
-        Integer[] pageList = boardService.getPageList(pageNum);
-
+        List<BoardDto> boardList = duplicateService.getBoardList(pageNum, limit);
         return ResponseEntity.ok().body(boardList);
     }
 
@@ -37,9 +35,7 @@ public class BoardController {
     @GetMapping("/board/liked")
 
     public ResponseEntity<List<BoardDto>> listLiked(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(value = "limit",defaultValue = "3") int limit) {
-        List<BoardDto> boardList = boardService.getBoardListLiked(pageNum, limit);
-        Integer[] pageList = boardService.getPageList(pageNum); // 페이지 목록 필요시 사용할 수 있습니다.
-
+        List<BoardDto> boardList = duplicateService.getBoardListLiked(pageNum, limit);
         return ResponseEntity.ok().body(boardList);
     }
     /* 게시글 상세 */

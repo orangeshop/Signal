@@ -13,6 +13,8 @@ import com.ssafy.signal.member.dto.findMemberDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +61,69 @@ public class DuplicateService {
                 .build();
         // BoardDto 생성
         return boardEntity.asBoardDto(comments, fileUrls, profile);
+    }
+
+    // 생성된 순서대로 게시글 정렬 (오늘의 시그널)
+    @Transactional
+    public List<BoardDto> getBoardList(Integer pageNum, int limit) {
+        return boardRepository
+                .findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "createdDate")))
+                .getContent()
+                .stream()
+                .map(boardEntity -> {
+                    // 게시글 작성자의 정보 가져오기
+                    Member member = boardEntity.getUser();
+                    String profileUrl = fileService.getProfile(member.getUserId());
+
+                    findMemberDto profile = findMemberDto.builder()
+                            .userId(member.getUserId())
+                            .name(member.getName())
+                            .profileImage(profileUrl)
+                            .build();
+
+                    // 댓글 정보 가져오기
+                    List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
+                            .map(CommentEntity::asCommentDto)
+                            .collect(Collectors.toList());
+
+                    // 파일 URL 가져오기 (게시판용)
+                    List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
+
+                    // BoardDto 생성 및 반환
+                    return boardEntity.asBoardDto(comments, fileUrls, profile);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<BoardDto> getBoardListLiked(Integer pageNum, int limit) {
+        return boardRepository
+                .findAll(PageRequest.of(pageNum, limit, Sort.by(Sort.Direction.DESC, "liked")))
+                .getContent()
+                .stream()
+                .map(boardEntity -> {
+                    // 게시글 작성자의 정보 가져오기
+                    Member member = boardEntity.getUser();
+                    String profileUrl = fileService.getProfile(member.getUserId());
+
+                    findMemberDto profile = findMemberDto.builder()
+                            .userId(member.getUserId())
+                            .name(member.getName())
+                            .profileImage(profileUrl)
+                            .build();
+
+                    // 댓글 정보 가져오기
+                    List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
+                            .map(CommentEntity::asCommentDto)
+                            .collect(Collectors.toList());
+
+                    // 파일 URL 가져오기 (게시판용)
+                    List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
+
+                    // BoardDto 생성 및 반환
+                    return boardEntity.asBoardDto(comments, fileUrls, profile);
+                })
+                .collect(Collectors.toList());
     }
 
 }

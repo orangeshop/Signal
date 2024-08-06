@@ -197,13 +197,13 @@ public class MemberController {
 
     // 자기가 쓴 글 확인하기
     @GetMapping("/board/{userId}")
-    public List<BoardDto> getMemberWithPosts(@PathVariable Long userId) throws Exception{
+    public List<BoardDto> getMemberWithPosts(@PathVariable("userId") Long userId) throws Exception{
         return memberService.getMemberWithPosts(userId);
     }
 
     // 자기가 쓴 댓글의 글 확인하기
     @GetMapping("/comment/{userId}")
-    public List<BoardDto> getMemberCommentedPosts(@PathVariable Long userId) throws Exception {
+    public List<BoardDto> getMemberCommentedPosts(@PathVariable("userId") Long userId) throws Exception {
         return memberService.getMemberCommentedPosts(userId);
     }
 }
