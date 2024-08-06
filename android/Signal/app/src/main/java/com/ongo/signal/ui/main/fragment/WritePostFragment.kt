@@ -261,6 +261,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                     Timber.e(e, "Failed to upload all images")
                 } finally {
                     Timber.d("Image upload completed")
+                    boardViewModel.clearBoards()
                     findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
                 }
             }
