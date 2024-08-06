@@ -32,6 +32,10 @@ class MatchViewModel @Inject constructor(
     val selectType: String?
         get() = _selectType
 
+    private var _locationId: Long? = null
+    val locationId: Long?
+        get() = _locationId
+
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
             Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
@@ -44,6 +48,7 @@ class MatchViewModel @Inject constructor(
         viewModelScope.launch(coroutineExceptionHandler) {
             matchRepository.postMatchRegistration(request).onSuccess { response ->
                 response?.let {
+                    _locationId = it.location_id
                     onSuccess(it)
                 }
             }.onFailure {
@@ -124,9 +129,9 @@ class MatchViewModel @Inject constructor(
         }
     }
 
-    fun deleteMatchRegistration(userId: Long) {
+    fun deleteMatchRegistration(locationId: Long) {
         viewModelScope.launch {
-            matchRepository.deleteMatchRegistration(userId)
+            matchRepository.deleteMatching(locationId)
         }
     }
 

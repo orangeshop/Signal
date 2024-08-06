@@ -328,6 +328,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.locationId?.let{
+            viewModel.deleteMatchRegistration(it)
+        }
         radarView.stop()
     }
 

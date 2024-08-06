@@ -24,16 +24,11 @@ class MatchRepositoryImpl @Inject constructor(
         request: MatchRegistrationRequest
     ): Result<MatchRegistrationResponse?> {
         val req = matchApi.postMatchRegistration(request)
-        Timber.d("매칭 등록 $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
             Result.failure(Exception())
         }
-    }
-
-    override suspend fun deleteMatchRegistration(userId: Long): Response<Int> {
-        return matchApi.deleteMatchRegistration(userId)
     }
 
     override suspend fun getMatchPossibleUser(locationId: Long): Result<List<MatchPossibleResponse>?> {
@@ -51,7 +46,6 @@ class MatchRepositoryImpl @Inject constructor(
     ): Result<MatchProposeResponse?> {
 
         val req = matchApi.postProposeMatch(fromId, toId)
-        Timber.d("postProposeMatch ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
@@ -65,7 +59,6 @@ class MatchRepositoryImpl @Inject constructor(
         flag: Int
     ): Result<MatchAcceptResponse?> {
         val req = matchApi.postProposeAccept(fromId, toId, flag)
-        Timber.d("postProposeAccept ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
@@ -77,8 +70,7 @@ class MatchRepositoryImpl @Inject constructor(
         fromId: Long,
         toId: Long
     ): Result<MatchProposeResponse?> {
-        val req = matchApi.postProposeVideoCall(fromId,toId)
-        Timber.d("영통 응답 확인 ${req}")
+        val req = matchApi.postProposeVideoCall(fromId, toId)
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
@@ -92,7 +84,6 @@ class MatchRepositoryImpl @Inject constructor(
         flag: Int
     ): Result<MatchAcceptResponse?> {
         val req = matchApi.postVideoCallAccept(fromId, toId, flag)
-        Timber.d("영통 수락 확인 ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
@@ -102,9 +93,17 @@ class MatchRepositoryImpl @Inject constructor(
 
     override suspend fun getMatchHistory(userId: Long): Result<List<MatchHistoryResponse>?> {
         val req = matchApi.getMatchHistory(userId)
-        Timber.d("매칭 이력 확인 $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
+
+    override suspend fun deleteMatching(locationId: Long): Result<Boolean> {
+        val req = matchApi.deleteMatching(locationId)
+        return if (req.isSuccessful) {
+            Result.success(true)
         } else {
             Result.failure(Exception())
         }

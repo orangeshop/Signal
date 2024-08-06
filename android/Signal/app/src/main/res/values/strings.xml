@@ -52,6 +52,7 @@
     <string name="accept">수락</string>
     <string name="deny">거절</string>
     <string name="by_propose">님이 매칭을 신청하셨습니다.</string>
+    <string name="comment">나의 한마디</string>
 
     <string-array name="tag_array">
         <item>자유</item>

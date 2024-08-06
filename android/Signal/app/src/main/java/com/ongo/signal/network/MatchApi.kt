@@ -27,11 +27,6 @@ interface MatchApi {
         @Body request: MatchRegistrationRequest
     ): Response<MatchRegistrationResponse>
 
-    @DELETE("location/user")
-    suspend fun deleteMatchRegistration(
-        @Query("userId") userId: Long
-    ): Response<Int>
-
     @GET("match-test")
     suspend fun getMatchPossibleUser(
         @Query("locationId") locationId: Long,
@@ -67,4 +62,9 @@ interface MatchApi {
     suspend fun getMatchHistory(
         @Query("userId") userId: Long,
     ): Response<List<MatchHistoryResponse>>
+
+    @DELETE("location")
+    suspend fun deleteMatching(
+        @Query("locationId") locationId: Long
+    ): Response<Void>
 }
