@@ -1,6 +1,7 @@
 package com.ongo.signal.data.repository.main.board
 
 import com.ongo.signal.data.model.main.BoardDTO
+import com.ongo.signal.data.model.main.BoardDetailDTO
 import com.ongo.signal.data.model.main.BoardImagesDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
@@ -21,7 +22,7 @@ class BoardRepositoryImpl @Inject constructor(private val mainApi: MainApi) : Bo
         return mainApi.readBoard(pageNum, limit)
     }
 
-    override suspend fun readBoardById(boardId: Long): Response<BoardDTO> {
+    override suspend fun readBoardById(boardId: Long): Response<BoardDetailDTO> {
         return mainApi.readBoardById(boardId)
     }
 

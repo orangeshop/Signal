@@ -24,6 +24,7 @@ import com.ongo.signal.util.PopupMenuHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
@@ -76,9 +77,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     private fun observeViewModelData() {
         lifecycleScope.launch {
-            boardViewModel.selectedBoard.collectLatest { board ->
+            boardViewModel.selectedBoardDetail.collectLatest { board ->
                 board?.let {
-                    imageAdapter.submitList(it.imageUrls)
+                    Timber.d("BoardDetailDTO received in fragment: $it")
+                    imageAdapter.submitList(it.fileUrls)
                     chipAdapter.submitList(it.tags)
                 }
             }
@@ -97,7 +99,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             commentViewModel.loadComments(boardId)
         }
     }
-
 
     fun showPopupMenu(view: View) {
         PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_menu) { item ->
