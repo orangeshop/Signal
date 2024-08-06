@@ -43,6 +43,7 @@ webrtc = "1.0.5"
 
 
 
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -124,5 +125,6 @@ webrtc = ["webrtc", "permissionx"]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
 #fcm
 gms-google-services = { id = "com.google.gms.google-services", version.ref = "gms" }

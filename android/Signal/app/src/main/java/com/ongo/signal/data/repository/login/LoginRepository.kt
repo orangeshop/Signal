@@ -19,5 +19,13 @@ interface LoginRepository {
 
     suspend fun postCheckPossibleId(loginId: String): Result<IDCheckResponse?>
 
-    suspend fun postProfileImage(userId: Long, imageFile: MultipartBody.Part) : Result<ProfileImageResponse?>
+    suspend fun postProfileImage(
+        userId: Long,
+        imageFile: MultipartBody.Part
+    ): Result<ProfileImageResponse?>
+
+    suspend fun putProfileImage(
+        userId: Long,
+        imageFile: MultipartBody.Part
+    ): Result<ProfileImageResponse?>
 }

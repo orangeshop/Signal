@@ -1,9 +1,13 @@
 package com.ongo.signal.ui.my
 
 import android.content.Intent
+import android.view.View
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -21,6 +25,34 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     override fun init() {
         initViews()
         binding.fragment = this
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getMyProfile()
+    }
+
+    private fun getMyProfile() {
+        UserSession.accessToken?.let {
+            viewModel.getMyProfile(it) { myProfileData ->
+                Timber.d("프로필 받아옴 ${myProfileData}")
+                with(binding) {
+                    if (myProfileData.profileImage == "null") {
+                        ivProfile.setImageResource(R.drawable.basic_profile)
+                    } else {
+                        //TODO place홀더 로딩 이미지 찾아보기
+                        binding.ivProfile.visibility = View.VISIBLE
+                        binding.pbLoading.visibility = View.GONE
+                        Glide.with(requireActivity())
+                            .load(myProfileData.profileImage)
+                            .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                            .into(ivProfile)
+                    }
+
+                    tvUsername.text = myProfileData.name
+                }
+            }
+        }
     }
 
     private fun initViews() {
@@ -49,7 +81,12 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     fun goToProfileEdit() {
         parentFragmentManager.commit {
             (requireActivity() as MainActivity).hideBottomNavigation()
-            findNavController().navigate(R.id.action_myPageFragment_to_profileEditFragment)
+            Timber.d("주기전 데이터 확인 ${viewModel.userData}")
+            findNavController().navigate(
+                MyPageFragmentDirections.actionMyPageFragmentToProfileEditFragment(
+                    profileData = viewModel.userData
+                )
+            )
         }
     }
 

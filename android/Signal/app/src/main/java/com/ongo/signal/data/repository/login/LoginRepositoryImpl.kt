@@ -70,9 +70,20 @@ class LoginRepositoryImpl @Inject constructor(
         userId: Long,
         imageFile: MultipartBody.Part
     ): Result<ProfileImageResponse?> {
-        Timber.d("프로필 이미지 등록 리퀘 ${userId} ${imageFile}")
         val req = loginApi.postProfileImage(userId, imageFile)
-        Timber.d("프로필 이미지 등록 답변 ${req}")
+        return if (req.isSuccessful) {
+            Result.success(req.body())
+        } else {
+            Result.failure(Exception())
+        }
+    }
+
+    override suspend fun putProfileImage(
+        userId: Long,
+        imageFile: MultipartBody.Part
+    ): Result<ProfileImageResponse?> {
+        val req = loginApi.putProfileImage(userId, imageFile)
+        Timber.d("프로필 이미지 수정 답변 ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {

@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt.plugin)
     alias(libs.plugins.gms.google.services)
+    id("androidx.navigation.safeargs.kotlin")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
