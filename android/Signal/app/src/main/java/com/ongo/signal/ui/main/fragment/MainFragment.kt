@@ -9,8 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMainBinding
@@ -43,17 +43,19 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         binding.boardViewModel = boardViewModel
         ttsHelper = TTSHelper(requireContext())
 
-        setUpAdapter()
-
         sttLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 sttHelper.handleActivityResult(result.resultCode, result.data) { recognizedText ->
                     binding.etSearch.setText(recognizedText)
                 }
             }
-
         sttHelper = STTHelper(sttLauncher)
 
+        setUpAdapter()
+        observeViewModels()
+    }
+
+    private fun observeViewModels() {
         observeBoards()
         observeComments()
     }
@@ -68,7 +70,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         viewLifecycleOwner.lifecycleScope.launch {
             boardViewModel.items.collectLatest { newBoards ->
                 Timber.d("New boards received: $newBoards")
+                val recyclerViewState = binding.rvPost.layoutManager?.onSaveInstanceState()
                 todayPostAdapter.submitData(newBoards)
+                Timber.d("RecyclerView state restored")
+                binding.rvPost.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
         }
     }
@@ -143,45 +148,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             onTitleClicked = { position ->
                 onTitleClicked(position)
             }
-        )
-            .apply {
-            registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+        ).apply {
+            addLoadStateListener { loadState ->
+                Timber.d("Load state changed: $loadState")
+                if (loadState.source.refresh is LoadState.NotLoading &&
+                    loadState.append.endOfPaginationReached &&
+                    todayPostAdapter.itemCount == 0) {
                     binding.rvPost.scrollToPosition(0)
-                    Timber.tag("onItemRangeChanged").d("change")
-                    super.onItemRangeChanged(positionStart, itemCount, payload)
                 }
-
-                override fun onChanged() {
-                    binding.rvPost.scrollToPosition(0)
-                    Timber.tag("onChanged").d("change")
-                    super.onChanged()
-                }
-
-                override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-                    binding.rvPost.scrollToPosition(0)
-                    Timber.tag("onItemRangeMovedChanged").d("change")
-                    super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-                }
-
-                override fun onStateRestorationPolicyChanged() {
-                    binding.rvPost.scrollToPosition(0)
-                    Timber.tag("onStateRestorationPolicyChanged").d("change")
-                    super.onStateRestorationPolicyChanged()
-                }
-
-                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                    Timber.tag("onItemRangeChanged").d("change")
-                    binding.rvPost.scrollToPosition(0)
-                    super.onItemRangeChanged(positionStart, itemCount)
-                }
-
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    Timber.tag("onItemRangeInsertedChanged").d("change")
-                    binding.rvPost.scrollToPosition(itemCount)
-                    super.onItemRangeInserted(positionStart, itemCount)
-                }
-            })
+            }
         }
 
         binding.rvPost.apply {
