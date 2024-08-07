@@ -177,16 +177,29 @@
                         </com.google.android.material.chip.ChipGroup>
                     </HorizontalScrollView>
 
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lav_fire_start"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_hot_signal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_hot_signal"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/fire"
+                        app:lottie_speed="0.5" />
+
                     <TextView
                         android:id="@+id/tv_hot_signal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="12dp"
                         android:fontFamily="@font/inter_extrabold"
                         android:text="@string/hotSignal"
                         android:textColor="@color/white"
                         android:textSize="36sp"
-                        app:layout_constraintStart_toStartOf="@id/hsv_chip"
+                        app:layout_constraintStart_toEndOf="@id/lav_fire_start"
                         app:layout_constraintTop_toBottomOf="@id/hsv_chip" />
 
                     <com.airbnb.lottie.LottieAnimationView
@@ -197,6 +210,20 @@
                         app:layout_constraintBottom_toBottomOf="@id/tv_hot_signal"
                         app:layout_constraintStart_toEndOf="@id/tv_hot_signal"
                         app:layout_constraintTop_toTopOf="@id/tv_hot_signal"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/fire"
+                        app:lottie_speed="0.5" />
+
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottie_first"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_first"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_first"
                         app:lottie_autoPlay="true"
                         app:lottie_loop="true"
                         app:lottie_rawRes="@raw/fire"
@@ -239,6 +266,20 @@
                         tools:listitem="@layout/item_tag"
                         tools:orientation="horizontal" />
 
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottie_second"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_second"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_second"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/fire"
+                        app:lottie_speed="0.5" />
+
                     <TextView
                         android:id="@+id/tv_second"
                         android:layout_width="wrap_content"
@@ -276,6 +317,19 @@
                         app:layout_constraintTop_toBottomOf="@id/tv_second_title"
                         tools:listitem="@layout/item_tag"
                         tools:orientation="horizontal" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottie_third"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_third"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_third"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/fire"
+                        app:lottie_speed="0.5" />
 
                     <TextView
                         android:id="@+id/tv_third"
@@ -327,6 +381,19 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_third" />
 
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottie_real_time_start"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_today_signal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_today_signal"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/fire"
+                        app:lottie_speed="0.5" />
+
                     <TextView
                         android:id="@+id/tv_today_signal"
                         android:layout_width="wrap_content"
@@ -339,6 +406,19 @@
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
                         app:layout_constraintTop_toBottomOf="@id/view_line" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottie_real_time_end"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_today_signal"
+                        app:layout_constraintStart_toEndOf="@id/tv_today_signal"
+                        app:layout_constraintTop_toTopOf="@id/tv_today_signal"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/fire"
+                        app:lottie_speed="0.5" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
