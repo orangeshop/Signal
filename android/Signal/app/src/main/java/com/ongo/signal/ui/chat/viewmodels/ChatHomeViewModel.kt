@@ -204,8 +204,12 @@ class ChatHomeViewModel @Inject constructor(
             if (formattedDate.split(" ")[0] == Date(System.currentTimeMillis()).toString()) {
                 result = formattedDate.split(" ")[1].substring(0, 5)
                 if (result.split(":")[0].toInt() >= 12) {
-                    result = "오후 " + formattedDate.split(" ")[1].substring(0, 2).toInt()
-                        .minus(12) + formattedDate.split(" ")[1].substring(2, 5)
+                    if(result.split(":")[0].toInt() == 12){
+                        result = "오후 " + formattedDate.split(" ")[1].substring(0, 2) + formattedDate.split(" ")[1].substring(2, 5)
+                    }else {
+                        result = "오후 " + formattedDate.split(" ")[1].substring(0, 2).toInt()
+                            .minus(12) + formattedDate.split(" ")[1].substring(2, 5)
+                    }
                 } else {
                     result = "오전 " + formattedDate.split(" ")[1].substring(0, 5)
                 }
