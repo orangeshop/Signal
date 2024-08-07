@@ -258,7 +258,6 @@ class BoardViewModel @Inject constructor(
     fun clearBoards() {
         viewModelScope.launch {
             _items.emit(PagingData.empty())
-            _hotBoards.emit(emptyList())
             setSelectedTag(null)
         }
     }
