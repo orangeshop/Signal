@@ -22,8 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,21 +55,56 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
-    public String uploadBoardFile(MultipartFile multipartFile, Long boardId) throws IOException {
+    public String uploadBoardFile(MultipartFile[] multipartFile, Long boardId) throws IOException {
+        if (multipartFile == null || multipartFile.length == 0) {
+            log.warn("Please select at least one file to upload.");
+            return "Please select at least one file to upload.";
+        }
+
+        List<String> uploadedFileNames = new ArrayList<>();
+
+        for (MultipartFile file : multipartFile) {
+            if (!file.isEmpty()) {
+                try {
+                    log.info("{}", file);
+
+                    // S3에 파일 업로드 후 URL 가져오기
+                    String url = s3Uploader.upload(file, DIR_NAME);
+
+                    uploadedFileNames.add(url);
+
+                    // 파일 정보를 DB에 저장
+                    FileEntity file1 = new FileEntity();
+                    file1.setBoard(boardService.getBoardById(boardId));
+                    file1.setUser(null);
+                    file1.setFileName(file.getOriginalFilename());
+                    file1.setFileUrl(url);
+
+                    fileRepository.save(file1);
+
+                    // 업로드된 파일의 URL 반환
+//                    return url;
+                } catch (IOException e) {
+                    log.warn("Failed to upload one or more files.");
+                    return "Failed to upload one or more files.";
+                }
+            }
+        }
+
         // S3에 파일 업로드 후 URL 가져오기
-        String url = s3Uploader.upload(multipartFile, DIR_NAME);
-
-        // 파일 정보를 DB에 저장
-        FileEntity file = new FileEntity();
-        file.setBoard(boardService.getBoardById(boardId));
-        file.setUser(null);
-        file.setFileName(multipartFile.getOriginalFilename());
-        file.setFileUrl(url);
-
-        fileRepository.save(file);
+//        String url = s3Uploader.upload(uploadedFileNames, DIR_NAME);
+//
+//        // 파일 정보를 DB에 저장
+//        FileEntity file = new FileEntity();
+//        file.setBoard(boardService.getBoardById(boardId));
+//        file.setUser(null);
+//        file.setFileName(multipartFile.getOriginalFilename());
+//        file.setFileUrl(url);
+//
+//        fileRepository.save(file);
 
         // 업로드된 파일의 URL 반환
-        return url;
+        return uploadedFileNames.toString();
     }
 
     public FileDto uploadProfileFile(MultipartFile multipartFile,  Long userId) throws IOException {

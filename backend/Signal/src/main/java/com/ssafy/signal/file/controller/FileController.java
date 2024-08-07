@@ -29,7 +29,7 @@ public class FileController {
 
     // 게시판 파일 업로드
     @PostMapping("/board/{boardId}/upload")
-    public String uploadBoardFile(@RequestParam("file") MultipartFile multipartFile,
+    public String uploadBoardFile(@RequestParam("file") MultipartFile[] multipartFile,
                              @PathVariable("boardId") Long boardId) throws IOException {
 
         // FileService를 통해 파일 업로드 및 URL 반환
