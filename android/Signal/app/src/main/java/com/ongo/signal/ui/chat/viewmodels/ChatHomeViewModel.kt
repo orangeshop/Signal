@@ -56,7 +56,7 @@ class ChatHomeViewModel @Inject constructor(
             _liveList.value = UserSession.userId?.let { chatUseCases.loadChats(it.toLong(), ).sortedByDescending { it.sendAt } }
 //            _liveList.value =
 //                UserSession.userId?.let { chatUseCases.loadChats(it, UserSession.userId!!).sortedByDescending { it.sendAt } }
-            Log.d(TAG, "loadChats: ${liveList} ${chatRoomFromID}")
+
         }
     }
 
@@ -98,12 +98,7 @@ class ChatHomeViewModel @Inject constructor(
 
     suspend fun loadDetailList(id: Long, loading: Long = 100) {
         CoroutineScope(Dispatchers.IO).launch {
-//            _messageList.value = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
             _messageList.postValue( chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId })
-            Log.d(TAG, "loadDetailList: asdasdasdsa@@11111 ${messageList.value?.size}")
-
-            Log.d(TAG, "loadDetailList: asdasdasdsa@@")
-
         }
     }
 
@@ -238,6 +233,9 @@ class ChatHomeViewModel @Inject constructor(
     }
 
     fun todayTitleSetting(){
+
+        todayTitleChecker.clear()
+
         var tmp = messageList.value?.get(messageList.value!!.lastIndex)?.sendAt
 
         for (item in messageList.value!!) {

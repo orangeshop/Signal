@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -125,9 +126,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 )
             }
 
-
             chatDetailRv.adapter = chatDetailAdapter
             var check = true
+            var new_loading = false
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList) {
@@ -169,6 +170,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                                     1
                                 )
                             ) {
+                                Log.d(TAG, "onResume: 1")
                                 scrollPositionBottom()
                             }
                         }
@@ -181,12 +183,31 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             check = false
                         }
 
-                        if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom) {
+                        if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom && new_loading == false) {
                             scrollPositionBottom()
                         }
                     }
                 })
             }
+
+            var list_num = 200L
+            
+            chatDetailRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if(!chatDetailRv.canScrollVertically(-1)){
+                        lifecycleScope.launch {
+                            new_loading = true
+                            chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, list_num)
+                            delay(500)
+                            new_loading = false
+                            list_num += 100
+                            chatViewModel.todayTitleSetting()
+                        }
+                    }
+                }
+            })
 
             etSearch.setOnTouchListener { v, event ->
 
