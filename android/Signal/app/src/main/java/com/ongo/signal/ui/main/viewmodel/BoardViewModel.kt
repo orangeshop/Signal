@@ -54,6 +54,7 @@ class BoardViewModel @Inject constructor(
 
     private fun loadBoards() {
         viewModelScope.launch {
+            Timber.d("Loading boards without tag")
             Pager(
                 config = PagingConfig(
                     pageSize = 5,
@@ -65,14 +66,14 @@ class BoardViewModel @Inject constructor(
                 }
             ).flow.cachedIn(viewModelScope)
                 .collectLatest { pagingData ->
+                    Timber.d("Loaded boards: $pagingData")
                     _items.emit(pagingData)
-                    Timber.d("loadItems: $items")
                 }
         }
     }
 
     private fun loadBoardsByTag(tag: String) {
-        Timber.d("loading boards with tag: $tag")
+        Timber.d("Loading boards with tag: $tag")
         viewModelScope.launch {
             Pager(
                 config = PagingConfig(
@@ -87,8 +88,8 @@ class BoardViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
                 .catch { e -> Timber.e(e, "Exception in loadBoardsByTag") }
                 .collectLatest { pagingData ->
+                    Timber.d("Loaded boards by tag: $pagingData")
                     _items.emit(pagingData)
-                    Timber.d("loadItemsByTag: ${items}")
                 }
         }
     }
@@ -100,6 +101,7 @@ class BoardViewModel @Inject constructor(
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     val hotList = response.body() ?: emptyList()
+                    Timber.d("Loaded hot boards: $hotList")
                     _hotBoards.emit(hotList)
                 } else {
                     Timber.e("Failed to load hot boards: ${response.errorBody()?.string()}")
@@ -117,6 +119,7 @@ class BoardViewModel @Inject constructor(
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     val hotList = response.body() ?: emptyList()
+                    Timber.d("Loaded hot signal boards by tag: $hotList")
                     _hotBoards.emit(hotList)
                 } else {
                     Timber.e(
@@ -257,6 +260,7 @@ class BoardViewModel @Inject constructor(
 
     fun clearBoards() {
         viewModelScope.launch {
+            Timber.d("Clearing boards")
             _items.emit(PagingData.empty())
             setSelectedTag(null)
         }
