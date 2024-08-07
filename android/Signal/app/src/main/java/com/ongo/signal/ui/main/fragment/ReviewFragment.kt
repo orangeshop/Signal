@@ -91,10 +91,14 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
 
     private fun getMyProfile(userId: Long) {
         reviewViewModel.getUserProfile(userId) { userProfileResponse ->
-            Glide.with(requireActivity())
-                .load(userProfileResponse.profileImage)
-                .apply(RequestOptions.bitmapTransform(CircleCrop()))
-                .into(binding.ivProfile)
+            if (userProfileResponse.profileImage.isBlank()) {
+                binding.ivProfile.setImageResource(R.drawable.basic_profile)
+            } else {
+                Glide.with(requireActivity())
+                    .load(userProfileResponse.profileImage)
+                    .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                    .into(binding.ivProfile)
+            }
 
             binding.tvUsername.text = userProfileResponse.name
         }
