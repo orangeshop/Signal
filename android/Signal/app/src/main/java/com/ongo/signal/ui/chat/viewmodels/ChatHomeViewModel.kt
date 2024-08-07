@@ -56,7 +56,7 @@ class ChatHomeViewModel @Inject constructor(
             _liveList.value = UserSession.userId?.let { chatUseCases.loadChats(it.toLong(), ).sortedByDescending { it.sendAt } }
 //            _liveList.value =
 //                UserSession.userId?.let { chatUseCases.loadChats(it, UserSession.userId!!).sortedByDescending { it.sendAt } }
-            Log.d(TAG, "loadChats: ${liveList} ${chatRoomFromID}")
+
         }
     }
 
@@ -66,6 +66,22 @@ class ChatHomeViewModel @Inject constructor(
 //            loadChats() // Refresh the list after saving a new chat
 //        }
 //    }
+
+    fun deleteChat(id: Long) {
+        viewModelScope.launch {
+            chatUseCases.deleteChat(id)
+
+            val currentList = _liveList.value.orEmpty().toMutableList()
+
+            liveList.value?.map {
+                if (it.chatId == id) {
+                    currentList.remove(it)
+                    // 서버에서 채팅 삭제 로직 추가ㅁㄴ
+                    _liveList.value = currentList
+                }
+            }
+        }
+    }
 
     /**
      * 기존의 코드
@@ -82,40 +98,15 @@ class ChatHomeViewModel @Inject constructor(
 
     suspend fun loadDetailList(id: Long, loading: Long = 100) {
         CoroutineScope(Dispatchers.IO).launch {
-//            _messageList.value = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
             _messageList.postValue( chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId })
-            Log.d(TAG, "loadDetailList: asdasdasdsa@@11111 ${messageList.value?.size}")
-
-            Log.d(TAG, "loadDetailList: asdasdasdsa@@")
         }
     }
 
     fun readMessage(id: Long){
         viewModelScope.launch {
             chatUseCases.readMessage(id)
-
-            for(message in messageList.value!!){
-                message.isRead = true
-            }
+//            loadDetailList(id)
         }
-
-//        viewModelScope.launch {
-//
-//            chatUseCases.readMessage(id)
-//
-//            val updatedMessages = _messageList.value?.map {
-//                it.map { message ->
-//                    if (message.chatId == id) {
-//                        message.copy(isRead = true)
-//                    } else {
-//                        message
-//                    }
-//                }
-//            }
-//
-//            // 3. 업데이트된 메시지 리스트를 _messageList에 설정
-//            _messageList.value = updatedMessages.orEmpty()
-//        }
     }
 
 //    fun appendDetailList(message: ChatHomeChildDto) {
@@ -208,8 +199,12 @@ class ChatHomeViewModel @Inject constructor(
             if (formattedDate.split(" ")[0] == Date(System.currentTimeMillis()).toString()) {
                 result = formattedDate.split(" ")[1].substring(0, 5)
                 if (result.split(":")[0].toInt() >= 12) {
-                    result = "오후 " + formattedDate.split(" ")[1].substring(0, 2).toInt()
-                        .minus(12) + formattedDate.split(" ")[1].substring(2, 5)
+                    if(result.split(":")[0].toInt() == 12){
+                        result = "오후 " + formattedDate.split(" ")[1].substring(0, 2) + formattedDate.split(" ")[1].substring(2, 5)
+                    }else {
+                        result = "오후 " + formattedDate.split(" ")[1].substring(0, 2).toInt()
+                            .minus(12) + formattedDate.split(" ")[1].substring(2, 5)
+                    }
                 } else {
                     result = "오전 " + formattedDate.split(" ")[1].substring(0, 5)
                 }
@@ -238,6 +233,9 @@ class ChatHomeViewModel @Inject constructor(
     }
 
     fun todayTitleSetting(){
+
+        todayTitleChecker.clear()
+
         var tmp = messageList.value?.get(messageList.value!!.lastIndex)?.sendAt
 
         for (item in messageList.value!!) {

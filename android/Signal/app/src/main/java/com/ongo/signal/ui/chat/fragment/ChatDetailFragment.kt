@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -125,22 +126,27 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 )
             }
 
-
             chatDetailRv.adapter = chatDetailAdapter
             var check = true
+            var new_loading = false
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList) {
-
-
                         chatViewModel.readMessage(chatViewModel.chatRoomNumber)
-
                         val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
 
-                        if (chatList.size >= 1) {
+                        for (message in chatList) {
+                            message.isRead = true
+                        }
+
+                        if(chatList.size == 0){
+                            progressBar.visibility = View.GONE
+                        }
+                        else if (chatList.size >= 1) {
                             progressBar.progress = chatList.size
                             chatViewModel.todayTitleSetting()
                         }
+
                         if (progressBar.progress == chatList.size && chatList.size != 0) {
                             progressBar.visibility = View.GONE
                         }
@@ -164,6 +170,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                                     1
                                 )
                             ) {
+                                Log.d(TAG, "onResume: 1")
                                 scrollPositionBottom()
                             }
                         }
@@ -176,12 +183,31 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             check = false
                         }
 
-                        if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom) {
+                        if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom && new_loading == false) {
                             scrollPositionBottom()
                         }
                     }
                 })
             }
+
+            var list_num = 200L
+            
+            chatDetailRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if(!chatDetailRv.canScrollVertically(-1)){
+                        lifecycleScope.launch {
+                            new_loading = true
+                            chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, list_num)
+                            delay(500)
+                            new_loading = false
+                            list_num += 100
+                            chatViewModel.todayTitleSetting()
+                        }
+                    }
+                }
+            })
 
             etSearch.setOnTouchListener { v, event ->
 
@@ -229,19 +255,25 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             chatDetailBtn.setOnClickListener {
-                if (etSearch.text.toString() != "") {
-                    val message = ChatHomeChildDTO(
-                        0,
-                        chatViewModel.chatRoomNumber,
-                        chatViewModel.chatRoomFromID == UserSession.userId,
-                        etSearch.text.toString(),
-                        false,
-                        chatViewModel.timeSetting(Date(System.currentTimeMillis()).toString(), 1)
-                    )
+                lifecycleScope.launch {
+                    delay(100)
+                    if (etSearch.text.toString() != "") {
+                        val message = ChatHomeChildDTO(
+                            0,
+                            chatViewModel.chatRoomNumber,
+                            chatViewModel.chatRoomFromID == UserSession.userId,
+                            etSearch.text.toString(),
+                            false,
+                            chatViewModel.timeSetting(
+                                Date(System.currentTimeMillis()).toString(),
+                                1
+                            )
+                        )
 
-                    etSearch.text.clear()
+                        etSearch.text.clear()
 
-                    chatViewModel.stompSend(message) {}
+                        chatViewModel.stompSend(message) {}
+                    }
                 }
             }
 

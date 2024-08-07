@@ -8,6 +8,7 @@ import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentChatBinding
+import com.ongo.signal.ui.chat.CustomDialog
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,9 +65,9 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                 chatItemLongClick = {
 
                     // 롱 클릭시 커스텀 다이어 로그가 나오게 하여 삭제 여부 및 다른 옵션을 선택할 수 있도록 합니다.
-//                    CustomDialog.show(requireContext()){
-////                        chatViewModel.deleteChat(it)
-//                    }
+                    CustomDialog.show(requireContext()){
+                        chatViewModel.deleteChat(it.chatId)
+                    }
                     true
                 },
                 timeSetting = {item ->
