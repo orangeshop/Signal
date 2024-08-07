@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Date
 
 private const val TAG = "ChatFragment_싸피"
 
@@ -34,7 +35,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             var check = true
 
-
             lifecycleScope.launch {
                 while (check) {
                     chatViewModel.loadChats()
@@ -44,8 +44,8 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
             chatViewModel.stompDisconnect()
             chatViewModel.clearMessageList()
-            chatViewModel.preDay = ""
-            chatViewModel.firstInit = true
+
+//            chatViewModel.loadDetailList(1, 100)
 
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
@@ -55,12 +55,13 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                     chatViewModel.chatRoomToID = it.toId
                     UserSession.userId
 
-                    chatViewModel.loadDetailList(it.chatId)
+                    lifecycleScope.launch {
+                        chatViewModel.loadDetailList(it.chatId)
+                    }
+
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {
-                    // ChatRepositoryImpl의 싱글턴 인스턴스를 가져옴
-//                    CreateChatRoom.Create(8,9)
 
                     // 롱 클릭시 커스텀 다이어 로그가 나오게 하여 삭제 여부 및 다른 옵션을 선택할 수 있도록 합니다.
 //                    CustomDialog.show(requireContext()){

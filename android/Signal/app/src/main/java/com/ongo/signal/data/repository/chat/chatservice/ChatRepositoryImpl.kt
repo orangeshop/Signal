@@ -16,8 +16,6 @@ class ChatRepositoryImpl @Inject constructor(
     private val chatApi: ChatRoomApi
 ): ChatRepository {
     override suspend fun getChatList(): Response<MutableList<ChatHomeDTO>> {
-
-        Log.d(TAG, "getChatList: ${UserSession.userId} ")
         return chatApi.getChatRoomList(UserSession.userId ?: 0)
     }
 

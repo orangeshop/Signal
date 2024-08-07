@@ -1,7 +1,6 @@
 package com.ongo.signal.ui.match
 
 import android.Manifest
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
@@ -10,7 +9,6 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -26,24 +24,15 @@ import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
-import com.ongo.signal.ui.video.CallActivity
-import com.ongo.signal.ui.video.repository.VideoRepository
-import com.ongo.signal.ui.video.service.VideoService
-import com.ongo.signal.ui.video.service.VideoServiceRepository
-import com.ongo.signal.ui.video.util.DataModel
-import com.ongo.signal.ui.video.util.DataModelType
-import com.ongo.signal.ui.video.util.getCameraAndMicPermission
 import com.ongo.signal.util.PermissionChecker
 import com.ongo.signal.util.RadarView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match),
-    VideoService.Listener {
+class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
 
     private lateinit var radarView: RadarView
     private val checker = PermissionChecker(this)
@@ -66,17 +55,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             onClick = { userId -> binding.cvDot.setDotFocused(userId) }
         )
 
-    //video
-    @Inject
-    lateinit var videoRepository: VideoRepository
-
-    @Inject
-    lateinit var videoServiceRepository: VideoServiceRepository
-
-
     override fun init() {
-
-        startVideoService()
 
         arguments?.let { args ->
             viewModel.setOtherUserId(args.getLong("otherUserId", 0L))
@@ -92,11 +71,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         }
         initViews()
         initAnimation()
-    }
-
-    private fun startVideoService() {
-        VideoService.listener = this
-        videoServiceRepository.startService(UserSession.userId.toString())
     }
 
     private fun showMatchingDialog() {
@@ -121,11 +95,9 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     toId = viewModel.otherUserId!!,
                     1
                 ) {
-                    UserSession.userId?.let { nowId ->
-                        viewModel.otherUserId?.let { otherId ->
-                            CreateChatRoom.Create(nowId, otherId)
-                            findNavController().navigate(R.id.action_matchFragment_to_chatFragment)
-                        }
+                    viewModel.otherUserId?.let { otherId ->
+                        CreateChatRoom.Create(userId, otherId)
+                        findNavController().navigate(R.id.action_matchFragment_to_chatFragment)
                     }
 
                     dialog.dismiss()
@@ -233,30 +205,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             Timber.d("칩 확인 ${viewModel.selectType}")
         }
 
-        binding.btnVideo.setOnClickListener {
-            getCameraAndMicPermission {
-                videoRepository.sendConnectionRequest("25", true) {
-                    if (it){
-                        Timber.d("성공적으로 영통 보냄")
-                        startActivity(Intent(requireContext(),CallActivity::class.java).apply {
-                            putExtra("target","25")
-                            putExtra("isVideoCall",true)
-                            putExtra("isCaller",true)
-                        })
-
-                    }
-                }
-            }
-//            viewModel.postProposeVideoCall(1, 1) {
-//                Timber.d("영통 성공")
-//            }
-        }
-
-        binding.btnAccept.setOnClickListener {
-//            viewModel.postProposeVideoCallAccept(1, 1, 1) {
-//                Timber.d("영통 수락 성공")
-//            }
-        }
     }
 
     private fun convertToDotList(responseList: List<MatchPossibleResponse>): List<Dot> {
@@ -297,42 +245,19 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
     }
 
-    override fun onCallReceived(model: DataModel) {
-        requireActivity().runOnUiThread {
-            binding.apply {
-                val isVideoCall = model.type == DataModelType.StartVideoCall
-                val isVideoCallText = if (isVideoCall) "Video" else "Audio"
-                incomingCallTitleTv.text = "${model.sender} 님이 $isVideoCallText 영상통화를 요청합니다."
-                incomingCallLayout.isVisible = true
-                acceptButton.setOnClickListener {
-                    getCameraAndMicPermission {
-                        incomingCallLayout.isVisible = false
-                        //create an intent to go to video call activity
-                        startActivity(Intent(requireContext(), CallActivity::class.java).apply {
-                            putExtra("target", model.sender)
-                            putExtra("isVideoCall", isVideoCall)
-                            putExtra("isCaller", false)
-                        })
-                    }
-                }
-                declineButton.setOnClickListener {
-                    incomingCallLayout.isVisible = false
-                }
-            }
-        }
-    }
-
     private fun initRadar() {
         radarView.start()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.locationId?.let {
+            viewModel.deleteMatchRegistration(it)
+        }
         radarView.stop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        videoServiceRepository.stopService()
     }
 }

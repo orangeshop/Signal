@@ -53,6 +53,7 @@
     <string name="by_propose">님이 매칭을 신청하셨습니다.</string>
     <string name="signal">시그널</string>
     <string name="review">리뷰</string>
+    <string name="comment">나의 한마디</string>
 
     <string-array name="tag_array">
         <item>자유</item>

@@ -22,31 +22,7 @@ class SignalFirebaseService : FirebaseMessagingService() {
         Timber.d("메시지옴 제목 : ${messageTitle} 내용 : ${messageContent}")
         //승낙, 거부
 
-        if (messageTitle.contains("테스트")) {
-            val mainIntent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            }
-
-            val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
-                this,
-                0,
-                mainIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val builder1 = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
-                .setSmallIcon(R.drawable.app_icon)
-                .setContentTitle(messageTitle)
-                .setContentText(messageContent)
-                .setAutoCancel(true)
-                .setContentIntent(mainPendingIntent)
-
-
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(101, builder1.build())
-
-        } else {
+        if (messageTitle.contains("승낙") || messageTitle.contains("거부") || messageTitle.contains("요청")) {
             val nowMessage = messageContent.split(" ")
 
             val mainIntent = Intent(this, MainActivity::class.java).apply {
@@ -86,6 +62,30 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 .setContentText(guideContent)
                 .setAutoCancel(true)
                 .setContentIntent(mainPendingIntent)
+
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(101, builder1.build())
+
+        } else {
+            val mainIntent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+
+            val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                mainIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val builder1 = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
+                .setSmallIcon(R.drawable.app_icon)
+                .setContentTitle(messageTitle)
+                .setContentText(messageContent)
+                .setAutoCancel(true)
+                .setContentIntent(mainPendingIntent)
+
 
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

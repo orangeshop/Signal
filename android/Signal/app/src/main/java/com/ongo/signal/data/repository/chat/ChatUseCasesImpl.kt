@@ -1,6 +1,5 @@
 package com.ongo.signal.data.repository.chat
 
-import android.util.Log
 import com.google.gson.Gson
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
@@ -12,6 +11,7 @@ import org.hildan.krossbow.stomp.StompSession
 import org.hildan.krossbow.stomp.frame.StompFrame
 import org.hildan.krossbow.stomp.headers.StompSubscribeHeaders
 import org.hildan.krossbow.stomp.sendText
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -25,7 +25,6 @@ class ChatUseCasesImpl @Inject constructor(
 ) : ChatUseCases {
 
     private var stompSession: StompSession? = null
-
 
     override suspend fun loadChats(): List<ChatHomeDTO> {
         val serverChatList = chatRepository.getChatList().body()
@@ -42,18 +41,30 @@ class ChatUseCasesImpl @Inject constructor(
         chatRoomRepositoryImpl.insertChat(room)
     }
 
-    override suspend fun loadDetailList(id: Long): List<ChatHomeChildDTO> {
+    override suspend fun loadDetailList(id: Long, loading: Long): List<ChatHomeChildDTO> {
         val serverMessageList = chatRepository.getAllMessages(id).body()
+//
+//        if(serverMessageList != null){
+//            for(item in serverMessageList){
+//                saveDetailList(item, id)
+//            }
+//        }
 
-        if(serverMessageList != null){
-            for(item in serverMessageList){
-                saveDetailList(item, id)
-//                Log.d(TAG, "loadDetailList: ${item}")
-            }
+        if (serverMessageList != null) {
+            chatRoomRepositoryImpl.insertMessageList(serverMessageList.toMutableList())
         }
 
-        return chatRoomRepositoryImpl.getAllMessages(id)
+        return chatRoomRepositoryImpl.getAllMessages(id, loading)
     }
+
+    override suspend fun loadDetailListNetwork(id: Long): List<ChatHomeChildDTO> {
+        return chatRepository.getAllMessages(id).body()?.toMutableList() ?: emptyList()
+    }
+
+    override suspend fun loadDetailListNoId(limit: Long): List<ChatHomeChildDTO> {
+        return chatRoomRepositoryImpl.getAllMessagesNoId(limit)
+    }
+
 
     override suspend fun saveDetailList(message: ChatHomeChildDTO, id: Long) {
         chatRoomRepositoryImpl.insertMessage(message)
@@ -71,13 +82,15 @@ class ChatUseCasesImpl @Inject constructor(
         return SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
     }
 
-    override suspend fun stompSend(item: ChatHomeChildDTO) {
-        val json: String = Gson().toJson(item)
+    override suspend fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit) {
+//        val json: String = Gson().toJson(item)
 
         stompSession?.sendText(
             "/app/chat/send",
             "{\"message_id\":${item.messageId},\"chat_id\":${item.chatId},\"is_from_sender\":${item.isFromSender},\"content\":\"${item.content}\",\"is_read\":${item.isRead},\"send_at\":null}"
         )
+
+        onSuccess()
     }
 
     override suspend fun stompGet(chatRoomNumber: Long, onSuccess: (Long) -> Unit){
@@ -95,7 +108,6 @@ class ChatUseCasesImpl @Inject constructor(
                 stompGetMessage.sendAt = ""
                 saveDetailList(stompGetMessage, stompGetMessage.chatId)
                 onSuccess(stompGetMessage.chatId)
-                readMessage(chatRoomNumber)
             }
         }
     }
@@ -104,7 +116,7 @@ class ChatUseCasesImpl @Inject constructor(
         try {
             stompSession = stompService.connect("ws://13.125.47.74:8080/chat")
         } catch (e: Exception) {
-            Log.d(TAG, "ConnectedWebSocket: $e")
+            Timber.tag(TAG).d("ConnectedWebSocket: %s", e)
         }
     }
 

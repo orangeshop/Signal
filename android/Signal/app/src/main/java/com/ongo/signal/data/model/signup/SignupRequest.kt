@@ -1,4 +1,4 @@
-package com.ongo.signal.data.repository.signup
+package com.ongo.signal.data.model.signup
 
 import com.google.gson.annotations.SerializedName
 

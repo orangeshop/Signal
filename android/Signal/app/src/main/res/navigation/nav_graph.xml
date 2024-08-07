@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/matchFragment"
         android:name="com.ongo.signal.ui.match.MatchFragment"
-        android:label="MatchFragment" >
+        android:label="MatchFragment">
         <action
             android:id="@+id/action_matchFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
@@ -67,7 +67,7 @@
     <fragment
         android:id="@+id/chatAddFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatAddFragment"
-        android:label="ChatAddFragment" >
+        android:label="ChatAddFragment">
         <action
             android:id="@+id/action_chatAddFragment_to_chatDetailFragment"
             app:destination="@id/chatDetailFragment" />
@@ -100,12 +100,17 @@
     <fragment
         android:id="@+id/profileEditFragment"
         android:name="com.ongo.signal.ui.my.ProfileEditFragment"
-        android:label="ProfileEditFragment" />
+        android:label="ProfileEditFragment" >
+
+        <argument
+            android:name="profile_data"
+            app:argType="com.ongo.signal.data.model.my.MyProfileData"
+            />
+    </fragment>
     <fragment
         android:id="@+id/reviewFragment"
         android:name="com.ongo.signal.ui.main.fragment.ReviewFragment"
-        android:label="ReviewFragment" >
-
+        android:label="ReviewFragment">
         <action
             android:id="@+id/action_reviewFragment_to_matchReviewFragment"
             app:destination="@id/matchReviewFragment" />

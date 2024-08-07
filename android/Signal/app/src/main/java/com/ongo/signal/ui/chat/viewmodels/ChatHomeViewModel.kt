@@ -1,6 +1,5 @@
 package com.ongo.signal.ui.chat.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,10 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 import com.ongo.signal.data.repository.chat.ChatUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.time.ZoneId
@@ -32,14 +34,10 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageList = MutableLiveData<List<ChatHomeChildDTO>>()
     val messageList: LiveData<List<ChatHomeChildDTO>> = _messageList
 
+
     var chatRoomNumber : Long = 0
     var chatRoomFromID : Long = 0
     var chatRoomToID : Long = 0
-
-    var preDay : String = ""
-    var preNum : Long = 0
-
-    var firstInit = true
 
     fun clearMessageList() {
         _messageList.value = emptyList()
@@ -71,16 +69,39 @@ class ChatHomeViewModel @Inject constructor(
      *
      **/
 
-    fun loadDetailList(id: Long) {
-        viewModelScope.launch {
-            _messageList.value = chatUseCases.loadDetailList(id).sortedBy { it.messageId }
+    suspend fun loadDetailList(id: Long, loading: Long = 100) {
+        CoroutineScope(Dispatchers.IO).launch {
+//            _messageList.value = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
+            _messageList.postValue( chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId })
         }
     }
 
     fun readMessage(id: Long){
         viewModelScope.launch {
             chatUseCases.readMessage(id)
+
+            for(message in messageList.value!!){
+                message.isRead = true
+            }
         }
+
+//        viewModelScope.launch {
+//
+//            chatUseCases.readMessage(id)
+//
+//            val updatedMessages = _messageList.value?.map {
+//                it.map { message ->
+//                    if (message.chatId == id) {
+//                        message.copy(isRead = true)
+//                    } else {
+//                        message
+//                    }
+//                }
+//            }
+//
+//            // 3. 업데이트된 메시지 리스트를 _messageList에 설정
+//            _messageList.value = updatedMessages.orEmpty()
+//        }
     }
 
 //    fun appendDetailList(message: ChatHomeChildDto) {
@@ -103,18 +124,18 @@ class ChatHomeViewModel @Inject constructor(
 
     fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            chatUseCases.stompSend(item)
-            delay(500)
-            onSuccess()
+            chatUseCases.stompSend(item){
+                onSuccess()
+            }
         }
     }
 
     fun stompGet(chatRoomNumber: Long) {
         viewModelScope.launch {
             chatUseCases.stompGet(chatRoomNumber){ id ->
-                Log.d(TAG, "stompGet: id ${id}")
-                loadDetailList(id)
-
+                viewModelScope.launch {
+                    loadDetailList(id)
+                }
             }
         }
     }
@@ -138,11 +159,22 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
+    suspend fun getLastReadMessage(id : Long) : Long{
+        var test= CompletableDeferred<Long>()
+
+        viewModelScope.launch {
+
+            test.complete(chatUseCases.getLastMessageIndex(id)?.lastReadMessageIndex ?: 0)
+        }
+        return test.await()
+    }
+
 
     fun timeSetting(time : String, target: Int) : String {
 
+
 //        Log.d(TAG, "timeSetting: ${time}")
-        
+
         // DateTimeFormatter을 사용하여 입력된 날짜 문자열을 ZonedDateTime 객체로 파싱
         val inputFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
         val zonedDateTime = ZonedDateTime.parse(time, inputFormatter)

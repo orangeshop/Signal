@@ -12,6 +12,7 @@ import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -50,4 +51,13 @@ interface LoginApi {
         @Path("userId") userId: Long,
         @Part file: MultipartBody.Part
     ): Response<ProfileImageResponse>
+
+    @Multipart
+    @PUT("/user/{userId}/upload")
+    suspend fun putProfileImage(
+        @Path("userId") userId: Long,
+        @Part file: MultipartBody.Part
+    ): Response<ProfileImageResponse>
+
+
 }
