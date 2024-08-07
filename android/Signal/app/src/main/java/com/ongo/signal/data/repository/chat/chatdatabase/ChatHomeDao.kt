@@ -1,6 +1,7 @@
 package com.ongo.signal.data.repository.chat.chatdatabase
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -14,4 +15,7 @@ interface ChatHomeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg chatHomeDTOs: ChatHomeDTO)
+
+    @Query("DELETE FROM chat_home_table WHERE chatId = :id")
+    suspend fun delete(id : Long)
 }

@@ -12,6 +12,8 @@ interface ChatUseCases {
     suspend fun readMessage(id: Long)
     fun timeSetting(): String
 
+    suspend fun deleteChat(id: Long)
+
     suspend fun loadDetailListNetwork(id: Long) : List<ChatHomeChildDTO>
     suspend fun loadDetailListNoId(id: Long) : List<ChatHomeChildDTO>
 

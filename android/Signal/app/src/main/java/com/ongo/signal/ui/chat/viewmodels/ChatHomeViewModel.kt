@@ -67,6 +67,22 @@ class ChatHomeViewModel @Inject constructor(
 //        }
 //    }
 
+    fun deleteChat(id: Long) {
+        viewModelScope.launch {
+            chatUseCases.deleteChat(id)
+
+            val currentList = _liveList.value.orEmpty().toMutableList()
+
+            liveList.value?.map {
+                if (it.chatId == id) {
+                    currentList.remove(it)
+                    // 서버에서 채팅 삭제 로직 추가ㅁㄴ
+                    _liveList.value = currentList
+                }
+            }
+        }
+    }
+
     /**
      * 기존의 코드
      * messageList <- room에서 detailList의 모든 리스트를 들고와서 갱신함
@@ -87,35 +103,15 @@ class ChatHomeViewModel @Inject constructor(
             Log.d(TAG, "loadDetailList: asdasdasdsa@@11111 ${messageList.value?.size}")
 
             Log.d(TAG, "loadDetailList: asdasdasdsa@@")
+
         }
     }
 
     fun readMessage(id: Long){
         viewModelScope.launch {
             chatUseCases.readMessage(id)
-
-            for(message in messageList.value!!){
-                message.isRead = true
-            }
+//            loadDetailList(id)
         }
-
-//        viewModelScope.launch {
-//
-//            chatUseCases.readMessage(id)
-//
-//            val updatedMessages = _messageList.value?.map {
-//                it.map { message ->
-//                    if (message.chatId == id) {
-//                        message.copy(isRead = true)
-//                    } else {
-//                        message
-//                    }
-//                }
-//            }
-//
-//            // 3. 업데이트된 메시지 리스트를 _messageList에 설정
-//            _messageList.value = updatedMessages.orEmpty()
-//        }
     }
 
 //    fun appendDetailList(message: ChatHomeChildDto) {

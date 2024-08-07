@@ -82,6 +82,10 @@ class ChatUseCasesImpl @Inject constructor(
         return SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
     }
 
+    override suspend fun deleteChat(id: Long) {
+       chatRoomRepositoryImpl.deleteChat(id)
+    }
+
     override suspend fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit) {
 //        val json: String = Gson().toJson(item)
 

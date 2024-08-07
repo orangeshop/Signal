@@ -35,7 +35,6 @@ class ChatRoomRepositoryImpl @Inject constructor(
         chatDetailDao.insertListMessage(message)
     }
 
-
     suspend fun saveLocalMessage(room: ChatHomeLocalCheckDTO) {
         chatHomeLocalCheckDao.saveLocalMessage(room)
     }
@@ -64,5 +63,7 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatHomeLocalCheckDao.updateMessageAmount(chatId, messageVolume, sendAt)
     }
 
-
+    suspend fun deleteChat(id : Long){
+        chatHomeDao.delete(id)
+    }
 }

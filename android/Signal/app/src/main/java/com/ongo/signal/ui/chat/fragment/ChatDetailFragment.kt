@@ -131,11 +131,12 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList) {
-
-
                         chatViewModel.readMessage(chatViewModel.chatRoomNumber)
-
                         val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
+
+                        for (message in chatList) {
+                            message.isRead = true
+                        }
 
                         if (chatList.size >= 1) {
                             progressBar.progress = chatList.size
@@ -229,19 +230,25 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             chatDetailBtn.setOnClickListener {
-                if (etSearch.text.toString() != "") {
-                    val message = ChatHomeChildDTO(
-                        0,
-                        chatViewModel.chatRoomNumber,
-                        chatViewModel.chatRoomFromID == UserSession.userId,
-                        etSearch.text.toString(),
-                        false,
-                        chatViewModel.timeSetting(Date(System.currentTimeMillis()).toString(), 1)
-                    )
+                lifecycleScope.launch {
+                    delay(100)
+                    if (etSearch.text.toString() != "") {
+                        val message = ChatHomeChildDTO(
+                            0,
+                            chatViewModel.chatRoomNumber,
+                            chatViewModel.chatRoomFromID == UserSession.userId,
+                            etSearch.text.toString(),
+                            false,
+                            chatViewModel.timeSetting(
+                                Date(System.currentTimeMillis()).toString(),
+                                1
+                            )
+                        )
 
-                    etSearch.text.clear()
+                        etSearch.text.clear()
 
-                    chatViewModel.stompSend(message) {}
+                        chatViewModel.stompSend(message) {}
+                    }
                 }
             }
 
