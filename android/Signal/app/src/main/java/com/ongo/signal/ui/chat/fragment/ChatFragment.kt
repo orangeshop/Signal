@@ -14,8 +14,6 @@ import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.util.Date
 
 private const val TAG = "ChatFragment_싸피"
 
@@ -47,18 +45,24 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             chatViewModel.clearMessageList()
 
 //            chatViewModel.loadDetailList(1, 100)
-
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
                     check = false
                     chatViewModel.chatRoomNumber = it.chatId
+
                     chatViewModel.chatRoomFromID = it.fromId
                     chatViewModel.chatRoomToID = it.toId
-                    UserSession.userId
+
+                    UserSession.userId?.let { userId ->
+                        if (it.fromId == userId) chatViewModel.videoToID = it.toId
+                        else chatViewModel.videoToID = it.fromId
+                    }
+
 
                     lifecycleScope.launch {
                         chatViewModel.loadDetailList(it.chatId)
                     }
+
 
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },

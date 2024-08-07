@@ -1,12 +1,10 @@
 package com.ongo.signal.ui.chat.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -139,10 +137,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             message.isRead = true
                         }
 
-                        if(chatList.size == 0){
+                        if (chatList.size == 0) {
                             progressBar.visibility = View.GONE
-                        }
-                        else if (chatList.size >= 1) {
+                        } else if (chatList.size >= 1) {
                             progressBar.progress = chatList.size
                             chatViewModel.todayTitleSetting()
                         }
@@ -191,12 +188,12 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             var list_num = 200L
-            
+
             chatDetailRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if(!chatDetailRv.canScrollVertically(-1)){
+                    if (!chatDetailRv.canScrollVertically(-1)) {
                         lifecycleScope.launch {
                             new_loading = true
                             chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, list_num)
@@ -313,11 +310,11 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     private fun playWebRtc() {
         getCameraAndMicPermission {
-            videoRepository.sendConnectionRequest("${chatViewModel.chatRoomToID}", true) {
+            videoRepository.sendConnectionRequest("${chatViewModel.videoToID}", true) {
                 if (it) {
                     Timber.d("성공적으로 영통 보냄")
                     startActivity(Intent(requireContext(), CallActivity::class.java).apply {
-                        putExtra("target", "25")
+                        putExtra("target", "${chatViewModel.videoToID}")
                         putExtra("isVideoCall", true)
                         putExtra("isCaller", true)
                     })
