@@ -29,24 +29,6 @@ class ImageViewModel @Inject constructor(
     private val _boardImages = MutableStateFlow<Map<Long, List<BoardImagesItemDTO>>>(emptyMap())
     val boardImages: StateFlow<Map<Long, List<BoardImagesItemDTO>>> = _boardImages
 
-    fun loadBoardImages() {
-        viewModelScope.launch {
-            runCatching {
-                imageRepository.getBoardImages()
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    val images = response.body() ?: BoardImagesDTO()
-                    _boardImages.value = images.groupBy { it.boardId }
-                    Timber.d("Board images loaded: ${_boardImages.value}")
-                } else {
-                    Timber.e("Failed to load board images: ${response.errorBody()?.string()}")
-                }
-            }.onFailure { e ->
-                Timber.e(e, "Failed to load board images")
-            }
-        }
-    }
-
     fun uploadImage(boardId: Long, uri: Uri, context: Context): Deferred<Result<String?>> = viewModelScope.async {
         Timber.d("uploadImage called with boardId: $boardId, uri: $uri")
         runCatching {
@@ -69,8 +51,6 @@ class ImageViewModel @Inject constructor(
             Timber.e(e, "Failed to upload image")
         }
     }
-
-
 
     private fun createFileFromUri(uri: Uri, context: Context): File {
         val inputStream = context.contentResolver.openInputStream(uri)
