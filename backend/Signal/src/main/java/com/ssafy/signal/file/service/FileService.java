@@ -16,9 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -81,7 +84,6 @@ public class FileService {
                 }
             }
         }
-
         return uploadedFileNames.toString();
     }
 

@@ -70,7 +70,7 @@ public class FileController {
     @PutMapping("/board/{boardId}/upload")
     public String updateBoardFile(@RequestParam("file") MultipartFile[] multipartFile,
                                   @PathVariable("boardId") Long boardId) throws IOException {
-        
+
         return fileService.updateBoardFile(multipartFile, boardId);
     }
 }
