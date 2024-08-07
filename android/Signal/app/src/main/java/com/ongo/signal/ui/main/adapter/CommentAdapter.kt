@@ -11,7 +11,7 @@ import com.ongo.signal.databinding.ItemCommentBinding
 class CommentAdapter(
     private val onCommentEditClick: (CommentDTOItem) -> Unit,
     private val onCommentDeleteClick: (CommentDTOItem) -> Unit,
-    private val currentUserId: Int
+    private val currentUserId: Long
 ) :
     ListAdapter<CommentDTOItem, CommentAdapter.ViewHolder>(DiffUtilCallback()) {
 

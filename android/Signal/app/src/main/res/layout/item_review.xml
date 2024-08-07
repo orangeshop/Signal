@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="review"
-            type="com.ongo.signal.data.model.main.ReviewDTO" />
+            type="com.ongo.signal.data.model.review.ReviewResponseItemDTO" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,29 +18,31 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_margin="8dp"
+            app:profile="@{review.url}"
             android:src="@drawable/basic_profile"
-            imageUrl="@{review.profile}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <!--            imageUrl="@{review.profile}"-->
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@{review.userName}"
             android:textColor="@color/white"
             android:textSize="20sp"
+            android:text="@{review.name}"
             app:layout_constraintBottom_toTopOf="@id/tv_review"
             app:layout_constraintStart_toEndOf="@id/iv_profile"
             app:layout_constraintTop_toTopOf="@id/iv_profile" />
+        <!--            android:text="@{review.userName}"-->
 
         <TextView
             android:id="@+id/tv_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{review.review}"
+            android:text="@{review.content}"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
@@ -51,14 +54,14 @@
             style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:numStars="5"
             android:progressBackgroundTint="#FFFFFF"
             android:progressTint="@color/yellow"
-            android:rating="@{review.rating}"
+            android:rating="@{review.star}"
             android:stepSize="0.5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_review"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View

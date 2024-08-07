@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CommentRepositoryImpl @Inject constructor(private val mainApi: MainApi) : CommentRepository {
-    override suspend fun readComments(boardId: Int): Response<CommentDTO> {
+    override suspend fun readComments(boardId: Long): Response<CommentDTO> {
         return mainApi.readComments(boardId)
     }
 

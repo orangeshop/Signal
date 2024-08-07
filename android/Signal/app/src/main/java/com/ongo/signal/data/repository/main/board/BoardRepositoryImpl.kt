@@ -17,39 +17,39 @@ class BoardRepositoryImpl @Inject constructor(private val mainApi: MainApi) : Bo
         return mainApi.writeBoard(boardRequestDTO)
     }
 
-    override suspend fun readBoard(): Response<List<BoardDTO>> {
-        return mainApi.readBoard()
+    override suspend fun readBoard(pageNum: Int, limit: Int): Response<List<BoardDTO>> {
+        return mainApi.readBoard(pageNum, limit)
     }
 
-    override suspend fun readBoardById(boardId: Int): Response<BoardDTO> {
+    override suspend fun readBoardById(boardId: Long): Response<BoardDTO> {
         return mainApi.readBoardById(boardId)
     }
 
     override suspend fun updateBoard(
-        boardId: Int,
+        boardId: Long,
         updateBoardDTO: UpdateBoardDTO
     ): Response<BoardDTO> {
         return mainApi.updateBoard(boardId, updateBoardDTO)
     }
 
-    override suspend fun deleteBoard(boardId: Int): Response<ResponseBody> {
+    override suspend fun deleteBoard(boardId: Long): Response<ResponseBody> {
         return mainApi.deleteBoard(boardId)
     }
 
-    override suspend fun uploadImage(
-        boardId: Long,
-        image: MultipartBody.Part
-    ): Response<ResponseBody> {
-        return mainApi.uploadImage(boardId, image)
-    }
+//    override suspend fun uploadImage(
+//        boardId: Long,
+//        image: MultipartBody.Part
+//    ): Response<ResponseBody> {
+//        return mainApi.uploadImage(boardId, image)
+//    }
 
-    override suspend fun boardLike(boardId: Long): Response<ResponseBody> {
+    override suspend fun boardLike(boardId: Long): Response<Long> {
         return mainApi.boardLike(boardId)
     }
 
-    override suspend fun getBoardImages(): Response<BoardImagesDTO> {
-        return mainApi.getBoardImages()
-    }
+//    override suspend fun getBoardImages(): Response<BoardImagesDTO> {
+//        return mainApi.getBoardImages()
+//    }
 
     override suspend fun searchBoard(keyword: String): Response<List<BoardDTO>> {
         return mainApi.searchBoard(keyword)

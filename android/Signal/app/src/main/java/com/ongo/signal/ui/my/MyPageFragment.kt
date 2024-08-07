@@ -104,6 +104,13 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
         }
     }
 
+    fun goToReview() {
+        parentFragmentManager.commit {
+            (requireActivity() as MainActivity).hideBottomNavigation()
+            findNavController().navigate(R.id.action_myPageFragment_to_reviewFragment)
+        }
+    }
+
     private fun goToLoginActivity() {
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)

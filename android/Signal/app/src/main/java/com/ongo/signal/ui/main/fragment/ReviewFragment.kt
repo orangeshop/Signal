@@ -1,32 +1,70 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.data.model.main.ReviewDTO
+import com.ongo.signal.config.CreateChatRoom
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
+import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_review) {
 
     private lateinit var reviewAdapter: ReviewAdapter
-    private val viewModel: ReviewViewModel by viewModels()
+    private val reviewViewModel: ReviewViewModel by activityViewModels()
+    private val boardViewModel: BoardViewModel by activityViewModels()
 
     override fun init() {
         setUpAdapter()
-        populateReviewData()
         binding.fragment = this
+        binding.reviewViewModel = reviewViewModel
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
-        viewModel.checkReviewPermission(25) { isPossible ->
-            Timber.d("리뷰를 작성할 수 있으면 ${isPossible} 가 true가 됨")
+        //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
+        val writerId = boardViewModel.selectedBoard.value?.userId
+        writerId?.let {
+            reviewViewModel.checkReviewPermission(writerId)
+        }
+
+        loadReviews()
+    }
+
+    fun makeChat() {
+        val writerId = boardViewModel.selectedBoard.value?.userId
+        val userId = UserSession.userId
+
+        if (userId != null) {
+            if (writerId != null) {
+                CreateChatRoom.Create(userId, writerId)
+                findNavController().navigate(R.id.action_reviewFragment_to_chatFragment)
+            } else {
+                Timber.d("writerId is null")
+            }
+        } else {
+            Timber.d("userId is null")
+        }
+    }
+
+    private fun loadReviews() {
+        val writerId = boardViewModel.selectedBoard.value?.userId ?: UserSession.userId
+        lifecycleScope.launch {
+            writerId?.let {
+                reviewViewModel.loadReview(writerId)
+            }
+
+            reviewViewModel.reviewList.collectLatest { review ->
+                reviewAdapter.submitList(review)
+            }
         }
     }
 
@@ -36,33 +74,6 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = reviewAdapter
         }
-    }
-
-    private fun populateReviewData() {
-        val sampleReviews = listOf(
-            ReviewDTO(
-                reviewId = "1",
-                userName = "이름이름1",
-                review = "리뷰 내용1",
-                rating = 4.5f,
-                profile = "https://example.com/profile1.jpg"
-            ),
-            ReviewDTO(
-                reviewId = "2",
-                userName = "이름이름2",
-                review = "리뷰 내용2",
-                rating = 3.0f,
-                profile = "https://example.com/profile2.jpg"
-            ),
-            ReviewDTO(
-                reviewId = "3",
-                userName = "이름이름3",
-                review = "리뷰 내용3",
-                rating = 5.0f,
-                profile = "https://example.com/profile3.jpg"
-            )
-        )
-        reviewAdapter.submitList(sampleReviews)
     }
 
     fun onReview() {

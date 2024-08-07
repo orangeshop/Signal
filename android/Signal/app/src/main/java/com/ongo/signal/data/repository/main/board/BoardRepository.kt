@@ -11,13 +11,13 @@ import retrofit2.Response
 interface BoardRepository {
 
     suspend fun writeBoard(boardRequestDTO: BoardRequestDTO): Response<BoardDTO>
-    suspend fun readBoard(): Response<List<BoardDTO>>
-    suspend fun readBoardById(boardId: Int): Response<BoardDTO>
-    suspend fun updateBoard(boardId: Int, updateBoardDTO: UpdateBoardDTO): Response<BoardDTO>
-    suspend fun deleteBoard(boardId: Int): Response<ResponseBody>
-    suspend fun uploadImage(boardId: Long, image: MultipartBody.Part): Response<ResponseBody>
-    suspend fun boardLike(boardId: Long): Response<ResponseBody>
-    suspend fun getBoardImages(): Response<BoardImagesDTO>
+    suspend fun readBoard(pageNum: Int, limit: Int): Response<List<BoardDTO>>
+    suspend fun readBoardById(boardId: Long): Response<BoardDTO>
+    suspend fun updateBoard(boardId: Long, updateBoardDTO: UpdateBoardDTO): Response<BoardDTO>
+    suspend fun deleteBoard(boardId: Long): Response<ResponseBody>
+//    suspend fun uploadImage(boardId: Long, image: MultipartBody.Part): Response<ResponseBody>
+    suspend fun boardLike(boardId: Long): Response<Long>
+//    suspend fun getBoardImages(): Response<BoardImagesDTO>
     suspend fun searchBoard(keyword: String): Response<List<BoardDTO>>
     suspend fun getHotSignal(): Response<List<BoardDTO>>
     suspend fun getRecentSignalByTag(tag: String, page: Int, limit: Int): Response<List<BoardDTO>>

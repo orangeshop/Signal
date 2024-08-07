@@ -8,23 +8,20 @@ data class BoardDTO(
     val comments: ArrayList<CommentDTOItem>? = arrayListOf(),
     val content: String,
     val createdDate: String? = null,
-    val id: Int = 0,
-    val liked: Int = 0,
+    val id: Long = 0,
+    val liked: Long = 0,
     val modifiedDate: String? = null,
-    val reference: Int = 0,
+    val reference: Long = 0,
     val title: String,
-    val type: Int? = 0,
-    val userId: Int,
+    val member: MemberDTO,
+    val type: Long? = 0,
+    val userId: Long,
     val writer: String,
     @SerializedName("fileUrls") val imageUrls: List<String>? = listOf(),
     val tags: List<TagDTO>? = emptyList()
 ) {
     fun getFormattedCreatedDate(): String? {
         return createdDate?.let { formatDate(it) }
-    }
-
-    fun getFormattedModifiedDate(): String? {
-        return modifiedDate?.let { formatDate(it) }
     }
 
     private fun formatDate(dateTime: String): String {

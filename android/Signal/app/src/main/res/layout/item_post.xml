@@ -10,8 +10,8 @@
             type="com.ongo.signal.data.model.main.BoardDTO" />
 
         <variable
-            name="viewModel"
-            type="com.ongo.signal.ui.main.MainViewModel" />
+            name="boardViewModel"
+            type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,14 +43,15 @@
             android:layout_marginTop="15dp"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:profile="@{board.member.profileImage}"
             tools:src="@drawable/baseline_more_vert_mint_24" />
-        <!--            app:imageUrl="@{post.profile}"-->
 
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text="@{board.writer}"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -114,7 +115,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="15dp"
-            android:onClick="@{() -> viewModel.onThumbClick(board)}"
+            android:onClick="@{() -> boardViewModel.onThumbClick(board)}"
             android:padding="4dp"
             android:src="@drawable/baseline_thumb_up_alt_white_24"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
