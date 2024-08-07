@@ -1,17 +1,18 @@
 package com.ongo.signal.ui.main
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.match.MatchHistoryResponse
+import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.model.review.ReviewRequestDTO
-import com.ongo.signal.data.model.review.ReviewResponseDTO
 import com.ongo.signal.data.model.review.ReviewResponseItemDTO
+import com.ongo.signal.data.model.review.UserProfileResponse
 import com.ongo.signal.data.repository.match.MatchRepository
+import com.ongo.signal.data.repository.mypage.MyPageRepository
 import com.ongo.signal.data.repository.review.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ReviewViewModel @Inject constructor(
     private val matchRepository: MatchRepository,
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
+    private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
 
     private val _reviewList = MutableStateFlow<List<ReviewResponseItemDTO>>(emptyList())
@@ -29,6 +31,11 @@ class ReviewViewModel @Inject constructor(
 
     private val _isReviewVisible = MutableStateFlow(false)
     val isReviewVisible: StateFlow<Boolean> = _isReviewVisible
+
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
+        }
 
     fun checkReviewPermission(userId: Long) {
         getMatchHistory(userId) { historyList ->
@@ -90,5 +97,33 @@ class ReviewViewModel @Inject constructor(
             }
         }
     }
+
+    fun postProposeMatch(
+        fromId: Long,
+        toId: Long,
+        onSuccess: (MatchProposeResponse) -> Unit,
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            matchRepository.postProposeMatch(fromId, toId).onSuccess { response ->
+                response?.let {
+                    onSuccess(it)
+                }
+            }.onFailure { throw it }
+        }
+    }
+
+    fun getUserProfile(
+        userId: Long,
+        onSuccess: (UserProfileResponse) -> Unit
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            reviewRepository.getUserProfile(userId).onSuccess { userProfileResponse ->
+                userProfileResponse?.let {
+                    onSuccess(userProfileResponse)
+                }
+            }
+        }
+    }
+
 
 }
