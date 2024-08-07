@@ -138,10 +138,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             message.isRead = true
                         }
 
-                        if (chatList.size >= 1) {
+                        if(chatList.size == 0){
+                            progressBar.visibility = View.GONE
+                        }
+                        else if (chatList.size >= 1) {
                             progressBar.progress = chatList.size
                             chatViewModel.todayTitleSetting()
                         }
+
                         if (progressBar.progress == chatList.size && chatList.size != 0) {
                             progressBar.visibility = View.GONE
                         }
