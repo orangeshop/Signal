@@ -206,7 +206,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         val title = binding.etTitle.text.toString()
         val content = binding.etContent.text.toString()
         val userId = UserSession.userId
-        val writer = "admin"
+        val writer = UserSession.userName
         val tags = listOf(TagDTO(tagId = selectedTagId, tag = selectedTag))
         val isChipChecked = when {
             binding.chipJunior.isChecked && binding.chipSenior.isChecked -> 0
@@ -219,19 +219,23 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
             if (boardViewModel.selectedBoard.value == null) {
                 userId?.let {
                     val boardRequestDTO =
-                        BoardRequestDTO(
-                            userId.toLong(),
-                            writer,
-                            title,
-                            content,
-                            isChipChecked,
-                            tags
-                        )
-                    boardViewModel.createBoard(boardRequestDTO) { newBoard ->
-                        if (newBoard != null) {
-                            uploadImagesAndNavigate(newBoard)
-                        } else {
-                            Timber.e("Failed to create board")
+                        writer?.let { it1 ->
+                            BoardRequestDTO(
+                                userId.toLong(),
+                                it1,
+                                title,
+                                content,
+                                isChipChecked,
+                                tags
+                            )
+                        }
+                    if (boardRequestDTO != null) {
+                        boardViewModel.createBoard(boardRequestDTO) { newBoard ->
+                            if (newBoard != null) {
+                                uploadImagesAndNavigate(newBoard)
+                            } else {
+                                Timber.e("Failed to create board")
+                            }
                         }
                     }
                 }
@@ -252,7 +256,6 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     }
 
     private fun uploadImagesAndNavigate(board: BoardDTO) {
-        Timber.tag("selectedBoard").d(board.toString())
         val boardId = board.id
         val imageItems = imageAdapter.currentList
         val uriItems = imageItems.filterIsInstance<ImageItem.UriItem>()
