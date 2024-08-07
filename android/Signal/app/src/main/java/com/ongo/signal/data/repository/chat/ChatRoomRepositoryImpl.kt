@@ -13,7 +13,9 @@ class ChatRoomRepositoryImpl @Inject constructor(
     private val chatDetailDao: ChatDetailDao,
     private val chatHomeLocalCheckDao: ChatHomeLocalCheckDao
 ) {
-    suspend fun getAllChats(): List<ChatHomeDTO> = chatHomeDao.getAll()
+    suspend fun getAllChats(id: Long): List<ChatHomeDTO> {
+        return chatHomeDao.getAll(id)
+    }
 
     suspend fun insertChat(room: ChatHomeDTO) {
         chatHomeDao.insertAll(room)

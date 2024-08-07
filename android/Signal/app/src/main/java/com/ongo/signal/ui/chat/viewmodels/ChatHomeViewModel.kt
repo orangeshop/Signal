@@ -1,9 +1,11 @@
 package com.ongo.signal.ui.chat.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
@@ -15,10 +17,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.sql.Date
+import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
 
 private const val TAG = "ChatHomeViewModel_싸피"
@@ -35,6 +39,10 @@ class ChatHomeViewModel @Inject constructor(
     val messageList: LiveData<List<ChatHomeChildDTO>> = _messageList
 
 
+    val todayTitleChecker = mutableListOf<Long>()
+
+
+
     var chatRoomNumber : Long = 0
     var chatRoomFromID : Long = 0
     var chatRoomToID : Long = 0
@@ -45,7 +53,10 @@ class ChatHomeViewModel @Inject constructor(
 
     fun loadChats() {
         viewModelScope.launch {
-            _liveList.value = chatUseCases.loadChats().sortedByDescending { it.sendAt }
+            _liveList.value = UserSession.userId?.let { chatUseCases.loadChats(it.toLong(), ).sortedByDescending { it.sendAt } }
+//            _liveList.value =
+//                UserSession.userId?.let { chatUseCases.loadChats(it, UserSession.userId!!).sortedByDescending { it.sendAt } }
+            Log.d(TAG, "loadChats: ${liveList} ${chatRoomFromID}")
         }
     }
 
@@ -73,6 +84,9 @@ class ChatHomeViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
 //            _messageList.value = chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId }
             _messageList.postValue( chatUseCases.loadDetailList(id, loading).sortedBy { it.messageId })
+            Log.d(TAG, "loadDetailList: asdasdasdsa@@11111 ${messageList.value?.size}")
+
+            Log.d(TAG, "loadDetailList: asdasdasdsa@@")
         }
     }
 
@@ -222,5 +236,33 @@ class ChatHomeViewModel @Inject constructor(
         }
         return result
     }
+
+    fun todayTitleSetting(){
+        var tmp = messageList.value?.get(messageList.value!!.lastIndex)?.sendAt
+
+        for (item in messageList.value!!) {
+            if (tmp != null) {
+
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+                inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+                val outputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
+                TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
+                outputFormat.timeZone = TimeZone.getDefault()
+
+                val preDay = inputFormat.parse(tmp)
+                val preDayOutput = outputFormat.format(preDay)
+
+                val Today = inputFormat.parse(item.sendAt)
+                val todayOutput = outputFormat.format(Today)
+
+                if (preDayOutput.substring(1, 8) != todayOutput.substring(1, 8)) {
+                    todayTitleChecker.add(item.messageId)
+                }
+            }
+            tmp = item.sendAt
+        }
+    }
+
 
 }

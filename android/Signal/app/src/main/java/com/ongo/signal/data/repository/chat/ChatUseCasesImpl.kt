@@ -26,7 +26,7 @@ class ChatUseCasesImpl @Inject constructor(
 
     private var stompSession: StompSession? = null
 
-    override suspend fun loadChats(): List<ChatHomeDTO> {
+    override suspend fun loadChats(id : Long): List<ChatHomeDTO> {
         val serverChatList = chatRepository.getChatList().body()
         if (serverChatList != null) {
             for(item in serverChatList){
@@ -34,7 +34,7 @@ class ChatUseCasesImpl @Inject constructor(
             }
         }
 
-        return chatRoomRepositoryImpl.getAllChats()
+        return chatRoomRepositoryImpl.getAllChats(id)
     }
 
     override suspend fun saveChat(room: ChatHomeDTO) {

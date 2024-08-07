@@ -1,8 +1,12 @@
 package com.ongo.signal.ui.chat.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Rect
+import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -46,7 +50,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     private lateinit var chatDetailAdapter: ChatDetailAdapter
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
-    private val todayTitleChecker = mutableSetOf<Long>()
+    private var isKeyboardVisible = false
 
     //video
     @Inject
@@ -64,7 +68,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         videoServiceRepository.startService(UserSession.userId.toString())
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "NewApi")
     override fun onResume() {
         super.onResume()
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
@@ -99,6 +103,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             val time = outputFormat.format(date)
                             result = chatViewModel.timeSetting(time, target)
                         }
+
                         result
                     },
                     todaySetting = { id, item, time ->
@@ -108,34 +113,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         리스트가 마운트 될 때 배열에 날이 바뀌는 인덱스를 넣어야 함
                         그리고 해당 인덱스가 있는지 뽑아내는 방식이면 충분할 듯 함
                         로컬 배열에 값을 넣자
-                        * */
+                        **/
 
-                        var tmp =
-                            chatViewModel.messageList.value?.get(chatViewModel.messageList.value!!.lastIndex)?.sendAt
-
-                        for (item in chatViewModel.messageList.value!!) {
-                            if (tmp != null) {
-
-                                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-                                inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-
-                                val outputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
-                                TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
-                                outputFormat.timeZone = TimeZone.getDefault()
-
-                                val preDay = inputFormat.parse(tmp)
-                                val preDayOutput = outputFormat.format(preDay)
-
-                                val Today = inputFormat.parse(item.sendAt)
-                                val todayOutput = outputFormat.format(Today)
-
-                                if (preDayOutput.substring(1, 8) != todayOutput.substring(1, 8)) {
-                                    todayTitleChecker.add(item.messageId)
-                                }
-                            }
-                            tmp = item.sendAt
-                        }
-                        if (todayTitleChecker.contains(id)) {
+                        if (chatViewModel.todayTitleChecker.contains(id)) {
                             result = true
                         }
 
@@ -152,49 +132,52 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList) {
 
+
                         chatViewModel.readMessage(chatViewModel.chatRoomNumber)
 
                         val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
 
-                        if (chatList.isNotEmpty() && check == false) {
-                            if (isFrom != chatList.get(chatList.lastIndex).isFromSender) {
-                                lifecycleScope.launch {
-                                    newMessage.visibility = View.VISIBLE
-                                    newMessageTv.text =
-                                        chatList.get(chatList.lastIndex).content
-                                }
-                            }
-                        }
-
-                        if (chatList.size > 1) {
+                        if (chatList.size >= 1) {
                             progressBar.progress = chatList.size
+                            chatViewModel.todayTitleSetting()
                         }
                         if (progressBar.progress == chatList.size && chatList.size != 0) {
                             progressBar.visibility = View.GONE
                         }
 
+
+                        /** 리스트가 채워져있고 처음이 아니라면 진입
+                         *  상대가 메시지를 보낼 시 하단에 미리 알림 띄움
+                         * */
+                        if (chatList.isNotEmpty() && check == false) {
+
+                            if (isFrom != chatList[chatList.lastIndex].isFromSender && chatDetailRv.canScrollVertically(
+                                    1
+                                )
+                            ) {
+                                lifecycleScope.launch {
+                                    newMessage.visibility = View.VISIBLE
+                                    newMessageTv.text =
+                                        chatList[chatList.lastIndex].content
+                                }
+                            } else if (isFrom != chatList[chatList.lastIndex].isFromSender && !chatDetailRv.canScrollVertically(
+                                    1
+                                )
+                            ) {
+                                scrollPositionBottom()
+                            }
+                        }
+
+
                         if (chatList.isNotEmpty() && check) {
                             lifecycleScope.launch {
-                                chatDetailRv.scrollToPosition(
-                                    if (chatViewModel.getLastReadMessage(chatViewModel.chatRoomNumber) + 300 <= chatList.lastIndex) {
-                                        chatList.lastIndex
-
-                                    } else {
-                                        chatList.lastIndex
-                                    }
-                                )
+                                chatDetailRv.scrollToPosition(chatList.lastIndex)
                             }
                             check = false
                         }
 
                         if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom) {
-                            lifecycleScope.launch {
-                                chatViewModel.messageList.value?.let { it1 ->
-                                    chatDetailRv.smoothScrollToPosition(
-                                        it1.lastIndex
-                                    )
-                                }
-                            }
+                            scrollPositionBottom()
                         }
                     }
                 })
@@ -208,10 +191,28 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                 lifecycleScope.launch {
                     val manager = chatDetailRv.layoutManager as LinearLayoutManager
+                    val rootView = root.rootView
+
+                    rootView.viewTreeObserver.addOnGlobalLayoutListener {
+                        val rect = Rect()
+                        // 루트 뷰의 가시 영역을 rect에 저장합니다.
+                        rootView.getWindowVisibleDisplayFrame(rect)
+                        val screenHeight = rootView.height
+                        val keypadHeight = screenHeight - rect.bottom
+
+                        // 키보드가 화면의 15% 이상을 차지하는 경우 키보드가 올라왔다고 판단합니다.
+                        val isKeyboardNowVisible = keypadHeight > screenHeight * 0.35
+
+                        if (isKeyboardNowVisible != isKeyboardVisible) {
+                            isKeyboardVisible = isKeyboardNowVisible
+                            onKeyboardVisibilityChanged(isKeyboardVisible) {
+                            }
+                        }
+                    }
 
                     manager.apply {
                         val num = findLastVisibleItemPosition()
-                        delay(100)
+                        delay(500)
                         chatDetailRv.scrollToPosition(
                             if (num <= 15) 0 else num
                         )
@@ -224,13 +225,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 newMessage.visibility = View.GONE
                 newMessageTv.text = ""
 
-                lifecycleScope.launch {
-                    chatViewModel.messageList.value?.let { it1 ->
-                        binding.chatDetailRv.smoothScrollToPosition(
-                            it1.lastIndex
-                        )
-                    }
-                }
+                scrollPositionBottom()
             }
 
             chatDetailBtn.setOnClickListener {
@@ -252,6 +247,27 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             chatDetailAdd.setOnClickListener {
                 playWebRtc()
+            }
+        }
+    }
+
+    private fun onKeyboardVisibilityChanged(visible: Boolean, onSuccess: () -> Unit) {
+        if (visible) {
+            // 키보드가 올라왔을 때의 동작
+            onSuccess()
+            Log.d(TAG, "Keyboard is visible")
+        } else {
+            // 키보드가 내려갔을 때의 동작
+            Log.d(TAG, "Keyboard is hidden")
+        }
+    }
+
+    fun scrollPositionBottom() {
+        lifecycleScope.launch {
+            chatViewModel.messageList.value?.let { it1 ->
+                binding.chatDetailRv.smoothScrollToPosition(
+                    it1.lastIndex
+                )
             }
         }
     }
@@ -325,3 +341,4 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         (requireActivity() as? MainActivity)?.showBottomNavigation()
     }
 }
+

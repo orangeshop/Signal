@@ -5,7 +5,7 @@ import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 
 interface ChatUseCases {
-    suspend fun loadChats(): List<ChatHomeDTO>
+    suspend fun loadChats(id: Long): List<ChatHomeDTO>
     suspend fun saveChat(room: ChatHomeDTO)
     suspend fun loadDetailList(id: Long, loading: Long): List<ChatHomeChildDTO>
     suspend fun saveDetailList(message: ChatHomeChildDTO, id: Long)
