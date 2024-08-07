@@ -1,27 +1,22 @@
 package com.ssafy.signal.file.service;
 
-import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.service.BoardService;
 import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.domain.FileEntity;
 import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.service.MemberService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import com.ssafy.signal.member.repository.MemberRepository;
-import com.ssafy.signal.member.service.MemberService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,21 +48,41 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
-    public String uploadBoardFile(MultipartFile multipartFile, Long boardId) throws IOException {
-        // S3에 파일 업로드 후 URL 가져오기
-        String url = s3Uploader.upload(multipartFile, DIR_NAME);
+    public String uploadBoardFile(MultipartFile[] multipartFile, Long boardId) throws IOException {
+        if (multipartFile == null || multipartFile.length == 0) {
+            log.warn("Please select at least one file to upload.");
+            return "Please select at least one file to upload.";
+        }
 
-        // 파일 정보를 DB에 저장
-        FileEntity file = new FileEntity();
-        file.setBoard(boardService.getBoardById(boardId));
-        file.setUser(null);
-        file.setFileName(multipartFile.getOriginalFilename());
-        file.setFileUrl(url);
+        List<String> uploadedFileNames = new ArrayList<>();
 
-        fileRepository.save(file);
+        for (MultipartFile file : multipartFile) {
+            if (!file.isEmpty()) {
+                try {
+                    log.info("{}", file);
 
-        // 업로드된 파일의 URL 반환
-        return url;
+                    // S3에 파일 업로드 후 URL 가져오기
+                    String url = s3Uploader.upload(file, DIR_NAME);
+
+                    uploadedFileNames.add(url);
+
+                    // 파일 정보를 DB에 저장
+                    FileEntity file1 = new FileEntity();
+                    file1.setBoard(boardService.getBoardById(boardId));
+                    file1.setUser(null);
+                    file1.setFileName(file.getOriginalFilename());
+                    file1.setFileUrl(url);
+
+                    fileRepository.save(file1);
+
+                } catch (IOException e) {
+                    log.warn("Failed to upload one or more files.");
+                    return "Failed to upload one or more files.";
+                }
+            }
+        }
+
+        return uploadedFileNames.toString();
     }
 
     public FileDto uploadProfileFile(MultipartFile multipartFile,  Long userId) throws IOException {
@@ -112,6 +127,39 @@ public class FileService {
         return fileRepository.findByBoardId(boardId).stream()
                 .map(FileEntity::getFileUrl)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public String updateBoardFile(MultipartFile[] multipartFile, Long boardId) throws IOException {
+        List<String> boards = getFilesByBoardId(boardId);
+        List<String> uploadedFileNames = new ArrayList<>();
+
+        for (String board : boards) {
+            if (!multipartFile[0].isEmpty()) {
+                s3Uploader.delete(board);
+
+                fileRepository.deleteByFileUrl(board);
+            }
+
+        }
+
+        for (MultipartFile file : multipartFile) {
+            if (!file.isEmpty()) {
+                String url = s3Uploader.upload(file, DIR_NAME);
+
+                uploadedFileNames.add(url);
+
+                // 파일 정보를 DB에 저장
+                FileEntity file1 = new FileEntity();
+                file1.setBoard(boardService.getBoardById(boardId));
+                file1.setUser(null);
+                file1.setFileName(file.getOriginalFilename());
+                file1.setFileUrl(url);
+
+                fileRepository.save(file1);
+            }
+        }
+        return uploadedFileNames.toString();
     }
 
 
