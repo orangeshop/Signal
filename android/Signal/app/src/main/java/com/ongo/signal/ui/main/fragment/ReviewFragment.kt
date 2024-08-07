@@ -4,6 +4,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.CreateChatRoom
@@ -32,8 +35,26 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         //user ID에 상대방 아이디를 넣으면 됩니다.
         //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
         val writerId = boardViewModel.selectedBoard.value?.userId
+        val writerName = boardViewModel.selectedBoard.value?.writer
         writerId?.let {
             reviewViewModel.checkReviewPermission(writerId)
+            getMyProfile(writerId)
+        }
+
+        binding.btnMatching.setOnClickListener {
+            Timber.d("매칭 클릭 확인 ${writerId} ${writerName}")
+            UserSession.userId?.let { myId ->
+                writerId?.let {
+                    writerName?.let {
+                        reviewViewModel.postProposeMatch(
+                            fromId = myId,
+                            toId = writerId
+                        ) {
+                            makeToast("${writerName} 님께 매칭 신청을 하였습니다.")
+                        }
+                    }
+                }
+            }
         }
 
         loadReviews()
@@ -65,6 +86,17 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             reviewViewModel.reviewList.collectLatest { review ->
                 reviewAdapter.submitList(review)
             }
+        }
+    }
+
+    private fun getMyProfile(userId: Long) {
+        reviewViewModel.getUserProfile(userId) { userProfileResponse ->
+            Glide.with(requireActivity())
+                .load(userProfileResponse.profileImage)
+                .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                .into(binding.ivProfile)
+
+            binding.tvUsername.text = userProfileResponse.name
         }
     }
 
