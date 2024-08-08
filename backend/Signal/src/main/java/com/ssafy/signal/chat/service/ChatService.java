@@ -123,6 +123,10 @@ public class ChatService {
         firebaseService.sendMessageTo(destUserId, destUserName,messageDto.getContent(),0);
     }
 
+    public void deleteChatRoom(long chat_id){
+        chatRoomRepository.deleteById(chat_id);
+    }
+
     private Member makeMember(long user_id){
         return memberRepository
                 .findById(user_id)

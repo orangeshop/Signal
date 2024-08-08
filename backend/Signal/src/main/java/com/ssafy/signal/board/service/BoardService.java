@@ -85,23 +85,6 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
-    @Transactional
-    public List<BoardDto> searchPosts(String keyword) {
-        List<BoardEntity> boardEntities = boardRepository.searchByTitleOrContent(keyword);
-        List<BoardDto> boardDtoList = new ArrayList<>();
-
-        if (boardEntities.isEmpty()) return boardDtoList;
-
-        for (BoardEntity boardEntity : boardEntities) {
-            List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
-                    .map(CommentEntity::asCommentDto)
-                    .collect(Collectors.toList());
-
-            boardDtoList.add(this.convertEntityToDto(boardEntity, comments));
-        }
-        return boardDtoList;
-    }
-
     public Integer[] getPageList(Integer curPageNum) {
         Integer[] pageList = new Integer[100];
 
