@@ -8,6 +8,7 @@ import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
+import com.ongo.signal.data.model.review.UserProfileResponse
 import com.ongo.signal.data.repository.chat.ChatUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CompletableDeferred
@@ -36,19 +37,37 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageList = MutableLiveData<List<ChatHomeChildDTO>>()
     val messageList: LiveData<List<ChatHomeChildDTO>> = _messageList
 
-
     val todayTitleChecker = mutableListOf<Long>()
 
 
-    var chatRoomNumber: Long = 0
-    var chatRoomFromID: Long = 0
-    var chatRoomToID: Long = 0
+    var chatRoomNumber : Long = 0
+    var chatRoomFromID : Long = 0
+    var chatRoomToID : Long = 0
+    var chatRoomTitle : String = ""
+    var chatRoomUrl : String = ""
 
     var videoToID: Long = 0
     var videoToName: String = ""
 
     fun clearMessageList() {
         _messageList.value = emptyList()
+    }
+
+    fun loadChatProfile(){
+        viewModelScope.launch {
+            val currentList = _liveList.value.orEmpty().toMutableList()
+
+
+
+            for(i in currentList){
+                val update = chatUseCases.getUserProfile(i.toId)
+
+//                i.url = update.profileImage
+
+            }
+            _liveList.value = currentList
+
+        }
     }
 
     fun loadChats() {

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
+import com.ongo.signal.data.model.review.UserProfileResponse
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepository
 import com.ongo.signal.network.StompService
 import kotlinx.coroutines.flow.Flow
@@ -80,6 +81,12 @@ class ChatUseCasesImpl @Inject constructor(
     override fun timeSetting(): String {
         val now = System.currentTimeMillis()
         return SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
+    }
+
+    override suspend fun getUserProfile(id: Long): UserProfileResponse {
+
+
+        return chatRepository.getUserProfile(id).body()!!
     }
 
     override suspend fun deleteChat(id: Long) {

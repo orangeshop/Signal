@@ -1,24 +1,45 @@
 package com.ongo.signal.ui.chat.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ongo.signal.R
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeDTO
+import com.ongo.signal.data.model.review.UserProfileResponse
 import com.ongo.signal.databinding.ChatItemListBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "ChatHomeAdapter_싸피"
-class ChatHomeAdapter(
-    private val chatItemClick: (item : ChatHomeDTO) -> Unit,
-    private val chatItemLongClick: (item : ChatHomeDTO) -> Boolean,
-    private val timeSetting: (item: String) -> String
-): ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
-    inner class ChatHomeListHolder(val binding: ChatItemListBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(item: ChatHomeDTO){
 
-            binding.chatItemTitle.text = if(UserSession.userName == item.toName)  item.fromName else item.toName;
+class ChatHomeAdapter(
+    private val chatItemClick: (item: ChatHomeDTO) -> Unit,
+    private val chatItemLongClick: (item: ChatHomeDTO) -> Boolean,
+    private val timeSetting: (item: String) -> String,
+    private val userImageUrl: (item: ChatHomeDTO) -> String,
+) : ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
+    inner class ChatHomeListHolder(val binding: ChatItemListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: ChatHomeDTO) {
+
+            Glide.with(binding.root.context)
+                .load(userImageUrl(item))
+                .placeholder(R.drawable.basic_profile)
+                .circleCrop()
+                .into(binding.chatItemImg)
+
+
+
+            binding.chatItemTitle.text =
+                if (UserSession.userName == item.toName) item.fromName else item.toName;
 
             binding.content.text = item.lastMessage
 
@@ -35,7 +56,6 @@ class ChatHomeAdapter(
             binding.Alarm.text = "1"
         }
     }
-
 
 
     override fun onBindViewHolder(holder: ChatHomeListHolder, position: Int) {
