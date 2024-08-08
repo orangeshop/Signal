@@ -30,7 +30,6 @@ public class BoardController {
     @GetMapping("/board")
     public ResponseEntity<List<BoardDto>> listToday(@RequestParam(value="page", defaultValue = "0") Integer pageNum, @RequestParam(value="limit", defaultValue = "3") int limit) {
         List<BoardDto> boardList = duplicateService.getBoardList(pageNum, limit);
-//        log.info("boardList : {}", boardList);
         return ResponseEntity.ok().body(boardList);
     }
 
@@ -72,7 +71,7 @@ public class BoardController {
     /* 게시글 검색 */
     @GetMapping("/board/search")
     public ResponseEntity<List<BoardDto>> search(@RequestParam(value="keyword") String keyword) {
-        List<BoardDto> boardDtoList = boardService.searchPosts(keyword);
+        List<BoardDto> boardDtoList = duplicateService.searchPosts(keyword);
         return ResponseEntity.ok().body(boardDtoList);
     }
 
