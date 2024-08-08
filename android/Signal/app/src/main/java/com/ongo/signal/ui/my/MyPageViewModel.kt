@@ -6,10 +6,8 @@ import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.my.MyProfileData
-import com.ongo.signal.data.repository.login.LoginRepository
-import com.ongo.signal.data.repository.match.MatchRepository
+import com.ongo.signal.data.repository.login.UserRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
-import com.ongo.signal.ui.match.MatchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -18,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository,
     private val myPageRepository: MyPageRepository,
     private val dataStoreClass: DataStoreClass,
 ) : ViewModel() {
@@ -36,8 +34,8 @@ class MyPageViewModel @Inject constructor(
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
             UserSession.userId?.let{ userId ->
-                loginRepository.postFCMToken(userId, "").onSuccess {
-                    if (loginRepository.deleteUser(token = "Bearer $token") == 1) {
+                userRepository.postFCMToken(userId, "").onSuccess {
+                    if (userRepository.deleteUser(token = "Bearer $token") == 1) {
                         Timber.d("logout")
                         dataStoreClass.clearData()
                         onSuccess(1)

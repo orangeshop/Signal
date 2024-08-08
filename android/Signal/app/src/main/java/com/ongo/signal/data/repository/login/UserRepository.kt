@@ -8,7 +8,7 @@ import com.ongo.signal.data.model.login.ProfileImageResponse
 import com.ongo.signal.data.model.login.SignupRequest
 import okhttp3.MultipartBody
 
-interface LoginRepository {
+interface UserRepository {
     suspend fun postLogin(request: LoginRequest): Result<LoginResponse?>
 
     suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?>

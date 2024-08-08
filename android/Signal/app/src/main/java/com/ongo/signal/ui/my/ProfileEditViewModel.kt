@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.my.ProfileEditRequest
 import com.ongo.signal.data.model.my.ProfileEditUiState
-import com.ongo.signal.data.repository.login.LoginRepository
+import com.ongo.signal.data.repository.login.UserRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository,
-    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     lateinit var profileEditUiState: ProfileEditUiState
@@ -41,7 +41,7 @@ class ProfileEditViewModel @Inject constructor(
         onSuccess: () -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            loginRepository.putProfileImage(userId, imageFile).onSuccess { response ->
+            userRepository.putProfileImage(userId, imageFile).onSuccess { response ->
                 response?.let {
                     UserSession.profileImage = response.fileUrl
                     onSuccess()
@@ -56,7 +56,7 @@ class ProfileEditViewModel @Inject constructor(
         onSuccess: () -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            loginRepository.postProfileImage(userId, imageFile).onSuccess { response ->
+            userRepository.postProfileImage(userId, imageFile).onSuccess { response ->
                 response?.let {
                     UserSession.profileImage = response.fileUrl
                     onSuccess()

@@ -6,7 +6,7 @@ import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.login.SignupRequest
 import com.ongo.signal.data.model.login.SignupUIState
-import com.ongo.signal.data.repository.login.LoginRepository
+import com.ongo.signal.data.repository.login.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository,
     private val dataStoreClass: DataStoreClass,
 ) : ViewModel() {
 
@@ -59,7 +59,7 @@ class SignupViewModel @Inject constructor(
 
     fun postSignup(onSuccess: (Long) -> Unit) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            loginRepository.postSignup(
+            userRepository.postSignup(
                 request = SignupRequest(
                     loginId = uiState.userId,
                     name = uiState.userName,
@@ -92,7 +92,7 @@ class SignupViewModel @Inject constructor(
         onSuccess: () -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            loginRepository.postProfileImage(userId, imageFile).onSuccess { response ->
+            userRepository.postProfileImage(userId, imageFile).onSuccess { response ->
                 response?.let {
                     UserSession.profileImage = response.fileUrl
                     onSuccess()
@@ -104,7 +104,7 @@ class SignupViewModel @Inject constructor(
 
     fun checkDuplicatedId(userId: String, onSuccess: (Boolean) -> Unit) {
         viewModelScope.launch {
-            loginRepository.postCheckPossibleId(userId).onSuccess { response ->
+            userRepository.postCheckPossibleId(userId).onSuccess { response ->
                 response?.let {
                     Timber.d("중복확인3 ${response.duplicated}")
                     uiState = uiState.copy(isPossibleId = !response.duplicated)

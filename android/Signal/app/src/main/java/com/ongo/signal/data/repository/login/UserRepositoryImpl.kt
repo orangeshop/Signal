@@ -6,18 +6,18 @@ import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.LoginResponse
 import com.ongo.signal.data.model.login.ProfileImageResponse
 import com.ongo.signal.data.model.login.SignupRequest
-import com.ongo.signal.network.LoginApi
+import com.ongo.signal.network.UserApi
 import okhttp3.MultipartBody
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LoginRepositoryImpl @Inject constructor(
-    private val loginApi: LoginApi
-) : LoginRepository {
+class UserRepositoryImpl @Inject constructor(
+    private val userApi: UserApi
+) : UserRepository {
     override suspend fun postLogin(request: LoginRequest): Result<LoginResponse?> {
-        val req = loginApi.postLoginRequest(request)
+        val req = userApi.postLoginRequest(request)
         Timber.d("login : $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -27,7 +27,7 @@ class LoginRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?> {
-        val req = loginApi.postRegistToken(userId = userId, token = token)
+        val req = userApi.postRegistToken(userId = userId, token = token)
         Timber.d("토큰 서버에 등록 : $req")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -37,7 +37,7 @@ class LoginRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteUser(token: String): Int {
-        val req = loginApi.postLogoutRequest(token = token)
+        val req = userApi.postLogoutRequest(token = token)
         Timber.d("로그아웃 ${req} 요청은 ${token}")
         return if (req.isSuccessful) {
             1
@@ -47,7 +47,7 @@ class LoginRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postSignup(request: SignupRequest): Result<LoginResponse?> {
-        val req = loginApi.postSignUpRequest(request)
+        val req = userApi.postSignUpRequest(request)
         Timber.d("회원가입 확인 ${request} \n ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -57,7 +57,7 @@ class LoginRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postCheckPossibleId(loginId: String): Result<IDCheckResponse?> {
-        val req = loginApi.postCheckPossibleId(loginId)
+        val req = userApi.postCheckPossibleId(loginId)
         Timber.d("중복아디 확인 ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
@@ -70,7 +70,7 @@ class LoginRepositoryImpl @Inject constructor(
         userId: Long,
         imageFile: MultipartBody.Part
     ): Result<ProfileImageResponse?> {
-        val req = loginApi.postProfileImage(userId, imageFile)
+        val req = userApi.postProfileImage(userId, imageFile)
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {
@@ -82,7 +82,7 @@ class LoginRepositoryImpl @Inject constructor(
         userId: Long,
         imageFile: MultipartBody.Part
     ): Result<ProfileImageResponse?> {
-        val req = loginApi.putProfileImage(userId, imageFile)
+        val req = userApi.putProfileImage(userId, imageFile)
         Timber.d("프로필 이미지 수정 답변 ${req}")
         return if (req.isSuccessful) {
             Result.success(req.body())
