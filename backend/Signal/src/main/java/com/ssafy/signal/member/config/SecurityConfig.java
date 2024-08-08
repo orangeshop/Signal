@@ -28,7 +28,7 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
 //    private final String[] adminUrl = {"/admin/**"};
-    private final String[] permitAllUrl = {"/error", "/user/login", "/user/create", "/user/refresh", "/user/duplicate/**"};
+    private final String[] permitAllUrl = {"/error", "/user/login", "/user/create", "/user/refresh", "/user/duplicate/**", "/**"};
     private final String[] anonymousUrl = {"/user/create"};
 
     @Bean
