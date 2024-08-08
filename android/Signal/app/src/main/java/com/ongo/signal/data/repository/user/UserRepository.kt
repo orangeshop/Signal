@@ -1,4 +1,4 @@
-package com.ongo.signal.data.repository.login
+package com.ongo.signal.data.repository.user
 
 import com.ongo.signal.data.model.login.FCMTokenResponse
 import com.ongo.signal.data.model.login.IDCheckResponse
@@ -13,7 +13,7 @@ interface UserRepository {
 
     suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?>
 
-    suspend fun deleteUser(token: String): Int
+    suspend fun deleteUser(accessToken: String, refreshToken: String): Int
 
     suspend fun postSignup(request: SignupRequest): Result<LoginResponse?>
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.my.ProfileEditRequest
 import com.ongo.signal.data.model.my.ProfileEditUiState
-import com.ongo.signal.data.repository.login.UserRepository
+import com.ongo.signal.data.repository.user.UserRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler

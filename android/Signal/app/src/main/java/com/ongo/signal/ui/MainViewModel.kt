@@ -3,7 +3,7 @@ package com.ongo.signal.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.UserSession
-import com.ongo.signal.data.repository.login.UserRepository
+import com.ongo.signal.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber

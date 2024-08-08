@@ -6,7 +6,7 @@ import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.login.SignupRequest
 import com.ongo.signal.data.model.login.SignupUIState
-import com.ongo.signal.data.repository.login.UserRepository
+import com.ongo.signal.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch

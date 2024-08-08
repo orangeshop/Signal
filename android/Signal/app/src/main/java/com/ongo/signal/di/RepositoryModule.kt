@@ -1,7 +1,7 @@
 package com.ongo.signal.di
 
-import com.ongo.signal.data.repository.login.UserRepository
-import com.ongo.signal.data.repository.login.UserRepositoryImpl
+import com.ongo.signal.data.repository.user.UserRepository
+import com.ongo.signal.data.repository.user.UserRepositoryImpl
 import com.ongo.signal.data.repository.match.MatchRepository
 import com.ongo.signal.data.repository.match.MatchRepositoryImpl
 import dagger.Binds

@@ -1,4 +1,4 @@
-package com.ongo.signal.data.repository.login
+package com.ongo.signal.data.repository.user
 
 import com.ongo.signal.data.model.login.FCMTokenResponse
 import com.ongo.signal.data.model.login.IDCheckResponse
@@ -36,9 +36,9 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(token: String): Int {
-        val req = userApi.postLogoutRequest(token = token)
-        Timber.d("로그아웃 ${req} 요청은 ${token}")
+    override suspend fun deleteUser(accessToken: String, refreshToken: String): Int {
+        val req = userApi.postLogoutRequest(accessToken, refreshToken)
+        Timber.d("로그아웃 ${req} 요청은 ${req}")
         return if (req.isSuccessful) {
             1
         } else {

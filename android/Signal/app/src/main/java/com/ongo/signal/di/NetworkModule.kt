@@ -19,6 +19,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -41,6 +42,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    @Named("signal")
     fun provideSignalRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
         .baseUrl("http://13.125.47.74:8080/")  // EC2
 //        .baseUrl("http://192.168.100.161:8080/") // 병현서버
@@ -51,17 +53,28 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideUserApiService(retrofit: Retrofit): UserApi =
+    @Named("auth")
+    fun provideAuthRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
+        .baseUrl("http://13.125.47.74:8080/")  // EC2
+//        .baseUrl("http://192.168.100.161:8080/") // 병현서버
+//        .baseUrl("http://192.168.100.95:8080/") // 인수서버
+//        .baseUrl("http://192.168.100.200:8080/") // 민수서버
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideUserApiService(@Named("signal") retrofit: Retrofit): UserApi =
         retrofit.create(UserApi::class.java)
 
     @Singleton
     @Provides
-    fun provideMatchApiService(retrofit: Retrofit): MatchApi =
+    fun provideMatchApiService(@Named("signal") retrofit: Retrofit): MatchApi =
         retrofit.create(MatchApi::class.java)
 
     @Singleton
     @Provides
-    fun provideMainApiService(retrofit: Retrofit): MainApi =
+    fun provideMainApiService(@Named("signal")retrofit: Retrofit): MainApi =
         retrofit.create(MainApi::class.java)
 
     @Provides
@@ -72,7 +85,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideChatRoomApi(retrofit: Retrofit): ChatRoomApi {
+    fun provideChatRoomApi(@Named("signal") retrofit: Retrofit): ChatRoomApi {
         return retrofit.create(ChatRoomApi::class.java)
     }
 
@@ -84,11 +97,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMyPageRepository(retrofit: Retrofit): MyPageApi =
+    fun provideMyPageRepository(@Named("signal") retrofit: Retrofit): MyPageApi =
         retrofit.create(MyPageApi::class.java)
 
     @Provides
     @Singleton
-    fun provideReviewRepository(retrofit: Retrofit): ReviewApi =
+    fun provideReviewRepository(@Named("signal") retrofit: Retrofit): ReviewApi =
         retrofit.create(ReviewApi::class.java)
 }

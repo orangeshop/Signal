@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.SignalUser
-import com.ongo.signal.data.repository.login.UserRepository
+import com.ongo.signal.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
