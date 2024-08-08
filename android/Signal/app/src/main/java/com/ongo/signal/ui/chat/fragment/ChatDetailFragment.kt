@@ -317,6 +317,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         putExtra("target", "${chatViewModel.videoToID}")
                         putExtra("isVideoCall", true)
                         putExtra("isCaller", true)
+                        putExtra("targetName", chatViewModel.videoToName)
                     })
 
                 }
@@ -329,7 +330,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             binding.apply {
                 val isVideoCall = model.type == DataModelType.StartVideoCall
                 val isVideoCallText = if (isVideoCall) "Video" else "Audio"
-                incomingCallTitleTv.text = "${model.sender} 님이 $isVideoCallText 영상통화를 요청합니다."
+                incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
                 incomingCallLayout.isVisible = true
                 acceptButton.setOnClickListener {
                     getCameraAndMicPermission {
@@ -337,6 +338,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         //create an intent to go to video call activity
                         startActivity(Intent(requireContext(), CallActivity::class.java).apply {
                             putExtra("target", model.sender)
+                            putExtra("targetName", chatViewModel.videoToName)
                             putExtra("isVideoCall", isVideoCall)
                             putExtra("isCaller", false)
                         })

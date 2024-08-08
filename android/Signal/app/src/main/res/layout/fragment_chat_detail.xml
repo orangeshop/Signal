@@ -108,6 +108,7 @@
             android:id="@+id/incomingCallLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/backgroundColor"
             android:paddingBottom="10dp"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
@@ -117,9 +118,11 @@
                 android:id="@+id/incomingCallTitleTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Some one is calling you"
+                android:textColor="#ECECEC"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -130,9 +133,10 @@
                 android:id="@+id/acceptButton"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
-                android:background="@color/light_green"
-                android:text="Accept"
-                android:textColor="@color/white"
+                android:background="@drawable/background_cancel_button_ripple"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/accept"
+                android:textColor="@color/mint"
                 app:layout_constraintEnd_toStartOf="@id/declineButton"
                 app:layout_constraintStart_toStartOf="@id/incomingCallTitleTv"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />
@@ -141,12 +145,22 @@
                 android:id="@+id/declineButton"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
-                android:background="@color/red"
-                android:text="Decline"
-                android:textColor="@color/white"
+                android:background="@drawable/background_deny_button_ripple"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/deny"
+                android:textColor="@color/red"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/acceptButton"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/acceptButton" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

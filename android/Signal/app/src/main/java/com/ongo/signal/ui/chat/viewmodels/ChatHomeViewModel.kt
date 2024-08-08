@@ -45,6 +45,7 @@ class ChatHomeViewModel @Inject constructor(
     var chatRoomToID: Long = 0
 
     var videoToID: Long = 0
+    var videoToName: String = ""
 
     fun clearMessageList() {
         _messageList.value = emptyList()
