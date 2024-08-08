@@ -12,6 +12,10 @@
         <variable
             name="boardViewModel"
             type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
+
+        <variable
+            name="userSession"
+            type="com.ongo.signal.config.UserSession" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,6 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_marginEnd="-10dp"
+            android:ellipsize="end"
+            android:maxLines="3"
             android:text="@{board.title}"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +75,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:ellipsize="end"
             android:fontFamily="@font/gangwon"
+            android:maxLines="3"
             android:text="@{board.content}"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
@@ -82,8 +90,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:clickable="false"
-            android:focusable="false"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
@@ -96,7 +102,6 @@
             android:id="@+id/rv_chips"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:focusable="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
@@ -104,12 +109,23 @@
             tools:listitem="@layout/item_chip"
             tools:orientation="horizontal" />
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/color_translate"
+            app:layout_constraintBottom_toBottomOf="@id/rv_chips"
+            app:layout_constraintEnd_toEndOf="@id/rv_images"
+            app:layout_constraintStart_toStartOf="@id/rv_images"
+            app:layout_constraintTop_toTopOf="@id/rv_images" />
+
+
         <ImageView
             android:id="@+id/iv_thumb"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="15dp"
-            android:onClick="@{() -> boardViewModel.onThumbClick(board)}"
+            android:onClick="@{() -> boardViewModel.onThumbClick(board, userSession.userId)}"
             android:padding="4dp"
             android:src="@drawable/baseline_thumb_up_alt_white_24"
             app:layout_constraintStart_toStartOf="@id/iv_profile"

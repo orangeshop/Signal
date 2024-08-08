@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.main.TagDTO
 import com.ongo.signal.databinding.ItemChipBinding
+import timber.log.Timber
 
 class ChipAdapter : ListAdapter<TagDTO, ChipAdapter.ViewHolder>(DiffUtilCallback()) {
 
@@ -15,6 +16,9 @@ class ChipAdapter : ListAdapter<TagDTO, ChipAdapter.ViewHolder>(DiffUtilCallback
         fun bind(tag: TagDTO) {
             binding.tag = tag
             binding.executePendingBindings()
+            binding.root.setOnClickListener {
+                Timber.d("Chip clicked: $tag")
+            }
         }
     }
 

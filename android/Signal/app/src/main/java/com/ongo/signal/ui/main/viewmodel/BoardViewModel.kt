@@ -239,19 +239,22 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun onThumbClick(board: BoardDTO) {
+    fun onThumbClick(board: BoardDTO, userId: Long) {
         viewModelScope.launch {
             runCatching {
-                boardRepository.boardLike(board.id)
+                boardRepository.boardLike(board.id, userId)
             }.onSuccess { response ->
                 if (response.isSuccessful) {
                     response.body()?.let { newLikeCount ->
                         val updatedBoard = board.copy(liked = newLikeCount)
                         _selectedBoard.value = updatedBoard
-                        _items.emit(_items.replayCache.first().map {
-                            if (it.id == board.id) updatedBoard else it
-                        })
-                        Timber.d("Board liked: $newLikeCount")
+                        _items.replayCache.firstOrNull()?.let { pagingData ->
+                            val updatedPagingData = pagingData.map {
+                                if (it.id == board.id) updatedBoard else it
+                            }
+                            _items.emit(updatedPagingData)
+                        }
+                        Timber.d("Board updated with new like count: $updatedBoard")
                     }
                 } else {
                     Timber.e("Failed to like board: ${response.errorBody()?.string()}")

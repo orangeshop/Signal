@@ -41,6 +41,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
                     android:text="@{boardViewModel.selectedBoard.title}"
                     android:textSize="36sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -94,11 +96,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
                     android:text="@{boardViewModel.selectedBoard.content}"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toStartOf="@id/iv_more"
                     app:layout_constraintStart_toStartOf="@id/iv_profile"
-                    app:layout_constraintTop_toBottomOf="@id/tv_name" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_name"
+                    tools:text="asdfsdafasfs" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_images"
@@ -130,7 +135,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginTop="15dp"
-                    android:onClick="@{() -> boardViewModel.onThumbClick(boardViewModel.selectedBoard)}"
+                    android:onClick="@{() -> boardViewModel.onThumbClick(boardViewModel.selectedBoard, userSession.userId)}"
                     android:padding="4dp"
                     android:src="@drawable/baseline_thumb_up_alt_white_24"
                     app:layout_constraintStart_toStartOf="@id/iv_profile"

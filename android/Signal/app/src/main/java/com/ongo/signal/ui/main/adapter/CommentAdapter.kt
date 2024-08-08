@@ -1,6 +1,7 @@
 package com.ongo.signal.ui.main.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,8 +10,7 @@ import com.ongo.signal.data.model.main.CommentDTOItem
 import com.ongo.signal.databinding.ItemCommentBinding
 
 class CommentAdapter(
-    private val onCommentEditClick: (CommentDTOItem) -> Unit,
-    private val onCommentDeleteClick: (CommentDTOItem) -> Unit,
+    private val onPopupMenuClick: (View, CommentDTOItem) -> Unit,
     private val currentUserId: Long
 ) :
     ListAdapter<CommentDTOItem, CommentAdapter.ViewHolder>(DiffUtilCallback()) {
@@ -20,9 +20,11 @@ class CommentAdapter(
         fun bind(comment: CommentDTOItem) {
             binding.comment = comment
             binding.currentUserId = currentUserId
-            binding.tvEditComment.setOnClickListener { onCommentEditClick(comment) }
-            binding.tvDeleteComment.setOnClickListener { onCommentDeleteClick(comment) }
             binding.executePendingBindings()
+
+            binding.ivPopup.setOnClickListener {
+                onPopupMenuClick(it, comment)
+            }
         }
     }
 

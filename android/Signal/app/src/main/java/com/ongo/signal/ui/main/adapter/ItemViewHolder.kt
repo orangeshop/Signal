@@ -3,9 +3,11 @@ package com.ongo.signal.ui.main.adapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.ItemPostBinding
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import timber.log.Timber
 
 class ItemViewHolder(
     private val binding: ItemPostBinding,
@@ -19,7 +21,8 @@ class ItemViewHolder(
 
     init {
         binding.rvChips.apply {
-            layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = chipAdapter
         }
         binding.rvImages.apply {
@@ -31,7 +34,9 @@ class ItemViewHolder(
     fun bind(board: BoardDTO) {
         binding.board = board
         binding.boardViewModel = viewModel
-        binding.executePendingBindings()
+
+        Timber.d("Binding item: $board at position: ${adapterPosition}")
+
         binding.root.setOnClickListener {
             onItemClicked(board)
         }
@@ -40,7 +45,17 @@ class ItemViewHolder(
             onTTSClicked(board.title)
         }
 
+        binding.ivThumb.setOnClickListener {
+            Timber.d("Thumb clicked for board: ${board.id}")
+            UserSession.userId?.let { it1 -> viewModel.onThumbClick(board, it1) }
+        }
+
+        binding.view.setOnClickListener {
+            onItemClicked(board)
+        }
+
         chipAdapter.submitList(board.tags)
         postImageAdapter.submitList(board.imageUrls)
+        binding.executePendingBindings()
     }
 }

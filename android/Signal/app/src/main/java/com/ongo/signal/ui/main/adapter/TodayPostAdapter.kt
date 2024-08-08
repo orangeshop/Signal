@@ -24,7 +24,6 @@ class TodayPostAdapter(
 
     init {
         addLoadStateListener { loadStates ->
-            Timber.d("Load state changed: $loadStates")
             if (loadStates.refresh is LoadState.NotLoading || loadStates.refresh is LoadState.Error) {
                 notifyDataSetChanged()
             }
@@ -33,10 +32,12 @@ class TodayPostAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_HEADER) {
-            val binding = HeaderLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding =
+                HeaderLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             HeaderViewHolder(binding, viewModel, onTitleClicked)
         } else {
-            val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding =
+                ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             ItemViewHolder(binding, onItemClicked, onTTSClicked, viewModel)
         }
     }
@@ -47,8 +48,8 @@ class TodayPostAdapter(
         } else {
             val item = getItem(position - 1)
             item?.let {
+                Timber.d("Binding item: $it at position: $position")
                 (holder as ItemViewHolder).bind(it)
-                Timber.d("Item bound at position: ${holder.adapterPosition}")
             }
         }
     }
@@ -61,13 +62,22 @@ class TodayPostAdapter(
         return super.getItemCount() + 1
     }
 
+    fun updateItem(board: BoardDTO) {
+        val position = snapshot().indexOfFirst { it?.id == board.id }
+        if (position != -1) {
+            notifyItemChanged(position)
+        }
+    }
+
     class DiffUtilCallback : DiffUtil.ItemCallback<BoardDTO>() {
         override fun areItemsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
             return p0.id == p1.id
         }
 
         override fun areContentsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
-            return p0 == p1
+            val isSame = p0 == p1
+            Timber.d("Comparing contents: p0 = $p0, p1 = $p1, isSame = $isSame")
+            return isSame
         }
     }
 }

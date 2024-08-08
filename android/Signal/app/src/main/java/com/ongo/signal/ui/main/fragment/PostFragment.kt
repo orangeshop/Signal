@@ -51,8 +51,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private fun setupAdapters() {
         commentAdapter = UserSession.userId?.let {
             CommentAdapter(
-                onCommentEditClick = ::onCommentEditClick,
-                onCommentDeleteClick = ::onCommentDeleteClick,
+                onPopupMenuClick = ::showCommentPopupMenu,
                 currentUserId = it
             )
         }!!
@@ -65,7 +64,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         }
 
         binding.rvChip.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = chipAdapter
         }
 
@@ -173,6 +173,24 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             }
 
             KeyboardUtils.hideKeyboard(binding.etComment)
+        }
+    }
+
+    private fun showCommentPopupMenu(view: View, comment: CommentDTOItem) {
+        PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_menu) { item ->
+            when (item.itemId) {
+                R.id.action_edit -> {
+                    onCommentEditClick(comment)
+                    true
+                }
+
+                R.id.action_delete -> {
+                    onCommentDeleteClick(comment)
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 

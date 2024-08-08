@@ -106,4 +106,11 @@ interface MainApi {
         @Path("boardId") boardId: Long,
         @Part image: List<MultipartBody.Part>
     ): Response<List<String>>
+
+    @POST("board/{boardId}/like")
+    suspend fun boardLike(
+        @Path("boardId") boardId: Long,
+        @Query("userId") userId: Long
+    ): Response<Long>
+
 }

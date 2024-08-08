@@ -44,6 +44,17 @@
             app:layout_constraintTop_toTopOf="@id/iv_profile"
             tools:text="User Name" />
 
+        <ImageView
+            android:id="@+id/iv_popup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/baseline_more_vert_mint_24"
+            android:visibility="@{comment.userId == currentUserId ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/tv_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_name" />
+
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="0dp"
@@ -66,31 +77,6 @@
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
-        <TextView
-            android:id="@+id/tv_edit_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:padding="4dp"
-            android:text="@string/edit"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:visibility="@{comment.userId == currentUserId ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/tv_content"
-            app:layout_constraintEnd_toStartOf="@id/tv_delete_comment" />
-
-        <TextView
-            android:id="@+id/tv_delete_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:padding="4dp"
-            android:text="@string/delete"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:visibility="@{comment.userId == currentUserId ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/tv_content"
-            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

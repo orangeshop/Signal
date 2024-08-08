@@ -116,7 +116,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         val board = boardViewModel.hotBoards.value.getOrNull(position)
         board?.let {
             boardViewModel.selectBoard(it)
-            findNavController().navigate(R.id.action_mainFragment_to_postFragment)
+            gotoPost()
         }
     }
 
@@ -158,7 +158,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             onItemClicked = { board ->
                 boardViewModel.selectBoard(board)
                 Timber.d(boardViewModel.selectedBoard.toString())
-                findNavController().navigate(R.id.action_mainFragment_to_postFragment)
+                gotoPost()
             },
             onTTSClicked = { content ->
                 ttsHelper.speak(content)
@@ -182,6 +182,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = todayPostAdapter
         }
+    }
+
+    fun gotoPost() {
+        findNavController().navigate(R.id.action_mainFragment_to_postFragment)
     }
 
     override fun onDestroyView() {
