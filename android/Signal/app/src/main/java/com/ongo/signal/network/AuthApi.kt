@@ -4,6 +4,7 @@ import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthApi {
@@ -11,4 +12,10 @@ interface AuthApi {
     suspend fun postLoginRequest(
         @Body request: LoginRequest
     ): Response<LoginResponse>
+
+    @POST("/user/logout")
+    suspend fun postLogoutRequest(
+        @Header("Authorization") accessToken: String,
+        @Header("RefreshToken") refreshToken: String,
+    ): Response<Void>
 }
