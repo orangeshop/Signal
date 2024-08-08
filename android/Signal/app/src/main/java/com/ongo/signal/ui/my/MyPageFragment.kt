@@ -43,10 +43,14 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
                         //TODO place홀더 로딩 이미지 찾아보기
                         binding.ivProfile.visibility = View.VISIBLE
                         binding.pbLoading.visibility = View.GONE
-                        Glide.with(requireActivity())
-                            .load(myProfileData.profileImage)
-                            .apply(RequestOptions.bitmapTransform(CircleCrop()))
-                            .into(ivProfile)
+                        if (myProfileData.profileImage.isBlank()) {
+                            ivProfile.setImageResource(R.drawable.basic_profile)
+                        } else {
+                            Glide.with(requireActivity())
+                                .load(myProfileData.profileImage)
+                                .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                                .into(ivProfile)
+                        }
                     }
 
                     tvUsername.text = myProfileData.name

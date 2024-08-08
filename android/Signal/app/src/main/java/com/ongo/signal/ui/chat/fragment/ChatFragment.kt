@@ -14,8 +14,6 @@ import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.util.Date
 
 private const val TAG = "ChatFragment_싸피"
 
@@ -47,30 +45,41 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             chatViewModel.clearMessageList()
 
 //            chatViewModel.loadDetailList(1, 100)
-
             chatHomeAdapter = ChatHomeAdapter(
                 chatItemClick = {
                     check = false
                     chatViewModel.chatRoomNumber = it.chatId
+
                     chatViewModel.chatRoomFromID = it.fromId
                     chatViewModel.chatRoomToID = it.toId
-                    UserSession.userId
+
+                    UserSession.userId?.let { userId ->
+                        if (it.fromId == userId) {
+                            chatViewModel.videoToID = it.toId
+                            chatViewModel.videoToName = it.toName
+                        } else {
+                            chatViewModel.videoToID = it.fromId
+                            chatViewModel.videoToName = it.fromName
+                        }
+                    }
+
 
                     lifecycleScope.launch {
                         chatViewModel.loadDetailList(it.chatId)
                     }
+
 
                     findNavController().navigate(R.id.action_chatFragment_to_chatDetailFragment)
                 },
                 chatItemLongClick = {
 
                     // 롱 클릭시 커스텀 다이어 로그가 나오게 하여 삭제 여부 및 다른 옵션을 선택할 수 있도록 합니다.
-                    CustomDialog.show(requireContext()){
+                    CustomDialog.show(requireContext()) {
                         chatViewModel.deleteChat(it.chatId)
                     }
                     true
                 },
-                timeSetting = {item ->
+                timeSetting = { item ->
                     chatViewModel.timeSetting(item, 0)
                 }
 
