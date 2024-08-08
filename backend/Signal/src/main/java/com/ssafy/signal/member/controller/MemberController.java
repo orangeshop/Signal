@@ -133,7 +133,7 @@ public class MemberController {
 
 
     @DeleteMapping("/drop")
-    public ResponseEntity<String> deleteMember(@RequestHeader("RefreshToken") String bearerToken) {
+    public ResponseEntity<String> deleteMember(@AuthenticationPrincipal UserPrinciple userPrinciple,@RequestHeader("RefreshToken") String bearerToken) {
         String token = tokenProvider.resolveToken(bearerToken);
         if (token != null) {
             // 현재 로그인한 사용자를 확인하고 회원 탈퇴 처리
@@ -145,9 +145,10 @@ public class MemberController {
                 memberService.deleteMemberByLoginId(loginId);
 
                 // 토큰 블랙리스트에 추가하여 로그아웃 처리
-                Instant expirationInstant = tokenProvider.getExpiration(token).toInstant();
-                LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
-                tokenBlacklistService.blacklistToken(token, expirationTime);
+//                Instant expirationInstant = tokenProvider.getExpiration(token).toInstant();
+//                LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
+//                tokenBlacklistService.blacklistToken(token, expirationTime);
+                memberService.logout(token,userPrinciple.getLoginId());
 
                 return ResponseEntity.ok("Delete successful");
             } else {
@@ -165,20 +166,22 @@ public class MemberController {
         }
 
         TokenInfo tokenInfoDto = memberService.loginMember(memberLoginDto.getLoginId(), memberLoginDto.getPassword());
-        log.info("Token issued for account: {}", tokenInfoDto.getTokenId());
+        log.info("Token issued for account: {}", tokenInfoDto.getAccessToken());
 
 //        return new ApiResponseJson(HttpStatus.OK, tokenInfoDto);
         return tokenInfoDto;
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("RefreshToken") String bearerToken) {
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserPrinciple userPrinciple,
+            @RequestHeader("RefreshToken") String bearerToken) {
         String token = tokenProvider.resolveToken(bearerToken);
         log.debug("Extracted token for logout: {}", token);
         if (token != null) {
-            Instant expirationInstant = tokenProvider.getExpiration(token).toInstant();
-            LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
-            tokenBlacklistService.blacklistToken(token, expirationTime);
+            memberService.logout(token,userPrinciple.getLoginId());
+//            Instant expirationInstant = tokenProvider.getExpiration(token).toInstant();
+//            LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
+//            tokenBlacklistService.blacklistToken(token, expirationTime);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(403).body(null);

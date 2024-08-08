@@ -3,6 +3,7 @@ package com.ssafy.signal.member.jwt.token;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.domain.TokenBlacklist;
 import com.ssafy.signal.member.dto.LoginDto;
+import com.ssafy.signal.member.jwt.AccessTokenBlackList;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.jwt.token.dto.TokenValidationResult;
 import com.ssafy.signal.member.principle.UserPrinciple;
@@ -42,9 +43,11 @@ public class TokenProvider {
 
     private final MemberRepository memberRepository;
     private final TokenBlacklistService tokenBlacklistService;
+    private final AccessTokenBlackList accessTokenBlackList;
 
-    public TokenProvider(String secrete, long accessTokenValidationInSeconds, MemberRepository memberRepository, TokenBlacklistService tokenBlacklistService) {
+    public TokenProvider(String secrete, long accessTokenValidationInSeconds, MemberRepository memberRepository, TokenBlacklistService tokenBlacklistService, AccessTokenBlackList accessTokenBlackList) {
         this.memberRepository = memberRepository;
+        this.accessTokenBlackList = accessTokenBlackList;
         byte[] keyBytes = Decoders.BASE64.decode(secrete);
         this.hashKey = Keys.hmacShaKeyFor(keyBytes);
         this.accessTokenValidationInMilliseconds = accessTokenValidationInSeconds + 1000 * 60 * 60 * 10;
@@ -154,7 +157,8 @@ public class TokenProvider {
     }
 
     public TokenInfo refreshToken(String refreshToken) {
-        if (tokenBlacklistService.isTokenBlacklisted(refreshToken)) {
+        refreshToken = refreshToken.substring(7);
+        if (isAccessTokenBlackList(refreshToken)) {
             return TokenInfo.builder()
                     .status(null)
                     .member(null)
@@ -166,7 +170,6 @@ public class TokenProvider {
                     .build();
         } else {
             try {
-                refreshToken = refreshToken.substring(7);
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(hashKey)
                         .build()
@@ -177,9 +180,10 @@ public class TokenProvider {
                 Member member = memberRepository.findByLoginId(loginId)
                         .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-                Instant expirationInstant = getExpiration(refreshToken).toInstant();
-                LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
-                tokenBlacklistService.blacklistToken(refreshToken, expirationTime);
+//                Instant expirationInstant = getExpiration(refreshToken).toInstant();
+//                LocalDateTime expirationTime = LocalDateTime.ofInstant(expirationInstant, ZoneId.systemDefault());
+//                tokenBlacklistService.blacklistToken(refreshToken, expirationTime);
+                accessTokenBlackList.setBlackList(refreshToken, loginId);
 
                 LoginDto member1 = LoginDto.builder()
                         .userId(member.getUserId())
@@ -197,5 +201,14 @@ public class TokenProvider {
                 throw new IllegalArgumentException("유효하지 않은 refresh token입니다.");
             }
         }
+    }
+
+    public boolean isAccessTokenBlackList(String accessToken) {
+        if (accessTokenBlackList.isTokenBlackList(accessToken)) {
+            log.info("BlackListed Access Token");
+            return true;
         }
+
+        return false;
+    }
 }

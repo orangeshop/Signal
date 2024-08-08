@@ -51,6 +51,9 @@ dependencies {
     //firebase
     implementation("com.google.firebase:firebase-admin:9.1.1")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    //redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
 tasks.withType<Test> {

@@ -35,6 +35,7 @@
     <orderEntry type="library" name="Gradle: org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2" level="project" />
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-admin:9.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:4.11.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-redis:3.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.cloud:spring-cloud-aws-autoconfigure:2.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.cloud:spring-cloud-aws-context:2.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:2.0.13" level="project" />
@@ -72,6 +73,8 @@
     <orderEntry type="library" name="Gradle: io.netty:netty-transport:4.1.111.Final" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.9.24" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-redis:3.3.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.lettuce:lettuce-core:6.3.2.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-autoconfigure:3.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.cloud:spring-cloud-aws-core:2.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-context:6.1.10" level="project" />
@@ -155,6 +158,10 @@
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio-jvm:3.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.24" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-keyvalue:3.3.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-context-support:6.1.10" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-oxm:6.1.10" level="project" />
+    <orderEntry type="library" name="Gradle: io.projectreactor:reactor-core:3.6.7" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-s3:1.11.792" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-ec2:1.11.792" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-cloudformation:1.11.792" level="project" />
@@ -166,6 +173,7 @@
     <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-crypto:6.3.1" level="project" />
     <orderEntry type="library" name="Gradle: io.micrometer:micrometer-commons:1.13.1" level="project" />
     <orderEntry type="library" name="Gradle: io.swagger.core.v3:swagger-core-jakarta:2.2.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.4" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-kms:1.11.792" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:jmespath-java:1.11.792" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.17.1" level="project" />

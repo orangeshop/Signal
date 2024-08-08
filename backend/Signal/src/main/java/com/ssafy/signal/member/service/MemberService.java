@@ -13,6 +13,7 @@ import com.ssafy.signal.member.dto.LoginDto;
 import com.ssafy.signal.member.dto.MyProfileDto;
 import com.ssafy.signal.member.dto.MypageUpdateDto;
 import com.ssafy.signal.member.dto.findMemberDto;
+import com.ssafy.signal.member.jwt.AccessTokenBlackList;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.repository.MemberRepository;
@@ -52,6 +53,7 @@ public class MemberService implements UserDetailsService {
     private final TokenBlacklistRepository tokenBlacklistRepository;
     private final FileService fileService;
     private final CommentRepository commentRepository;
+    private final AccessTokenBlackList accessTokenBlackList;
 
 
     public Boolean chekcLoginId(String loginId) {
@@ -111,6 +113,10 @@ public class MemberService implements UserDetailsService {
                     .refreshTokenExpireTime(null)
                     .build();
         }
+    }
+
+    public void logout(String accessToken, String loginId) {
+        accessTokenBlackList.setBlackList(accessToken, loginId);
     }
 
     private void checkPassword(String password, Member member) {
