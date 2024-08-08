@@ -1,13 +1,15 @@
 package com.ongo.signal.ui.my
 
-import android.service.autofill.UserData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.DataStoreClass
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.my.MyProfileData
 import com.ongo.signal.data.repository.login.LoginRepository
+import com.ongo.signal.data.repository.match.MatchRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
+import com.ongo.signal.ui.match.MatchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -21,7 +23,7 @@ class MyPageViewModel @Inject constructor(
     private val dataStoreClass: DataStoreClass,
 ) : ViewModel() {
 
-    lateinit var userData:MyProfileData
+    lateinit var userData: MyProfileData
 
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -33,10 +35,14 @@ class MyPageViewModel @Inject constructor(
         onSuccess: (Int) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            if (loginRepository.deleteUser(token = "Bearer $token") == 1) {
-                Timber.d("logout")
-                dataStoreClass.clearData()
-                onSuccess(1)
+            UserSession.userId?.let{ userId ->
+                loginRepository.postFCMToken(userId, "").onSuccess {
+                    if (loginRepository.deleteUser(token = "Bearer $token") == 1) {
+                        Timber.d("logout")
+                        dataStoreClass.clearData()
+                        onSuccess(1)
+                    }
+                }
             }
         }
     }
