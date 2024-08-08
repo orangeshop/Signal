@@ -3,10 +3,12 @@ package com.ssafy.signal.board.service;
 import com.ssafy.signal.board.domain.*;
 import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
+import com.ssafy.signal.board.repository.LikeRepository;
 import com.ssafy.signal.board.repository.TagRepository;
 import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.findMemberDto;
+import com.ssafy.signal.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
@@ -31,6 +33,10 @@ public class BoardService {
     private BoardRepository boardRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private LikeRepository likeRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
     private static final int PAGE_POST_COUNT = 4; // 한 페이지에 존재하는 게시글 수
@@ -143,13 +149,34 @@ public class BoardService {
         boardRepository.save(boardEntity);
     }
 
+    // 좋아요 토글 서비스 메서드에서 사용되는 예시
     @Transactional
-    public Long incrementLikedCount(Long id) {
-        BoardEntity boardEntity = boardRepository.findById(id)
+    public Long toggleLike(Long boardId, Long userId) {
+        // BoardEntity 조회
+        BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-        boardEntity.incrementLiked();
+
+        // Member 객체 조회
+        Member user = memberRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+
+        // 기존 좋아요 레코드 조회
+        Optional<LikeEntity> existingLike = likeRepository.findByUserAndBoardEntity(user, boardEntity);
+
+        if (existingLike.isPresent()) {
+            // 좋아요가 이미 존재하면 삭제
+            likeRepository.delete(existingLike.get());
+            boardEntity.decrementLiked(); // 좋아요 수 감소
+        } else {
+            // 좋아요가 존재하지 않으면 새로 추가
+            LikeEntity newLike = new LikeEntity(user, boardEntity);
+            likeRepository.save(newLike);
+            boardEntity.incrementLiked(); // 좋아요 수 증가
+        }
+
+        // 게시글의 좋아요 수를 갱신
         boardRepository.save(boardEntity);
-        return boardEntity.getLiked();  // 증가된 좋아요 수 반환
+        return boardEntity.getLiked(); // 최신 좋아요 수 반환
     }
 
 
