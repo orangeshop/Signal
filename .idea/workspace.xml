@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/android/Signal/app/src/main/res/raw/crown.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/android/Signal/app/src/main/res/raw/medal.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/android/Signal/app/src/main/res/raw/star.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/BoardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/BoardService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/DuplicateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/DuplicateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/TagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/TagController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

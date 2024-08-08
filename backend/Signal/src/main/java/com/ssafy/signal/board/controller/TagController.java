@@ -27,7 +27,6 @@ public class TagController {
             @RequestParam("limit") int limit)
     {
         List<BoardDto> boardtag = tagService.getBoardByTagRecent(tag,page,limit);
-        log.info("tag recent : {}", boardtag);
         return boardtag;
     }
 
