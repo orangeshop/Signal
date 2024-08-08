@@ -41,6 +41,11 @@ public class ChatController {
         return chatService.getAllChatRooms(user_id);
     }
 
+    @DeleteMapping("chat-room")
+    public void deleteChatRoom(@RequestParam("chat_id") long chat_id) throws Exception {
+        chatService.deleteChatRoom(chat_id);
+    }
+
     @GetMapping("/chat-room/messages")
     public List<MessageDto> getAllMessage(@RequestParam("chat_id") long chat_id) throws Exception {
         return chatService.getAllMessages(chat_id);

@@ -54,13 +54,16 @@ public class ChatRoomEntity {
                 .build();
     }
 
-    public ChatRoomDto asChatRoomDto(String from_name, String to_name) {
+    public ChatRoomDto asChatRoomDto(String from_name, String to_name,
+                                     String from_url, String to_url) {
         return ChatRoomDto.builder()
                 .chat_id(chatId)
                 .from_id(from_id.getUserId())
                 .to_id(to_id.getUserId())
                 .from_name(from_name)
+                .from_url(from_url)
                 .to_name(to_name)
+                .to_url(to_url)
                 .last_message(last_message)
                 .sender_type(sender_type)
                 .send_at(send_at)

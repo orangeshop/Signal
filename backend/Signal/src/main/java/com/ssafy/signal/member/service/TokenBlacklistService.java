@@ -4,6 +4,7 @@ import com.ssafy.signal.member.domain.TokenBlacklist;
 import com.ssafy.signal.member.repository.TokenBlacklistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class TokenBlacklistService {
     private final TokenBlacklistRepository tokenBlacklistRepository;
+
+    private final RedisTemplate<String, Object> redisBlackListTemplate;
 
     public void blacklistToken(String token, LocalDateTime expirationTime) {
         log.debug("Blacklisting token: {}", token);
