@@ -6,8 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ongo.signal.R
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
+import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.databinding.ChatDetailItemBinding
 
 private const val TAG = "ChatDetailAdapter_싸피"
@@ -15,7 +18,9 @@ private const val TAG = "ChatDetailAdapter_싸피"
 class ChatDetailAdapter(
     private val timeSetting: (item: String, target : Int) -> String,
     private val todaySetting: (id: Long,item: Long, time: String) -> Boolean,
-    private val fromID : Long
+    private val fromID : Long,
+    private val userImageUrl: () -> String,
+    private val chatItemClick: (item: ChatHomeDTO) -> Unit,
 ) : ListAdapter<ChatHomeChildDTO, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
@@ -26,6 +31,12 @@ class ChatDetailAdapter(
             binding.chatOtherTimeMeTv.visibility = View.GONE
 
             binding.today.visibility = View.GONE
+
+            Glide.with(binding.root.context)
+                .load(userImageUrl())
+                .placeholder(R.drawable.basic_profile)
+                .circleCrop()
+                .into(binding.chatDetailItemImg)
 
             binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
             binding.today.text = timeSetting(item.sendAt, 2)
@@ -43,6 +54,7 @@ class ChatDetailAdapter(
             binding.chatDetailItemTv.visibility = View.GONE
             binding.chatOtherTimeTv.visibility = View.GONE
             binding.chatOtherReadTv.visibility = View.GONE
+            binding.chatDetailItemImg.visibility = View.GONE
 
             binding.today.visibility = View.GONE
 

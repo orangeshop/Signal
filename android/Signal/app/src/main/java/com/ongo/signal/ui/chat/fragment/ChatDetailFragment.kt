@@ -77,6 +77,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         binding.apply {
 
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
+            binding.chatDetailTitleTv.text = chatViewModel.chatRoomTitle
 
             lifecycleScope.launch {
                 chatDetailAdapter = ChatDetailAdapter(
@@ -120,7 +121,13 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         result
                     },
-                    chatViewModel.chatRoomFromID
+                    chatViewModel.chatRoomFromID,
+                    userImageUrl = {
+                        chatViewModel.chatRoomUrl
+                    },
+                    chatItemClick = {
+
+                    }
                 )
             }
 

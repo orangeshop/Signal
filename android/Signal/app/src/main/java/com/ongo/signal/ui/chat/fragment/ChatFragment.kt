@@ -1,5 +1,6 @@
 package com.ongo.signal.ui.chat.fragment
 
+import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -7,13 +8,19 @@ import androidx.navigation.fragment.findNavController
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.model.review.UserProfileResponse
 import com.ongo.signal.databinding.FragmentChatBinding
 import com.ongo.signal.ui.chat.CustomDialog
 import com.ongo.signal.ui.chat.adapter.ChatHomeAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
+import okhttp3.internal.wait
+import timber.log.Timber
+import java.util.Date
 
 private const val TAG = "ChatFragment_싸피"
 
@@ -37,7 +44,8 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             lifecycleScope.launch {
                 while (check) {
                     chatViewModel.loadChats()
-                    delay(5000)
+
+                    delay(2000)
                 }
             }
 
@@ -52,6 +60,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
 
                     chatViewModel.chatRoomFromID = it.fromId
                     chatViewModel.chatRoomToID = it.toId
+                    chatViewModel.chatRoomTitle = if(it.fromId == UserSession.userId) it.toName else it.fromName
+                    chatViewModel.chatRoomUrl = if(it.fromId == UserSession.userId) it.toUrl+ "" else it.fromUrl + ""
+
+                    UserSession.userId
 
                     UserSession.userId?.let { userId ->
                         if (it.fromId == userId) {
@@ -81,8 +93,18 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
                 },
                 timeSetting = { item ->
                     chatViewModel.timeSetting(item, 0)
-                }
+                },
+                userImageUrl = { item ->
+                    var url : String = ""
 
+                    if(item.fromId == UserSession.userId){
+                        url = item.toUrl.toString()
+                    }else{
+                        url = item.fromUrl.toString()
+                    }
+
+                    url
+                }
             )
             binding.chatHomeList.adapter = chatHomeAdapter
 
