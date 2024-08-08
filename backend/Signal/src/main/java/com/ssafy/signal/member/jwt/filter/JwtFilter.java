@@ -43,6 +43,11 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (tokenProvider.isAccessTokenBlackList(token)) {
+            handleBlackListedToken(request,response,filterChain);
+            return;
+        }
+
         TokenValidationResult tokenValidationResult = tokenProvider.validateToken(token);
 
         if (!tokenValidationResult.isValid()) {
@@ -86,6 +91,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private void handleMissingToken(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         request.setAttribute("result", new TokenValidationResult(TokenStatus.WRONG_AUTH_HEADER, null, null, null));
         filterChain.doFilter(request, response);
+    }
+
+    private void handleBlackListedToken(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        request.setAttribute("result", new TokenValidationResult(TokenStatus.TOKEN_IS_BLACKLIST, null, null, null));
+        filterChain.doFilter(request,response);
     }
 
     private String resolveToken(HttpServletRequest request) {

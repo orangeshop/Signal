@@ -5,12 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
-<<<<<<< HEAD
-=======
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/Signal.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Signal.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/Signal.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Signal.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
->>>>>>> 1eb8aaaf9ec2b37fb23d4e54097e60316ee3704e
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/controller/FileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/controller/FileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/service/FileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/service/FileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/BoardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/TagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/controller/TagController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/controller/MemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/config/JwtConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/config/JwtConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/filter/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/filter/JwtFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/jwt/token/TokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/TokenBlacklistService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/TokenBlacklistService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,12 +86,24 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;redis&quot;
+    ]
   }
 }</component>
   <component name="RunManager">
     <configuration name="SignalApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Signal.main" />
+      <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssafy.signal.SignalApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -105,6 +127,7 @@
       <updated>1722846618323</updated>
       <workItem from="1722846618976" duration="745000" />
       <workItem from="1722904748852" duration="4032000" />
+      <workItem from="1723091156377" duration="6261000" />
     </task>
     <servers />
   </component>
