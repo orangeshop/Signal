@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -133,6 +134,42 @@ public class DuplicateService {
                     return boardEntity.asBoardDto(comments, fileUrls, profile);
                 })
                 .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public List<BoardDto> searchPosts(String keyword) {
+        List<BoardEntity> boardEntities = boardRepository.searchByTitleOrContent(keyword);
+        List<BoardDto> boardDtoList = new ArrayList<>();
+
+        if (boardEntities.isEmpty()) return boardDtoList;
+
+        for (BoardEntity boardEntity : boardEntities) {
+            // 게시글 작성자의 정보 가져오기
+            Member member = boardEntity.getUser();
+            String profileUrl = fileService.getProfile(member.getUserId());
+
+            findMemberDto profile = findMemberDto.builder()
+                    .userId(member.getUserId())
+                    .name(member.getName())
+                    .profileImage(profileUrl)
+                    .build();
+
+            // 댓글 정보 가져오기
+            List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
+                    .map(comment -> {
+                        String url = fileService.getProfile(comment.getUserId().getUserId());
+                        return comment.asCommentDto(url);
+                    })
+                    .collect(Collectors.toList());
+
+            // 파일 URL 가져오기 (게시판용)
+            List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
+
+            // BoardDto 생성 및 반환
+            boardDtoList.add(boardEntity.asBoardDto(comments, fileUrls, profile));
+        }
+        return boardDtoList;
     }
 
 }
