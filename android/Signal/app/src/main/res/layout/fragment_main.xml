@@ -16,8 +16,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundColor">
+        android:layout_height="match_parent">
 
         <EditText
             android:id="@+id/et_search"
@@ -177,13 +176,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="28dp"
-            android:backgroundTint="@color/mint"
+            android:backgroundTint="@color/purple"
             android:foreground="@drawable/ripple_effect"
             android:onClick="@{()->fragment.onFABClicked()}"
             android:src="@drawable/baseline_edit__mint_24"
             app:borderWidth="1dp"
             app:layout_anchor="@id/rv_post"
-            app:layout_anchorGravity="bottom|end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@color/black" />

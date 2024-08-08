@@ -41,22 +41,6 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             getMyProfile(writerId)
         }
 
-        binding.btnMatching.setOnClickListener {
-            Timber.d("매칭 클릭 확인 ${writerId} ${writerName}")
-            UserSession.userId?.let { myId ->
-                writerId?.let {
-                    writerName?.let {
-                        reviewViewModel.postProposeMatch(
-                            fromId = myId,
-                            toId = writerId
-                        ) {
-                            makeToast("${writerName} 님께 매칭 신청을 하였습니다.")
-                        }
-                    }
-                }
-            }
-        }
-
         loadReviews()
     }
 

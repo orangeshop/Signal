@@ -140,7 +140,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     fun createComment() {
         binding.let { binding ->
             val content = binding.etComment.text.toString()
-            val writer = "홍길동"
+            val writer = UserSession.userName
             val boardId = boardViewModel.selectedBoard.value?.id ?: return
             val userId = UserSession.userId
 
@@ -155,14 +155,18 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     selectedCommentId = null
                 } else {
                     if (userId != null) {
-                        commentViewModel.createComment(
+                        writer?.let {
                             CommentDTOItem(
                                 boardId = boardId,
                                 userId = userId.toLong(),
-                                writer = writer,
+                                writer = it,
                                 content = content
                             )
-                        )
+                        }?.let {
+                            commentViewModel.createComment(
+                                it
+                            )
+                        }
                     }
                 }
                 binding.etComment.text.clear()

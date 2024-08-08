@@ -5,9 +5,9 @@
         <item name="android:statusBarColor">@color/backgroundColor</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="floatingActionButtonStyle">@style/RoundFloatingActionButton</item>
-        <item name="colorPrimary">@color/mint</item>
+        <item name="colorPrimary">#C3C1FF</item>
         <item name="android:fontFamily">@font/bm</item>
-        <item name="android:windowBackground">@color/backgroundColor</item>
+        <item name="android:windowBackground">#F7F7F7</item>
     </style>
 
     <style name="Theme.Signal" parent="Base.Theme.Signal" />
@@ -15,7 +15,7 @@
     <!-- Custom Chip style -->
     <style name="CustomChip" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/chip_background_selector</item>
-        <item name="chipStrokeColor">@color/mint</item>
+        <item name="chipStrokeColor">@color/purple</item>
         <item name="chipStrokeWidth">0.5dp</item>
         <item name="fontFamily">@font/bm</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.CustomChip</item>

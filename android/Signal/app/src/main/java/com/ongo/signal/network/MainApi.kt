@@ -69,7 +69,7 @@ interface MainApi {
     @POST("board/{boardId}/upload")
     suspend fun uploadImage(
         @Path("boardId") boardId: Long,
-        @Part image: MultipartBody.Part
+        @Part image: List<MultipartBody.Part>
     ): Response<ResponseBody>
 
     @POST("board/{boardId}/like")
@@ -99,4 +99,11 @@ interface MainApi {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): Response<List<BoardDTO>>
+
+    @Multipart
+    @PUT("board/{boardId}/upload")
+    suspend fun updateImage(
+        @Path("boardId") boardId: Long,
+        @Part image: List<MultipartBody.Part>
+    ): Response<List<String>>
 }

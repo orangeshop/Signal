@@ -32,7 +32,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:fontFamily="@font/inter_light"
             android:text="@string/my_signal"
             android:textColor="@color/white"
             android:textSize="24sp"

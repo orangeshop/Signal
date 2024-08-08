@@ -24,6 +24,7 @@ class MySignalFragment : BaseFragment<FragmentMySignalBinding>(R.layout.fragment
     override fun init() {
         loadData()
         binding.rvPostPreview.adapter = previewPostAdapter
+        binding.fragment = this
     }
 
     fun popBackStack() {

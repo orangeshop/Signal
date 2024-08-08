@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
@@ -22,11 +23,11 @@ class HeaderViewHolder(
     private val onTitleClicked: (Int) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private val firstTagAdapter = TagAdapter()
-    private val secondTagAdapter = TagAdapter()
-    private val thirdTagAdapter = TagAdapter()
-    private val handler = Handler(Looper.getMainLooper())
-    private val flipInterval = 3000L
+//    private val firstTagAdapter = TagAdapter()
+//    private val secondTagAdapter = TagAdapter()
+//    private val thirdTagAdapter = TagAdapter()
+//    private val handler = Handler(Looper.getMainLooper())
+//    private val flipInterval = 3000L
 
     init {
         binding.viewModel = viewModel
@@ -34,7 +35,7 @@ class HeaderViewHolder(
         binding.tvFirstTitle.setOnClickListener { onTitleClicked(0) }
         binding.tvSecondTitle.setOnClickListener { onTitleClicked(1) }
         binding.tvThirdTitle.setOnClickListener { onTitleClicked(2) }
-        startFlippingViews()
+//        startFlippingViews()
     }
 
     fun bind(newHotBoards: List<BoardDTO>) {
@@ -46,7 +47,7 @@ class HeaderViewHolder(
         }
 
         updateHotSignalTitles(newHotBoards)
-        updateTagAdapters(newHotBoards)
+//        updateTagAdapters(newHotBoards)
         setUpSpannableText()
         binding.executePendingBindings()
     }
@@ -77,63 +78,63 @@ class HeaderViewHolder(
         binding.tvThirdTitle.text = newHotBoards.getOrNull(2)?.title ?: ""
     }
 
-    private fun updateTagAdapters(newBoards: List<BoardDTO>) {
-        firstTagAdapter.submitList(newBoards.getOrNull(0)?.tags ?: emptyList())
-        secondTagAdapter.submitList(newBoards.getOrNull(1)?.tags ?: emptyList())
-        thirdTagAdapter.submitList(newBoards.getOrNull(2)?.tags ?: emptyList())
-    }
+//    private fun updateTagAdapters(newBoards: List<BoardDTO>) {
+//        firstTagAdapter.submitList(newBoards.getOrNull(0)?.tags ?: emptyList())
+//        secondTagAdapter.submitList(newBoards.getOrNull(1)?.tags ?: emptyList())
+//        thirdTagAdapter.submitList(newBoards.getOrNull(2)?.tags ?: emptyList())
+//    }
 
     private fun setUpSpannableText() {
         val hotSpannable = SpannableStringUtils.getSpannableString(
             binding.root.context.getString(R.string.hotSignal),
             binding.root.context.getString(R.string.signal),
-            "#64FFCE"
+            ContextCompat.getColor(binding.root.context, R.color.purple)
         )
         val todaySpannable = SpannableStringUtils.getSpannableString(
             binding.root.context.getString(R.string.realtime_signal),
             binding.root.context.getString(R.string.signal),
-            "#64FFCE"
+            ContextCompat.getColor(binding.root.context, R.color.purple)
         )
 
         binding.tvHotSignal.text = hotSpannable
         binding.tvTodaySignal.text = todaySpannable
     }
 
-    private fun startFlippingViews() {
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                handler.postDelayed(this, flipInterval)
-            }
-        }, flipInterval)
-    }
+//    private fun startFlippingViews() {
+//        handler.postDelayed(object : Runnable {
+//            override fun run() {
+//                handler.postDelayed(this, flipInterval)
+//            }
+//        }, flipInterval)
+//    }
 
-    private fun flipView(titleView: View, recyclerView: RecyclerView, position: Int) {
-        val context = titleView.context
-        val flipOut = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
-        val flipIn = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
-        val flipOutRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
-        val flipInRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
-
-        flipOut.setTarget(titleView)
-        flipOutRecycler.setTarget(recyclerView)
-
-        flipOut.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                if (viewModel.hotBoards.value.isNotEmpty()) {
-                    val newPosition = position % viewModel.hotBoards.value.size
-                    titleView.tag = newPosition
-                    (titleView as TextView).text = viewModel.hotBoards.value[newPosition].title
-
-                    flipIn.setTarget(titleView)
-                    flipInRecycler.setTarget(recyclerView)
-                    flipIn.start()
-                    flipInRecycler.start()
-                }
-            }
-        })
-
-        flipOut.start()
-        flipOutRecycler.start()
-    }
+//    private fun flipView(titleView: View, recyclerView: RecyclerView, position: Int) {
+//        val context = titleView.context
+//        val flipOut = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
+//        val flipIn = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
+//        val flipOutRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_out) as AnimatorSet
+//        val flipInRecycler = AnimatorInflater.loadAnimator(context, R.animator.flip_in) as AnimatorSet
+//
+//        flipOut.setTarget(titleView)
+//        flipOutRecycler.setTarget(recyclerView)
+//
+//        flipOut.addListener(object : AnimatorListenerAdapter() {
+//            override fun onAnimationEnd(animation: Animator) {
+//                super.onAnimationEnd(animation)
+//                if (viewModel.hotBoards.value.isNotEmpty()) {
+//                    val newPosition = position % viewModel.hotBoards.value.size
+//                    titleView.tag = newPosition
+//                    (titleView as TextView).text = viewModel.hotBoards.value[newPosition].title
+//
+//                    flipIn.setTarget(titleView)
+//                    flipInRecycler.setTarget(recyclerView)
+//                    flipIn.start()
+//                    flipInRecycler.start()
+//                }
+//            }
+//        })
+//
+//        flipOut.start()
+//        flipOutRecycler.start()
+//    }
 }

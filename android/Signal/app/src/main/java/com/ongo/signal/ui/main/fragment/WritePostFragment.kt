@@ -1,6 +1,7 @@
 package com.ongo.signal.ui.main.fragment
 
 import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -19,6 +20,7 @@ import com.ongo.signal.data.model.main.ImageItem
 import com.ongo.signal.data.model.main.TagDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.databinding.FragmentWritePostBinding
+import com.ongo.signal.ui.main.ProgressDialog
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import com.ongo.signal.ui.main.viewmodel.ImageViewModel
 import com.ongo.signal.ui.main.adapter.ImageAdapter
@@ -44,6 +46,8 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var selectedTag: String
     private var selectedTagId: Int = 0
+    private val uriItems = mutableListOf<Uri>()
+    private val urlItems = mutableListOf<String>()
 
 
     override fun init() {
@@ -131,6 +135,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         imagePickerHelper =
             ImagePickerHelper(requireActivity(), cameraLauncher, galleryLauncher) { uri ->
                 imageAdapter.addImage(ImageItem.UriItem(uri))
+                uriItems.add(uri)
             }
     }
 
@@ -159,6 +164,9 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                         if (imageUrls.isNotEmpty()) {
                             val imageItems = imageUrls.map { url -> ImageItem.UrlItem(url) }
                             imageAdapter.submitList(imageItems)
+                            uriItems.clear()
+                            urlItems.clear()
+                            urlItems.addAll(imageUrls)
                         }
                     }
                 }
@@ -200,6 +208,10 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
 
     fun onRemoveImageClick(item: ImageItem) {
         imageAdapter.removeImage(item)
+        when (item) {
+            is ImageItem.UriItem -> uriItems.remove(item.uri)
+            is ImageItem.UrlItem -> urlItems.remove(item.url)
+        }
     }
 
     fun onRegisterButtonClick() {
@@ -257,34 +269,38 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
 
     private fun uploadImagesAndNavigate(board: BoardDTO) {
         val boardId = board.id
-        val imageItems = imageAdapter.currentList
-        val uriItems = imageItems.filterIsInstance<ImageItem.UriItem>()
-        if (uriItems.isEmpty()) {
-            Timber.d("uriItem isEmpty")
+
+        if (uriItems.isEmpty() && urlItems.isEmpty()) {
+            Timber.d("No images to upload")
             boardViewModel.clearBoards()
             findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
         } else {
-            val uploadTasks = uriItems.map { item ->
-                viewLifecycleOwner.lifecycleScope.async {
-                    Timber.d("Uploading image: ${item.uri}")
-                    imageViewModel.uploadImage(boardId, item.uri, requireContext()).await()
-                }
-            }
             viewLifecycleOwner.lifecycleScope.launch {
+                val progressDialog = ProgressDialog()
+                progressDialog.show(parentFragmentManager, ProgressDialog.TAG)
+
                 try {
-                    Timber.d("Awaiting upload tasks")
-                    val results = uploadTasks.awaitAll()
-                    val failedUploads = results.filter { it.isFailure }
-                    if (failedUploads.isNotEmpty()) {
-                        Timber.e("One or more images failed to upload")
-                    } else {
-                        val imageUrls = results.mapNotNull { it.getOrNull() }
-                        Timber.d("All images uploaded successfully: $imageUrls")
-                        boardViewModel.clearBoards()
-                        findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
-                    }
+                    Timber.d("Uploading images: $uriItems, existing URLs: $urlItems")
+                    val result = imageViewModel.updateImage(
+                        boardId,
+                        uriItems,
+                        urlItems,
+                        requireContext()
+                    ).await()
+                    result.fold(
+                        onSuccess = { imageUrls ->
+                            Timber.d("All images uploaded successfully: $imageUrls")
+                            boardViewModel.clearBoards()
+                            findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
+                        },
+                        onFailure = {
+                            Timber.e("One or more images failed to upload")
+                        }
+                    )
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to upload all images")
+                } finally {
+                    progressDialog.dismiss()
                 }
             }
         }

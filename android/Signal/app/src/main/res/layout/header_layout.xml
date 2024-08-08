@@ -19,25 +19,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/bm"
             android:text="sadfkjlasdflk"
-            android:textColor="@color/white"
-            android:textSize="36sp"
+            android:textSize="40sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lav_fire"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_hot_signal"
-            app:layout_constraintStart_toEndOf="@id/tv_hot_signal"
-            app:layout_constraintTop_toTopOf="@id/tv_hot_signal"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/fire"
-            app:lottie_speed="0.5" />
+        <!--        <com.airbnb.lottie.LottieAnimationView-->
+        <!--            android:id="@+id/lav_fire"-->
+        <!--            android:layout_width="48dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="4dp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/tv_hot_signal"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/tv_hot_signal"-->
+        <!--            app:layout_constraintTop_toTopOf="@id/tv_hot_signal"-->
+        <!--            app:lottie_autoPlay="true"-->
+        <!--            app:lottie_loop="true"-->
+        <!--            app:lottie_rawRes="@raw/fire"-->
+        <!--            app:lottie_speed="0.5" />-->
 
 
         <TextView
@@ -46,23 +45,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/bm"
             android:text="1"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             android:textSize="48sp"
-            app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/tv_second"
+            app:layout_constraintStart_toStartOf="@id/tv_second"
             app:layout_constraintTop_toBottomOf="@id/tv_hot_signal" />
 
         <TextView
             android:id="@+id/tv_first_title"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/bm"
+            android:layout_marginStart="15dp"
             android:gravity="center_vertical"
             android:text="321353"
-            android:textColor="@color/white"
-            android:textSize="28sp"
+            android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_first"
             app:layout_constraintStart_toEndOf="@id/tv_first"
             app:layout_constraintTop_toTopOf="@id/tv_first" />
@@ -85,9 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/bm"
             android:text="2"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             android:textSize="48sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
@@ -97,13 +94,10 @@
             android:id="@+id/tv_second_title"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="15dp"
             android:gravity="center_vertical"
             android:text="321353"
-
-            android:fontFamily="@font/bm"
-            android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_second"
             app:layout_constraintStart_toEndOf="@id/tv_second"
             app:layout_constraintTop_toTopOf="@id/tv_second" />
@@ -126,9 +120,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/bm"
             android:text="3"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             android:textSize="48sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
@@ -138,11 +131,9 @@
             android:id="@+id/tv_third_title"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/bm"
+            android:layout_marginStart="15dp"
             android:gravity="center_vertical"
-            android:text="321353"
-            android:textColor="@color/white"
+            tools:text="321353"
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_third"
             app:layout_constraintStart_toEndOf="@id/tv_third"
@@ -163,12 +154,10 @@
 
         <View
             android:id="@+id/view_line"
-            android:layout_width="0dp"
-            android:layout_height="0.7dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="15dp"
-            android:background="@color/gray"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginTop="24dp"
+            android:background="#808080"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_third" />
@@ -178,10 +167,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/bm"
             android:text="asdfsadfadf"
-            android:textColor="@color/white"
-            android:textSize="36sp"
+            android:textSize="40sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_hot_signal"

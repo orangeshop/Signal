@@ -41,6 +41,9 @@ class BoardViewModel @Inject constructor(
     private val _selectedTag = MutableStateFlow<String?>(null)
     val selectedTag: StateFlow<String?> = _selectedTag
 
+    private val _isSearchState = MutableStateFlow(false)
+    val isSearchState: StateFlow<Boolean> = _isSearchState
+
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title
 
@@ -204,7 +207,8 @@ class BoardViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     val searchResults = response.body() ?: emptyList()
                     Timber.d("Search results: $searchResults")
-                    val pagingData = PagingData.from(searchResults)
+                    val sortedResults = searchResults.sortedByDescending { it.createdDate }
+                    val pagingData = PagingData.from(sortedResults)
                     _items.emit(pagingData)
                 } else {
                     Timber.e("Failed to search boards: ${response.errorBody()?.string()}")
@@ -293,6 +297,10 @@ class BoardViewModel @Inject constructor(
 
     fun setContent(content: String) {
         _content.value = content
+    }
+
+    fun setSearchState(isSearch: Boolean) {
+        _isSearchState.value = isSearch
     }
 
     fun updateBoardCommentCount(boardId: Long) {

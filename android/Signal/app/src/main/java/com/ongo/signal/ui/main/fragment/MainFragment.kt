@@ -58,6 +58,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private fun observeViewModels() {
         observeBoards()
         observeComments()
+        observeImageViewState()
     }
 
     private fun observeComments() {
@@ -74,6 +75,22 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 todayPostAdapter.submitData(newBoards)
                 Timber.d("RecyclerView state restored")
                 binding.rvPost.layoutManager?.onRestoreInstanceState(recyclerViewState)
+            }
+        }
+    }
+
+    private fun observeImageViewState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            boardViewModel.isSearchState.collectLatest { isSearch ->
+                if (isSearch) {
+                    binding.ivSearch.fadeOut()
+                    binding.ivMic.fadeOut()
+                    binding.ivRefresh.fadeIn()
+                } else {
+                    binding.ivSearch.fadeIn()
+                    binding.ivMic.fadeIn()
+                    binding.ivRefresh.fadeOut()
+                }
             }
         }
     }
@@ -110,6 +127,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         } else {
             boardViewModel.searchBoard(keyword)
             KeyboardUtils.hideKeyboard(binding.etSearch)
+            boardViewModel.setSearchState(true)
             binding.ivSearch.fadeOut()
             binding.ivMic.fadeOut()
             binding.ivRefresh.fadeIn()
@@ -121,6 +139,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         binding.etSearch.setText("")
         KeyboardUtils.hideKeyboard(binding.etSearch)
         binding.chipGroup.clearCheck()
+        boardViewModel.setSearchState(false)
         binding.ivSearch.fadeIn()
         binding.ivMic.fadeIn()
         binding.ivRefresh.fadeOut()
