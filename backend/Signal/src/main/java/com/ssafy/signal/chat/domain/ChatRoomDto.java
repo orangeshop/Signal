@@ -25,6 +25,9 @@ public class ChatRoomDto {
     private String from_name;
     private String to_name;
 
+    private String from_url;
+    private String to_url;
+
     public ChatRoomEntity asChatRoomEntity() {
         return ChatRoomEntity
                 .builder()
