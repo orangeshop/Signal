@@ -66,7 +66,7 @@ public class ChatService {
                     .getFileUrl();
 
             String to_url = Optional
-                    .ofNullable(fileRepository.findAllByUser(from))
+                    .ofNullable(fileRepository.findAllByUser(to))
                     .orElse(new FileEntity())
                     .getFileUrl();
 
