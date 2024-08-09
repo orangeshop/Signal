@@ -35,17 +35,15 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         binding.reviewViewModel = reviewViewModel
         val safeArgs: ReviewFragmentArgs by navArgs()
 
-
         var writerId = boardViewModel.selectedBoard.value?.userId
         var writerName = boardViewModel.selectedBoard.value?.writer
 
-        Log.d("싸피", "init: ${safeArgs} ${writerName}")
-//        if(safeArgs != null && safeArgs.flagByRoot == true){
-//
-//            binding.btnChat.isEnabled = false
-//            writerId = safeArgs.flagByRootId
-//            writerName = safeArgs.flagByRootWriter
-//        }
+        if(safeArgs.flagByRoot == true){
+
+            binding.btnChat.isEnabled = false
+            writerId = safeArgs.flagByRootId
+            writerName = safeArgs.flagByRootWriter
+        }
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
         //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정

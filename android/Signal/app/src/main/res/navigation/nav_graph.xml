@@ -126,16 +126,19 @@
         <argument
             android:name="flagByRoot"
             app:argType="boolean"
+            android:defaultValue="false"
             />
 
         <argument
             android:name="flagByRootId"
             app:argType="long"
+            android:defaultValue="-1L"
             />
 
         <argument
             android:name="flagByRootWriter"
             app:argType="string"
+            android:defaultValue=""
             />
     </fragment>
     <fragment
