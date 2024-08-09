@@ -2,8 +2,11 @@ package com.ongo.signal.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.ongo.signal.data.repository.auth.AuthRepository
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepository
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
+import com.ongo.signal.network.AuthApi
+import com.ongo.signal.network.AuthInterceptor
 import com.ongo.signal.network.ChatRoomApi
 import com.ongo.signal.network.MainApi
 import com.ongo.signal.network.MatchApi
@@ -18,7 +21,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -35,15 +37,23 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+    fun provideAuthInterceptor(authRepository: AuthRepository): AuthInterceptor {
+        return AuthInterceptor(authRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(authInterceptor)
         .build()
 
     @Singleton
     @Provides
     @Named("signal")
-    fun provideSignalRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
-        .baseUrl("http://13.125.47.74:8080/")  // EC2
-//        .baseUrl("http://192.168.100.161:8080/") // 병현서버
+    fun provideSignalRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit = Retrofit.Builder()
+//        .baseUrl("http://13.125.47.74:8080/")  // EC2
+        .client(okHttpClient)
+        .baseUrl("http://192.168.100.161:8080/") // 병현서버
 //        .baseUrl("http://192.168.100.95:8080/") // 인수서버
 //        .baseUrl("http://192.168.100.200:8080/") // 민수서버
         .addConverterFactory(GsonConverterFactory.create(gson))
@@ -53,8 +63,8 @@ object NetworkModule {
     @Provides
     @Named("auth")
     fun provideAuthRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
-        .baseUrl("http://13.125.47.74:8080/")  // EC2
-//        .baseUrl("http://192.168.100.161:8080/") // 병현서버
+//        .baseUrl("http://13.125.47.74:8080/")  // EC2
+        .baseUrl("http://192.168.100.161:8080/") // 병현서버
 //        .baseUrl("http://192.168.100.95:8080/") // 인수서버
 //        .baseUrl("http://192.168.100.200:8080/") // 민수서버
         .addConverterFactory(GsonConverterFactory.create(gson))
@@ -72,7 +82,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideMainApiService(@Named("signal")retrofit: Retrofit): MainApi =
+    fun provideMainApiService(@Named("signal") retrofit: Retrofit): MainApi =
         retrofit.create(MainApi::class.java)
 
     @Provides
@@ -102,4 +112,9 @@ object NetworkModule {
     @Singleton
     fun provideReviewRepository(@Named("signal") retrofit: Retrofit): ReviewApi =
         retrofit.create(ReviewApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideAuthApi(@Named("auth") retrofit: Retrofit): AuthApi =
+        retrofit.create(AuthApi::class.java)
 }

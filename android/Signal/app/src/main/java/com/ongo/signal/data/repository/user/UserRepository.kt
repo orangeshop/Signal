@@ -9,11 +9,11 @@ import com.ongo.signal.data.model.login.SignupRequest
 import okhttp3.MultipartBody
 
 interface UserRepository {
-    suspend fun postLogin(request: LoginRequest): Result<LoginResponse?>
+//    suspend fun postLogin(request: LoginRequest): Result<LoginResponse?>
 
     suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?>
 
-    suspend fun deleteUser(accessToken: String, refreshToken: String): Int
+//    suspend fun deleteUser(accessToken: String, refreshToken: String): Int
 
     suspend fun postSignup(request: SignupRequest): Result<LoginResponse?>
 

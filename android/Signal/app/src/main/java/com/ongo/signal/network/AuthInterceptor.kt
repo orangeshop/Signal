@@ -22,8 +22,9 @@ class AuthInterceptor @Inject constructor(
         val response = chain.proceed(request)
 
         if (response.code == 401) {
+            response.close()
+            Timber.d("토큰이 만료됐습니다.:")
             synchronized(this) {
-                // 새로운 토큰 받아와서 갈아끼워 주기
                 UserSession.refreshToken?.let { refreshToken ->
                     val newAccessToken = runBlocking {
                         authRepository.renewalToken(refreshToken = refreshToken).onSuccess {

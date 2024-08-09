@@ -16,15 +16,15 @@ import javax.inject.Singleton
 class UserRepositoryImpl @Inject constructor(
     private val userApi: UserApi
 ) : UserRepository {
-    override suspend fun postLogin(request: LoginRequest): Result<LoginResponse?> {
-        val req = userApi.postLoginRequest(request)
-        Timber.d("login : $req")
-        return if (req.isSuccessful) {
-            Result.success(req.body())
-        } else {
-            Result.failure(Exception())
-        }
-    }
+//    override suspend fun postLogin(request: LoginRequest): Result<LoginResponse?> {
+//        val req = userApi.postLoginRequest(request)
+//        Timber.d("login : $req")
+//        return if (req.isSuccessful) {
+//            Result.success(req.body())
+//        } else {
+//            Result.failure(Exception())
+//        }
+//    }
 
     override suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?> {
         val req = userApi.postRegistToken(userId = userId, token = token)
@@ -36,15 +36,15 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(accessToken: String, refreshToken: String): Int {
-        val req = userApi.postLogoutRequest(accessToken, refreshToken)
-        Timber.d("로그아웃 ${req} 요청은 ${req}")
-        return if (req.isSuccessful) {
-            1
-        } else {
-            0
-        }
-    }
+//    override suspend fun deleteUser(accessToken: String, refreshToken: String): Int {
+//        val req = userApi.postLogoutRequest(accessToken, refreshToken)
+//        Timber.d("로그아웃 ${req} 요청은 ${req}")
+//        return if (req.isSuccessful) {
+//            1
+//        } else {
+//            0
+//        }
+//    }
 
     override suspend fun postSignup(request: SignupRequest): Result<LoginResponse?> {
         val req = userApi.postSignUpRequest(request)

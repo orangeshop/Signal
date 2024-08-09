@@ -6,6 +6,7 @@ import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.my.MyProfileData
+import com.ongo.signal.data.repository.auth.AuthRepository
 import com.ongo.signal.data.repository.user.UserRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,7 @@ class MyPageViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val myPageRepository: MyPageRepository,
     private val dataStoreClass: DataStoreClass,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     lateinit var userData: MyProfileData
@@ -36,7 +38,7 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch(coroutineExceptionHandler) {
             UserSession.userId?.let { userId ->
                 userRepository.postFCMToken(userId, "").onSuccess {
-                    if (userRepository.deleteUser(
+                    if (authRepository.deleteUser(
                             accessToken = "Bearer $accessToken",
                             refreshToken = "Bearer $refreshToken"
                         ) == 1

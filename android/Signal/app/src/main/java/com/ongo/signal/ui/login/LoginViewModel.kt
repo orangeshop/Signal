@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.data.model.login.LoginRequest
 import com.ongo.signal.data.model.login.SignalUser
+import com.ongo.signal.data.repository.auth.AuthRepository
 import com.ongo.signal.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -16,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userRepository: UserRepository,
     private val dataStoreClass: DataStoreClass,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     private val coroutineExceptionHandler =
@@ -53,7 +54,7 @@ class LoginViewModel @Inject constructor(
         onSuccess: (Boolean, SignalUser?) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            userRepository.postLogin(request).onSuccess { response ->
+            authRepository.postLogin(request).onSuccess { response ->
                 response?.let {
                     if (response.status) {
                         onSuccess(
