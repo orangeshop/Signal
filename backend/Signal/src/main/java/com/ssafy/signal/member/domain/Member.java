@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,10 @@ public class Member {
     @Column(name = "comment", nullable = true)
     @ColumnDefault("")
     private String comment;
+
+    @ColumnDefault("0")
+    @Column(name = "score")
+    private int score;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardEntity> boards = new ArrayList<>();

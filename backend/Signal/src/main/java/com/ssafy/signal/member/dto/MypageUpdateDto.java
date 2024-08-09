@@ -14,4 +14,5 @@ public class MypageUpdateDto {
     private String type;
     private String name;
     private String comment;
+    private int score;
 }

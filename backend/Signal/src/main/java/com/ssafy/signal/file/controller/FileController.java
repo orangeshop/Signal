@@ -6,6 +6,7 @@ import com.ssafy.signal.file.domain.FileDto;
 import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.file.service.S3Uploader;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class FileController {
@@ -32,6 +34,8 @@ public class FileController {
     public String uploadBoardFile(@RequestParam("file") MultipartFile[] multipartFile,
                              @PathVariable("boardId") Long boardId) throws IOException {
 
+
+        log.info("post를 탔습니다.");
         // FileService를 통해 파일 업로드 및 URL 반환
         return fileService.uploadBoardFile(multipartFile, boardId);
     }
@@ -62,15 +66,16 @@ public class FileController {
     @PutMapping("/user/{userId}/upload")
     public FileDto updateProfileFile(@RequestParam("file") MultipartFile multipartFile,
                                      @PathVariable("userId") Long userId) throws IOException {
-
         return fileService.updateProfileFile(multipartFile, userId);
     }
 
 
+    // 게시판 파일 수정
     @PutMapping("/board/{boardId}/upload")
     public String updateBoardFile(@RequestParam("file") MultipartFile[] multipartFile,
                                   @PathVariable("boardId") Long boardId) throws IOException {
 
+        log.info("uploadBoardFile : {}", multipartFile);
         return fileService.updateBoardFile(multipartFile, boardId);
     }
 }

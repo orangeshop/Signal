@@ -5,6 +5,7 @@ import com.ssafy.signal.file.repository.FileRepository;
 import com.ssafy.signal.match.domain.*;
 import com.ssafy.signal.match.repository.LocationRepository;
 import com.ssafy.signal.match.repository.MatchRepository;
+import com.ssafy.signal.member.service.MemberService;
 import com.ssafy.signal.review.repository.ReviewRepository;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.repository.MemberRepository;
@@ -33,6 +34,7 @@ public class MatchService {
     private final LocationRepository locationRepository;
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final MatchRepository matchRepository;
     private final FirebaseService firebaseService;
     private final FileRepository fileRepository;
@@ -95,6 +97,8 @@ public class MatchService {
         {
             locationRepository.deleteById(fromLocation.getLocation_id());
             locationRepository.deleteById(toLocation.getLocation_id());
+            memberService.upscore(from_id);
+            memberService.upscore(to_id);
             saveMatch(from_id,to_id);
         }
 

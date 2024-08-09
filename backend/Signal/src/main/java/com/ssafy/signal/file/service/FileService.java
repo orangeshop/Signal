@@ -135,12 +135,14 @@ public class FileService {
     public String updateBoardFile(MultipartFile[] multipartFile, Long boardId) throws IOException {
         List<String> boards = getFilesByBoardId(boardId);
         List<String> uploadedFileNames = new ArrayList<>();
+        log.info("boards: {}", boards);
 
         for (String board : boards) {
             if (!multipartFile[0].isEmpty()) {
                 s3Uploader.delete(board);
 
                 fileRepository.deleteByFileUrl(board);
+                log.info("DB에서 삭제되었습니다.");
             }
 
         }

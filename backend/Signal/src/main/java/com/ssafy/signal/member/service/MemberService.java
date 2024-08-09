@@ -78,6 +78,7 @@ public class MemberService implements UserDetailsService {
                 .password(passwordEncoder.encode(member.getPassword()))
                 .type(member.getType())
                 .name(member.getName())
+                .comment(member.getComment())
                 .build();
 
         return memberRepository.save(member1);
@@ -163,6 +164,7 @@ public class MemberService implements UserDetailsService {
                 .name(member1.getName())
                 .type(member1.getType())
                 .comment(member1.getComment())
+                .score(member1.getScore())
                 .build();
     }
 
@@ -177,6 +179,7 @@ public class MemberService implements UserDetailsService {
                 .name(myProfile.getName())
                 .profileImage(url)
                 .comment(myProfile.getComment() == null? "" : myProfile.getComment())
+                .score(myProfile.getScore())
                 .build();
     }
 
@@ -267,6 +270,18 @@ public class MemberService implements UserDetailsService {
 
         // BoardDto 생성 및 반환
         return boardEntity.asBoardDto(comments, fileUrls, profile);
+    }
+
+    public void upscore(Long userId) throws Exception {
+        Member member = memberRepository
+                .findById(userId)
+                .orElseThrow(() -> new Exception("Member Not found"));
+
+        int score = member.getScore();
+
+        member.setScore(score+1);
+
+        memberRepository.save(member);
     }
 
 }

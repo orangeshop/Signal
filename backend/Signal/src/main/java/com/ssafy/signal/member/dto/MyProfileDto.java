@@ -13,4 +13,5 @@ public class MyProfileDto {
     private String name;
     private String profileImage;
     private String comment;
+    private int score;
 }
