@@ -133,7 +133,7 @@ public class ChatService {
         boolean isFromSender = messageDto.getIs_from_sender();
 
         long destUserId = isFromSender ? to.getUserId() : from.getUserId();
-        String destUserName = isFromSender ? to.getName() : from.getName();
+        String destUserName = isFromSender ? from.getName() : to.getName();
 
         firebaseService.sendMessageTo(destUserId, destUserName,messageDto.getContent(),0);
     }
