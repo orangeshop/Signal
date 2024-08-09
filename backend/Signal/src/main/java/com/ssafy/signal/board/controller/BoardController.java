@@ -1,9 +1,17 @@
 package com.ssafy.signal.board.controller;
 
 import com.ssafy.signal.board.domain.BoardDto;
+import com.ssafy.signal.board.domain.BoardEntity;
+import com.ssafy.signal.board.domain.LikeEntity;
+import com.ssafy.signal.board.repository.BoardRepository;
+import com.ssafy.signal.board.repository.LikeRepository;
 import com.ssafy.signal.board.service.BoardService;
 import com.ssafy.signal.board.service.DuplicateService;
 import com.ssafy.signal.file.service.S3Uploader;
+import com.ssafy.signal.member.domain.Member;
+import com.ssafy.signal.member.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -20,11 +29,14 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
-
     @Autowired
     private DuplicateService duplicateService;
     @Autowired
-    private final S3Uploader s3Uploader;
+    private MemberRepository memberRepository;
+    @Autowired
+    private BoardRepository boardRepository;
+    @Autowired
+    private LikeRepository likeRepository;
 
     /* 게시글 목록 조회(오늘의 시그널) */
     @GetMapping("/board")
@@ -76,12 +88,32 @@ public class BoardController {
     }
 
     /* 좋아요 버튼 클릭 */
-    @PostMapping("/board/{no}/like")
-    public ResponseEntity<Long> likePost(@PathVariable("no") Long no) {
-        Long likedCount = boardService.incrementLikedCount(no);  // 좋아요 카운트 증가 및 반환
-        return ResponseEntity.ok(likedCount);  // 증가된 좋아요 수 반환
-    }
+    @Transactional
+    @PostMapping("/board/{boardId}/like")
+    public ResponseEntity<Long> toggleLike(@RequestParam(value="userId") Long userId, @PathVariable("boardId") Long boardId) {
+        // Member 객체와 BoardEntity 객체를 가져옵니다.
+        Member user = memberRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
 
+        BoardEntity board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+
+        // 좋아요 레코드를 조회합니다.
+        Optional<LikeEntity> existingLike = likeRepository.findByUserAndBoardEntity(user, board);
+        if (existingLike.isPresent()) {
+            // 좋아요가 이미 존재하면 삭제
+            likeRepository.delete(existingLike.get()); // 좋아요 삭제
+            board.decrementLiked();  // 좋아요 수 감소
+        } else {
+            // 좋아요가 존재하지 않으면 새로 추가
+            LikeEntity like = new LikeEntity(user, board);
+            likeRepository.save(like); // 좋아요 추가
+            board.incrementLiked();  // 좋아요 수 증가
+        }
+
+        boardRepository.save(board); // 게시글의 좋아요 수를 갱신
+        return ResponseEntity.ok(board.getLiked());  // 최신 좋아요 수 반환
+    }
 
 
 }

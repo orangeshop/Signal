@@ -3,6 +3,9 @@ package com.ssafy.signal.chat.service;
 import com.ssafy.signal.chat.domain.*;
 import com.ssafy.signal.chat.repository.ChatRoomRepository;
 import com.ssafy.signal.chat.repository.MessageRepository;
+import com.ssafy.signal.file.domain.FileEntity;
+import com.ssafy.signal.file.repository.FileRepository;
+import com.ssafy.signal.file.service.FileService;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.notification.service.FirebaseService;
@@ -16,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +29,7 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
     private final FirebaseService firebaseService;
+    private final FileRepository fileRepository;
 
     public ChatRoomDto createChatRoom(ChatRoomDto chatRoomDto) {
         Member from = makeMember(chatRoomDto.getFrom_id());
@@ -55,7 +60,17 @@ public class ChatService {
             String from_name = from.getName();
             String to_name = to.getName();
 
-            chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name));
+            String from_url = Optional
+                    .ofNullable(fileRepository.findAllByUser(from))
+                    .orElse(new FileEntity())
+                    .getFileUrl();
+
+            String to_url = Optional
+                    .ofNullable(fileRepository.findAllByUser(to))
+                    .orElse(new FileEntity())
+                    .getFileUrl();
+
+            chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name,from_url,to_url));
         }
         return chatRoomDtos;
     }
