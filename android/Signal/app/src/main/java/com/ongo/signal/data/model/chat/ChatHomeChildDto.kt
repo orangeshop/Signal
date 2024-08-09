@@ -3,6 +3,7 @@ package com.ongo.signal.data.model.chat
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 @Entity(tableName = "chat_detail_table")
 data class ChatHomeChildDTO(

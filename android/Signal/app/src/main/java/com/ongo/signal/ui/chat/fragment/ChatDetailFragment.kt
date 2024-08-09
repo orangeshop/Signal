@@ -3,12 +3,14 @@ package com.ongo.signal.ui.chat.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
@@ -67,7 +69,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         videoServiceRepository.startService(UserSession.userId.toString())
     }
 
-    @SuppressLint("ClickableViewAccessibility", "NewApi")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onResume() {
         super.onResume()
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
@@ -78,6 +80,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
             binding.chatDetailTitleTv.text = chatViewModel.chatRoomTitle
+
+
 
             lifecycleScope.launch {
                 chatDetailAdapter = ChatDetailAdapter(
@@ -126,7 +130,11 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         chatViewModel.chatRoomUrl
                     },
                     chatItemClick = {
+                        val bundle = Bundle()
 
+                        bundle.putSerializable("item", true)
+
+                        findNavController().navigate(R.id.action_chatDetailFragment_to_reviewFragment, bundle)
                     }
                 )
             }
@@ -151,7 +159,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             chatViewModel.todayTitleSetting()
                         }
 
-                        if (progressBar.progress == chatList.size && chatList.size != 0) {
+                        if (progressBar.progress <= chatList.size && chatList.size != 0) {
                             progressBar.visibility = View.GONE
                         }
 
@@ -174,13 +182,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                                     1
                                 )
                             ) {
-                                Log.d(TAG, "onResume: 1")
+
                                 scrollPositionBottom()
                             }
                         }
 
 
-                        if (chatList.isNotEmpty() && check) {
+//                        if (chatList.isNotEmpty() && check) {
+                        if (chatList.isNotEmpty()) {
                             lifecycleScope.launch {
                                 chatDetailRv.scrollToPosition(chatList.lastIndex)
                             }
@@ -372,6 +381,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             )
         )
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

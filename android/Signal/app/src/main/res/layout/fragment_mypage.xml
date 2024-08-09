@@ -47,18 +47,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_signup" />
 
-        <TextView
-            android:id="@+id/tv_username"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="8dp"
-            android:fontFamily="@font/inter_bold"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_profile" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_profile"
+        >
 
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_gravity="center"
+                />
+            <ImageView
+                android:id="@+id/myPage_tier"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+            />
+
+
+        </LinearLayout>
         <ImageView
             android:id="@+id/iv_profile_icon"
             android:layout_width="28dp"

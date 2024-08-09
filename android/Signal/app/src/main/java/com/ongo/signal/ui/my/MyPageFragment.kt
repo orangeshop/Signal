@@ -1,6 +1,7 @@
 package com.ongo.signal.ui.my
 
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -54,9 +55,26 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
                     }
 
                     tvUsername.text = myProfileData.name
+                    Log.d("asdasd","getMyProfile: ${myProfileData}")
+                    myPageTier.setImageResource(tierSetting(myProfileData.score))
                 }
             }
         }
+    }
+
+    private fun tierSetting(count: Int): Int {
+
+        if( 1 <= count && count <= 5){
+            return R.drawable.silver
+        }else if( 6 <= count && count <= 10){
+            return R.drawable.gold
+        }else if( 11 <= count && count <= 15){
+            return R.drawable.platinum
+        }else if( 16 <= count){
+            return R.drawable.king
+        }
+
+        return R.drawable.bronze
     }
 
     private fun initViews() {
