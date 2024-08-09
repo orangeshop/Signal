@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Signal.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Signal.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Signal.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Signal.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/controller/FileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/controller/FileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/service/FileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/file/service/FileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/match/service/MatchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/match/service/MatchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/domain/Member.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MyProfileDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MyProfileDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MypageUpdateDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/dto/MypageUpdateDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/member/service/MemberService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
