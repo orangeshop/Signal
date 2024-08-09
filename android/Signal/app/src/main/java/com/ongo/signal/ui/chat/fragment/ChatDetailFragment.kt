@@ -131,6 +131,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         chatViewModel.chatRoomUrl
                     },
                     chatItemClick = {
+
                         findNavController().navigate(
                             ChatDetailFragmentDirections
                                 .actionChatDetailFragmentToReviewFragment(flagByRoot = true, flagByRootId = if(UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID , flagByRootWriter = chatViewModel.chatRoomTitle)
