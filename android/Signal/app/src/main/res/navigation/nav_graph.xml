@@ -67,10 +67,6 @@
         <action
             android:id="@+id/action_chatDetailFragment_to_reviewFragment"
             app:destination="@id/reviewFragment" />
-        <argument
-            android:name="flagByRoot"
-            app:argType="boolean"
-        />
 
     </fragment>
     <fragment
@@ -126,6 +122,21 @@
         <action
             android:id="@+id/action_reviewFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
+
+        <argument
+            android:name="flagByRoot"
+            app:argType="boolean"
+            />
+
+        <argument
+            android:name="flagByRootId"
+            app:argType="long"
+            />
+
+        <argument
+            android:name="flagByRootWriter"
+            app:argType="string"
+            />
     </fragment>
     <fragment
         android:id="@+id/mySignalFragment"

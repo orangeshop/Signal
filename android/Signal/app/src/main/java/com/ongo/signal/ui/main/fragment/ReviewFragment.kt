@@ -1,8 +1,10 @@
 package com.ongo.signal.ui.main.fragment
 
+import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -31,15 +33,23 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         setUpAdapter()
         binding.fragment = this
         binding.reviewViewModel = reviewViewModel
+        val safeArgs: ReviewFragmentArgs by navArgs()
 
-        if(arguments?.getBoolean("item") == true){
-            binding.btnChat.isEnabled = false
-        }
+
+        var writerId = boardViewModel.selectedBoard.value?.userId
+        var writerName = boardViewModel.selectedBoard.value?.writer
+
+        Log.d("싸피", "init: ${safeArgs} ${writerName}")
+//        if(safeArgs != null && safeArgs.flagByRoot == true){
+//
+//            binding.btnChat.isEnabled = false
+//            writerId = safeArgs.flagByRootId
+//            writerName = safeArgs.flagByRootWriter
+//        }
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
         //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
-        val writerId = boardViewModel.selectedBoard.value?.userId
-        val writerName = boardViewModel.selectedBoard.value?.writer
+
         writerId?.let {
             reviewViewModel.checkReviewPermission(writerId)
             getMyProfile(writerId)

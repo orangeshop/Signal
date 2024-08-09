@@ -22,6 +22,7 @@ import com.ongo.signal.databinding.FragmentChatDetailBinding
 import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
+import com.ongo.signal.ui.my.MyPageFragmentDirections
 import com.ongo.signal.ui.video.CallActivity
 import com.ongo.signal.ui.video.repository.VideoRepository
 import com.ongo.signal.ui.video.service.VideoService
@@ -130,13 +131,10 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         chatViewModel.chatRoomUrl
                     },
                     chatItemClick = {
-//                        val bundle = Bundle()
-
-//                        bundle.putSerializable("item", true)
-
-//                        findNavController().navigate(R.id.action_chatDetailFragment_to_reviewFragment, bundle)
-
-//                        findNavController().navigate(directions = ChatDetailFragmentDirections.actionChatDetailFragmentToReviewFragment(false))
+                        findNavController().navigate(
+                            ChatDetailFragmentDirections
+                                .actionChatDetailFragmentToReviewFragment(flagByRoot = true, flagByRootId = if(UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID , flagByRootWriter = chatViewModel.chatRoomTitle)
+                        )
                     }
                 )
             }
