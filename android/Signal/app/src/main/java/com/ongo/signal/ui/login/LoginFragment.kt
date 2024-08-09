@@ -41,9 +41,26 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         }
     }
 
-    fun setupNaverLoginButton() {
-        NaverLoginCallback.setOnSuccessCallback { accessToken, refreshToken ->
-            viewModel.loginWithNaver(accessToken)
+    private fun setupNaverLoginButton() {
+        NaverLoginCallback.setOnSuccessCallback { accessToken, _ ->
+            viewModel.loginWithNaver(accessToken) { isSuccess, loginResponse ->
+                if (isSuccess && loginResponse != null) {
+                    val signalUser = SignalUser(
+                        loginId = loginResponse.userInfo.loginId,
+                        accessToken = loginResponse.accessToken,
+                        accessTokenExpireTime = loginResponse.accessTokenExpireTime,
+                        type = loginResponse.userInfo.type,
+                        userId = loginResponse.userInfo.userId,
+                        userName = loginResponse.userInfo.name,
+                        refreshToken = loginResponse.refreshToken,
+                        refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
+                    )
+                    Timber.tag("naverLogin").d("success")
+                    successLogin(signalUser, loginResponse.userInfo.loginId, "")
+                } else {
+                    makeToast("네이버 로그인 실패")
+                }
+            }
         }
 
         NaverLoginCallback.setOnFailureCallback { errorMessage ->
@@ -52,6 +69,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
         binding.nolbLogin.setOAuthLogin(NaverLoginCallback)
     }
+
 
     private fun initViews() {
         binding.btnSignup.setOnClickListener {

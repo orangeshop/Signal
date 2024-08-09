@@ -23,9 +23,6 @@ class LoginViewModel @Inject constructor(
     private val dataStoreClass: DataStoreClass,
 ) : ViewModel() {
 
-    private val _loginResult = MutableStateFlow<Result<LoginResponse?>>(Result.failure(Exception("Not logged in yet")))
-    val loginResult: StateFlow<Result<LoginResponse?>> = _loginResult
-
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
             Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
@@ -87,17 +84,17 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun loginWithNaver(token: String) {
+    fun loginWithNaver(token: String, onResult: (Boolean, LoginResponse?) -> Unit) {
         viewModelScope.launch {
             val result = loginRepository.naverLogin(token)
-            _loginResult.value = result
             result.fold(
                 onSuccess = {
                     Timber.d("네이버 로그인 성공: $it")
-
+                    onResult(true, it)
                 },
                 onFailure = {
                     Timber.e(it, "네이버 로그인 실패")
+                    onResult(false, null)
                 }
             )
         }
