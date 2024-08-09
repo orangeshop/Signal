@@ -130,11 +130,13 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         chatViewModel.chatRoomUrl
                     },
                     chatItemClick = {
-                        val bundle = Bundle()
+//                        val bundle = Bundle()
 
-                        bundle.putSerializable("item", true)
+//                        bundle.putSerializable("item", true)
 
-                        findNavController().navigate(R.id.action_chatDetailFragment_to_reviewFragment, bundle)
+//                        findNavController().navigate(R.id.action_chatDetailFragment_to_reviewFragment, bundle)
+
+//                        findNavController().navigate(directions = ChatDetailFragmentDirections.actionChatDetailFragmentToReviewFragment(false))
                     }
                 )
             }
