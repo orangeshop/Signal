@@ -1,15 +1,19 @@
 package com.ongo.signal.network
 
+import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.repository.auth.AuthRepository
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
-    private val authApi: AuthApi
+    private val authRepository: AuthRepository
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
-        val accessToken = tokenManager.accessToken
+        val accessToken = UserSession.accessToken
 
         val request = originalRequest.newBuilder()
             .header("Authorization", "Bearer $accessToken")
@@ -19,20 +23,27 @@ class AuthInterceptor @Inject constructor(
 
         if (response.code == 401) {
             synchronized(this) {
-                val newAccessToken = tokenManager.accessToken
-                if (accessToken == newAccessToken) {
-                    val refreshToken = tokenManager.refreshToken
-                    val newTokens = authApi.refreshToken(refreshToken!!).execute().body()
-                    tokenManager.accessToken = newTokens?.accessToken
-                    tokenManager.refreshToken = newTokens?.refreshToken
-
-                    // 새로운 AccessToken으로 요청을 재시도
+                // 새로운 토큰 받아와서 갈아끼워 주기
+                UserSession.refreshToken?.let { refreshToken ->
+                    val newAccessToken = runBlocking {
+                        authRepository.renewalToken(refreshToken = refreshToken).onSuccess {
+                            it?.let { response ->
+                                response.accessToken
+                            } ?: ""
+                        }.onFailure {
+                            ""
+                        }
+                    }
+                    Timber.d("인터셉터에서 새로받은 token ${newAccessToken}")
+                    //
                     val newRequest = originalRequest.newBuilder()
-                        .header("Authorization", "Bearer ${newTokens?.accessToken}")
+                        .header("Authorization", "Bearer ${newAccessToken}")
                         .build()
 
                     return chain.proceed(newRequest)
+
                 }
+
             }
         }
 

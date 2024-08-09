@@ -18,4 +18,9 @@ interface AuthApi {
         @Header("Authorization") accessToken: String,
         @Header("RefreshToken") refreshToken: String,
     ): Response<Void>
+
+    @POST("user/refresh")
+    suspend fun renewalRefreshToken(
+        @Header("RefreshToken") refreshToken: String,
+    ) : Response<LoginResponse>
 }
