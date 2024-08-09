@@ -11,5 +11,7 @@ data class MyProfileData(
     @SerializedName("type") val type: String = "",
     @SerializedName("name") val name: String = "",
     @SerializedName("profileImage") val profileImage: String = "",
-    @SerializedName("comment") val comment: String = ""
+    @SerializedName("comment") val comment: String = "",
+    @SerializedName("score") val score: Int = 0,
+
 ) : Parcelable

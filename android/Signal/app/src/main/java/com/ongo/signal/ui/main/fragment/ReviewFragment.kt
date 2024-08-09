@@ -32,6 +32,10 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         binding.fragment = this
         binding.reviewViewModel = reviewViewModel
 
+        if(arguments?.getBoolean("item") == true){
+            binding.btnChat.isEnabled = false
+        }
+
         //user ID에 상대방 아이디를 넣으면 됩니다.
         //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
         val writerId = boardViewModel.selectedBoard.value?.userId

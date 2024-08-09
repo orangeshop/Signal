@@ -63,7 +63,16 @@
     <fragment
         android:id="@+id/chatDetailFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatDetailFragment"
-        android:label="chatDetailFragment" />
+        android:label="chatDetailFragment" >
+        <action
+            android:id="@+id/action_chatDetailFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+        <argument
+            android:name="flagByRoot"
+            app:argType="boolean"
+        />
+
+    </fragment>
     <fragment
         android:id="@+id/chatAddFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatAddFragment"

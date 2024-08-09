@@ -20,7 +20,7 @@ class ChatDetailAdapter(
     private val todaySetting: (id: Long,item: Long, time: String) -> Boolean,
     private val fromID : Long,
     private val userImageUrl: () -> String,
-    private val chatItemClick: (item: ChatHomeDTO) -> Unit,
+    private val chatItemClick: (item: ChatHomeChildDTO) -> Unit,
 ) : ListAdapter<ChatHomeChildDTO, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
@@ -37,6 +37,10 @@ class ChatDetailAdapter(
                 .placeholder(R.drawable.basic_profile)
                 .circleCrop()
                 .into(binding.chatDetailItemImg)
+
+            binding.chatDetailItemImg.setOnClickListener {
+                chatItemClick(item)
+            }
 
             binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
             binding.today.text = timeSetting(item.sendAt, 2)
