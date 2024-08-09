@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -19,6 +22,14 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        val clientId = properties["NAVER_CLIENT_ID"] ?: ""
+        val clientSecret = properties["NAVER_CLIENT_SECRET"] ?: ""
+
+        buildConfigField("String", "NAVER_CLIENT_ID", "\"$clientId\"")
+        buildConfigField("String", "NAVER_CLIENT_SECRET", "\"$clientSecret\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -38,6 +49,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -98,4 +110,6 @@ dependencies {
     //webrtc
     implementation(libs.bundles.webrtc)
 
+    //naver
+    implementation(libs.naver)
 }

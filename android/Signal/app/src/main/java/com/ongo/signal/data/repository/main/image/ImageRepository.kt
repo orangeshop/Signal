@@ -8,7 +8,6 @@ import retrofit2.Response
 interface ImageRepository {
 
     suspend fun getBoardImages(): Response<BoardImagesDTO>
-    suspend fun uploadImage(boardId: Long, image: List<MultipartBody.Part>): Response<ResponseBody>
-    suspend fun updateImage(boardId: Long, image: List<MultipartBody.Part>): Response<List<String>>
+    suspend fun updateImage(boardId: Long, image: List<MultipartBody.Part>): Response<ResponseBody>
 
 }

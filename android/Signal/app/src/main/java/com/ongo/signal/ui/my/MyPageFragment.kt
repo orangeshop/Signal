@@ -58,20 +58,24 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     private fun initViews() {
         binding.ivLogout.setOnClickListener {
             UserSession.refreshToken?.let { refreshToken ->
-                viewModel.sendLogout(refreshToken) { successFlag ->
-                    if (successFlag == 1) {
-                        makeToast("로그아웃 되었습니다.")
-                        goToLoginActivity()
+                UserSession.accessToken?.let { it1 ->
+                    viewModel.sendLogout(it1, refreshToken) { successFlag ->
+                        if (successFlag == 1) {
+                            makeToast("로그아웃 되었습니다.")
+                            goToLoginActivity()
+                        }
                     }
                 }
             }
         }
         binding.tvLogout.setOnClickListener {
             UserSession.refreshToken?.let { refreshToken ->
-                viewModel.sendLogout(refreshToken) { successFlag ->
-                    if (successFlag == 1) {
-                        makeToast("로그아웃 되었습니다.")
-                        goToLoginActivity()
+                UserSession.accessToken?.let { it1 ->
+                    viewModel.sendLogout(it1, refreshToken) { successFlag ->
+                        if (successFlag == 1) {
+                            makeToast("로그아웃 되었습니다.")
+                            goToLoginActivity()
+                        }
                     }
                 }
             }

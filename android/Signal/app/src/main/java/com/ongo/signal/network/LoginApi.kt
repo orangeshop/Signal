@@ -32,7 +32,8 @@ interface LoginApi {
 
     @POST("/user/logout")
     suspend fun postLogoutRequest(
-        @Header("RefreshToken") token: String,
+        @Header("Authorization") accessToken: String,
+        @Header("RefreshToken") refreshToken: String,
     ): Response<Void>
 
     @POST("/user/create")
@@ -59,5 +60,8 @@ interface LoginApi {
         @Part file: MultipartBody.Part
     ): Response<ProfileImageResponse>
 
-
+    @POST("/oauth/naver")
+    suspend fun naverLogin(
+        @Query("token") token: String
+    ): Response<LoginResponse>
 }

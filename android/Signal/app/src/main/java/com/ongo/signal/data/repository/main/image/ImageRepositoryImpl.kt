@@ -14,17 +14,10 @@ class ImageRepositoryImpl @Inject constructor(
         return mainApi.getBoardImages()
     }
 
-    override suspend fun uploadImage(
-        boardId: Long,
-        image: List<MultipartBody.Part>
-    ): Response<ResponseBody> {
-        return mainApi.uploadImage(boardId, image)
-    }
-
     override suspend fun updateImage(
         boardId: Long,
         image: List<MultipartBody.Part>
-    ): Response<List<String>> {
+    ): Response<ResponseBody> {
         return mainApi.updateImage(boardId, image)
     }
 }

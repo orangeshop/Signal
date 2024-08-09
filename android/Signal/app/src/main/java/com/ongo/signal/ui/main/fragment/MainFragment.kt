@@ -40,6 +40,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     override fun init() {
         binding.fragment = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.boardViewModel = boardViewModel
         ttsHelper = TTSHelper(requireContext())
 
@@ -70,10 +71,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private fun observeBoards() {
         viewLifecycleOwner.lifecycleScope.launch {
             boardViewModel.items.collectLatest { newBoards ->
-                Timber.d("New boards received: $newBoards")
+                Timber.tag("boardLiked").d("New boards received: $newBoards")
                 val recyclerViewState = binding.rvPost.layoutManager?.onSaveInstanceState()
                 todayPostAdapter.submitData(newBoards)
-                Timber.d("RecyclerView state restored")
+                Timber.tag("boardLiked").d("RecyclerView state restored")
                 binding.rvPost.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
         }
@@ -172,7 +173,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                 Timber.d("Load state changed: $loadState")
                 if (loadState.source.refresh is LoadState.NotLoading &&
                     loadState.append.endOfPaginationReached &&
-                    todayPostAdapter.itemCount == 0) {
+                    todayPostAdapter.itemCount == 0
+                ) {
                     binding.rvPost.scrollToPosition(0)
                 }
             }

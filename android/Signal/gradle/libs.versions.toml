@@ -40,6 +40,8 @@ datastore = "1.1.1"
 #webrtc
 permisisonx = "1.6.1"
 webrtc = "1.0.5"
+#naver
+naver = "5.9.1"
 
 
 
@@ -113,6 +115,8 @@ datastore = { group = "androidx.datastore", name = "datastore-preferences", vers
 webrtc = { group = "com.mesibo.api", name = "webrtc", version.ref = "webrtc" }
 permissionx = { group = "com.guolindev.permissionx", name = "permissionx", version.ref = "permisisonx" }
 
+#naver
+naver = { group = "com.navercorp.nid", name = "oauth", version.ref = "naver" }
 
 [bundles]
 network = ["retrofit2", "okhttp3", "okhttp3-logging", "gson"]

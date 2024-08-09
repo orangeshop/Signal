@@ -254,7 +254,7 @@ class BoardViewModel @Inject constructor(
                             }
                             _items.emit(updatedPagingData)
                         }
-                        Timber.d("Board updated with new like count: $updatedBoard")
+                        Timber.tag("boardLiked").d("Board updated with new like count: $updatedBoard")
                     }
                 } else {
                     Timber.e("Failed to like board: ${response.errorBody()?.string()}")

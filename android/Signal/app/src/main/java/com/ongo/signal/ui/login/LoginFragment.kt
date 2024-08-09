@@ -3,6 +3,8 @@ package com.ongo.signal.ui.login
 import android.content.Intent
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -26,12 +28,29 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     override fun init() {
         checkLogin()
         initViews()
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+        binding.fragment = this
+        binding.executePendingBindings()
+        setupNaverLoginButton()
     }
 
     private fun checkLogin() {
         viewModel.checkLogin { signalUser, userLoginId, userPassword ->
             successLogin(signalUser, userLoginId, userPassword)
         }
+    }
+
+    fun setupNaverLoginButton() {
+        NaverLoginCallback.setOnSuccessCallback { accessToken, refreshToken ->
+            viewModel.loginWithNaver(accessToken)
+        }
+
+        NaverLoginCallback.setOnFailureCallback { errorMessage ->
+            makeToast(errorMessage)
+        }
+
+        binding.nolbLogin.setOAuthLogin(NaverLoginCallback)
     }
 
     private fun initViews() {
@@ -81,6 +100,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             UserSession.userName = signalUser.userName
             UserSession.accessToken = signalUser.accessToken
             UserSession.refreshToken = signalUser.refreshToken
+            UserSession.userType = signalUser.type
 
             Timber.d("로그인 완료 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
 
@@ -97,9 +117,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             videoRepository.login(
                 UserSession.userId.toString(), userPassword
             ) { isDone, reason ->
-                if(!isDone){
+                if (!isDone) {
                     makeToast(reason.toString())
-                } else{
+                } else {
                     val intent = Intent(requireContext(), MainActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()

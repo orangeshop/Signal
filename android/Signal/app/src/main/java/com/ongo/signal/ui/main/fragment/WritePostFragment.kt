@@ -21,15 +21,13 @@ import com.ongo.signal.data.model.main.TagDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.databinding.FragmentWritePostBinding
 import com.ongo.signal.ui.main.ProgressDialog
+import com.ongo.signal.ui.main.adapter.ImageAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import com.ongo.signal.ui.main.viewmodel.ImageViewModel
-import com.ongo.signal.ui.main.adapter.ImageAdapter
 import com.ongo.signal.util.ImagePickerHelper
 import com.ongo.signal.util.PopupMenuHelper
 import com.ongo.signal.util.STTHelper
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber

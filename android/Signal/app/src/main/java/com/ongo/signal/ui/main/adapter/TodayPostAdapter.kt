@@ -42,15 +42,25 @@ class TodayPostAdapter(
         }
     }
 
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        Timber.tag("boardLiked").d("View attached at position: ${holder.adapterPosition}")
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        Timber.tag("boardLiked").d("View detached at position: ${holder.adapterPosition}")
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder.itemViewType == VIEW_TYPE_HEADER) {
             (holder as HeaderViewHolder).bind(viewModel.hotBoards.value)
         } else {
             val item = getItem(position - 1)
             item?.let {
-                Timber.d("Binding item: $it at position: $position")
+                Timber.tag("boardLiked").d("Binding item: $it at position: $position")
                 (holder as ItemViewHolder).bind(it)
-            }
+            } ?: Timber.tag("boardLiked").e("Item at position $position is null")
         }
     }
 
@@ -62,22 +72,13 @@ class TodayPostAdapter(
         return super.getItemCount() + 1
     }
 
-    fun updateItem(board: BoardDTO) {
-        val position = snapshot().indexOfFirst { it?.id == board.id }
-        if (position != -1) {
-            notifyItemChanged(position)
-        }
-    }
-
     class DiffUtilCallback : DiffUtil.ItemCallback<BoardDTO>() {
         override fun areItemsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
             return p0.id == p1.id
         }
 
         override fun areContentsTheSame(p0: BoardDTO, p1: BoardDTO): Boolean {
-            val isSame = p0 == p1
-            Timber.d("Comparing contents: p0 = $p0, p1 = $p1, isSame = $isSame")
-            return isSame
+            return p0 == p1
         }
     }
 }

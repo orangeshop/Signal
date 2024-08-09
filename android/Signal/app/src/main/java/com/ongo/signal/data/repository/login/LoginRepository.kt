@@ -13,7 +13,7 @@ interface LoginRepository {
 
     suspend fun postFCMToken(userId: Long, token: String): Result<FCMTokenResponse?>
 
-    suspend fun deleteUser(token: String): Int
+    suspend fun deleteUser(accessToken: String, refreshToken: String): Int
 
     suspend fun postSignup(request: SignupRequest): Result<LoginResponse?>
 
@@ -28,4 +28,8 @@ interface LoginRepository {
         userId: Long,
         imageFile: MultipartBody.Part
     ): Result<ProfileImageResponse?>
+
+    suspend fun naverLogin(
+        token: String
+    ): Result<LoginResponse?>
 }

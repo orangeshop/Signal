@@ -116,7 +116,7 @@
                     app:layout_constraintStart_toStartOf="@id/iv_profile"
                     app:layout_constraintTop_toBottomOf="@id/tv_content"
                     app:spanCount="2"
-                    tools:itemCount="10"
+                    tools:itemCount="2"
                     tools:listitem="@layout/item_image_post" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -137,7 +137,7 @@
                     android:layout_marginTop="15dp"
                     android:onClick="@{() -> boardViewModel.onThumbClick(boardViewModel.selectedBoard, userSession.userId)}"
                     android:padding="4dp"
-                    android:src="@drawable/baseline_thumb_up_alt_white_24"
+                    android:src="@drawable/baseline_thumb_up_off_alt_24"
                     app:layout_constraintStart_toStartOf="@id/iv_profile"
                     app:layout_constraintTop_toBottomOf="@id/rv_chip" />
 
@@ -158,7 +158,7 @@
                     android:layout_height="32dp"
                     android:layout_marginStart="8dp"
                     android:padding="4dp"
-                    android:src="@drawable/baseline_chat_white_24"
+                    android:src="@drawable/baseline_chat_24"
                     app:layout_constraintStart_toEndOf="@id/tv_like"
                     app:layout_constraintTop_toTopOf="@id/iv_thumb" />
 
@@ -206,6 +206,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="@color/backgroundColor"
+            android:visibility="@{(boardViewModel.selectedBoard.type == 0) || (boardViewModel.selectedBoard.type == 1 &amp;&amp; userSession.userType.equals(`주니어`)) || (boardViewModel.selectedBoard.type == 2 &amp;&amp; userSession.userType.equals(`시니어`)) ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

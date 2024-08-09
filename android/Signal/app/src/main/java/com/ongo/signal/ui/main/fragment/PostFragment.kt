@@ -46,6 +46,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         setupAdapters()
         observeViewModelData()
         loadInitialData()
+        Timber.tag("selectedBoard").d("selectedBoard type: ${boardViewModel.selectedBoard.value?.type}")
+        Timber.tag("selectedBoard").d("userType: ${UserSession.userType}")
     }
 
     private fun setupAdapters() {
