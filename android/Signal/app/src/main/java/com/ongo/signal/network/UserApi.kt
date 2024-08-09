@@ -17,7 +17,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface LoginApi {
+interface UserApi {
 
     @POST("/user/login")
     suspend fun postLoginRequest(
@@ -32,7 +32,8 @@ interface LoginApi {
 
     @POST("/user/logout")
     suspend fun postLogoutRequest(
-        @Header("RefreshToken") token: String,
+        @Header("Authorization") accessToken: String,
+        @Header("RefreshToken") refreshToken: String,
     ): Response<Void>
 
     @POST("/user/create")
