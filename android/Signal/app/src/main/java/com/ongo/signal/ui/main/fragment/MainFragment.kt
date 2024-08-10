@@ -6,14 +6,18 @@ import android.os.Looper
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMainBinding
+import com.ongo.signal.ui.main.ProgressDialog
 import com.ongo.signal.ui.main.adapter.TodayPostAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import com.ongo.signal.ui.main.viewmodel.CommentViewModel
@@ -37,6 +41,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     private lateinit var sttHelper: STTHelper
     private lateinit var sttLauncher: ActivityResultLauncher<Intent>
     private val handler = Handler(Looper.getMainLooper())
+    private var shouldScrollToTop = true
 
     override fun init() {
         binding.fragment = this
@@ -70,12 +75,12 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     private fun observeBoards() {
         viewLifecycleOwner.lifecycleScope.launch {
-            boardViewModel.items.collectLatest { newBoards ->
-                Timber.tag("boardLiked").d("New boards received: $newBoards")
-                val recyclerViewState = binding.rvPost.layoutManager?.onSaveInstanceState()
-                todayPostAdapter.submitData(newBoards)
-                Timber.tag("boardLiked").d("RecyclerView state restored")
-                binding.rvPost.layoutManager?.onRestoreInstanceState(recyclerViewState)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                boardViewModel.pagingData.collectLatest { pagingFlow ->
+                    pagingFlow?.collectLatest { pagingData ->
+                        todayPostAdapter.submitData(pagingData)
+                    }
+                }
             }
         }
     }
@@ -97,6 +102,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     fun onChipClicked(tag: String) {
+        shouldScrollToTop = true
         if (boardViewModel.selectedTag.value == tag) {
             boardViewModel.clearBoards()
         } else {
@@ -126,6 +132,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         if (keyword.isEmpty()) {
             makeToast("검색어를 입력해주세요.")
         } else {
+            shouldScrollToTop = true
             boardViewModel.searchBoard(keyword)
             KeyboardUtils.hideKeyboard(binding.etSearch)
             boardViewModel.setSearchState(true)
@@ -136,6 +143,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
     }
 
     fun loadAllBoards() {
+        shouldScrollToTop = true
         boardViewModel.clearBoards()
         binding.etSearch.setText("")
         KeyboardUtils.hideKeyboard(binding.etSearch)
@@ -167,15 +175,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
             viewModel = boardViewModel,
             onTitleClicked = { position ->
                 onTitleClicked(position)
-            }
+            },
         ).apply {
             addLoadStateListener { loadState ->
-                Timber.d("Load state changed: $loadState")
-                if (loadState.source.refresh is LoadState.NotLoading &&
-                    loadState.append.endOfPaginationReached &&
-                    todayPostAdapter.itemCount == 0
-                ) {
+                if (loadState.source.refresh is LoadState.Loading) {
+                    showLoadingDialog()
+                } else if (loadState.source.refresh is LoadState.NotLoading && shouldScrollToTop) {
+                    hideLoadingDialog()
                     binding.rvPost.scrollToPosition(0)
+                    shouldScrollToTop = false
                 }
             }
         }
@@ -188,6 +196,16 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     fun gotoPost() {
         findNavController().navigate(R.id.action_mainFragment_to_postFragment)
+    }
+
+    private fun showLoadingDialog() {
+        val dialog = ProgressDialog()
+        dialog.show(parentFragmentManager, ProgressDialog.TAG)
+    }
+
+    private fun hideLoadingDialog() {
+        val dialog = parentFragmentManager.findFragmentByTag(ProgressDialog.TAG) as? DialogFragment
+        dialog?.dismiss()
     }
 
     override fun onDestroyView() {
