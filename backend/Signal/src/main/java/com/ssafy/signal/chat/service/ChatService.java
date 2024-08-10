@@ -72,7 +72,7 @@ public class ChatService {
 
             boolean is_from_sender = chatRoom.getFrom_id().getUserId() == user_id;
 
-            int cnt = messageRepository.countUnreadMessageByUserId(is_from_sender);
+            int cnt = messageRepository.countUnreadMessageByUserId(is_from_sender,chatRoom);
             chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name,from_url,to_url,cnt));
         }
         return chatRoomDtos;

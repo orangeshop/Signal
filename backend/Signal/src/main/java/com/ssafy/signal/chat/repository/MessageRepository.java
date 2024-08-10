@@ -1,5 +1,6 @@
 package com.ssafy.signal.chat.repository;
 
+import com.ssafy.signal.chat.domain.ChatRoomEntity;
 import com.ssafy.signal.chat.domain.MessageEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,6 +12,8 @@ public interface MessageRepository extends CrudRepository<MessageEntity, Long> {
 
     @Query("SELECT count(*) from MessageEntity m WHERE m.is_from_sender " +
             "!= :is_from_sender " +
-            "AND m.is_read = false ")
-    int countUnreadMessageByUserId(boolean is_from_sender);
+            "AND m.is_read = false " +
+            "AND m.chatRoomEntity = :chatRoomEntity"
+    )
+    int countUnreadMessageByUserId(boolean is_from_sender, ChatRoomEntity chatRoomEntity);
 }
