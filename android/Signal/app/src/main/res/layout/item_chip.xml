@@ -21,10 +21,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:clickable="false"
+            android:fontFamily="@font/bm"
             android:padding="4dp"
             android:text="@{tag.tag}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="asdfasdfas" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
