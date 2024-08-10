@@ -1,6 +1,8 @@
 package com.ongo.signal.config
 
 import android.app.Application
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.util.Utility
 import com.navercorp.nid.NaverIdLoginSDK
 import com.ongo.signal.R
 import dagger.hilt.android.HiltAndroidApp
@@ -21,5 +23,8 @@ class ApplicationClass : Application() {
             clientName = getString(R.string.app_name)
         )
 
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
+        var keyHash = Utility.getKeyHash(this)
+        Timber.tag("keyHash").d(keyHash)
     }
 }
