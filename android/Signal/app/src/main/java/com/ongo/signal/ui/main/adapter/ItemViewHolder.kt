@@ -36,8 +36,6 @@ class ItemViewHolder(
         binding.boardViewModel = viewModel
         binding.userSession = UserSession
 
-        Timber.tag("boardLiked").d("Binding item: $board at position: ${adapterPosition}")
-
         binding.root.setOnClickListener {
             onItemClicked(board)
         }
