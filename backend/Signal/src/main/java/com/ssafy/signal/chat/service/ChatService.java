@@ -70,7 +70,10 @@ public class ChatService {
                     .orElse(new FileEntity())
                     .getFileUrl();
 
-            chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name,from_url,to_url));
+            boolean is_from_sender = chatRoom.getFrom_id().getUserId() == user_id;
+
+            int cnt = messageRepository.countUnreadMessageByUserId(is_from_sender);
+            chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name,from_url,to_url,cnt));
         }
         return chatRoomDtos;
     }
