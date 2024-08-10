@@ -149,7 +149,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList) {
-                        chatViewModel.readMessage(chatViewModel.chatRoomNumber)
+                        chatViewModel.readMessage(chatViewModel.chatRoomNumber, UserSession.userId!!)
                         val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
 
                         for (message in chatList) {

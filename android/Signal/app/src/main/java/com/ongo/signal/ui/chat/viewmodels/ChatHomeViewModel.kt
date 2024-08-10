@@ -90,6 +90,7 @@ class ChatHomeViewModel @Inject constructor(
                 if (it.chatId == id) {
                     currentList.remove(it)
                     // 서버에서 채팅 삭제 로직 추가ㅁㄴ
+                    chatUseCases.deleteChatRoom(id)
                     _liveList.value = currentList
                 }
             }
@@ -103,9 +104,9 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    fun readMessage(id: Long) {
+    fun readMessage(id: Long, userId: Long) {
         viewModelScope.launch {
-            chatUseCases.readMessage(id)
+            chatUseCases.readMessage(id, userId)
         }
     }
 

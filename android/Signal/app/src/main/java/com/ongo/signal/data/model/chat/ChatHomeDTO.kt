@@ -26,6 +26,8 @@ data class ChatHomeDTO(
 
     @SerializedName("from_url") var fromUrl : String?,
 
-    @SerializedName("to_url") var toUrl : String?
+    @SerializedName("to_url") var toUrl : String?,
+
+    @SerializedName("cnt") var cnt : Int
 
 )

@@ -14,7 +14,9 @@ interface ChatRepository {
 
     suspend fun getAllMessages(chat_id: Long): Response<MutableList<ChatHomeChildDTO>>
 
-    suspend fun readMessage(chat_id: Long)
+    suspend fun readMessage(chat_id: Long, userId : Long)
 
     suspend fun getUserProfile(chat_id: Long): Response<UserProfileResponse>
+
+    suspend fun deleteChatRoom(chat_id: Long)
 }
