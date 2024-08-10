@@ -9,7 +9,6 @@ import com.ongo.signal.data.model.review.ReviewRequestDTO
 import com.ongo.signal.data.model.review.ReviewResponseItemDTO
 import com.ongo.signal.data.model.review.UserProfileResponse
 import com.ongo.signal.data.repository.match.MatchRepository
-import com.ongo.signal.data.repository.mypage.MyPageRepository
 import com.ongo.signal.data.repository.review.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -23,7 +22,6 @@ import javax.inject.Inject
 class ReviewViewModel @Inject constructor(
     private val matchRepository: MatchRepository,
     private val reviewRepository: ReviewRepository,
-    private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
 
     private val _reviewList = MutableStateFlow<List<ReviewResponseItemDTO>>(emptyList())
