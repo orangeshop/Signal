@@ -52,7 +52,7 @@ public class ChatController {
     }
 
     @PatchMapping("/message/read")
-    public void letMessageRead(@RequestParam("chat_id") long chat_id) throws Exception {
-        chatService.LetMessageRead(chat_id);
+    public void letMessageRead(@RequestParam("chat_id") long chat_id,@RequestParam("user_id") long user_id) throws Exception {
+        chatService.LetMessageRead(chat_id,user_id);
     }
 }
