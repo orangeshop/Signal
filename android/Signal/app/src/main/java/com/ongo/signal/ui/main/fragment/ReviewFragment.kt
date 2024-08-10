@@ -12,7 +12,7 @@ import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentReviewBinding
-import com.ongo.signal.ui.main.ReviewViewModel
+import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import dagger.hilt.android.AndroidEntryPoint
