@@ -42,6 +42,8 @@ permisisonx = "1.6.1"
 webrtc = "1.0.5"
 #naver
 naver = "5.9.1"
+#kakao
+kakao = "2.20.3"
 
 
 
@@ -117,6 +119,9 @@ permissionx = { group = "com.guolindev.permissionx", name = "permissionx", versi
 
 #naver
 naver = { group = "com.navercorp.nid", name = "oauth", version.ref = "naver" }
+
+#kakao
+kakao = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" }
 
 [bundles]
 network = ["retrofit2", "okhttp3", "okhttp3-logging", "gson"]

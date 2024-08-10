@@ -1,4 +1,4 @@
-package com.ongo.signal.ui.main
+package com.ongo.signal.ui.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
