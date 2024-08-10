@@ -73,7 +73,7 @@ class ChatUseCasesImpl @Inject constructor(
     }
 
     override suspend fun readMessage(id: Long) {
-        chatRepository.readMessage(id)
+//        chatRepository.readMessage(id)
     }
 
 
@@ -91,6 +91,10 @@ class ChatUseCasesImpl @Inject constructor(
 
     override suspend fun deleteChat(id: Long) {
        chatRoomRepositoryImpl.deleteChat(id)
+    }
+
+    override suspend fun loadReadMessage(id: Long): Int {
+        return chatRoomRepositoryImpl.loadReadMessage(id)
     }
 
     override suspend fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit) {

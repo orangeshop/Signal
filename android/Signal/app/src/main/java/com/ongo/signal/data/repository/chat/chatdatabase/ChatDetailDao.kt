@@ -21,4 +21,7 @@ interface ChatDetailDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertListMessage(chatHomeChildDtos: List<ChatHomeChildDTO>)
+
+    @Query("select count(*) from chat_detail_table where chatId = :id and isRead = 0")
+    suspend fun loadReadMessage(id : Long) : Int
 }

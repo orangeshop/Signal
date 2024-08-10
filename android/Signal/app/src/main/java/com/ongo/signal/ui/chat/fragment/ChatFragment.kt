@@ -44,7 +44,11 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(R.layout.fragment_chat) {
             lifecycleScope.launch {
                 while (check) {
                     chatViewModel.loadChats()
-
+//                    if(chatViewModel.liveList.value != null) {
+//                        for (idx in chatViewModel.liveList.value!!) {
+//                            chatViewModel.loadReadMessage(idx.chatId)
+//                        }
+//                    }
                     delay(2000)
                 }
             }
