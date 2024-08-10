@@ -34,6 +34,7 @@ class ItemViewHolder(
     fun bind(board: BoardDTO) {
         binding.board = board
         binding.boardViewModel = viewModel
+        binding.userSession = UserSession
 
         Timber.tag("boardLiked").d("Binding item: $board at position: ${adapterPosition}")
 
@@ -46,13 +47,7 @@ class ItemViewHolder(
         }
 
         binding.ivThumb.setOnClickListener {
-            Timber.d("Thumb clicked for board: ${board.id}")
-            UserSession.userId?.let { it1 ->
-                viewModel.onThumbClick(board, it1)
-                binding.tvLike.text = viewModel.selectedBoard.value?.liked.toString()
-                Timber.tag("boardLiked").d("board: ${board.liked}")
-                Timber.tag("boardLiked").d("layout position: $layoutPosition")
-            }
+            viewModel.onThumbClick(board, UserSession.userId ?: 0, ::bind)
         }
 
         binding.view.setOnClickListener {
