@@ -22,5 +22,10 @@ data class ChatHomeDTO(
 
     @SerializedName("sender_type") val senderType: String,
 
-    @SerializedName("send_at") var sendAt: Date // 직렬화 시 JSON 필드명
+    @SerializedName("send_at") var sendAt: Date, // 직렬화 시 JSON 필드명
+
+    @SerializedName("from_url") var fromUrl : String?,
+
+    @SerializedName("to_url") var toUrl : String?
+
 )

@@ -3,6 +3,7 @@ package com.ongo.signal.data.repository.chat
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
+import com.ongo.signal.data.model.review.UserProfileResponse
 
 interface ChatUseCases {
     suspend fun loadChats(id: Long): List<ChatHomeDTO>
@@ -11,6 +12,8 @@ interface ChatUseCases {
     suspend fun saveDetailList(message: ChatHomeChildDTO, id: Long)
     suspend fun readMessage(id: Long)
     fun timeSetting(): String
+
+    suspend fun getUserProfile(id: Long) : UserProfileResponse
 
     suspend fun deleteChat(id: Long)
 

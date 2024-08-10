@@ -1,6 +1,7 @@
 package com.ongo.signal.ui.my
 
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -43,23 +44,42 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
                         //TODO place홀더 로딩 이미지 찾아보기
                         binding.ivProfile.visibility = View.VISIBLE
                         binding.pbLoading.visibility = View.GONE
-                        Glide.with(requireActivity())
-                            .load(myProfileData.profileImage)
-                            .apply(RequestOptions.bitmapTransform(CircleCrop()))
-                            .into(ivProfile)
+                        if (myProfileData.profileImage.isBlank()) {
+                            ivProfile.setImageResource(R.drawable.basic_profile)
+                        } else {
+                            Glide.with(requireActivity())
+                                .load(myProfileData.profileImage)
+                                .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                                .into(ivProfile)
+                        }
                     }
 
                     tvUsername.text = myProfileData.name
+                    Log.d("asdasd", "getMyProfile: ${myProfileData}")
+                    myPageTier.setImageResource(tierSetting(myProfileData.score))
                 }
             }
+        }
+    }
+
+    private fun tierSetting(count: Int): Int {
+        return when {
+            count in 1..5 -> R.drawable.silver
+            count in 6..10 -> R.drawable.gold
+            count in 11..15 -> R.drawable.platinum
+            count >= 16 -> R.drawable.king
+            else -> R.drawable.bronze
         }
     }
 
     private fun initViews() {
         binding.ivLogout.setOnClickListener {
             UserSession.refreshToken?.let { refreshToken ->
-                UserSession.accessToken?.let { it1 ->
-                    viewModel.sendLogout(it1, refreshToken) { successFlag ->
+                UserSession.accessToken?.let { accessToken ->
+                    viewModel.sendLogout(
+                        accessToken = accessToken,
+                        refreshToken = refreshToken
+                    ) { successFlag ->
                         if (successFlag == 1) {
                             makeToast("로그아웃 되었습니다.")
                             goToLoginActivity()
@@ -70,8 +90,11 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
         }
         binding.tvLogout.setOnClickListener {
             UserSession.refreshToken?.let { refreshToken ->
-                UserSession.accessToken?.let { it1 ->
-                    viewModel.sendLogout(it1, refreshToken) { successFlag ->
+                UserSession.accessToken?.let { accessToken ->
+                    viewModel.sendLogout(
+                        accessToken = accessToken,
+                        refreshToken = refreshToken
+                    ) { successFlag ->
                         if (successFlag == 1) {
                             makeToast("로그아웃 되었습니다.")
                             goToLoginActivity()
@@ -81,6 +104,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
             }
         }
     }
+
 
     fun goToProfileEdit() {
         parentFragmentManager.commit {

@@ -1,13 +1,13 @@
 package com.ongo.signal.ui.my
 
-import android.service.autofill.UserData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.my.MyProfileData
-import com.ongo.signal.data.repository.login.LoginRepository
+import com.ongo.signal.data.repository.auth.AuthRepository
+import com.ongo.signal.data.repository.user.UserRepository
 import com.ongo.signal.data.repository.mypage.MyPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -17,9 +17,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository,
     private val myPageRepository: MyPageRepository,
     private val dataStoreClass: DataStoreClass,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     lateinit var userData: MyProfileData
@@ -36,8 +37,8 @@ class MyPageViewModel @Inject constructor(
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
             UserSession.userId?.let { userId ->
-                loginRepository.postFCMToken(userId, "").onSuccess {
-                    if (loginRepository.deleteUser(
+                userRepository.postFCMToken(userId, "").onSuccess {
+                    if (authRepository.deleteUser(
                             accessToken = "Bearer $accessToken",
                             refreshToken = "Bearer $refreshToken"
                         ) == 1
@@ -49,59 +50,60 @@ class MyPageViewModel @Inject constructor(
                 }
             }
         }
-    }
 
-    fun getMySignal(
-        userId: Long,
-        onSuccess: (List<BoardDTO>) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            runCatching {
-                myPageRepository.getMySignal(userId)
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    response.body()?.let { onSuccess(it) }
-                    Timber.d(response.body().toString())
-                } else {
-                    onError(Throwable("Failed to get signals"))
+
+        fun getMySignal(
+            userId: Long,
+            onSuccess: (List<BoardDTO>) -> Unit,
+            onError: (Throwable) -> Unit
+        ) {
+            viewModelScope.launch(coroutineExceptionHandler) {
+                runCatching {
+                    myPageRepository.getMySignal(userId)
+                }.onSuccess { response ->
+                    if (response.isSuccessful) {
+                        response.body()?.let { onSuccess(it) }
+                        Timber.d(response.body().toString())
+                    } else {
+                        onError(Throwable("Failed to get signals"))
+                    }
+                }.onFailure { exception ->
+                    onError(exception)
                 }
-            }.onFailure { exception ->
-                onError(exception)
             }
         }
-    }
 
-    fun getMyCommentSignal(
-        userId: Long,
-        onSuccess: (List<BoardDTO>) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            runCatching {
-                myPageRepository.getMyCommentSignal(userId)
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    response.body()?.let { onSuccess(it) }
-                    Timber.d(response.body().toString())
-                } else {
-                    onError(Throwable("Failed to get comment signals"))
+        fun getMyCommentSignal(
+            userId: Long,
+            onSuccess: (List<BoardDTO>) -> Unit,
+            onError: (Throwable) -> Unit
+        ) {
+            viewModelScope.launch(coroutineExceptionHandler) {
+                runCatching {
+                    myPageRepository.getMyCommentSignal(userId)
+                }.onSuccess { response ->
+                    if (response.isSuccessful) {
+                        response.body()?.let { onSuccess(it) }
+                        Timber.d(response.body().toString())
+                    } else {
+                        onError(Throwable("Failed to get comment signals"))
+                    }
+                }.onFailure { exception ->
+                    onError(exception)
                 }
-            }.onFailure { exception ->
-                onError(exception)
             }
         }
-    }
 
-    fun getMyProfile(
-        token: String,
-        onSuccess: (MyProfileData) -> Unit
-    ) {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            myPageRepository.getMyProfile("Bearer $token").onSuccess { myProfileResponse ->
-                myProfileResponse?.let {
-                    userData = myProfileResponse.myProfileData
-                    onSuccess(userData)
+        fun getMyProfile(
+            token: String,
+            onSuccess: (MyProfileData) -> Unit
+        ) {
+            viewModelScope.launch(coroutineExceptionHandler) {
+                myPageRepository.getMyProfile("Bearer $token").onSuccess { myProfileResponse ->
+                    myProfileResponse?.let {
+                        userData = myProfileResponse.myProfileData
+                        onSuccess(userData)
+                    }
                 }
             }
         }

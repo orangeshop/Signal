@@ -44,7 +44,6 @@ class MatchRepositoryImpl @Inject constructor(
         fromId: Long,
         toId: Long,
     ): Result<MatchProposeResponse?> {
-
         val req = matchApi.postProposeMatch(fromId, toId)
         return if (req.isSuccessful) {
             Result.success(req.body())

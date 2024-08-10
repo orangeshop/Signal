@@ -1,16 +1,16 @@
 package com.ongo.signal.ui.chat.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
+import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.R
@@ -69,7 +69,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         videoServiceRepository.startService(UserSession.userId.toString())
     }
 
-    @SuppressLint("ClickableViewAccessibility", "NewApi")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onResume() {
         super.onResume()
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
@@ -79,6 +79,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         binding.apply {
 
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
+            binding.chatDetailTitleTv.text = chatViewModel.chatRoomTitle
+
+
 
             lifecycleScope.launch {
                 chatDetailAdapter = ChatDetailAdapter(
@@ -122,7 +125,19 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         result
                     },
-                    chatViewModel.chatRoomFromID
+                    chatViewModel.chatRoomFromID,
+                    userImageUrl = {
+                        chatViewModel.chatRoomUrl
+                    },
+                    chatItemClick = {
+//                        val bundle = Bundle()
+
+//                        bundle.putSerializable("item", true)
+
+//                        findNavController().navigate(R.id.action_chatDetailFragment_to_reviewFragment, bundle)
+
+//                        findNavController().navigate(directions = ChatDetailFragmentDirections.actionChatDetailFragmentToReviewFragment(false))
+                    }
                 )
             }
 
@@ -139,15 +154,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             message.isRead = true
                         }
 
-                        if(chatList.size == 0){
+                        if (chatList.size == 0) {
                             progressBar.visibility = View.GONE
-                        }
-                        else if (chatList.size >= 1) {
+                        } else if (chatList.size >= 1) {
                             progressBar.progress = chatList.size
                             chatViewModel.todayTitleSetting()
                         }
 
-                        if (progressBar.progress == chatList.size && chatList.size != 0) {
+                        if (progressBar.progress <= chatList.size && chatList.size != 0) {
                             progressBar.visibility = View.GONE
                         }
 
@@ -170,13 +184,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                                     1
                                 )
                             ) {
-                                Log.d(TAG, "onResume: 1")
+
                                 scrollPositionBottom()
                             }
                         }
 
 
-                        if (chatList.isNotEmpty() && check) {
+//                        if (chatList.isNotEmpty() && check) {
+                        if (chatList.isNotEmpty()) {
                             lifecycleScope.launch {
                                 chatDetailRv.scrollToPosition(chatList.lastIndex)
                             }
@@ -191,12 +206,12 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             var list_num = 200L
-            
+
             chatDetailRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if(!chatDetailRv.canScrollVertically(-1)){
+                    if (!chatDetailRv.canScrollVertically(-1)) {
                         lifecycleScope.launch {
                             new_loading = true
                             chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, list_num)
@@ -313,13 +328,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     private fun playWebRtc() {
         getCameraAndMicPermission {
-            videoRepository.sendConnectionRequest("${chatViewModel.chatRoomToID}", true) {
+            videoRepository.sendConnectionRequest("${chatViewModel.videoToID}", true) {
                 if (it) {
                     Timber.d("성공적으로 영통 보냄")
                     startActivity(Intent(requireContext(), CallActivity::class.java).apply {
-                        putExtra("target", "25")
+                        putExtra("target", "${chatViewModel.videoToID}")
                         putExtra("isVideoCall", true)
                         putExtra("isCaller", true)
+                        putExtra("targetName", chatViewModel.videoToName)
                     })
 
                 }
@@ -332,7 +348,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             binding.apply {
                 val isVideoCall = model.type == DataModelType.StartVideoCall
                 val isVideoCallText = if (isVideoCall) "Video" else "Audio"
-                incomingCallTitleTv.text = "${model.sender} 님이 $isVideoCallText 영상통화를 요청합니다."
+                incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
                 incomingCallLayout.isVisible = true
                 acceptButton.setOnClickListener {
                     getCameraAndMicPermission {
@@ -340,6 +356,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         //create an intent to go to video call activity
                         startActivity(Intent(requireContext(), CallActivity::class.java).apply {
                             putExtra("target", model.sender)
+                            putExtra("targetName", chatViewModel.videoToName)
                             putExtra("isVideoCall", isVideoCall)
                             putExtra("isCaller", false)
                         })
@@ -366,6 +383,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             )
         )
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

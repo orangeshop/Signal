@@ -27,6 +27,7 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
     private var target: String? = null
     private var isVideoCall: Boolean = true
     private var isCaller: Boolean = true
+    private var targetName: String? = null
 
     private var isMicrophoneMuted = false
     private var isCameraMuted = false
@@ -67,14 +68,14 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
 
         isVideoCall = intent.getBooleanExtra("isVideoCall", true)
         isCaller = intent.getBooleanExtra("isCaller", true)
+        targetName = intent.getStringExtra("targetName")
 
         binding.apply {
-            callTitleTv.text = "In call with $target"
+            callTitleTv.text = "${targetName}"
             CoroutineScope(Dispatchers.IO).launch {
                 for (i in 0..3600) {
                     delay(1000)
                     withContext(Dispatchers.Main) {
-                        //convert this int to human readable time
                         callTimerTv.text = i.convertToHumanTime()
                     }
                 }
@@ -87,7 +88,6 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
             }
             VideoService.remoteSurfaceView = remoteView
             VideoService.localSurfaceView = localView
-            Timber.d("팅기기전 자원 확인 ${isVideoCall} ${isCaller} ${target}")
             serviceRepository.setupViews(isVideoCall, isCaller, target!!)
 
             endCallButton.setOnClickListener {
@@ -116,11 +116,11 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
         binding.apply {
             toggleMicrophoneButton.setOnClickListener {
                 if (!isMicrophoneMuted) {
+                    toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_off)
                     serviceRepository.toggleAudio(true)
-                    toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_on)
                 } else {
                     serviceRepository.toggleAudio(false)
-                    toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_off)
+                    toggleMicrophoneButton.setImageResource(R.drawable.ic_mic_on)
                 }
                 isMicrophoneMuted = !isMicrophoneMuted
             }
@@ -138,10 +138,10 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
             toggleCameraButton.setOnClickListener {
                 if (!isCameraMuted) {
                     serviceRepository.toggleVideo(true)
-                    toggleCameraButton.setImageResource(R.drawable.ic_camera_on)
+                    toggleCameraButton.setImageResource(R.drawable.ic_camera_off)
                 } else {
                     serviceRepository.toggleVideo(false)
-                    toggleCameraButton.setImageResource(R.drawable.ic_camera_off)
+                    toggleCameraButton.setImageResource(R.drawable.ic_camera_on)
                 }
 
                 isCameraMuted = !isCameraMuted

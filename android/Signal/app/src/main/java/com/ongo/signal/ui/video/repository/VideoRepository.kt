@@ -125,9 +125,7 @@ class VideoRepository @Inject constructor(
             override fun onConnectionChange(newState: PeerConnection.PeerConnectionState?) {
                 super.onConnectionChange(newState)
                 if (newState == PeerConnection.PeerConnectionState.CONNECTED) {
-                    // 1. change my status to in call
                     changeMyStatus(UserStatus.IN_CALL)
-                    // 2. clear latest event inside my user section in firebase database
                     firebaseClient.clearLatestEvent()
                 }
             }

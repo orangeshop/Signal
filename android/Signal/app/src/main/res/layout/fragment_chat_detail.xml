@@ -12,6 +12,26 @@
         android:layout_height="match_parent"
         tools:context=".ui.chat.fragment.ChatDetailFragment">
 
+        <LinearLayout
+            android:id="@+id/chat_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/backgroundColor"
+        >
+            <TextView
+                android:id="@+id/chat_detail_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="홍길동"
+                android:layout_gravity="center"
+            />
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_detail_rv"
             android:layout_width="0dp"
@@ -21,7 +41,7 @@
             app:layout_constraintBottom_toTopOf="@id/chat_detail_ll"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/chat_detail_title" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -83,7 +103,7 @@
                 android:id="@+id/chat_detail_add"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/baseline_add_mint_24" />
+                android:src="@drawable/ic_video_call" />
 
             <EditText
                 android:id="@+id/et_search"
@@ -108,6 +128,7 @@
             android:id="@+id/incomingCallLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/backgroundColor"
             android:paddingBottom="10dp"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
@@ -117,9 +138,11 @@
                 android:id="@+id/incomingCallTitleTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Some one is calling you"
+                android:textColor="#ECECEC"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -130,9 +153,10 @@
                 android:id="@+id/acceptButton"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
-                android:background="@color/light_green"
-                android:text="Accept"
-                android:textColor="@color/white"
+                android:background="@drawable/background_cancel_button_ripple"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/accept"
+                android:textColor="@color/mint"
                 app:layout_constraintEnd_toStartOf="@id/declineButton"
                 app:layout_constraintStart_toStartOf="@id/incomingCallTitleTv"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />
@@ -141,12 +165,22 @@
                 android:id="@+id/declineButton"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
-                android:background="@color/red"
-                android:text="Decline"
-                android:textColor="@color/white"
+                android:background="@drawable/background_deny_button_ripple"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/deny"
+                android:textColor="@color/red"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/acceptButton"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/acceptButton" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
