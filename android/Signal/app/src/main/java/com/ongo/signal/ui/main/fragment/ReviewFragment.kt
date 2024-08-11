@@ -1,11 +1,10 @@
 package com.ongo.signal.ui.main.fragment
 
 import android.util.Log
-import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -18,7 +17,6 @@ import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
-import com.ongo.signal.ui.my.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,31 +33,27 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         setUpAdapter()
         binding.fragment = this
         binding.reviewViewModel = reviewViewModel
+        val safeArgs: ReviewFragmentArgs by navArgs()
 
-        if (arguments?.getBoolean("item") == true) {
+        var writerId = boardViewModel.selectedBoard.value?.userId
+        var writerName = boardViewModel.selectedBoard.value?.writer
+
+        if(safeArgs.flagByRoot == true){
+
             binding.btnChat.isEnabled = false
+            writerId = safeArgs.flagByRootId
+            writerName = safeArgs.flagByRootWriter
         }
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
         //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
-        val writerId = boardViewModel.selectedBoard.value?.userId
-        val writerName = boardViewModel.selectedBoard.value?.writer
+
         writerId?.let {
             reviewViewModel.checkReviewPermission(writerId)
             getMyProfile(writerId)
         }
 
         loadReviews()
-    }
-
-    private fun tierSetting(count: Int): Int {
-        return when {
-            count in 1..5 -> R.drawable.silver
-            count in 6..10 -> R.drawable.gold
-            count in 11..15 -> R.drawable.platinum
-            count >= 16 -> R.drawable.king
-            else -> R.drawable.bronze
-        }
     }
 
     fun makeChat() {
