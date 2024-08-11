@@ -11,6 +11,8 @@ import lombok.Data;
 public class ReviewDto {
     private long review_id;
     private long user_id;
+    private int socre;
+    private String type;
     private String content;
     private String name;
 

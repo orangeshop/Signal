@@ -18,10 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -149,9 +146,8 @@ public class BoardService {
         boardRepository.save(boardEntity);
     }
 
-    // 좋아요 토글 서비스 메서드에서 사용되는 예시
     @Transactional
-    public Long toggleLike(Long boardId, Long userId) {
+    public Map<String, Object> toggleLike(Long boardId, Long userId) {
         // BoardEntity 조회
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
@@ -163,21 +159,37 @@ public class BoardService {
         // 기존 좋아요 레코드 조회
         Optional<LikeEntity> existingLike = likeRepository.findByUserAndBoardEntity(user, boardEntity);
 
+        boolean isLiked;
         if (existingLike.isPresent()) {
-            // 좋아요가 이미 존재하면 삭제
-            likeRepository.delete(existingLike.get());
-            boardEntity.decrementLiked(); // 좋아요 수 감소
+            LikeEntity likeEntity = existingLike.get();
+            if (likeEntity.isLiked()) {
+                // 이미 좋아요가 눌려있는 상태 -> 좋아요 취소
+                likeEntity.unlike();
+                boardEntity.decrementLiked(); // 좋아요 수 감소
+                isLiked = false; // 좋아요 상태를 false로 설정
+            } else {
+                // 좋아요가 눌리지 않은 상태 -> 좋아요 활성화
+                likeEntity.like();
+                boardEntity.incrementLiked(); // 좋아요 수 증가
+                isLiked = true; // 좋아요 상태를 true로 설정
+            }
+            likeRepository.save(likeEntity);
         } else {
             // 좋아요가 존재하지 않으면 새로 추가
             LikeEntity newLike = new LikeEntity(user, boardEntity);
             likeRepository.save(newLike);
             boardEntity.incrementLiked(); // 좋아요 수 증가
+            isLiked = true; // 새로 추가된 경우 좋아요 상태는 true
         }
 
         // 게시글의 좋아요 수를 갱신
         boardRepository.save(boardEntity);
-        return boardEntity.getLiked(); // 최신 좋아요 수 반환
-    }
 
+        // 좋아요 수와 상태를 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("likedCount", boardEntity.getLiked());
+        response.put("isLiked", isLiked);
+        return response;
+    }
 
 }

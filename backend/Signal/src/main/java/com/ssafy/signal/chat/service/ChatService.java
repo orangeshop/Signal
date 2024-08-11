@@ -70,7 +70,10 @@ public class ChatService {
                     .orElse(new FileEntity())
                     .getFileUrl();
 
-            chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name,from_url,to_url));
+            boolean is_from_sender = chatRoom.getFrom_id().getUserId() == user_id;
+
+            int cnt = messageRepository.countUnreadMessageByUserId(is_from_sender,chatRoom);
+            chatRoomDtos.add(chatRoom.asChatRoomDto(from_name,to_name,from_url,to_url,cnt));
         }
         return chatRoomDtos;
     }
@@ -109,13 +112,17 @@ public class ChatService {
     }
 
     @Transactional
-    public void LetMessageRead(long chat_id)
+    public void LetMessageRead(long chat_id,long user_id)
     {
+        ChatRoomEntity chatRoom = getChatRoomById(chat_id);
+        boolean isFrom = chatRoom.getFrom_id().getUserId() == user_id;
+
         List<MessageEntity> messages = messageRepository.findByChatRoomEntity_ChatId(chat_id);
         if(messages == null || messages.isEmpty()) return;
 
         for(MessageEntity message : messages)
         {
+            if(message.asMessageDto().getIs_from_sender() == isFrom ) continue;
             message.setIs_read(true);
             messageRepository.save(message);
         }
