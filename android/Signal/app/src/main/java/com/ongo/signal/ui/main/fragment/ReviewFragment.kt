@@ -17,6 +17,7 @@ import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.util.tierSetting
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -97,6 +98,8 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             }
 
             binding.tvUsername.text = userProfileResponse.name
+            val tierImageRes = tierSetting(userProfileResponse.score)
+            binding.ivUserTier.setImageResource(tierImageRes)
         }
     }
 
