@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="누구에게 답변을 받고 싶나요?"
-            android:textColor="@color/mint"
+            android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/cg_chip"
             app:layout_constraintStart_toStartOf="@id/et_title" />

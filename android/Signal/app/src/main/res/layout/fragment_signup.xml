@@ -100,10 +100,9 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/background_cancel_button_ripple"
-                        android:fontFamily="@font/inter_light"
                         android:padding="12dp"
                         android:text="중복 확인"
-                        android:textColor="@color/mint"
+                        android:textColor="@color/white"
                         android:textSize="20sp" />
 
                 </LinearLayout>

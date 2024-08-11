@@ -17,7 +17,7 @@
         android:layout_marginTop="16dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        app:strokeColor="@color/mint">
+        app:strokeColor="@color/purple">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -92,7 +92,7 @@
                 android:id="@+id/iv_thumb"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="8dp"
                 android:padding="4dp"
                 android:src="@drawable/baseline_thumb_up_off_alt_24"
                 app:layout_constraintStart_toStartOf="@id/mcd_image"
