@@ -114,6 +114,16 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                             binding.etContent.setText(recognizedText)
                             boardViewModel.setContent(recognizedText)
                         }
+
+//                        R.id.iv_title_mic -> {
+//                            binding.etTitle.append(" $recognizedText")
+//                            boardViewModel.setTitle(binding.etTitle.text.toString())
+//                        }
+//
+//                        R.id.iv_content_mic -> {
+//                            binding.etContent.append(" $recognizedText")
+//                            boardViewModel.setContent(binding.etContent.text.toString())
+//                        }
                     }
                 }
             }
@@ -165,6 +175,17 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                             uriItems.clear()
                             urlItems.clear()
                             urlItems.addAll(imageUrls)
+                        }
+                    }
+
+                    val tags = it.tags
+                    if (!tags.isNullOrEmpty()) {
+                        val tag = tags.first().tag
+                        val position = (binding.spinner.adapter as ArrayAdapter<String>).getPosition(tag)
+                        if (position >= 0) {
+                            binding.spinner.setSelection(position)
+                            selectedTag = tag
+                            selectedTagId = tags.first().tagId
                         }
                     }
                 }
