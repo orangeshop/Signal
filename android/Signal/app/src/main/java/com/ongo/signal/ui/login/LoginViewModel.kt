@@ -121,4 +121,20 @@ class LoginViewModel @Inject constructor(
             dataStoreClass.setRefreshToken(refreshToken)
         }
     }
+
+    fun handleKakaoLogin(accessToken: String, onResult: (Boolean, LoginResponse?) -> Unit) {
+        viewModelScope.launch {
+            val result = authRepository.kakaoLogin(accessToken)
+            result.fold(
+                onSuccess = { loginResponse ->
+                    Timber.d("카카오 로그인 성공: $loginResponse")
+                    onResult(true, loginResponse)
+                },
+                onFailure = { error ->
+                    Timber.e(error, "카카오 로그인 실패")
+                    onResult(false, null)
+                }
+            )
+        }
+    }
 }

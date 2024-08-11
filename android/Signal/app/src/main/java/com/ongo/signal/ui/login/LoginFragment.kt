@@ -3,8 +3,8 @@ package com.ongo.signal.ui.login
 import android.content.Intent
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
@@ -56,7 +56,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                         refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
                     )
                     Timber.tag("naverLogin").d("success")
-                    successLogin(signalUser, loginResponse.userInfo.loginId, "")
+                    Timber.tag("userInfo").d("loginResponse: $loginResponse")
+                    successLogin(
+                        signalUser,
+                        loginResponse.userInfo.loginId,
+                        loginResponse.userInfo.password
+                    )
                 } else {
                     makeToast("네이버 로그인 실패")
                 }
@@ -66,10 +71,77 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         NaverLoginCallback.setOnFailureCallback { errorMessage ->
             makeToast(errorMessage)
         }
-
-        binding.nolbLogin.setOAuthLogin(NaverLoginCallback)
     }
 
+    fun onNaverLoginClicked() {
+        NaverIdLoginSDK.authenticate(requireContext(), NaverLoginCallback)
+    }
+
+    fun kakaoLoginClicked() {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
+            UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
+                if (error != null) {
+                    Timber.e("카카오톡으로 로그인 실패: $error")
+                } else if (token != null) {
+                    Timber.d("카카오톡으로 로그인 성공, 토큰: ${token.accessToken}")
+                    viewModel.handleKakaoLogin(token.accessToken) { isSuccess, loginResponse ->
+                        if (isSuccess && loginResponse != null) {
+                            val signalUser = SignalUser(
+                                loginId = loginResponse.userInfo.loginId,
+                                accessToken = loginResponse.accessToken,
+                                accessTokenExpireTime = loginResponse.accessTokenExpireTime,
+                                type = loginResponse.userInfo.type,
+                                userId = loginResponse.userInfo.userId,
+                                userName = loginResponse.userInfo.name,
+                                refreshToken = loginResponse.refreshToken,
+                                refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
+                            )
+                            Timber.tag("kakaoLogin").d("success")
+                            Timber.tag("userInfo").d("loginResponse: $loginResponse")
+                            successLogin(
+                                signalUser,
+                                loginResponse.userInfo.loginId,
+                                loginResponse.userInfo.password
+                            )
+                        } else {
+                            makeToast("카카오 로그인 실패")
+                        }
+                    }
+                }
+            }
+        } else {
+            UserApiClient.instance.loginWithKakaoAccount(requireContext()) { token, error ->
+                if (error != null) {
+                    Timber.e("카카오계정으로 로그인 실패: $error")
+                } else if (token != null) {
+                    Timber.d("카카오 계정으로 로그인 성공, 토큰: ${token.accessToken}")
+                    viewModel.handleKakaoLogin(token.accessToken) { isSuccess, loginResponse ->
+                        if (isSuccess && loginResponse != null) {
+                            val signalUser = SignalUser(
+                                loginId = loginResponse.userInfo.loginId,
+                                accessToken = loginResponse.accessToken,
+                                accessTokenExpireTime = loginResponse.accessTokenExpireTime,
+                                type = loginResponse.userInfo.type,
+                                userId = loginResponse.userInfo.userId,
+                                userName = loginResponse.userInfo.name,
+                                refreshToken = loginResponse.refreshToken,
+                                refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
+                            )
+                            Timber.tag("kakao").d("success")
+                            Timber.tag("userInfo").d("loginResponse: $loginResponse")
+                            successLogin(
+                                signalUser,
+                                loginResponse.userInfo.loginId,
+                                loginResponse.userInfo.password
+                            )
+                        } else {
+                            makeToast("카카오 로그인 실패")
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private fun initViews() {
         binding.btnSignup.setOnClickListener {
