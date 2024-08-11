@@ -4,7 +4,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -43,6 +45,8 @@ class VideoService : Service(), VideoRepository.Listener {
     private lateinit var rtcAudioManager: RTCAudioManager
     private var isPreviousCallStateVideo = true
 
+    private lateinit var audioManager: AudioManager
+
 
     companion object {
         var listener: Listener? = null
@@ -60,7 +64,10 @@ class VideoService : Service(), VideoRepository.Listener {
             NotificationManager::class.java
         )
 
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
     }
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let { incomingIntent ->
@@ -175,6 +182,21 @@ class VideoService : Service(), VideoRepository.Listener {
             videoRepository.initFirebase()
             videoRepository.initWebrtcClient(username!!)
 
+            increaseVolume()
+        }
+    }
+
+    private fun increaseVolume() {
+        val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL)
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL)
+
+
+        if (currentVolume < maxVolume) {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_VOICE_CALL,
+                currentVolume + 6,
+                AudioManager.FLAG_SHOW_UI
+            )
         }
     }
 
