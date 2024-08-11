@@ -45,4 +45,23 @@ class AuthRepositoryImpl @Inject constructor(
             return Result.failure(Exception())
         }
     }
+
+    override suspend fun naverLogin(token: String): Result<LoginResponse?> {
+        Timber.d("네이버 로그인 요청 토큰: $token")
+
+        return try {
+            val req = authApi.naverLogin(token)
+            if (req.isSuccessful) {
+                Timber.d("네이버 로그인 성공: ${req.body()}")
+                Result.success(req.body())
+            } else {
+                Timber.e("네이버 로그인 실패: ${req.code()} - ${req.message()}")
+                Result.failure(Exception("네이버 로그인 실패: ${req.code()} - ${req.message()}"))
+            }
+        } catch (e: Exception) {
+            Timber.e("네이버 로그인 중 예외 발생: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
 }
