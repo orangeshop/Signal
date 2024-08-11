@@ -83,6 +83,7 @@ public class DuplicateService {
                             .userId(member.getUserId())
                             .name(member.getName())
                             .profileImage(profileUrl)
+                            .type(member.getType())
                             .build();
 
                     // 댓글 정보 가져오기
@@ -117,6 +118,7 @@ public class DuplicateService {
                             .userId(member.getUserId())
                             .name(member.getName())
                             .profileImage(profileUrl)
+                            .type(member.getType())
                             .build();
 
                     // 댓글 정보 가져오기

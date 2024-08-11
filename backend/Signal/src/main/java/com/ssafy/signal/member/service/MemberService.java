@@ -96,6 +96,7 @@ public class MemberService implements UserDetailsService {
                     .type(member.getType())
                     .name(member.getName())
                     .comment(member.getComment() == null? "" : member.getComment())
+                    .score(member.getScore())
                     .build();
 
             checkPassword(password, member);

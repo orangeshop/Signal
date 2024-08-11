@@ -10,4 +10,5 @@ public class findMemberDto {
     private Long userId;
     private String profileImage;
     private String name;
+    private String type;
 }

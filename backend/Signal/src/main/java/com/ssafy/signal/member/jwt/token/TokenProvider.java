@@ -1,7 +1,6 @@
 package com.ssafy.signal.member.jwt.token;
 
 import com.ssafy.signal.member.domain.Member;
-import com.ssafy.signal.member.domain.TokenBlacklist;
 import com.ssafy.signal.member.dto.LoginDto;
 import com.ssafy.signal.member.jwt.AccessTokenBlackList;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
@@ -13,7 +12,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,9 +19,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.security.Key;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -50,7 +45,8 @@ public class TokenProvider {
         this.accessTokenBlackList = accessTokenBlackList;
         byte[] keyBytes = Decoders.BASE64.decode(secrete);
         this.hashKey = Keys.hmacShaKeyFor(keyBytes);
-        this.accessTokenValidationInMilliseconds = accessTokenValidationInSeconds + 1000 * 60 * 60 * 10;
+//        this.accessTokenValidationInMilliseconds = accessTokenValidationInSeconds + 1000 * 60 * 60 * 10;
+        this.accessTokenValidationInMilliseconds = 1000 * 5;
         this.refreshTokenValidationInMilliseconds = accessTokenValidationInSeconds + 1000 * 60 * 60 * 24 * 3;
         this.tokenBlacklistService = tokenBlacklistService;
     }

@@ -13,4 +13,5 @@ public class LoginDto {
     private String type;
     private String name;
     private String comment;
+    private int score;
 }

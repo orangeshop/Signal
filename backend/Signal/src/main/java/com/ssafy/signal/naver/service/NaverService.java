@@ -56,15 +56,17 @@ public class NaverService {
         } else {
             Member member = findMember.get();
 
-            LoginDto login = LoginDto.builder()
+            LoginDto member1 = LoginDto.builder()
                     .userId(member.getUserId())
-                    .loginId(loginId)
-                    .name(name)
+                    .loginId(member.getLoginId())
                     .password(member.getPassword())
                     .type(member.getType())
+                    .name(member.getName())
+                    .comment(member.getComment() == null? "" : member.getComment())
+                    .score(member.getScore())
                     .build();
 
-            TokenInfo tokenInfo = tokenProvider.createToken(login);
+            TokenInfo tokenInfo = tokenProvider.createToken(member1);
             return tokenInfo;
         }
     }

@@ -192,6 +192,7 @@ public class MemberController {
         try {
 //            String token = tokenProvider.resolveToken(tokenRequest);
             TokenInfo tokenInfo = tokenProvider.refreshToken(tokenRequest);
+            log.info("refreshToken 재발급 되었습니다.");
             return ResponseEntity.ok(tokenInfo);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

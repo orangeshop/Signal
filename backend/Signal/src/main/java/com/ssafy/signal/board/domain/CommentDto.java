@@ -13,6 +13,7 @@ public class CommentDto {
     private Long id;
     private Long boardId; // 게시판 ID를 Long 타입으로 유지
     private Long userId;
+    private String type;
     private String url;
     private String writer;
     private String content;
@@ -31,10 +32,11 @@ public class CommentDto {
     }
 
     @Builder
-    public CommentDto(Long id, Long boardId, String writer, String url, String content, Long userId, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public CommentDto(Long id, Long boardId, String writer, String url, String content, Long userId, String type, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.boardId = boardId;
         this.userId = userId;
+        this.type = type;
         this.url = url;
         this.writer = writer;
         this.content = content;
