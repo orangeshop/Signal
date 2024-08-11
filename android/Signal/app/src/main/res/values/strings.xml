@@ -54,6 +54,8 @@
     <string name="signal">시그널</string>
     <string name="review">리뷰</string>
     <string name="comment">나의 한마디</string>
+    <string name="chatting">채팅</string>
+    <string name="home">홈</string>
 
     <string-array name="tag_array">
         <item>자유</item>
