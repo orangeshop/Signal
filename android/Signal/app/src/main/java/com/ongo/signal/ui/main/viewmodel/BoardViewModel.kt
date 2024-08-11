@@ -77,8 +77,9 @@ class BoardViewModel @Inject constructor(
             runCatching {
                 boardRepository.boardLike(board.id, userId)
             }.onSuccess { response ->
+                Timber.tag("onThumbClick").d(response.toString())
                 if (!response.isSuccessful) return@launch
-                val count = response.body() ?: return@launch
+                val count = response.body()?.likedCount ?: return@launch
                 val newBoard = board.copy(liked = count)
                 val pagingFlow = pagingData.value ?: return@launch
                 val newPagingFlow = pagingFlow.map { pagingData ->
@@ -101,8 +102,9 @@ class BoardViewModel @Inject constructor(
         runCatching {
             boardRepository.boardLike(board.id, userId)
         }.onSuccess { response ->
+            Timber.tag("onThumbClick").d(response.toString())
             if (!response.isSuccessful) return@launch
-            val count = response.body() ?: return@launch
+            val count = response.body()?.likedCount ?: return@launch
             val newBoard = board.copy(liked = count)
             val pagingFlow = pagingData.value ?: return@launch
             val newPagingFlow = pagingFlow.map { pagingData ->
