@@ -30,12 +30,16 @@ class ChatRepositoryImpl @Inject constructor(
         return chatApi.getAllChatDetail(chat_id)
     }
 
-    override suspend fun readMessage(chat_id: Long){
-        return chatApi.readMessage(chat_id)
+    override suspend fun readMessage(chat_id: Long, userId : Long){
+        return chatApi.readMessage(chat_id, userId)
     }
 
     override suspend fun getUserProfile(chat_id: Long): Response<UserProfileResponse> {
         return chatApi.getUserProfile(chat_id)
+    }
+
+    override suspend fun deleteChatRoom(chat_id: Long) {
+        chatApi.deleteChatRoom(chat_id)
     }
 
 

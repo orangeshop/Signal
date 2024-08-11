@@ -1,9 +1,11 @@
 package com.ongo.signal.ui.chat.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.airbnb.lottie.L
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
@@ -37,6 +39,10 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageList = MutableLiveData<List<ChatHomeChildDTO>>()
     val messageList: LiveData<List<ChatHomeChildDTO>> = _messageList
 
+    private val _messageReadList = MutableLiveData<List<Pair<Long, Long>>>()
+    val messageReadList: LiveData<List<Pair<Long, Long>>> = _messageReadList
+
+
     val todayTitleChecker = mutableListOf<Long>()
 
 
@@ -53,40 +59,26 @@ class ChatHomeViewModel @Inject constructor(
         _messageList.value = emptyList()
     }
 
-    fun loadChatProfile(){
-        viewModelScope.launch {
-            val currentList = _liveList.value.orEmpty().toMutableList()
-
-
-
-            for(i in currentList){
-                val update = chatUseCases.getUserProfile(i.toId)
-
-//                i.url = update.profileImage
-
-            }
-            _liveList.value = currentList
-
-        }
-    }
+//    fun loadChatProfile(){
+//        viewModelScope.launch {
+//            val currentList = _liveList.value.orEmpty().toMutableList()
+//
+//            for(i in currentList){
+//                val update = chatUseCases.getUserProfile(i.toId)
+//            }
+//            _liveList.value = currentList
+//
+//        }
+//    }
 
     fun loadChats() {
         viewModelScope.launch {
             _liveList.value = UserSession.userId?.let {
                 chatUseCases.loadChats(it.toLong()).sortedByDescending { it.sendAt }
             }
-//            _liveList.value =
-//                UserSession.userId?.let { chatUseCases.loadChats(it, UserSession.userId!!).sortedByDescending { it.sendAt } }
-
         }
     }
 
-//    fun saveChat(room: ChatHomeDTO) {
-//        viewModelScope.launch {
-//            chatUseCases.saveChat(room)
-//            loadChats() // Refresh the list after saving a new chat
-//        }
-//    }
 
     fun deleteChat(id: Long) {
         viewModelScope.launch {
@@ -98,24 +90,12 @@ class ChatHomeViewModel @Inject constructor(
                 if (it.chatId == id) {
                     currentList.remove(it)
                     // 서버에서 채팅 삭제 로직 추가ㅁㄴ
+                    chatUseCases.deleteChatRoom(id)
                     _liveList.value = currentList
                 }
             }
         }
     }
-
-    /**
-     * 기존의 코드
-     * messageList <- room에서 detailList의 모든 리스트를 들고와서 갱신함
-     *
-     * 개선 방향
-     * 기존의 코드에서 messageList 이후의 메시지만 라이브 데이터에 올리는 방식으로 로직 변경
-     *
-     * 내가 보낸 메시지는 바로 viewmodel에 넣는다.
-     *
-     *
-     *
-     **/
 
     suspend fun loadDetailList(id: Long, loading: Long = 100) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -124,26 +104,12 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    fun readMessage(id: Long) {
+    fun readMessage(id: Long, userId: Long) {
         viewModelScope.launch {
-            chatUseCases.readMessage(id)
-//            loadDetailList(id)
+            chatUseCases.readMessage(id, userId)
         }
     }
 
-//    fun appendDetailList(message: ChatHomeChildDto) {
-//        val currentList = _messageList.value.orEmpty().toMutableList()
-//        currentList.add(message)
-//        _messageList.value = currentList
-//    }
-//
-//
-//    fun saveDetailList(message: ChatHomeChildDto, id: Long) {
-//        viewModelScope.launch {
-//            chatUseCases.saveDetailList(message, id)
-//            loadDetailList(id)
-//        }
-//    }
 
     fun timeSetting(): String {
         return chatUseCases.timeSetting()
@@ -194,6 +160,20 @@ class ChatHomeViewModel @Inject constructor(
             test.complete(chatUseCases.getLastMessageIndex(id)?.lastReadMessageIndex ?: 0)
         }
         return test.await()
+    }
+
+    suspend fun loadReadMessage(chatId : Long){
+        loadDetailList(chatId, 300)
+        viewModelScope.launch {
+
+            val currentList = _messageReadList.value.orEmpty().toMutableList()
+            val update = chatUseCases.loadReadMessage(chatId)
+            currentList.clear()
+            currentList.add(Pair(chatId, update.toLong()))
+            _messageReadList.value = currentList
+
+            Log.d(TAG, "loadReadMessage: ${messageReadList.value}")
+        }
     }
 
 

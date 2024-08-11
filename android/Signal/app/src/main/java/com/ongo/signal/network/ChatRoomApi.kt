@@ -9,6 +9,7 @@ import com.ongo.signal.data.model.my.ProfileEditRequest
 import com.ongo.signal.data.model.review.UserProfileResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -27,8 +28,11 @@ interface ChatRoomApi {
     suspend fun getAllChatDetail(@Query("chat_id") chat_id: Long): Response<MutableList<ChatHomeChildDTO>>
 
     @PATCH("/message/read")
-    suspend fun readMessage(@Query("chat_id") chat_id: Long)
+    suspend fun readMessage(@Query("chat_id") chat_id: Long, @Query("user_id") user_id: Long)
 
     @GET("user/{id}")
     suspend fun getUserProfile(@Path("id") id: Long): Response<UserProfileResponse>
+
+    @DELETE("chat-room")
+    suspend fun deleteChatRoom(@Query("chat_id") chatId: Long)
 }
