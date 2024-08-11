@@ -60,5 +60,8 @@ interface UserApi {
         @Part file: MultipartBody.Part
     ): Response<ProfileImageResponse>
 
-
+    @POST("/oauth/naver")
+    suspend fun naverLogin(
+        @Query("token") token: String
+    ): Response<LoginResponse>
 }

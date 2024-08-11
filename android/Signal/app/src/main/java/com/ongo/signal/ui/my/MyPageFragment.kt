@@ -55,7 +55,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
                     }
 
                     tvUsername.text = myProfileData.name
-                    Log.d("asdasd","getMyProfile: ${myProfileData}")
+                    Log.d("asdasd", "getMyProfile: ${myProfileData}")
                     myPageTier.setImageResource(tierSetting(myProfileData.score))
                 }
             }
@@ -63,18 +63,13 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
     }
 
     private fun tierSetting(count: Int): Int {
-
-        if( 1 <= count && count <= 5){
-            return R.drawable.silver
-        }else if( 6 <= count && count <= 10){
-            return R.drawable.gold
-        }else if( 11 <= count && count <= 15){
-            return R.drawable.platinum
-        }else if( 16 <= count){
-            return R.drawable.king
+        return when {
+            count in 1..5 -> R.drawable.silver
+            count in 6..10 -> R.drawable.gold
+            count in 11..15 -> R.drawable.platinum
+            count >= 16 -> R.drawable.king
+            else -> R.drawable.bronze
         }
-
-        return R.drawable.bronze
     }
 
     private fun initViews() {
@@ -109,6 +104,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
             }
         }
     }
+
 
     fun goToProfileEdit() {
         parentFragmentManager.commit {

@@ -36,6 +36,15 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteUser(accessToken: String, refreshToken: String): Int {
+        val req = userApi.postLogoutRequest(accessToken, refreshToken)
+        Timber.d("로그아웃 ${req} 요청은 ${req}")
+        return if (req.isSuccessful) {
+            1
+        } else {
+            0
+        }
+    }
 //    override suspend fun deleteUser(accessToken: String, refreshToken: String): Int {
 //        val req = userApi.postLogoutRequest(accessToken, refreshToken)
 //        Timber.d("로그아웃 ${req} 요청은 ${req}")
@@ -88,6 +97,24 @@ class UserRepositoryImpl @Inject constructor(
             Result.success(req.body())
         } else {
             Result.failure(Exception())
+        }
+    }
+
+    override suspend fun naverLogin(token: String): Result<LoginResponse?> {
+        Timber.d("네이버 로그인 요청 토큰: $token")
+
+        return try {
+            val req = userApi.naverLogin(token)
+            if (req.isSuccessful) {
+                Timber.d("네이버 로그인 성공: ${req.body()}")
+                Result.success(req.body())
+            } else {
+                Timber.e("네이버 로그인 실패: ${req.code()} - ${req.message()}")
+                Result.failure(Exception("네이버 로그인 실패: ${req.code()} - ${req.message()}"))
+            }
+        } catch (e: Exception) {
+            Timber.e("네이버 로그인 중 예외 발생: ${e.message}")
+            Result.failure(e)
         }
     }
 

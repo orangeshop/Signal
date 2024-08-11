@@ -77,7 +77,11 @@ class ImageAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<ImageItem>() {
         override fun areItemsTheSame(oldItem: ImageItem, newItem: ImageItem): Boolean {
-            return oldItem == newItem
+            return when {
+                oldItem is ImageItem.UriItem && newItem is ImageItem.UriItem -> oldItem.uri == newItem.uri
+                oldItem is ImageItem.UrlItem && newItem is ImageItem.UrlItem -> oldItem.url == newItem.url
+                else -> false
+            }
         }
 
         override fun areContentsTheSame(oldItem: ImageItem, newItem: ImageItem): Boolean {

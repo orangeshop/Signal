@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.data.model.login.LoginRequest
+import com.ongo.signal.data.model.login.LoginResponse
 import com.ongo.signal.data.model.login.SignalUser
 import com.ongo.signal.data.repository.auth.AuthRepository
 import com.ongo.signal.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -79,6 +82,22 @@ class LoginViewModel @Inject constructor(
 
                 }
             }
+        }
+    }
+
+    fun loginWithNaver(token: String, onResult: (Boolean, LoginResponse?) -> Unit) {
+        viewModelScope.launch {
+            val result = loginRepository.naverLogin(token)
+            result.fold(
+                onSuccess = {
+                    Timber.d("네이버 로그인 성공: $it")
+                    onResult(true, it)
+                },
+                onFailure = {
+                    Timber.e(it, "네이버 로그인 실패")
+                    onResult(false, null)
+                }
+            )
         }
     }
 

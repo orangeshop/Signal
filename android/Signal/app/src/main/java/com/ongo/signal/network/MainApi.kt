@@ -65,18 +65,6 @@ interface MainApi {
         @Path("id") id: Long
     ): Response<ResponseBody>
 
-    @Multipart
-    @POST("board/{boardId}/upload")
-    suspend fun uploadImage(
-        @Path("boardId") boardId: Long,
-        @Part image: MultipartBody.Part
-    ): Response<ResponseBody>
-
-    @POST("board/{boardId}/like")
-    suspend fun boardLike(
-        @Path("boardId") boardId: Long
-    ): Response<Long>
-
     @GET("files")
     suspend fun getBoardImages(): Response<BoardImagesDTO>
 
@@ -99,4 +87,18 @@ interface MainApi {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): Response<List<BoardDTO>>
+
+    @Multipart
+    @PUT("board/{boardId}/upload")
+    suspend fun updateImage(
+        @Path("boardId") boardId: Long,
+        @Part image: List<MultipartBody.Part>
+    ): Response<ResponseBody>
+
+    @POST("board/{boardId}/like")
+    suspend fun boardLike(
+        @Path("boardId") boardId: Long,
+        @Query("userId") userId: Long
+    ): Response<Long>
+
 }

@@ -7,4 +7,5 @@ object UserSession {
     var accessToken: String? = null
     var refreshToken: String? = null
     var profileImage: String? = null
+    var userType: String? = null
 }

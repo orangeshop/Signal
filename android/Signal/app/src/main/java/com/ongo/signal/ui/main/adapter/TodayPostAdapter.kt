@@ -2,67 +2,55 @@ package com.ongo.signal.ui.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ongo.signal.data.model.main.BoardDTO
+import com.ongo.signal.databinding.HeaderLayoutBinding
 import com.ongo.signal.databinding.ItemPostBinding
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import timber.log.Timber
 
 class TodayPostAdapter(
     private val onItemClicked: (BoardDTO) -> Unit,
     private val onTTSClicked: (String) -> Unit,
-    private val viewModel: BoardViewModel
-) : PagingDataAdapter<BoardDTO, TodayPostAdapter.ViewHolder>(DiffUtilCallback()) {
+    private val viewModel: BoardViewModel,
+    private val onTitleClicked: (Int) -> Unit,
+) : PagingDataAdapter<BoardDTO, RecyclerView.ViewHolder>(DiffUtilCallback()) {
 
-    inner class ViewHolder(private val binding: ItemPostBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    private val VIEW_TYPE_HEADER = 0
+    private val VIEW_TYPE_ITEM = 1
 
-        private val chipAdapter = ChipAdapter()
-        private val postImageAdapter = PostImageAdapter()
-
-        init {
-            binding.rvChips.apply {
-                layoutManager =
-                    LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = chipAdapter
-            }
-            binding.rvImages.apply {
-                layoutManager =
-                    StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                adapter = postImageAdapter
-            }
-        }
-
-        fun bind(board: BoardDTO) {
-            binding.board = board
-            binding.boardViewModel = viewModel
-            binding.executePendingBindings()
-            binding.root.setOnClickListener {
-                onItemClicked(board)
-            }
-
-            binding.ivTts.setOnClickListener {
-                onTTSClicked(board.title)
-            }
-
-            chipAdapter.submitList(board.tags)
-            postImageAdapter.submitList(board.imageUrls)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_HEADER) {
+            val binding =
+                HeaderLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            HeaderViewHolder(binding, viewModel, onTitleClicked)
+        } else {
+            val binding =
+                ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemViewHolder(binding, onItemClicked, onTTSClicked, viewModel)
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        item?.let {
-            holder.bind(item)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder.itemViewType == VIEW_TYPE_HEADER) {
+            (holder as HeaderViewHolder).bind(viewModel.hotBoards.value)
+        } else {
+            val item = getItem(position - 1)
+            item?.let {
+                (holder as ItemViewHolder).bind(it)
+            }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0) VIEW_TYPE_HEADER else VIEW_TYPE_ITEM
+    }
+
+    override fun getItemCount(): Int {
+        return super.getItemCount() + 1
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<BoardDTO>() {

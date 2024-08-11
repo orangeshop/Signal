@@ -1,8 +1,10 @@
 package com.ongo.signal.ui.main.fragment
 
+import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -12,7 +14,7 @@ import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentReviewBinding
-import com.ongo.signal.ui.main.ReviewViewModel
+import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,34 +33,24 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         setUpAdapter()
         binding.fragment = this
         binding.reviewViewModel = reviewViewModel
+        val safeArgs: ReviewFragmentArgs by navArgs()
 
-        if(arguments?.getBoolean("item") == true){
+        var writerId = boardViewModel.selectedBoard.value?.userId
+        var writerName = boardViewModel.selectedBoard.value?.writer
+
+        if(safeArgs.flagByRoot == true){
+
             binding.btnChat.isEnabled = false
+            writerId = safeArgs.flagByRootId
+            writerName = safeArgs.flagByRootWriter
         }
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
         //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
-        val writerId = boardViewModel.selectedBoard.value?.userId
-        val writerName = boardViewModel.selectedBoard.value?.writer
+
         writerId?.let {
             reviewViewModel.checkReviewPermission(writerId)
             getMyProfile(writerId)
-        }
-
-        binding.btnMatching.setOnClickListener {
-            Timber.d("매칭 클릭 확인 ${writerId} ${writerName}")
-            UserSession.userId?.let { myId ->
-                writerId?.let {
-                    writerName?.let {
-                        reviewViewModel.postProposeMatch(
-                            fromId = myId,
-                            toId = writerId
-                        ) {
-                            makeToast("${writerName} 님께 매칭 신청을 하였습니다.")
-                        }
-                    }
-                }
-            }
         }
 
         loadReviews()

@@ -27,9 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:fontFamily="@font/inter_light"
             android:text="@string/edit_profile"
-            android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,9 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16sp"
-                    android:fontFamily="@font/inter_bold"
                     android:text="@string/name"
-                    android:textColor="@color/white"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/til_password_check"
@@ -133,9 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24sp"
-                    android:fontFamily="@font/inter_bold"
                     android:text="@string/comment"
-                    android:textColor="@color/white"
                     android:textSize="20sp" />
 
 
@@ -186,9 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16sp"
-                    android:fontFamily="@font/inter_bold"
                     android:text="@string/type"
-                    android:textColor="@color/white"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/til_password_check"
@@ -209,7 +201,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
-                        android:fontFamily="@font/inter_light"
                         android:text="@string/junior"
                         android:textSize="24sp"
                         app:chipCornerRadius="30dp" />
@@ -220,7 +211,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
-                        android:fontFamily="@font/inter_extralight"
                         android:text="@string/senior"
                         android:textSize="24sp"
                         app:chipCornerRadius="30dp" />

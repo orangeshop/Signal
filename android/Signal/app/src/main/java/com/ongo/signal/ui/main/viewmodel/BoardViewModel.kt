@@ -7,20 +7,22 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.BoardPagingSource
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.data.repository.main.board.BoardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,9 +30,6 @@ import javax.inject.Inject
 class BoardViewModel @Inject constructor(
     private val boardRepository: BoardRepository
 ) : ViewModel() {
-
-    private val _items = MutableSharedFlow<PagingData<BoardDTO>>(replay = 1)
-    val items: SharedFlow<PagingData<BoardDTO>> = _items
 
     private val _hotBoards = MutableStateFlow<List<BoardDTO>>(emptyList())
     val hotBoards: StateFlow<List<BoardDTO>> = _hotBoards
@@ -41,93 +40,108 @@ class BoardViewModel @Inject constructor(
     private val _selectedTag = MutableStateFlow<String?>(null)
     val selectedTag: StateFlow<String?> = _selectedTag
 
+    private val _isSearchState = MutableStateFlow(false)
+    val isSearchState: StateFlow<Boolean> = _isSearchState
+
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title
 
     private val _content = MutableStateFlow("")
     val content: StateFlow<String> = _content
 
+    private val _pagingData = MutableStateFlow<Flow<PagingData<BoardDTO>>?>(null)
+    val pagingData = _pagingData.asStateFlow()
+
     init {
-        loadHotBoards()
         loadBoards()
+        loadHotBoards()
     }
 
-    private fun loadBoards() {
-        viewModelScope.launch {
-            Pager(
-                config = PagingConfig(
-                    pageSize = 5,
-                    enablePlaceholders = false,
-                    initialLoadSize = 5
-                ),
-                pagingSourceFactory = {
-                    BoardPagingSource(boardRepository)
-                }
-            ).flow.cachedIn(viewModelScope)
-                .collectLatest { pagingData ->
-                    _items.emit(pagingData)
-                    Timber.d("loadItems: $items")
-                }
-        }
+    private fun loadBoards() = viewModelScope.launch(Dispatchers.IO) {
+        Timber.d("Loading boards without tag")
+        val newPager = Pager(
+            config = PagingConfig(
+                pageSize = 5,
+                enablePlaceholders = false,
+                initialLoadSize = 5
+            ),
+            pagingSourceFactory = {
+                BoardPagingSource(boardRepository)
+            }
+        ).flow.cachedIn(viewModelScope)
+        _pagingData.emit(newPager)
     }
 
-    private fun loadBoardsByTag(tag: String) {
-        Timber.d("loading boards with tag: $tag")
-        viewModelScope.launch {
-            Pager(
-                config = PagingConfig(
-                    pageSize = 5,
-                    enablePlaceholders = false,
-                    initialLoadSize = 5
-                ),
-                pagingSourceFactory = {
-                    BoardPagingSource(boardRepository, tag)
-                }
-            ).flow
-                .cachedIn(viewModelScope)
-                .catch { e -> Timber.e(e, "Exception in loadBoardsByTag") }
-                .collectLatest { pagingData ->
-                    _items.emit(pagingData)
-                    Timber.d("loadItemsByTag: ${items}")
-                }
-        }
-    }
-
-    private fun loadHotBoards() {
-        viewModelScope.launch {
+    fun onThumbClick(board: BoardDTO, userId: Long, bind: (BoardDTO) -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                boardRepository.getHotSignal()
+                boardRepository.boardLike(board.id, userId)
             }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    val hotList = response.body() ?: emptyList()
-                    _hotBoards.emit(hotList)
-                } else {
-                    Timber.e("Failed to load hot boards: ${response.errorBody()?.string()}")
+                if (!response.isSuccessful) return@launch
+                val count = response.body() ?: return@launch
+                val newBoard = board.copy(liked = count)
+                val pagingFlow = pagingData.value ?: return@launch
+                val newPagingFlow = pagingFlow.map { pagingData ->
+                    pagingData.map { existingBoard ->
+                        if (existingBoard.id == newBoard.id) newBoard else existingBoard
+                    }
                 }
+                _pagingData.value = newPagingFlow
+
+                withContext(Dispatchers.Main) {
+                    bind(newBoard)
+                }
+
             }.onFailure { e ->
-                Timber.e(e, "Failed to load hot boards")
+                Timber.e(e, "Failed to like board")
             }
         }
+
+    fun onThumbClick(board: BoardDTO, userId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        runCatching {
+            boardRepository.boardLike(board.id, userId)
+        }.onSuccess { response ->
+            if (!response.isSuccessful) return@launch
+            val count = response.body() ?: return@launch
+            val newBoard = board.copy(liked = count)
+            val pagingFlow = pagingData.value ?: return@launch
+            val newPagingFlow = pagingFlow.map { pagingData ->
+                pagingData.map { existingBoard ->
+                    if (existingBoard.id == newBoard.id) newBoard else existingBoard
+                }
+            }
+            _pagingData.value = newPagingFlow
+            _selectedBoard.emit(newBoard)
+        }.onFailure { e ->
+            Timber.e(e, "Failed to like board")
+        }
     }
 
-    private fun loadHotSignalByTag(tag: String) {
-        viewModelScope.launch {
-            runCatching {
-                boardRepository.getHotSignalByTag(tag, 0, 5)
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    val hotList = response.body() ?: emptyList()
-                    _hotBoards.emit(hotList)
-                } else {
-                    Timber.e(
-                        "Failed to load hot signal boards by tag: ${
-                            response.errorBody()?.string()
-                        }"
-                    )
-                }
-            }.onFailure { e ->
-                Timber.e(e, "Failed to load hot signal boards by tag")
+    fun searchBoard(keyword: String) = viewModelScope.launch(Dispatchers.IO) {
+        runCatching {
+            boardRepository.searchBoard(keyword)
+        }.onSuccess { response ->
+            if (!response.isSuccessful) return@launch
+            val boards = response.body() ?: return@launch
+            val pager = PagingData.from(boards)
+            _pagingData.emit(flowOf(pager))
+        }.onFailure { e ->
+            Timber.e(e, "Failed to search boards")
+        }
+    }
+
+    private fun loadBoardsByTag(tag: String) = viewModelScope.launch(Dispatchers.IO) {
+        val newPager = Pager(
+            config = PagingConfig(
+                pageSize = 5,
+                enablePlaceholders = false,
+                initialLoadSize = 5
+            ),
+            pagingSourceFactory = {
+                BoardPagingSource(boardRepository, tag)
             }
+        ).flow.cachedIn(viewModelScope).collectLatest { newPager ->
+            _pagingData.emit(flowOf(newPager))
         }
     }
 
@@ -192,26 +206,6 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun searchBoard(keyword: String) {
-        Timber.d("search board by keyword: $keyword")
-        viewModelScope.launch {
-            runCatching {
-                boardRepository.searchBoard(keyword)
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    val searchResults = response.body() ?: emptyList()
-                    Timber.d("Search results: $searchResults")
-                    val pagingData = PagingData.from(searchResults)
-                    _items.emit(pagingData)
-                } else {
-                    Timber.e("Failed to search boards: ${response.errorBody()?.string()}")
-                }
-            }.onFailure { e ->
-                Timber.e(e, "Failed to search boards")
-            }
-        }
-    }
-
     fun loadBoardDetails(boardId: Long) {
         Timber.d("loadBoardDetails called with boardId: $boardId")
         viewModelScope.launch {
@@ -232,33 +226,8 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun onThumbClick(board: BoardDTO) {
-        viewModelScope.launch {
-            runCatching {
-                boardRepository.boardLike(board.id)
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    response.body()?.let { newLikeCount ->
-                        val updatedBoard = board.copy(liked = newLikeCount)
-                        _selectedBoard.value = updatedBoard
-                        _items.emit(_items.replayCache.first().map {
-                            if (it.id == board.id) updatedBoard else it
-                        })
-                        Timber.d("Board liked: $newLikeCount")
-                    }
-                } else {
-                    Timber.e("Failed to like board: ${response.errorBody()?.string()}")
-                }
-            }.onFailure { e ->
-                Timber.e(e, "Failed to like board")
-            }
-        }
-    }
-
     fun clearBoards() {
         viewModelScope.launch {
-            _items.emit(PagingData.empty())
-            _hotBoards.emit(emptyList())
             setSelectedTag(null)
         }
     }
@@ -269,6 +238,7 @@ class BoardViewModel @Inject constructor(
             loadBoards()
             loadHotBoards()
         } else {
+            _pagingData.value = flowOf(PagingData.empty())
             loadBoardsByTag(_selectedTag.value!!)
             loadHotSignalByTag(_selectedTag.value!!)
         }
@@ -292,27 +262,58 @@ class BoardViewModel @Inject constructor(
         _content.value = content
     }
 
+    fun setSearchState(isSearch: Boolean) {
+        _isSearchState.value = isSearch
+    }
+
     fun updateBoardCommentCount(boardId: Long) {
         viewModelScope.launch {
             runCatching {
                 boardRepository.readBoardById(boardId)
+            }.onSuccess { _ ->
+                loadBoards()
+            }.onFailure { e ->
+                Timber.e(e, "Failed to update board comment count")
+            }
+        }
+    }
+
+    private fun loadHotSignalByTag(tag: String) {
+        viewModelScope.launch {
+            runCatching {
+                boardRepository.getHotSignalByTag(tag, 0, 5)
             }.onSuccess { response ->
                 if (response.isSuccessful) {
-                    response.body()?.let { updatedBoard ->
-                        _items.emit(_items.replayCache.first().map {
-                            if (it.id == boardId) updatedBoard else it
-                        })
-                        Timber.d("Board updated with new comment count: $updatedBoard")
-                    }
+                    val hotList = response.body() ?: emptyList()
+                    Timber.d("Loaded hot signal boards by tag: $hotList")
+                    _hotBoards.emit(hotList)
                 } else {
                     Timber.e(
-                        "Failed to update board comment count: ${
+                        "Failed to load hot signal boards by tag: ${
                             response.errorBody()?.string()
                         }"
                     )
                 }
             }.onFailure { e ->
-                Timber.e(e, "Failed to update board comment count")
+                Timber.e(e, "Failed to load hot signal boards by tag")
+            }
+        }
+    }
+
+    private fun loadHotBoards() {
+        viewModelScope.launch {
+            runCatching {
+                boardRepository.getHotSignal()
+            }.onSuccess { response ->
+                if (response.isSuccessful) {
+                    val hotList = response.body() ?: emptyList()
+                    Timber.d("Loaded hot boards: $hotList")
+                    _hotBoards.emit(hotList)
+                } else {
+                    Timber.e("Failed to load hot boards: ${response.errorBody()?.string()}")
+                }
+            }.onFailure { e ->
+                Timber.e(e, "Failed to load hot boards")
             }
         }
     }

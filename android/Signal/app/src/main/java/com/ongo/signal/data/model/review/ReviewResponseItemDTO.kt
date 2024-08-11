@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class ReviewResponseItemDTO(
     @SerializedName("review_id") val reviewId: Long,
     @SerializedName("user_id") val userId: Long,
+    @SerializedName("score") val score: Long,
+    @SerializedName("type") val type: String,
     @SerializedName("content") val content: String,
     @SerializedName("name") val name: String,
     @SerializedName("writer_id") val writerId: Long,

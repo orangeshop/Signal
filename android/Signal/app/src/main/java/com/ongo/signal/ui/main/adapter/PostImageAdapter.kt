@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.databinding.ItemImagePostBinding
+import timber.log.Timber
 
 class PostImageAdapter : ListAdapter<String, PostImageAdapter.ViewHolder>(DiffUtilCallback()) {
 
@@ -14,6 +15,9 @@ class PostImageAdapter : ListAdapter<String, PostImageAdapter.ViewHolder>(DiffUt
             fun bind(url: String) {
                 binding.url = url
                 binding.executePendingBindings()
+                binding.root.setOnClickListener {
+                    Timber.d("Image clicked: $url")
+                }
             }
         }
 

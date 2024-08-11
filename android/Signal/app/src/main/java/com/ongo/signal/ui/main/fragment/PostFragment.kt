@@ -46,13 +46,14 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         setupAdapters()
         observeViewModelData()
         loadInitialData()
+        Timber.tag("selectedBoard").d("selectedBoard type: ${boardViewModel.selectedBoard.value?.type}")
+        Timber.tag("selectedBoard").d("userType: ${UserSession.userType}")
     }
 
     private fun setupAdapters() {
         commentAdapter = UserSession.userId?.let {
             CommentAdapter(
-                onCommentEditClick = ::onCommentEditClick,
-                onCommentDeleteClick = ::onCommentDeleteClick,
+                onPopupMenuClick = ::showCommentPopupMenu,
                 currentUserId = it
             )
         }!!
@@ -65,7 +66,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         }
 
         binding.rvChip.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = chipAdapter
         }
 
@@ -140,7 +142,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     fun createComment() {
         binding.let { binding ->
             val content = binding.etComment.text.toString()
-            val writer = "홍길동"
+            val writer = UserSession.userName
             val boardId = boardViewModel.selectedBoard.value?.id ?: return
             val userId = UserSession.userId
 
@@ -155,20 +157,42 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     selectedCommentId = null
                 } else {
                     if (userId != null) {
-                        commentViewModel.createComment(
+                        writer?.let {
                             CommentDTOItem(
                                 boardId = boardId,
                                 userId = userId.toLong(),
-                                writer = writer,
+                                writer = it,
                                 content = content
                             )
-                        )
+                        }?.let {
+                            commentViewModel.createComment(
+                                it
+                            )
+                        }
                     }
                 }
                 binding.etComment.text.clear()
             }
 
             KeyboardUtils.hideKeyboard(binding.etComment)
+        }
+    }
+
+    private fun showCommentPopupMenu(view: View, comment: CommentDTOItem) {
+        PopupMenuHelper.showPopupMenu(requireContext(), view, R.menu.popup_menu) { item ->
+            when (item.itemId) {
+                R.id.action_edit -> {
+                    onCommentEditClick(comment)
+                    true
+                }
+
+                R.id.action_delete -> {
+                    onCommentDeleteClick(comment)
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 

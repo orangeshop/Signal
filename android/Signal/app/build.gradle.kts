@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -19,6 +21,18 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        val naverClientId = properties["NAVER_CLIENT_ID"] ?: ""
+        val naverClientSecret = properties["NAVER_CLIENT_SECRET"] ?: ""
+        val kakaoNativeAppKey = properties["KAKAO_NATIVE_APP_KEY"] ?: ""
+        val kakaoRestApiKey = properties["KAKAO_REST_API_KEY"] ?: ""
+
+        buildConfigField("String", "NAVER_CLIENT_ID", "\"$naverClientId\"")
+        buildConfigField("String", "NAVER_CLIENT_SECRET", "\"$naverClientSecret\"")
+        buildConfigField("String","KAKAO_NATIVE_APP_KEY","\"$kakaoNativeAppKey\"")
+        buildConfigField("String","KAKAO_REST_API_KEY","\"$kakaoRestApiKey\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -38,6 +52,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -98,4 +113,9 @@ dependencies {
     //webrtc
     implementation(libs.bundles.webrtc)
 
+    //naver
+    implementation(libs.naver)
+
+    //kakao
+    implementation(libs.kakao)
 }

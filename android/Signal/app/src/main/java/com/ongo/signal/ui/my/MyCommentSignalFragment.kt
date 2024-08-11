@@ -25,10 +25,6 @@ class MyCommentSignalFragment :
     override fun init() {
         loadData()
         binding.rvPostPreview.adapter = previewPostAdapter
-
-        binding.ivBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
         binding.fragment = this
     }
 

@@ -2,6 +2,7 @@ package com.ongo.signal.ui.chat.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -24,7 +25,7 @@ class ChatHomeAdapter(
     private val chatItemClick: (item: ChatHomeDTO) -> Unit,
     private val chatItemLongClick: (item: ChatHomeDTO) -> Boolean,
     private val timeSetting: (item: String) -> String,
-    private val userImageUrl: (item: ChatHomeDTO) -> String,
+    private val userImageUrl: (item: ChatHomeDTO) -> String
 ) : ListAdapter<ChatHomeDTO, ChatHomeAdapter.ChatHomeListHolder>(diffUtil) {
     inner class ChatHomeListHolder(val binding: ChatItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -53,9 +54,12 @@ class ChatHomeAdapter(
                 chatItemLongClick(item)
             }
 
-            binding.Alarm.text = "1"
+            binding.Alarm.visibility = if(item.cnt > 0) View.VISIBLE else View.GONE
+            binding.Alarm.text = item.cnt.toString()
         }
     }
+
+
 
 
     override fun onBindViewHolder(holder: ChatHomeListHolder, position: Int) {

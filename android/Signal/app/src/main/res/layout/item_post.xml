@@ -12,14 +12,16 @@
         <variable
             name="boardViewModel"
             type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
+
+        <variable
+            name="userSession"
+            type="com.ongo.signal.config.UserSession" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:background="#202020">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/tv_title"
@@ -27,10 +29,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_marginEnd="-10dp"
+            android:ellipsize="end"
+            android:maxLines="3"
             android:text="@{board.title}"
-            android:textColor="@color/white"
             android:textSize="36sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,14 +48,12 @@
             app:profile="@{board.member.profileImage}"
             tools:src="@drawable/baseline_more_vert_mint_24" />
 
-
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@{board.writer}"
-            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile"
             app:layout_constraintStart_toEndOf="@id/iv_profile"
@@ -65,7 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{board.getFormattedCreatedDate()}"
-            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_name"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
@@ -76,9 +75,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/gangwon"
+            android:maxLines="3"
             android:text="@{board.content}"
-            android:textColor="@color/white"
-            android:textSize="26sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintTop_toBottomOf="@id/iv_profile"
@@ -89,7 +90,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:focusable="false"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
@@ -102,7 +102,6 @@
             android:id="@+id/rv_chips"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:focusable="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
@@ -110,17 +109,26 @@
             tools:listitem="@layout/item_chip"
             tools:orientation="horizontal" />
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/color_translate"
+            app:layout_constraintBottom_toBottomOf="@id/rv_chips"
+            app:layout_constraintEnd_toEndOf="@id/rv_images"
+            app:layout_constraintStart_toStartOf="@id/rv_images"
+            app:layout_constraintTop_toTopOf="@id/rv_images" />
+
+
         <ImageView
             android:id="@+id/iv_thumb"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="15dp"
-            android:onClick="@{() -> boardViewModel.onThumbClick(board)}"
             android:padding="4dp"
-            android:src="@drawable/baseline_thumb_up_alt_white_24"
+            android:src="@drawable/baseline_thumb_up_off_alt_24"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
-            app:layout_constraintTop_toBottomOf="@id/rv_chips"
-            tools:src="@drawable/baseline_thumb_up_alt_white_24" />
+            app:layout_constraintTop_toBottomOf="@id/rv_chips" />
 
         <TextView
             android:id="@+id/tv_like"
@@ -128,7 +136,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@{String.valueOf(board.liked)}"
-            android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
             app:layout_constraintStart_toEndOf="@id/iv_thumb"
@@ -140,10 +147,9 @@
             android:layout_height="36dp"
             android:layout_marginStart="8dp"
             android:padding="4dp"
-            android:src="@drawable/baseline_chat_white_24"
+            android:src="@drawable/baseline_chat_24"
             app:layout_constraintStart_toEndOf="@id/tv_like"
-            app:layout_constraintTop_toTopOf="@id/iv_thumb"
-            tools:src="@drawable/baseline_chat_white_24" />
+            app:layout_constraintTop_toTopOf="@id/iv_thumb" />
 
         <TextView
             android:id="@+id/tv_comment"
@@ -151,7 +157,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@{String.valueOf(board.getCommentCount())}"
-            android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
             app:layout_constraintStart_toEndOf="@id/iv_comment"
@@ -165,6 +170,15 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_comment"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintTop_toTopOf="@id/iv_comment" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginTop="24dp"
+            android:background="#808080"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_tts" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
