@@ -214,7 +214,15 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
 
     fun onRegisterButtonClick() {
         val title = binding.etTitle.text.toString()
+        if (title.isEmpty()) {
+            makeToast("제목을 입력해주세요")
+            return
+        }
         val content = binding.etContent.text.toString()
+        if (content.isEmpty()) {
+            makeToast("내용을 입력해주세요")
+            return
+        }
         val userId = UserSession.userId
         val writer = UserSession.userName
         val tags = listOf(TagDTO(tagId = selectedTagId, tag = selectedTag))
