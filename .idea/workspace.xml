@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d2b30439-3b3a-48d6-99f7-9c11e2b0ae0d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/DuplicateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/DuplicateService.java" afterDir="false" />
+=======
+>>>>>>> f00261754b54794b1d6416440a8610fabaafb217
       <change beforePath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/TagService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Signal/src/main/java/com/ssafy/signal/board/service/TagService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -119,7 +122,12 @@
       <workItem from="1722904748852" duration="4032000" />
       <workItem from="1723365641006" duration="984000" />
       <workItem from="1723373562923" duration="6108000" />
+<<<<<<< HEAD
       <workItem from="1723382874984" duration="1823000" />
+=======
+      <workItem from="1723380277407" duration="22000" />
+      <workItem from="1723384466844" duration="64000" />
+>>>>>>> f00261754b54794b1d6416440a8610fabaafb217
     </task>
     <servers />
   </component>

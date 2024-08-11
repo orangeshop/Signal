@@ -65,7 +65,37 @@ public class TagService {
 
         List<BoardDto> boards = tagEntity.getBoard().stream()
                 .sorted(Comparator.comparing(BoardEntity::getCreatedDate).reversed())
+<<<<<<< HEAD
                 .map(this::buildBoardDto)
+=======
+                .map(boardEntity -> {
+                    // 게시글 작성자의 정보 가져오기
+                    Member member = boardEntity.getUser();
+                    String profileUrl = fileService.getProfile(member.getUserId());
+
+                    findMemberDto profile = findMemberDto.builder()
+                            .userId(member.getUserId())
+                            .name(member.getName())
+                            .profileImage(profileUrl)
+                            .type(member.getType())
+                            .score(member.getScore())
+                            .build();
+
+                    // 댓글 정보 가져오기
+                    List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
+                            .map(comment -> {
+                                String url = fileService.getProfile(comment.getUserId().getUserId());
+                                return comment.asCommentDto(url);
+                            })
+                            .collect(Collectors.toList());
+
+                    // 파일 URL 가져오기 (게시판용)
+                    List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
+
+                    // BoardDto 생성 및 반환
+                    return boardEntity.asBoardDto(comments, fileUrls, profile);
+                })
+>>>>>>> f00261754b54794b1d6416440a8610fabaafb217
                 .collect(Collectors.toList());
 
         int start = page * limit;
