@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 data class Dot(
     val userId: Long,
     val userName: String,
-    val profileImage: String = "https://github.com/user-attachments/assets/8352be5b-d960-4925-bb5f-78a74dfbab05",
+    val profileImage: String = "https://github.com/user-attachments/assets/f463e225-6d1d-455f-9267-0d4e8602f565",
     val comment: String = "안녕하세요",
     val distance: Double,
     val quadrant: Int,
