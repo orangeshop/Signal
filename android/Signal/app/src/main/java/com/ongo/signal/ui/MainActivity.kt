@@ -41,7 +41,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
+class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private val viewModel: MainViewModel by viewModels()
 
     private lateinit var navHostFragment: NavHostFragment
@@ -51,6 +51,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     private val runtimePermissions = arrayOf(
         Manifest.permission.CAMERA,
     )
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun setupBinding(binding: ActivityMainBinding) {
 
@@ -161,6 +162,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main){
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent, navHostFragment.navController)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.bottomNavigation.isClickable = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.bottomNavigation.isClickable = true
     }
 
     companion object {
