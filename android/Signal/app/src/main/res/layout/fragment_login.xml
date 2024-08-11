@@ -104,21 +104,24 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.navercorp.nid.oauth.view.NidOAuthLoginButton
-            android:id="@+id/nolb_login"
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/iv_naver"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
-            app:layout_constraintEnd_toStartOf="@id/kakao_login"
+            android:src="@drawable/naver_icon"
+            android:onClick="@{()->fragment.onNaverLoginClicked()}"
+            app:layout_constraintEnd_toStartOf="@id/iv_kakao"
             app:layout_constraintStart_toStartOf="@id/til_password"
             app:layout_constraintTop_toBottomOf="@id/til_password" />
 
         <ImageView
-            android:id="@+id/kakao_login"
-            android:layout_width="0dp"
+            android:id="@+id/iv_kakao"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@color/yellow"
-            app:layout_constraintStart_toEndOf="@id/nolb_login"
+            android:src="@drawable/btn_kakao"
+            android:onClick="@{()->fragment.kakaoLoginClicked()}"
+            app:layout_constraintStart_toEndOf="@id/iv_naver"
             app:layout_constraintTop_toBottomOf="@id/til_password" />
 
         <androidx.appcompat.widget.AppCompatButton

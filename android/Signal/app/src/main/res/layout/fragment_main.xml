@@ -183,11 +183,10 @@
             android:foreground="@drawable/ripple_effect"
             android:onClick="@{()->fragment.onFABClicked()}"
             android:src="@drawable/baseline_edit__mint_24"
-            app:borderWidth="1dp"
             app:layout_anchor="@id/rv_post"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="@color/black" />
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

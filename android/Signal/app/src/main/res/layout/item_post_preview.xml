@@ -10,13 +10,13 @@
             type="com.ongo.signal.data.model.main.BoardDTO" />
     </data>
 
-
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
+        app:cardBackgroundColor="#F7F7F7"
         app:strokeColor="@color/purple">
 
         <androidx.constraintlayout.widget.ConstraintLayout

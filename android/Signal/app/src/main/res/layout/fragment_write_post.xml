@@ -155,12 +155,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_regist"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginEnd="8dp"
-            android:foreground="@drawable/ripple_effect"
+            android:background="@drawable/background_button_registration"
             android:onClick="@{() -> fragment.onRegisterButtonClick()}"
             android:text="@string/regist"
             android:textColor="@color/black"
