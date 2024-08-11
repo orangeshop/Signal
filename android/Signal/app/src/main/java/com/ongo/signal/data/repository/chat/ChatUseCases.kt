@@ -10,12 +10,16 @@ interface ChatUseCases {
     suspend fun saveChat(room: ChatHomeDTO)
     suspend fun loadDetailList(id: Long, loading: Long): List<ChatHomeChildDTO>
     suspend fun saveDetailList(message: ChatHomeChildDTO, id: Long)
-    suspend fun readMessage(id: Long)
+    suspend fun readMessage(id: Long, userId : Long)
     fun timeSetting(): String
+
+    suspend fun deleteChatRoom(id : Long)
 
     suspend fun getUserProfile(id: Long) : UserProfileResponse
 
     suspend fun deleteChat(id: Long)
+
+    suspend fun loadReadMessage(id: Long) : Int
 
     suspend fun loadDetailListNetwork(id: Long) : List<ChatHomeChildDTO>
     suspend fun loadDetailListNoId(id: Long) : List<ChatHomeChildDTO>

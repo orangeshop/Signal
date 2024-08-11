@@ -142,6 +142,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 makeToast("원하는 상대의 타입을 골라주세요.")
                 return@setOnClickListener
             }
+            hideRequestMatchingWidget()
+
             // context 들고가는 작업은 view에서 꼭 할것
             // view 죽으면 viewmodel 에서 팅길 수 있음
             // when viewModel dead?
@@ -162,7 +164,6 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                                     UserSession.userId!!
                                 ),
                                 onSuccess = { response ->
-                                    hideRequestMatchingWidget()
                                     showRadarWidget()
                                     viewModel.getMatchPossibleUser(
                                         locationId = response.location_id,
@@ -213,7 +214,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 userId = response.user.userId,
                 userName = response.user.name,
                 distance = response.dist,
-                quadrant = response.quadrant
+                quadrant = response.quadrant,
+//                profileImage = response.user.
             )
         }
     }
@@ -225,7 +227,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             tvMission.visibility = View.GONE
             cgChip.visibility = View.GONE
             btnComplete.visibility = View.GONE
-            rvRadar.visibility = View.VISIBLE
+            lavLoading.visibility = View.VISIBLE
         }
     }
 
@@ -236,10 +238,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             tvClickGuide.visibility = View.VISIBLE
             cvDot.visibility = View.VISIBLE
             rvPossibleMatch.visibility = View.VISIBLE
-//            ivProfile.visibility = View.VISIBLE
-//            tvUserId.visibility = View.VISIBLE
-//            tvIntroduce.visibility = View.VISIBLE
-//            btnMatching.visibility = View.VISIBLE
+            binding.lavLoading.visibility = View.GONE
         }
         initRadar()
 

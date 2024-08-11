@@ -72,8 +72,8 @@ class ChatUseCasesImpl @Inject constructor(
 
     }
 
-    override suspend fun readMessage(id: Long) {
-        chatRepository.readMessage(id)
+    override suspend fun readMessage(id: Long, userId : Long) {
+        chatRepository.readMessage(id, userId)
     }
 
 
@@ -81,6 +81,10 @@ class ChatUseCasesImpl @Inject constructor(
     override fun timeSetting(): String {
         val now = System.currentTimeMillis()
         return SimpleDateFormat("a hh:mm", Locale.KOREAN).format(now)
+    }
+
+    override suspend fun deleteChatRoom(id: Long) {
+        chatRepository.deleteChatRoom(id)
     }
 
     override suspend fun getUserProfile(id: Long): UserProfileResponse {
@@ -93,6 +97,10 @@ class ChatUseCasesImpl @Inject constructor(
        chatRoomRepositoryImpl.deleteChat(id)
     }
 
+    override suspend fun loadReadMessage(id: Long): Int {
+        return chatRoomRepositoryImpl.loadReadMessage(id)
+    }
+
     override suspend fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit) {
 //        val json: String = Gson().toJson(item)
 
@@ -103,6 +111,8 @@ class ChatUseCasesImpl @Inject constructor(
 
         onSuccess()
     }
+
+
 
     override suspend fun stompGet(chatRoomNumber: Long, onSuccess: (Long) -> Unit){
 

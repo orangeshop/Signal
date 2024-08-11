@@ -39,6 +39,10 @@ class ChatRoomRepositoryImpl @Inject constructor(
         chatHomeLocalCheckDao.saveLocalMessage(room)
     }
 
+    suspend fun loadReadMessage(id : Long) : Int{
+        return chatDetailDao.loadReadMessage(id)
+    }
+
     suspend fun getLastMessageIndex(chatId: Long): ChatHomeLocalCheckDTO? {
         return chatHomeLocalCheckDao.getLastMessageIndex(chatId)
     }

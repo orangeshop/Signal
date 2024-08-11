@@ -3,6 +3,7 @@ package com.ongo.signal.ui.chat.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.marginBottom
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ class ChatDetailAdapter(
     private val fromID : Long,
     private val userImageUrl: () -> String,
     private val chatItemClick: (item: ChatHomeChildDTO) -> Unit,
+    private val otherNameSetting : () -> String,
 ) : ListAdapter<ChatHomeChildDTO, RecyclerView.ViewHolder>(diffUtil) {
 
     inner class ChatHomeOtherListHolder(val binding: ChatDetailItemBinding): RecyclerView.ViewHolder(binding.root){
@@ -45,6 +47,7 @@ class ChatDetailAdapter(
             binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
             binding.today.text = timeSetting(item.sendAt, 2)
 
+            binding.chatOtherNameTv.text = otherNameSetting()
 
             binding.chatDetailItemTv.text = item.content
             binding.chatOtherReadTv.text = if(item.isRead == false) "1" else ""
@@ -59,11 +62,14 @@ class ChatDetailAdapter(
             binding.chatOtherTimeTv.visibility = View.GONE
             binding.chatOtherReadTv.visibility = View.GONE
             binding.chatDetailItemImg.visibility = View.GONE
+            binding.chatOtherNameTv.visibility = View.GONE
+
 
             binding.today.visibility = View.GONE
 
             binding.today.visibility = if(todaySetting(item.messageId,item.chatId, timeSetting(item.sendAt, 2)) == true) View.VISIBLE else View.GONE
             binding.today.text = timeSetting(item.sendAt, 2)
+
 
             binding.chatDetailItemMeTv.text = item.content
             binding.chatOtherTimeMeTv.text = timeSetting(item.sendAt, 1)

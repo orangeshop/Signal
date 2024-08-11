@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/iv_profile"
+            android:id="@+id/iv_grade"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/human"
@@ -29,8 +29,8 @@
             android:fontFamily="@font/inter_bold"
             android:text="최지훈"
             android:textColor="@color/mint"
-            app:layout_constraintStart_toEndOf="@id/iv_profile"
-            app:layout_constraintTop_toTopOf="@id/iv_profile" />
+            app:layout_constraintStart_toEndOf="@id/iv_grade"
+            app:layout_constraintTop_toTopOf="@id/iv_grade" />
 
         <TextView
             android:id="@+id/tv_introduce"
@@ -54,9 +54,9 @@
             android:text="@string/accept_matching"
             android:textColor="@color/mint"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_profile"
+            app:layout_constraintBottom_toBottomOf="@id/iv_grade"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_profile" />
+            app:layout_constraintTop_toTopOf="@id/iv_grade" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
