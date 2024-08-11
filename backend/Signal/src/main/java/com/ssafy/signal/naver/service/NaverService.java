@@ -1,6 +1,7 @@
 package com.ssafy.signal.naver.service;
 
 import com.google.gson.Gson;
+import com.ssafy.signal.kakao.service.KakaoService;
 import com.ssafy.signal.member.domain.Member;
 import com.ssafy.signal.member.dto.LoginDto;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
@@ -26,6 +27,7 @@ public class NaverService {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final KakaoService kakaoService;
 
     public TokenInfo naverCallBack(String accessToken) throws Exception {
         GetNaverUserRes getNaverUserRes = getUserInfo(accessToken);
@@ -35,10 +37,13 @@ public class NaverService {
         Optional<Member> findMember = memberRepository.findByLoginId(loginId);
 
         if (!findMember.isPresent()) {
+
+            String randomPassword = kakaoService.generateRandomPassword(8);
+
             Member member = Member.builder()
                     .loginId(loginId)
                     .name(name)
-                    .password(passwordEncoder.encode("aaaa1111!"))
+                    .password(passwordEncoder.encode(randomPassword))
                     .type(birthyear > 1984? "주니어":"시니어")
                     .build();
 
@@ -46,7 +51,7 @@ public class NaverService {
                     .userId(member.getUserId())
                     .loginId(loginId)
                     .name(name)
-                    .password(passwordEncoder.encode("aaaa1111!"))
+                    .password(passwordEncoder.encode(randomPassword))
                     .type(member.getType())
                     .build();
 
