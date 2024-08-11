@@ -183,6 +183,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                     hideProgressDialog()
                     binding.rvPost.scrollToPosition(0)
                     shouldScrollToTop = false
+                } else {
+                    hideProgressDialog()
                 }
             }
         }
