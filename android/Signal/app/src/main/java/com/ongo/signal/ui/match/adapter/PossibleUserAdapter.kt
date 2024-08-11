@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ongo.signal.data.model.match.MatchPossibleUser
 import com.ongo.signal.databinding.ItemPossibleUserBinding
+import com.ongo.signal.util.tierSetting
 
 class PossibleUserAdapter(
     private val onMatchClick: (userId: Long, userName: String) -> Unit,
@@ -22,9 +23,9 @@ class PossibleUserAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(user: MatchPossibleUser) {
             binding.tvUserId.text = user.name
-//            binding.tvIntroduce.text = user.comment
-            binding.tvIntroduce.text = "안녕하세요"
+            binding.tvIntroduce.text = user.comment
             binding.btnMatching.setOnClickListener { onMatchClick(user.userId, user.name) }
+            binding.ivGrade.setImageResource(tierSetting(user.score))
             binding.root.setOnClickListener { onClick(user.userId) }
         }
     }

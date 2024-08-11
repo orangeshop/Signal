@@ -179,8 +179,8 @@ class DotCustomView @JvmOverloads constructor(
         val screenWidth = displayMetrics.widthPixels
         val screenHeight = displayMetrics.heightPixels
 
-        val xOffset = (screenWidth * 0.077 + dot.userName.length.toDouble()).toInt()
-        val yOffset = (screenHeight * 0.085).toInt()
+        val xOffset = (screenWidth * 0.13 + dot.userName.length.toDouble()).toInt()
+        val yOffset = (screenHeight * 0.08).toInt()
 
         popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, x - xOffset, y - yOffset)
     }
