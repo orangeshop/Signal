@@ -3,16 +3,11 @@ package com.ongo.signal.util
 import com.ongo.signal.R
 
 fun tierSetting(count: Int): Int {
-
-    if( 1 <= count && count <= 5){
-        return R.drawable.silver
-    }else if( 6 <= count && count <= 10){
-        return R.drawable.gold
-    }else if( 11 <= count && count <= 15){
-        return R.drawable.platinum
-    }else if( 16 <= count){
-        return R.drawable.king
+    return when (count) {
+        in 1..5 -> R.drawable.silver
+        in 6..10 -> R.drawable.gold
+        in 11..15 -> R.drawable.platinum
+        in 16..Int.MAX_VALUE -> R.drawable.king
+        else -> R.drawable.bronze
     }
-
-    return R.drawable.bronze
 }
