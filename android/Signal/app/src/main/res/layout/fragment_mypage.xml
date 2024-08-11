@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,8 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundColor">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/tv_signup"
@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:text="@string/my_page"
-            android:textColor="@color/white"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +50,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:fontFamily="@font/gangwon_bold"
-            android:textColor="@color/white"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             android:orientation="horizontal"
@@ -63,11 +61,10 @@
                 android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:textColor="@color/white"
                 android:textSize="24sp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_gravity="center"
+                tools:text="히히"
                 />
             <ImageView
                 android:id="@+id/myPage_tier"
@@ -97,7 +94,6 @@
             android:layout_marginStart="8dp"
             android:onClick="@{()->fragment.goToProfileEdit()}"
             android:text="@string/edit_profile"
-            android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_profile_icon"
             app:layout_constraintEnd_toEndOf="parent"
@@ -122,7 +118,6 @@
             android:layout_marginStart="8dp"
             android:onClick="@{()->fragment.goToMySignal()}"
             android:text="@string/my_signal"
-            android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_mysignal_icon"
             app:layout_constraintEnd_toEndOf="parent"
@@ -147,7 +142,6 @@
             android:layout_marginStart="8dp"
             android:onClick="@{()->fragment.goToMyCommentSignal()}"
             android:text="@string/my_comment_signal"
-            android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_heart_icon"
             app:layout_constraintEnd_toEndOf="parent"
@@ -172,7 +166,6 @@
             android:layout_marginStart="8dp"
             android:onClick="@{()->fragment.goToReview()}"
             android:text="@string/info"
-            android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_info_icon"
             app:layout_constraintEnd_toEndOf="parent"
@@ -195,7 +188,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/logout"
-            android:textColor="@color/gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_logout"
             app:layout_constraintEnd_toEndOf="parent"

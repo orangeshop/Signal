@@ -87,7 +87,7 @@ class LoginViewModel @Inject constructor(
 
     fun loginWithNaver(token: String, onResult: (Boolean, LoginResponse?) -> Unit) {
         viewModelScope.launch {
-            val result = loginRepository.naverLogin(token)
+            val result = authRepository.naverLogin(token)
             result.fold(
                 onSuccess = {
                     Timber.d("네이버 로그인 성공: $it")

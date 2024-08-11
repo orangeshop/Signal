@@ -12,8 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundColor">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/tv_username"
@@ -21,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="최영호"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.15"
@@ -34,7 +33,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="님은 어떠셨나요?"
-            android:textColor="@color/white"
             android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_username"
             app:layout_constraintStart_toEndOf="@id/tv_username"
@@ -69,7 +67,6 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="32dp"
             android:text="@string/one_line_review"
-            android:textColor="@color/white"
             android:textSize="28sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rb_rating" />
@@ -82,7 +79,7 @@
             android:layout_marginTop="8dp"
             app:endIconDrawable="@drawable/baseline_mic__white_24"
             app:endIconMode="custom"
-            app:endIconTint="@color/white"
+            app:endIconTint="@color/black"
             app:layout_constraintTop_toBottomOf="@id/tv_oneline_review">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -90,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_edit_text"
-                android:textColor="@color/white" />
+                tools:text="sadfasfd"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

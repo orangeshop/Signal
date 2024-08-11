@@ -19,23 +19,33 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_margin="8dp"
-            app:profile="@{review.url}"
             android:src="@drawable/basic_profile"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:profile="@{review.url}" />
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:textSize="20sp"
             android:text="@{review.name}"
-            tools:text="dasfafds"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/tv_review"
             app:layout_constraintStart_toEndOf="@id/iv_profile"
-            app:layout_constraintTop_toTopOf="@id/iv_profile" />
+            app:layout_constraintTop_toTopOf="@id/iv_profile"
+            tools:text="dasfafds" />
+
+        <TextView
+            android:id="@+id/tv_js"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="4dp"
+            android:text='@{review.type == "주니어" ? "J" : "S"}'
+            app:layout_constraintBottom_toBottomOf="@id/tv_name"
+            app:layout_constraintStart_toEndOf="@id/tv_name"
+            app:layout_constraintTop_toTopOf="@id/tv_name" />
 
         <TextView
             android:id="@+id/tv_review"
@@ -67,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.8dp"
             android:layout_marginTop="8dp"
-            android:background="@color/white"
+            android:background="@color/gray"
             app:layout_constraintTop_toBottomOf="@id/tv_review" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

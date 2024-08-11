@@ -6,6 +6,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface AuthApi {
     @POST("/user/login")
@@ -23,4 +24,10 @@ interface AuthApi {
     suspend fun renewalRefreshToken(
         @Header("RefreshToken") refreshToken: String,
     ) : Response<LoginResponse>
+
+    @POST("/oauth/naver")
+    suspend fun naverLogin(
+        @Query("token") token: String
+    ): Response<LoginResponse>
+
 }

@@ -15,9 +15,6 @@ class PostImageAdapter : ListAdapter<String, PostImageAdapter.ViewHolder>(DiffUt
             fun bind(url: String) {
                 binding.url = url
                 binding.executePendingBindings()
-                binding.root.setOnClickListener {
-                    Timber.d("Image clicked: $url")
-                }
             }
         }
 

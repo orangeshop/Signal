@@ -9,4 +9,8 @@ interface AuthRepository {
     suspend fun deleteUser(accessToken: String, refreshToken: String): Int
 
     suspend fun renewalToken(refreshToken: String): Result<LoginResponse?>
+
+    suspend fun naverLogin(
+        token: String
+    ): Result<LoginResponse?>
 }
