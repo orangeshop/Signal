@@ -36,38 +36,42 @@ public class DuplicateService {
         this.fileService = fileService;
     }
 
-    @Transactional
-    public BoardDto getPost(Long id) {
-        // 게시글 엔티티 조회
-        BoardEntity boardEntity = boardRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+    private findMemberDto buildMemberProfile(Member member) {
+        String profileUrl = fileService.getProfile(member.getUserId());
+        return findMemberDto.builder()
+                .userId(member.getUserId())
+                .name(member.getName())
+                .profileImage(profileUrl)
+                .type(member.getType())  // 필요시 추가
+                .build();
+    }
 
-        // 게시글 작성자의 userId 가져오기
-        Member member = boardEntity.getUser();
-
-        // 댓글 조회
-        List<CommentDto> comments = commentRepository.findByBoardId(id).stream()
-                .map(comment ->{
+    private List<CommentDto> getComments(Long boardId) {
+        return commentRepository.findByBoardId(boardId).stream()
+                .map(comment -> {
                     String url = fileService.getProfile(comment.getUserId().getUserId());
                     return comment.asCommentDto(url);
                 })
                 .collect(Collectors.toList());
+    }
 
-        // 파일 URL 조회 (게시판용)
-        List<String> fileUrls = fileService.getFilesByBoardId(id); // boardId로 파일 URL 가져오기
+    private List<String> getFileUrls(Long boardId) {
+        return fileService.getFilesByBoardId(boardId);
+    }
 
-        String profileUrl = fileService.getProfile(member.getUserId());
+    @Transactional
+    public BoardDto getPost(Long id) {
+        BoardEntity boardEntity = boardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        Member member = boardEntity.getUser();
 
-        findMemberDto profile = findMemberDto.builder()
-                .userId(member.getUserId())
-                .name(member.getName())
-                .profileImage(profileUrl)
-                .build();
-        // BoardDto 생성
+        findMemberDto profile = buildMemberProfile(member);
+        List<CommentDto> comments = getComments(id);
+        List<String> fileUrls = getFileUrls(id);
+
         return boardEntity.asBoardDto(comments, fileUrls, profile);
     }
 
-    // 생성된 순서대로 게시글 정렬 (오늘의 시그널)
     @Transactional
     public List<BoardDto> getBoardList(Integer pageNum, int limit) {
         return boardRepository
@@ -75,29 +79,11 @@ public class DuplicateService {
                 .getContent()
                 .stream()
                 .map(boardEntity -> {
-                    // 게시글 작성자의 정보 가져오기
                     Member member = boardEntity.getUser();
-                    String profileUrl = fileService.getProfile(member.getUserId());
+                    findMemberDto profile = buildMemberProfile(member);
+                    List<CommentDto> comments = getComments(boardEntity.getId());
+                    List<String> fileUrls = getFileUrls(boardEntity.getId());
 
-                    findMemberDto profile = findMemberDto.builder()
-                            .userId(member.getUserId())
-                            .name(member.getName())
-                            .profileImage(profileUrl)
-                            .type(member.getType())
-                            .build();
-
-                    // 댓글 정보 가져오기
-                    List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
-                            .map(comment ->{
-                                String url = fileService.getProfile(comment.getUserId().getUserId());
-                                return comment.asCommentDto(url);
-                            })
-                            .collect(Collectors.toList());
-
-                    // 파일 URL 가져오기 (게시판용)
-                    List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
-
-                    // BoardDto 생성 및 반환
                     return boardEntity.asBoardDto(comments, fileUrls, profile);
                 })
                 .collect(Collectors.toList());
@@ -110,34 +96,15 @@ public class DuplicateService {
                 .getContent()
                 .stream()
                 .map(boardEntity -> {
-                    // 게시글 작성자의 정보 가져오기
                     Member member = boardEntity.getUser();
-                    String profileUrl = fileService.getProfile(member.getUserId());
+                    findMemberDto profile = buildMemberProfile(member);
+                    List<CommentDto> comments = getComments(boardEntity.getId());
+                    List<String> fileUrls = getFileUrls(boardEntity.getId());
 
-                    findMemberDto profile = findMemberDto.builder()
-                            .userId(member.getUserId())
-                            .name(member.getName())
-                            .profileImage(profileUrl)
-                            .type(member.getType())
-                            .build();
-
-                    // 댓글 정보 가져오기
-                    List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
-                            .map(comment ->{
-                                String url = fileService.getProfile(comment.getUserId().getUserId());
-                                return comment.asCommentDto(url);
-                            })
-                            .collect(Collectors.toList());
-
-                    // 파일 URL 가져오기 (게시판용)
-                    List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
-
-                    // BoardDto 생성 및 반환
                     return boardEntity.asBoardDto(comments, fileUrls, profile);
                 })
                 .collect(Collectors.toList());
     }
-
 
     @Transactional
     public List<BoardDto> searchPosts(String keyword) {
@@ -147,28 +114,11 @@ public class DuplicateService {
         if (boardEntities.isEmpty()) return boardDtoList;
 
         for (BoardEntity boardEntity : boardEntities) {
-            // 게시글 작성자의 정보 가져오기
             Member member = boardEntity.getUser();
-            String profileUrl = fileService.getProfile(member.getUserId());
+            findMemberDto profile = buildMemberProfile(member);
+            List<CommentDto> comments = getComments(boardEntity.getId());
+            List<String> fileUrls = getFileUrls(boardEntity.getId());
 
-            findMemberDto profile = findMemberDto.builder()
-                    .userId(member.getUserId())
-                    .name(member.getName())
-                    .profileImage(profileUrl)
-                    .build();
-
-            // 댓글 정보 가져오기
-            List<CommentDto> comments = commentRepository.findByBoardId(boardEntity.getId()).stream()
-                    .map(comment -> {
-                        String url = fileService.getProfile(comment.getUserId().getUserId());
-                        return comment.asCommentDto(url);
-                    })
-                    .collect(Collectors.toList());
-
-            // 파일 URL 가져오기 (게시판용)
-            List<String> fileUrls = fileService.getFilesByBoardId(boardEntity.getId());
-
-            // BoardDto 생성 및 반환
             boardDtoList.add(boardEntity.asBoardDto(comments, fileUrls, profile));
         }
         return boardDtoList;
