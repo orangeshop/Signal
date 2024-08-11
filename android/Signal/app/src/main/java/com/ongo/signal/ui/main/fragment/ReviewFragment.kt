@@ -1,6 +1,9 @@
 package com.ongo.signal.ui.main.fragment
 
+import android.util.Log
+import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +18,7 @@ import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.ui.my.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -32,7 +36,7 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         binding.fragment = this
         binding.reviewViewModel = reviewViewModel
 
-        if(arguments?.getBoolean("item") == true){
+        if (arguments?.getBoolean("item") == true) {
             binding.btnChat.isEnabled = false
         }
 
@@ -46,6 +50,16 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         }
 
         loadReviews()
+    }
+
+    private fun tierSetting(count: Int): Int {
+        return when {
+            count in 1..5 -> R.drawable.silver
+            count in 6..10 -> R.drawable.gold
+            count in 11..15 -> R.drawable.platinum
+            count >= 16 -> R.drawable.king
+            else -> R.drawable.bronze
+        }
     }
 
     fun makeChat() {
