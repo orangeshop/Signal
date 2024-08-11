@@ -28,8 +28,4 @@ interface UserRepository {
         userId: Long,
         imageFile: MultipartBody.Part
     ): Result<ProfileImageResponse?>
-
-    suspend fun naverLogin(
-        token: String
-    ): Result<LoginResponse?>
 }
