@@ -56,6 +56,8 @@ public class TagService {
                             .userId(member.getUserId())
                             .name(member.getName())
                             .profileImage(profileUrl)
+                            .type(member.getType())
+                            .score(member.getScore())
                             .build();
 
                     // 댓글 정보 가져오기
