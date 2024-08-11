@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.databinding.FragmentMainBinding
-import com.ongo.signal.ui.main.ProgressDialog
 import com.ongo.signal.ui.main.adapter.TodayPostAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import com.ongo.signal.ui.main.viewmodel.CommentViewModel
@@ -179,9 +178,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         ).apply {
             addLoadStateListener { loadState ->
                 if (loadState.source.refresh is LoadState.Loading) {
-                    showLoadingDialog()
+                    showProgressDialog()
                 } else if (loadState.source.refresh is LoadState.NotLoading && shouldScrollToTop) {
-                    hideLoadingDialog()
+                    hideProgressDialog()
                     binding.rvPost.scrollToPosition(0)
                     shouldScrollToTop = false
                 }
@@ -196,16 +195,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
     fun gotoPost() {
         findNavController().navigate(R.id.action_mainFragment_to_postFragment)
-    }
-
-    private fun showLoadingDialog() {
-        val dialog = ProgressDialog()
-        dialog.show(parentFragmentManager, ProgressDialog.TAG)
-    }
-
-    private fun hideLoadingDialog() {
-        val dialog = parentFragmentManager.findFragmentByTag(ProgressDialog.TAG) as? DialogFragment
-        dialog?.dismiss()
     }
 
     override fun onDestroyView() {

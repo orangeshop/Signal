@@ -226,6 +226,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         }.toLong()
 
         viewLifecycleOwner.lifecycleScope.launch {
+            showProgressDialog()
             if (boardViewModel.selectedBoard.value == null) {
                 userId?.let {
                     val boardRequestDTO =
@@ -245,6 +246,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                                 uploadImagesAndNavigate(newBoard)
                             } else {
                                 Timber.e("Failed to create board")
+                                hideProgressDialog()
                             }
                         }
                     }
@@ -259,6 +261,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                         uploadImagesAndNavigate(updatedBoard)
                     } else {
                         Timber.e("Failed to update board")
+                        hideProgressDialog()
                     }
                 }
             }
@@ -271,12 +274,10 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
         if (uriItems.isEmpty() && urlItems.isEmpty()) {
             Timber.d("No images to upload")
             boardViewModel.clearBoards()
+            hideProgressDialog()
             findNavController().navigate(R.id.action_writePostFragment_to_mainFragment)
         } else {
             viewLifecycleOwner.lifecycleScope.launch {
-                val progressDialog = ProgressDialog()
-                progressDialog.show(parentFragmentManager, ProgressDialog.TAG)
-
                 try {
                     Timber.d("Uploading images: $uriItems, existing URLs: $urlItems")
                     val result = imageViewModel.updateImage(
@@ -298,7 +299,7 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to upload all images")
                 } finally {
-                    progressDialog.dismiss()
+                    hideProgressDialog()
                 }
             }
         }

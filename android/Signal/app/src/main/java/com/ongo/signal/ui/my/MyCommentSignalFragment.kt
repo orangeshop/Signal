@@ -23,6 +23,7 @@ class MyCommentSignalFragment :
     })
 
     override fun init() {
+        showProgressDialog()
         loadData()
         binding.rvPostPreview.adapter = previewPostAdapter
         binding.fragment = this
@@ -38,8 +39,10 @@ class MyCommentSignalFragment :
             Timber.d(userId.toString())
             myPageViewModel.getMyCommentSignal(userId, onSuccess = { posts ->
                 previewPostAdapter.submitList(posts)
+                hideProgressDialog()
             }, onError = { error ->
                 Timber.e("Failed to load signals: ${error.message}")
+                hideProgressDialog()
             })
         }
     }

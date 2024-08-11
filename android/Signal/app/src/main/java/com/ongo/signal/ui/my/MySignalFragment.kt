@@ -22,6 +22,7 @@ class MySignalFragment : BaseFragment<FragmentMySignalBinding>(R.layout.fragment
     })
 
     override fun init() {
+        showProgressDialog()
         loadData()
         binding.rvPostPreview.adapter = previewPostAdapter
         binding.fragment = this
@@ -38,8 +39,10 @@ class MySignalFragment : BaseFragment<FragmentMySignalBinding>(R.layout.fragment
             Timber.d(userId.toString())
             myPageViewModel.getMySignal(userId, onSuccess = { posts ->
                 previewPostAdapter.submitList(posts)
+                hideProgressDialog()
             }, onError = { error ->
                 Timber.e("Failed to load signals: ${error.message}")
+                hideProgressDialog()
             })
         }
     }
