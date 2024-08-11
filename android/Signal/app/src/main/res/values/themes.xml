@@ -5,7 +5,7 @@
         <item name="android:statusBarColor">@color/backgroundColor</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="floatingActionButtonStyle">@style/RoundFloatingActionButton</item>
-        <item name="colorPrimary">#C3C1FF</item>
+        <item name="colorPrimary">@color/purple</item>
         <item name="android:fontFamily">@font/bm</item>
         <item name="android:windowBackground">#F7F7F7</item>
     </style>
@@ -39,7 +39,7 @@
     </style>
 
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/mint</item>
+        <item name="android:color">@color/purple</item>
     </style>
 
     <style name="CustomTextViewStyle" parent="Widget.AppCompat.TextView">
