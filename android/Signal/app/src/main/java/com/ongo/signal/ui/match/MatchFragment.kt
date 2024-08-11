@@ -214,7 +214,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 userId = response.user.userId,
                 userName = response.user.name,
                 distance = response.dist,
-                quadrant = response.quadrant
+                quadrant = response.quadrant,
+//                profileImage = response.user.
             )
         }
     }
