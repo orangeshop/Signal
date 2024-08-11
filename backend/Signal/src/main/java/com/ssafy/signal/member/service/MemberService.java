@@ -200,6 +200,8 @@ public class MemberService implements UserDetailsService {
                 .userId(id)
                 .profileImage(url)
                 .name(member.getName())
+                .type(member.getType())
+                .score(member.getScore())
                 .build();
     }
 

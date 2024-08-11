@@ -73,7 +73,6 @@ public class KakaoService {
             TokenInfo tokenInfo = tokenProvider.createToken(member1);
             return tokenInfo;
         }
-
     }
 
 

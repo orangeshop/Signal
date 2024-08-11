@@ -11,4 +11,5 @@ public class findMemberDto {
     private String profileImage;
     private String name;
     private String type;
+    private int score;
 }
