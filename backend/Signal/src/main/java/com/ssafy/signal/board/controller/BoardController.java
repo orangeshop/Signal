@@ -19,7 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -87,10 +90,9 @@ public class BoardController {
         return ResponseEntity.ok().body(boardDtoList);
     }
 
-    /* 좋아요 버튼 클릭 */
     @Transactional
     @PostMapping("/board/{boardId}/like")
-    public ResponseEntity<Long> toggleLike(@RequestParam(value="userId") Long userId, @PathVariable("boardId") Long boardId) {
+    public ResponseEntity<Map<String, Object>> toggleLike(@RequestParam(value = "userId") Long userId, @PathVariable("boardId") Long boardId) {
         // Member 객체와 BoardEntity 객체를 가져옵니다.
         Member user = memberRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
@@ -100,19 +102,29 @@ public class BoardController {
 
         // 좋아요 레코드를 조회합니다.
         Optional<LikeEntity> existingLike = likeRepository.findByUserAndBoardEntity(user, board);
+
+        boolean isLiked;
         if (existingLike.isPresent()) {
             // 좋아요가 이미 존재하면 삭제
             likeRepository.delete(existingLike.get()); // 좋아요 삭제
             board.decrementLiked();  // 좋아요 수 감소
+            isLiked = false;  // 좋아요 상태를 false로 설정
         } else {
             // 좋아요가 존재하지 않으면 새로 추가
             LikeEntity like = new LikeEntity(user, board);
             likeRepository.save(like); // 좋아요 추가
             board.incrementLiked();  // 좋아요 수 증가
+            isLiked = true;  // 좋아요 상태를 true로 설정
         }
 
         boardRepository.save(board); // 게시글의 좋아요 수를 갱신
-        return ResponseEntity.ok(board.getLiked());  // 최신 좋아요 수 반환
+
+        // 응답 데이터 준비
+        Map<String, Object> response = new HashMap<>();
+        response.put("likedCount", board.getLiked());  // 최신 좋아요 수
+        response.put("isLiked", isLiked);  // 현재 좋아요 상태
+
+        return ResponseEntity.ok(response);  // 좋아요 수와 상태를 함께 반환
     }
 
 

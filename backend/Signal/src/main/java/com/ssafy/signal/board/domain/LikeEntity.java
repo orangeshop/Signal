@@ -23,12 +23,25 @@ public class LikeEntity {
     @JoinColumn(name = "board_id", nullable = false)
     private BoardEntity boardEntity;
 
+    @Column(name = "liked", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean liked = false;
+
     // 기본 생성자
     public LikeEntity() {}
 
-    // 생성자
     public LikeEntity(Member user, BoardEntity boardEntity) {
         this.user = user;
         this.boardEntity = boardEntity;
+        this.liked = true;
+    }
+
+    // liked 값을 true로 설정하는 메서드
+    public void like() {
+        this.liked = true;
+    }
+
+    // liked 값을 false로 설정하는 메서드
+    public void unlike() {
+        this.liked = false;
     }
 }
