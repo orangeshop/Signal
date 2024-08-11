@@ -2,6 +2,7 @@ package com.ongo.signal.data.repository.main.board
 
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.BoardImagesDTO
+import com.ongo.signal.data.model.main.BoardLikeDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import okhttp3.MultipartBody
@@ -19,6 +20,6 @@ interface BoardRepository {
     suspend fun getHotSignal(): Response<List<BoardDTO>>
     suspend fun getRecentSignalByTag(tag: String, page: Int, limit: Int): Response<List<BoardDTO>>
     suspend fun getHotSignalByTag(tag: String, page: Int, limit: Int): Response<List<BoardDTO>>
-    suspend fun boardLike(boardId: Long, userId: Long): Response<Long>
+    suspend fun boardLike(boardId: Long, userId: Long): Response<BoardLikeDTO>
 
 }
