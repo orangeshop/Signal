@@ -1,6 +1,7 @@
 package com.ongo.signal.ui.main.fragment
 
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -41,9 +42,13 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
 
         if(safeArgs.flagByRoot == true){
 
-            binding.btnChat.isEnabled = false
+            binding.btnChat.visibility = View.GONE
             writerId = safeArgs.flagByRootId
             writerName = safeArgs.flagByRootWriter
+        }
+
+        if(UserSession.userId == writerId){
+            binding.btnChat.visibility = View.GONE
         }
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
