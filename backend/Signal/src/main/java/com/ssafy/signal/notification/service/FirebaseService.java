@@ -130,8 +130,11 @@ public class FirebaseService {
             Response response = sendMessageTo(event.getUserId(), event.getTitle(),
                     event.getBody(), event.getFailureCount());
 
-            if(response == null) continue;
-            if(response.code() >= 200 && response.code() < 300) {
+            if(response == null) log.info("Response Is NULL");
+            if(response != null){
+                log.info(response.code() + " " + response.message());
+            }
+            if(response == null || response.code() < 300) {
                 notiFailRepository.delete(event);
             }
         }
