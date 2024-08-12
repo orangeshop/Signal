@@ -45,8 +45,8 @@ public class TokenProvider {
         this.accessTokenBlackList = accessTokenBlackList;
         byte[] keyBytes = Decoders.BASE64.decode(secrete);
         this.hashKey = Keys.hmacShaKeyFor(keyBytes);
-//        this.accessTokenValidationInMilliseconds = accessTokenValidationInSeconds + 1000 * 60 * 60 * 10;
-        this.accessTokenValidationInMilliseconds = 1000 * 5;
+        this.accessTokenValidationInMilliseconds = accessTokenValidationInSeconds + 1000 * 60 * 60 * 10;
+//        this.accessTokenValidationInMilliseconds = 1000 * 5;
         this.refreshTokenValidationInMilliseconds = accessTokenValidationInSeconds + 1000 * 60 * 60 * 24 * 3;
         this.tokenBlacklistService = tokenBlacklistService;
     }

@@ -21,6 +21,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.v4.runtime.Token;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -117,12 +120,17 @@ public class MemberController {
     @GetMapping("/mypage")
     public ApiResponseJson getUserInfo(@AuthenticationPrincipal UserPrinciple userPrinciple) {
 
-        log.info("요청 아이디 : {}", userPrinciple.getLoginId());
+        if (userPrinciple != null) {
+            log.info("요청 아이디 : {}", userPrinciple.getLoginId());
 
-        MyProfileDto foundMember = memberService.getUserInfo(userPrinciple.getLoginId());
+            MyProfileDto foundMember = memberService.getUserInfo(userPrinciple.getLoginId());
 
-        return new ApiResponseJson(HttpStatus.OK, foundMember);
+            return new ApiResponseJson(HttpStatus.OK, foundMember);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
     }
+
 
 
     @PutMapping("/{id}")
@@ -169,6 +177,18 @@ public class MemberController {
         log.info("Token issued for account: {}", tokenInfoDto.getAccessToken());
 
 //        return new ApiResponseJson(HttpStatus.OK, tokenInfoDto);
+        return tokenInfoDto;
+    }
+
+    @PostMapping("/autologin")
+    public TokenInfo autoauthenticateAccountAndIssueToken(@Valid @RequestBody MemberLoginDto memberLoginDto,
+                                                          BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new IllegalArgumentException("잘못된 요청입니다.");
+        }
+        TokenInfo tokenInfoDto = memberService.autologinMember(memberLoginDto.getLoginId(), memberLoginDto.getPassword());
+        log.info("AutoToken issued for account: {}", tokenInfoDto.getAccessToken());
+
         return tokenInfoDto;
     }
 

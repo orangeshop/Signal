@@ -13,7 +13,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -46,8 +45,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        ApiResponseJson responseJson = new ApiResponseJson(HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED),
-                errorCode, Map.of(ERROR_MESSAGE_KEY, errorMessage));
+        ApiResponseJson responseJson = new ApiResponseJson(HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED)
+        );
 
         String JsonToString = objectMapper.writeValueAsString(responseJson);
         response.getWriter().write(JsonToString);

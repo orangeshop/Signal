@@ -13,7 +13,13 @@ public class ApiResponseJson {
     public int code;
     public Object data;
 
-    public ApiResponseJson(HttpStatus httpStatus, int code, Object data) {
+    public ApiResponseJson(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+        this.code = code;
+        this.data = data;
+    }
+
+    public ApiResponseJson(HttpStatus httpStatus, int code) {
         this.httpStatus = httpStatus;
         this.code = code;
         this.data = data;

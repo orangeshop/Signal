@@ -8,6 +8,7 @@ import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
 import com.ssafy.signal.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
@@ -96,6 +98,8 @@ public class KakaoService {
 
         Gson gsonObj = new Gson();
         Map<?, ?> data = gsonObj.fromJson(userInfo, Map.class);
+
+//        log.info((String) ((Map<?, ?>) (data.get("kakao_account"))).get("email_needs_agreement"));
 
         boolean emailAgreement = (boolean) ((Map<?, ?>) (data.get("kakao_account"))).get("email_needs_agreement");
         String email;
