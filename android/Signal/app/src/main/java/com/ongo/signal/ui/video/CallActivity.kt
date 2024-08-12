@@ -161,6 +161,7 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
         VideoService.localSurfaceView?.release()
         VideoService.localSurfaceView = null
 
+        serviceRepository.stopService()
     }
 
 }

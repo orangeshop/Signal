@@ -399,7 +399,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun onDestroy() {
         super.onDestroy()
-        videoServiceRepository.stopService()
+//        videoServiceRepository.stopService()
         (requireActivity() as? MainActivity)?.showBottomNavigation()
     }
 
