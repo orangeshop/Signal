@@ -17,6 +17,7 @@ import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.video.repository.VideoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -103,7 +104,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 refreshToken = loginResponse.refreshToken,
                 refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
             )
-            Timber.tag("${loginType.name.toLowerCase()}Login").d("success")
+            Timber.tag("${loginType.name}Login").d("success")
             Timber.tag("userInfo").d("loginResponse: $loginResponse")
             successLogin(
                 signalUser,
