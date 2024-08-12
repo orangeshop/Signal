@@ -5,18 +5,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.airbnb.lottie.L
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
-import com.ongo.signal.data.model.review.UserProfileResponse
+import com.ongo.signal.data.model.match.MatchAcceptResponse
+import com.ongo.signal.data.model.match.MatchProposeResponse
 import com.ongo.signal.data.repository.chat.ChatUseCases
+import com.ongo.signal.data.repository.match.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.time.ZoneId
@@ -31,7 +34,13 @@ private const val TAG = "ChatHomeViewModel_싸피"
 @HiltViewModel
 class ChatHomeViewModel @Inject constructor(
     private val chatUseCases: ChatUseCases,
+    private val matchRepository: MatchRepository,
 ) : ViewModel() {
+
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
+        }
 
     private val _liveList = MutableLiveData<List<ChatHomeDTO>>()
     val liveList: LiveData<List<ChatHomeDTO>> = _liveList
@@ -46,11 +55,11 @@ class ChatHomeViewModel @Inject constructor(
     val todayTitleChecker = mutableListOf<Long>()
 
 
-    var chatRoomNumber : Long = 0
-    var chatRoomFromID : Long = 0
-    var chatRoomToID : Long = 0
-    var chatRoomTitle : String = ""
-    var chatRoomUrl : String = ""
+    var chatRoomNumber: Long = 0
+    var chatRoomFromID: Long = 0
+    var chatRoomToID: Long = 0
+    var chatRoomTitle: String = ""
+    var chatRoomUrl: String = ""
 
     var videoToID: Long = 0
     var videoToName: String = ""
@@ -162,7 +171,7 @@ class ChatHomeViewModel @Inject constructor(
         return test.await()
     }
 
-    suspend fun loadReadMessage(chatId : Long){
+    suspend fun loadReadMessage(chatId: Long) {
         loadDetailList(chatId, 300)
         viewModelScope.launch {
 
@@ -267,6 +276,35 @@ class ChatHomeViewModel @Inject constructor(
                 }
             }
             tmp = item.sendAt
+        }
+    }
+
+    fun postProposeVideoCall(
+        fromId: Long,
+        toId: Long,
+        onSuccess: (MatchProposeResponse) -> Unit,
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            matchRepository.postProposeVideoCall(fromId, toId).onSuccess { response ->
+                response?.let {
+                    onSuccess(it)
+                }
+            }.onFailure { throw it }
+        }
+    }
+
+    fun postProposeVideoCallAccept(
+        fromId: Long,
+        toId: Long,
+        flag: Int,
+        onSuccess: (MatchAcceptResponse) -> Unit
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            matchRepository.postProposeVideoCallAccept(fromId, toId, flag).onSuccess { response ->
+                response?.let {
+                    onSuccess(response)
+                }
+            }
         }
     }
 

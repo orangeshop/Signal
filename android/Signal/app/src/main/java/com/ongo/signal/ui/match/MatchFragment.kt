@@ -65,7 +65,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             args.remove("matchNotification")
             args.remove("otherUserId")
             args.remove("otherUserName")
-            if (notyTitle == "요청") {
+            if (notyTitle == "매칭 요청") {
                 showMatchingDialog()
             }
         }

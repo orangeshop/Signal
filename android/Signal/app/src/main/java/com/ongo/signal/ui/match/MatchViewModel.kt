@@ -100,35 +100,6 @@ class MatchViewModel @Inject constructor(
         }
     }
 
-    fun postProposeVideoCall(
-        fromId: Long,
-        toId: Long,
-        onSuccess: (MatchProposeResponse) -> Unit,
-    ) {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            matchRepository.postProposeVideoCall(24, 25).onSuccess { response ->
-                response?.let {
-                    onSuccess(it)
-                }
-            }.onFailure { throw it }
-        }
-    }
-
-    fun postProposeVideoCallAccept(
-        fromId: Long,
-        toId: Long,
-        flag: Int,
-        onSuccess: (MatchAcceptResponse) -> Unit
-    ) {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            matchRepository.postProposeVideoCallAccept(25, 24, 1).onSuccess { response ->
-                response?.let {
-                    onSuccess(response)
-                }
-            }
-        }
-    }
-
     fun deleteMatchRegistration(locationId: Long) {
         viewModelScope.launch {
             matchRepository.deleteMatching(locationId)

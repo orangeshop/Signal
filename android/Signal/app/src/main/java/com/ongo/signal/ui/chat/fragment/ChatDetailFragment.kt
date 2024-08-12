@@ -3,7 +3,6 @@ package com.ongo.signal.ui.chat.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
-import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
@@ -22,7 +21,6 @@ import com.ongo.signal.databinding.FragmentChatDetailBinding
 import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
-import com.ongo.signal.ui.my.MyPageFragmentDirections
 import com.ongo.signal.ui.video.CallActivity
 import com.ongo.signal.ui.video.repository.VideoRepository
 import com.ongo.signal.ui.video.service.VideoService
@@ -82,8 +80,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
             binding.chatDetailTitleTv.text = chatViewModel.chatRoomTitle
 
-
-
             lifecycleScope.launch {
                 chatDetailAdapter = ChatDetailAdapter(
                     timeSetting = { time, target ->
@@ -134,7 +130,11 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         findNavController().navigate(
                             ChatDetailFragmentDirections
-                                .actionChatDetailFragmentToReviewFragment(flagByRoot = true, flagByRootId = if(UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID , flagByRootWriter = chatViewModel.chatRoomTitle)
+                                .actionChatDetailFragmentToReviewFragment(
+                                    flagByRoot = true,
+                                    flagByRootId = if (UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID,
+                                    flagByRootWriter = chatViewModel.chatRoomTitle
+                                )
                         )
                     },
                     otherNameSetting = {
@@ -149,7 +149,10 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList) {
-                        chatViewModel.readMessage(chatViewModel.chatRoomNumber, UserSession.userId!!)
+                        chatViewModel.readMessage(
+                            chatViewModel.chatRoomNumber,
+                            UserSession.userId!!
+                        )
                         val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
 
                         for (message in chatList) {
@@ -295,7 +298,15 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             chatDetailAdd.setOnClickListener {
-                playWebRtc()
+                UserSession.userId?.let { myId ->
+                    chatViewModel.postProposeVideoCall(
+                        myId,
+                        chatViewModel.videoToID
+                    ) { response ->
+                        Timber.d("영통 신청 성공 ${response}")
+                    }
+                }
+//                playWebRtc()
             }
         }
     }

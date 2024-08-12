@@ -203,7 +203,7 @@ class VideoService : Service(), VideoRepository.Listener {
     private fun startServiceWithNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                "channel1", "foreground", NotificationManager.IMPORTANCE_HIGH
+                "channel1", "foreground", NotificationManager.IMPORTANCE_LOW
             )
 
             val intent = Intent()
@@ -214,8 +214,9 @@ class VideoService : Service(), VideoRepository.Listener {
             notificationManager.createNotificationChannel(notificationChannel)
             val notification = NotificationCompat.Builder(
                 this, "channel1"
-            ).setSmallIcon(R.mipmap.ic_app_icon)
+            ).setSmallIcon(R.drawable.temp)
                 .addAction(R.drawable.ic_end_call, "Exit", pendingIntent)
+                .setContentTitle("영상통화를 사용할 준비가 되었습니다.")
 
             startForeground(1, notification.build())
         }

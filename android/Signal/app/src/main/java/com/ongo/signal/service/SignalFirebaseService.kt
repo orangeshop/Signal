@@ -32,21 +32,43 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 putExtra("otherUserName", nowMessage[2])
             }
 
-            val guideTitle = when (messageTitle) {
-                "요청" -> "매칭 신청"
+            val splitTitle = messageTitle.split(" ")
+            var guideTitle = ""
+            var guideContent = ""
+            if (splitTitle[0] == "매칭") {
+                guideTitle = when (splitTitle[1]) {
+                    "요청" -> "매칭 신청"
 
-                "승낙" -> "매칭 성공"
+                    "승낙" -> "매칭 성공"
 
-                "거부" -> "매칭 거부"
-                else -> ""
-            }
-            val guideContent = when (messageTitle) {
-                "요청" -> "${nowMessage[2]} 님께 매칭 신청이 왔습니다."
+                    "거부" -> "매칭 거부"
+                    else -> ""
+                }
+                guideContent = when (splitTitle[1]) {
+                    "요청" -> "${nowMessage[2]} 님께 매칭 신청이 왔습니다."
 
-                "승낙" -> "${nowMessage[2]} 님이 매칭을 수락하였습니다!"
+                    "승낙" -> "${nowMessage[2]} 님이 매칭을 수락하였습니다!"
 
-                "거부" -> "${nowMessage[2]} 님이 매칭을 거절하였습니다."
-                else -> ""
+                    "거부" -> "${nowMessage[2]} 님이 매칭을 거절하였습니다."
+                    else -> ""
+                }
+            } else {
+                guideTitle = when (splitTitle[1]) {
+                    "요청" -> "영통 신청"
+
+                    "승낙" -> "영통 성공"
+
+                    "거부" -> "영통 거부"
+                    else -> ""
+                }
+                guideContent = when (splitTitle[1]) {
+                    "요청" -> "${nowMessage[2]} 님께 영상통화 신청이 왔습니다."
+
+                    "승낙" -> "${nowMessage[2]} 님이 영상통화를 수락하였습니다!"
+
+                    "거부" -> "${nowMessage[2]} 님이 영상통화를 거절하였습니다."
+                    else -> ""
+                }
             }
 
             val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
