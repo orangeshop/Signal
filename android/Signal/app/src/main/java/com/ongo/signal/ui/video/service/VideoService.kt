@@ -30,6 +30,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.webrtc.SurfaceViewRenderer
 import javax.inject.Inject
 
+interface VideoStartedListener {
+    fun onServiceStarted()
+}
+
+
 @AndroidEntryPoint
 class VideoService : Service(), VideoRepository.Listener {
 
@@ -37,6 +42,7 @@ class VideoService : Service(), VideoRepository.Listener {
 
     private var isServiceRunning = false
     private var username: String? = null
+
 
     @Inject
     lateinit var videoRepository: VideoRepository
@@ -49,7 +55,7 @@ class VideoService : Service(), VideoRepository.Listener {
 
 
     companion object {
-        var listener: Listener? = null
+        var videoStartedListener: VideoStartedListener? = null
         var endCallListener: EndCallListener? = null
         var localSurfaceView: SurfaceViewRenderer? = null
         var remoteSurfaceView: SurfaceViewRenderer? = null
@@ -183,6 +189,8 @@ class VideoService : Service(), VideoRepository.Listener {
             videoRepository.initWebrtcClient(username!!)
 
             increaseVolume()
+
+            videoStartedListener?.onServiceStarted()
         }
     }
 
@@ -232,7 +240,7 @@ class VideoService : Service(), VideoRepository.Listener {
             when (data.type) {
                 DataModelType.StartVideoCall,
                 DataModelType.StartAudioCall -> {
-                    listener?.onCallReceived(data)
+//                    listener?.onCallReceived(data)
                 }
 
                 else -> Unit
@@ -245,9 +253,6 @@ class VideoService : Service(), VideoRepository.Listener {
         endCallAndRestartRepository()
     }
 
-    interface Listener {
-        fun onCallReceived(model: DataModel)
-    }
 
     interface EndCallListener {
         fun onCallEnded()
