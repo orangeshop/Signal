@@ -65,9 +65,6 @@ public class TagService {
 
         List<BoardDto> boards = tagEntity.getBoard().stream()
                 .sorted(Comparator.comparing(BoardEntity::getCreatedDate).reversed())
-<<<<<<< HEAD
-                .map(this::buildBoardDto)
-=======
                 .map(boardEntity -> {
                     // 게시글 작성자의 정보 가져오기
                     Member member = boardEntity.getUser();
@@ -95,7 +92,6 @@ public class TagService {
                     // BoardDto 생성 및 반환
                     return boardEntity.asBoardDto(comments, fileUrls, profile);
                 })
->>>>>>> f00261754b54794b1d6416440a8610fabaafb217
                 .collect(Collectors.toList());
 
         int start = page * limit;
