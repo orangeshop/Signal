@@ -57,6 +57,14 @@ class StartActivity : AppCompatActivity() {
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
+
+
+//            Log.d("싸피", "onCreate: ${dataStoreClass.isLoginData.first()}")
+
+            val intent = Intent(this@StartActivity, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+
             lifecycleScope.launch {
                 if (dataStoreClass.isLoginData.first() == false) {
                     val intent = Intent(this@StartActivity, LoginActivity::class.java)
@@ -74,6 +82,7 @@ class StartActivity : AppCompatActivity() {
                     }
                 }
             }
+
         }, 400)
 
     }
