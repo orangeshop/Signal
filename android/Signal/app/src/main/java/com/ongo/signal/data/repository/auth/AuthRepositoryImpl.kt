@@ -70,7 +70,7 @@ class AuthRepositoryImpl @Inject constructor(
             if (req.isSuccessful) {
                 Result.success(req.body())
             } else {
-                Result.failure(Exception("카카오 로그인 실패: ${req.code()} - ${req.message()}"))
+                Result.failure(Exception("카카오 로그인 실패: ${req.errorBody()} - ${req.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
