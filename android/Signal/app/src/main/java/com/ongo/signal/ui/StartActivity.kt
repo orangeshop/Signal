@@ -102,7 +102,8 @@ class StartActivity : AppCompatActivity() {
                     userPassword = userPassword,
                     profileImage = "",
                     accessToken = signalUser.accessToken,
-                    refreshToken = signalUser.refreshToken
+                    refreshToken = signalUser.refreshToken,
+                    userEncodePassword = signalUser.userEncodePassword
                 )
 
 
