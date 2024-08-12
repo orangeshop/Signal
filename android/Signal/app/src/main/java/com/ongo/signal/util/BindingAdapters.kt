@@ -5,9 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.ongo.signal.R
-import timber.log.Timber
 
 object BindingAdapters {
 
@@ -32,6 +30,7 @@ object BindingAdapters {
     fun loadProfile(view: ImageView, url: String?) {
         Glide.with(view.context)
             .load(url)
+            .placeholder(R.drawable.basic_profile)
             .circleCrop()
             .into(view)
     }
