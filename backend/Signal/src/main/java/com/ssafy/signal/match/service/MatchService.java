@@ -153,7 +153,7 @@ public class MatchService {
         Member from = memberRepository.findById(from_id).orElseThrow();
         Member to = memberRepository.findById(to_id).orElseThrow();
 
-        firebaseService.sendMessageTo(to.getUserId(), makeTitle(flag),
+        firebaseService.sendMessageTo(to.getUserId(), makeTitle(flag + 2),
                 makeMessageBody(from,to), 0);
 
         return MatchResponse
