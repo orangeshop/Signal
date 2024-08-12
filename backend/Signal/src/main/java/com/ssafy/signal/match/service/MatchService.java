@@ -25,9 +25,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MatchService {
-    private final int DENY = 0;
-    private final int APPROVAL = 1;
-    private final int REQUEST = 2;
+    private final int MATCHING_DENY = 0;
+    private final int MATCHING_APPROVAL= 1;
+    private final int MATCHING_REQUEST =2 ;
+
+    private final int VIDEO_DENY = 3;
+    private final int VIDEO_APPROVAL = 4;
+    private final int VIDEO_REQUEST = 5;
+
+
 
     private final int NEAR_DISTANCE = 10;
 
@@ -64,7 +70,7 @@ public class MatchService {
         to = locationRepository.findByUserId(to).getUserId();
 
         String body = makeMessageBody(from,to);
-        firebaseService.sendMessageTo(to.getUserId(), makeTitle(REQUEST),
+        firebaseService.sendMessageTo(to.getUserId(), makeTitle(MATCHING_REQUEST),
                 body, 0);
 
 
@@ -93,7 +99,7 @@ public class MatchService {
         from = locationRepository.findByUserId(from).getUserId();
         to = locationRepository.findByUserId(to).getUserId();
 
-        if(flag == APPROVAL)
+        if(flag == MATCHING_APPROVAL)
         {
             locationRepository.deleteById(fromLocation.getLocation_id());
             locationRepository.deleteById(toLocation.getLocation_id());
@@ -127,7 +133,7 @@ public class MatchService {
         String body = makeMessageBody(from,to);
         firebaseService.sendMessageTo(
                 to.getUserId(),
-                makeTitle(REQUEST),
+                makeTitle(VIDEO_REQUEST),
                 body,
                 0);
 
@@ -240,6 +246,8 @@ public class MatchService {
     {
         member.setPassword("");
         member.setLoginId("");
+        member.setBoards(null);
+        member.setComments(null);
         return member;
     }
 
@@ -287,9 +295,13 @@ public class MatchService {
     }
     private String makeTitle(int flag) {
         switch (flag){
-            case APPROVAL : return "승낙";
-            case DENY : return "거부";
-            case REQUEST : return "요청";
+            case MATCHING_APPROVAL : return "매칭 승낙";
+            case MATCHING_DENY : return "매칭 거부";
+            case MATCHING_REQUEST : return "매칭 요청";
+
+            case VIDEO_REQUEST : return "영통 요청";
+            case VIDEO_APPROVAL : return "영통 승낙";
+            case VIDEO_DENY : return "영통 거부";
             default: return "ERROR";
         }
     }
