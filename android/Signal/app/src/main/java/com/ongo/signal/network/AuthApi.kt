@@ -34,4 +34,9 @@ interface AuthApi {
     suspend fun kakaoLogin(
         @Query("token") token: String
     ): Response<LoginResponse>
+
+    @POST("/user/autologin")
+    suspend fun autoLogin(
+        @Body request: LoginRequest
+    ): Response<LoginResponse>
 }

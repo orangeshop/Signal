@@ -25,6 +25,7 @@ class DataStoreClass(val context: Context) {
     private val profileImage = stringPreferencesKey("profileImage")
     private val accessToken = stringPreferencesKey("accessToken")
     private val refreshToken = stringPreferencesKey("refreshToken")
+    private val userEncodePassword = stringPreferencesKey("userEncodePassword")
 
 
     val isLoginData: Flow<Boolean> = context.dataStore.data
@@ -91,6 +92,14 @@ class DataStoreClass(val context: Context) {
             preferences[refreshToken] ?: ""
         }
 
+    val userEncodePasswordData: Flow<String> = context.dataStore.data
+        .catch { _ ->
+            emit(emptyPreferences())
+        }
+        .map { preferences ->
+            preferences[userEncodePassword] ?: ""
+        }
+
     suspend fun setIsLogin(nowIsLogin: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[isLogin] = nowIsLogin
@@ -108,8 +117,6 @@ class DataStoreClass(val context: Context) {
             preferences[userLoginId] = nowUserLoginId
         }
     }
-
-
 
     suspend fun setUserName(nowUserName: String) {
         context.dataStore.edit { preferences ->
@@ -142,11 +149,15 @@ class DataStoreClass(val context: Context) {
         }
     }
 
+    suspend fun setUserEncodePassword(nowUserEncodePassword: String) {
+        context.dataStore.edit { preferences ->
+            preferences[userEncodePassword] = nowUserEncodePassword
+        }
+    }
 
     suspend fun clearData() {
         context.dataStore.edit { preferences ->
             preferences.clear()
         }
     }
-
 }

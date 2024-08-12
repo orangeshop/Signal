@@ -5,6 +5,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import com.kakao.sdk.user.model.User
 import com.navercorp.nid.NaverIdLoginSDK
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
@@ -19,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.math.log
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
@@ -39,7 +41,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun checkLogin() {
-        viewModel.checkLogin { signalUser, userLoginId, userPassword ->
+        viewModel.autoLogin { signalUser, userLoginId, userPassword ->
+            Timber.tag("autoLogin").d(signalUser.toString())
             successLogin(signalUser, userLoginId, userPassword)
         }
     }
@@ -92,7 +95,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         }
     }
 
-    private fun handleLoginResponse(isSuccess: Boolean, loginResponse: LoginResponse?, loginType: LoginType) {
+    private fun handleLoginResponse(
+        isSuccess: Boolean,
+        loginResponse: LoginResponse?,
+        loginType: LoginType
+    ) {
         if (isSuccess && loginResponse != null) {
             val signalUser = SignalUser(
                 loginId = loginResponse.userInfo.loginId,
@@ -102,7 +109,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 userId = loginResponse.userInfo.userId,
                 userName = loginResponse.userInfo.name,
                 refreshToken = loginResponse.refreshToken,
-                refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
+                refreshTokenExpireTime = loginResponse.refreshTokenExpireTime,
+                userEncodePassword = loginResponse.userInfo.password
             )
             Timber.tag("${loginType.name}Login").d("success")
             Timber.tag("userInfo").d("loginResponse: $loginResponse")
@@ -111,6 +119,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 loginResponse.userInfo.loginId,
                 loginResponse.userInfo.password
             )
+
         } else {
             makeToast("${loginType.displayName} 로그인 실패")
         }
@@ -139,11 +148,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 ),
                 onSuccess = { isSuccess, signalUser ->
                     if (isSuccess) {
-                        successLogin(
-                            signalUser,
-                            binding.tietId.text.toString(),
-                            binding.tietPassword.text.toString()
-                        )
+                        if (signalUser != null) {
+                            successLogin(
+                                signalUser,
+                                binding.tietId.text.toString(),
+                                signalUser.userEncodePassword
+                            )
+                        }
                     } else {
                         makeToast("아이디나 비밀번호를 확인해주세요")
                     }
@@ -163,8 +174,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             UserSession.accessToken = signalUser.accessToken
             UserSession.refreshToken = signalUser.refreshToken
             UserSession.userType = signalUser.type
+            UserSession.userEncodePassword = signalUser.userEncodePassword
 
-            Timber.d("로그인 완료 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
+            Timber.d("로그인 완료 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken} ${UserSession.userEncodePassword}")
 
             viewModel.saveUserData(
                 userId = signalUser.userId,
@@ -173,7 +185,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 userPassword = userPassword,
                 profileImage = "",
                 accessToken = signalUser.accessToken,
-                refreshToken = signalUser.refreshToken
+                refreshToken = signalUser.refreshToken,
+                userEncodePassword = signalUser.userEncodePassword
             )
 
             videoRepository.login(

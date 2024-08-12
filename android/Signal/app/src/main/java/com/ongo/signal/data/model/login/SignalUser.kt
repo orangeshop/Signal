@@ -10,4 +10,5 @@ data class SignalUser(
     val accessTokenExpireTime: String,
     val refreshToken: String,
     val refreshTokenExpireTime: String,
+    val userEncodePassword: String
 )
