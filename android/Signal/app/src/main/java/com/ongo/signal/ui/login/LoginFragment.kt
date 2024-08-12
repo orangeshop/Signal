@@ -41,7 +41,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun checkLogin() {
-        viewModel.autoLogin { signalUser, userLoginId, userPassword ->
+        viewModel.checkLogin() { signalUser, userLoginId, userPassword ->
             Timber.tag("autoLogin").d(signalUser.toString())
             successLogin(signalUser, userLoginId, userPassword)
         }

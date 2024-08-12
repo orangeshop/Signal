@@ -59,19 +59,13 @@ class StartActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 
 
-//            Log.d("싸피", "onCreate: ${dataStoreClass.isLoginData.first()}")
-
-            val intent = Intent(this@StartActivity, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-
             lifecycleScope.launch {
                 if (dataStoreClass.isLoginData.first() == false) {
                     val intent = Intent(this@StartActivity, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
                 }else{
-                    viewModel.checkLogin { signalUser, userLoginId, userPassword ->
+                    viewModel.autoLogin() { signalUser, userLoginId, userPassword ->
                         lifecycleScope.launch {
                             if (successLogin(signalUser, userLoginId, userPassword).isCompleted) {
                                 val intent = Intent(this@StartActivity, MainActivity::class.java)
@@ -80,6 +74,8 @@ class StartActivity : AppCompatActivity() {
                             }
                         }
                     }
+
+
                 }
             }
 
