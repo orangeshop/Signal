@@ -8,4 +8,5 @@ object UserSession {
     var refreshToken: String? = null
     var profileImage: String? = null
     var userType: String? = null
+    var userEncodePassword: String? = null
 }
