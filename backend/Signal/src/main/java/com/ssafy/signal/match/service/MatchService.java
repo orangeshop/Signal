@@ -27,13 +27,11 @@ import java.util.stream.Collectors;
 public class MatchService {
     private final int MATCHING_DENY = 0;
     private final int MATCHING_APPROVAL= 1;
-    private final int MATCHING_REQUEST =2 ;
+    private final int MATCHING_REQUEST =2;
 
     private final int VIDEO_DENY = 3;
     private final int VIDEO_APPROVAL = 4;
     private final int VIDEO_REQUEST = 5;
-
-
 
     private final int NEAR_DISTANCE = 10;
 
@@ -153,7 +151,7 @@ public class MatchService {
         Member from = memberRepository.findById(from_id).orElseThrow();
         Member to = memberRepository.findById(to_id).orElseThrow();
 
-        firebaseService.sendMessageTo(to.getUserId(), makeTitle(flag + 2),
+        firebaseService.sendMessageTo(to.getUserId(), makeTitle(flag + 3),
                 makeMessageBody(from,to), 0);
 
         return MatchResponse
