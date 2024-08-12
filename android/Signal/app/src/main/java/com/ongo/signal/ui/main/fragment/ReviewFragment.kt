@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,7 +70,9 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         if (userId != null) {
             if (writerId != null) {
                 CreateChatRoom.Create(userId, writerId)
-                findNavController().navigate(R.id.action_reviewFragment_to_chatFragment)
+
+                findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
+
             } else {
                 Timber.d("writerId is null")
             }
