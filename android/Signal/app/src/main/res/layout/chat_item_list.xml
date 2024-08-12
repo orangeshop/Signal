@@ -11,7 +11,6 @@
         android:id="@+id/chat_home_cl"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/backgroundColor"
         android:paddingBottom="4dp">
         
         <ImageView
@@ -27,7 +26,6 @@
         
         <TextView
             android:id="@+id/chat_item_title"
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -38,7 +36,6 @@
 
         <TextView
             android:id="@+id/content"
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -50,7 +47,6 @@
 
         <TextView
             android:id="@+id/Time"
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

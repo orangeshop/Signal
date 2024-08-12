@@ -2,6 +2,7 @@ package com.ongo.signal.data.repository.main.board
 
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.BoardImagesDTO
+import com.ongo.signal.data.model.main.BoardLikeDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.UpdateBoardDTO
 import com.ongo.signal.network.MainApi
@@ -36,7 +37,7 @@ class BoardRepositoryImpl @Inject constructor(private val mainApi: MainApi) : Bo
         return mainApi.deleteBoard(boardId)
     }
 
-    override suspend fun boardLike(boardId: Long, userId: Long): Response<Long> {
+    override suspend fun boardLike(boardId: Long, userId: Long): Response<BoardLikeDTO> {
         return mainApi.boardLike(boardId, userId)
     }
 

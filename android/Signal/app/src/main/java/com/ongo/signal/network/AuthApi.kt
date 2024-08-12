@@ -23,11 +23,15 @@ interface AuthApi {
     @POST("user/refresh")
     suspend fun renewalRefreshToken(
         @Header("RefreshToken") refreshToken: String,
-    ) : Response<LoginResponse>
+    ): Response<LoginResponse>
 
     @POST("/oauth/naver")
     suspend fun naverLogin(
         @Query("token") token: String
     ): Response<LoginResponse>
 
+    @POST("/oauth/kakao")
+    suspend fun kakaoLogin(
+        @Query("token") token: String
+    ): Response<LoginResponse>
 }

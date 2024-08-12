@@ -114,6 +114,16 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                             binding.etContent.setText(recognizedText)
                             boardViewModel.setContent(recognizedText)
                         }
+
+//                        R.id.iv_title_mic -> {
+//                            binding.etTitle.append(" $recognizedText")
+//                            boardViewModel.setTitle(binding.etTitle.text.toString())
+//                        }
+//
+//                        R.id.iv_content_mic -> {
+//                            binding.etContent.append(" $recognizedText")
+//                            boardViewModel.setContent(binding.etContent.text.toString())
+//                        }
                     }
                 }
             }
@@ -167,6 +177,17 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
                             urlItems.addAll(imageUrls)
                         }
                     }
+
+                    val tags = it.tags
+                    if (!tags.isNullOrEmpty()) {
+                        val tag = tags.first().tag
+                        val position = (binding.spinner.adapter as ArrayAdapter<String>).getPosition(tag)
+                        if (position >= 0) {
+                            binding.spinner.setSelection(position)
+                            selectedTag = tag
+                            selectedTagId = tags.first().tagId
+                        }
+                    }
                 }
             }
         }
@@ -214,7 +235,15 @@ class WritePostFragment : BaseFragment<FragmentWritePostBinding>(R.layout.fragme
 
     fun onRegisterButtonClick() {
         val title = binding.etTitle.text.toString()
+        if (title.isEmpty()) {
+            makeToast("제목을 입력해주세요")
+            return
+        }
         val content = binding.etContent.text.toString()
+        if (content.isEmpty()) {
+            makeToast("내용을 입력해주세요")
+            return
+        }
         val userId = UserSession.userId
         val writer = UserSession.userName
         val tags = listOf(TagDTO(tagId = selectedTagId, tag = selectedTag))

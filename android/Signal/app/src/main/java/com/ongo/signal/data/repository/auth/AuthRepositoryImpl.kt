@@ -64,4 +64,17 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun kakaoLogin(token: String): Result<LoginResponse?> {
+        return try {
+            val req = authApi.kakaoLogin(token)
+            if (req.isSuccessful) {
+                Result.success(req.body())
+            } else {
+                Result.failure(Exception("카카오 로그인 실패: ${req.errorBody()} - ${req.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }

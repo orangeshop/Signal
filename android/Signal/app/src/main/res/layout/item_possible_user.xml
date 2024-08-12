@@ -26,9 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="3dp"
-            android:fontFamily="@font/inter_bold"
             android:text="최지훈"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             app:layout_constraintStart_toEndOf="@id/iv_grade"
             app:layout_constraintTop_toTopOf="@id/iv_grade" />
 
@@ -36,11 +35,9 @@
             android:id="@+id/tv_introduce"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_light"
             android:text="어르신들 사랑해요"
             app:layout_constraintEnd_toStartOf="@id/btn_matching"
             android:layout_marginEnd="8dp"
-            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@id/tv_user_id"
             app:layout_constraintTop_toBottomOf="@id/tv_user_id" />
 
@@ -49,10 +46,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/background_cancel_button_ripple"
-            android:fontFamily="@font/inter_light"
             android:paddingHorizontal="8dp"
             android:text="@string/accept_matching"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_grade"
             app:layout_constraintEnd_toEndOf="parent"

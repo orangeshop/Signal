@@ -3,18 +3,21 @@ package com.ongo.signal.ui.login
 import android.content.Intent
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
-import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.login.LoginRequest
+import com.ongo.signal.data.model.login.LoginResponse
 import com.ongo.signal.data.model.login.SignalUser
 import com.ongo.signal.databinding.FragmentLoginBinding
 import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.video.repository.VideoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,33 +46,75 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
     private fun setupNaverLoginButton() {
         NaverLoginCallback.setOnSuccessCallback { accessToken, _ ->
-            viewModel.loginWithNaver(accessToken) { isSuccess, loginResponse ->
-                if (isSuccess && loginResponse != null) {
-                    val signalUser = SignalUser(
-                        loginId = loginResponse.userInfo.loginId,
-                        accessToken = loginResponse.accessToken,
-                        accessTokenExpireTime = loginResponse.accessTokenExpireTime,
-                        type = loginResponse.userInfo.type,
-                        userId = loginResponse.userInfo.userId,
-                        userName = loginResponse.userInfo.name,
-                        refreshToken = loginResponse.refreshToken,
-                        refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
-                    )
-                    Timber.tag("naverLogin").d("success")
-                    successLogin(signalUser, loginResponse.userInfo.loginId, "")
-                } else {
-                    makeToast("네이버 로그인 실패")
-                }
-            }
+            handleLoginWithNaver(accessToken)
         }
 
         NaverLoginCallback.setOnFailureCallback { errorMessage ->
             makeToast(errorMessage)
         }
-
-        binding.nolbLogin.setOAuthLogin(NaverLoginCallback)
     }
 
+    fun onNaverLoginClicked() {
+        NaverIdLoginSDK.authenticate(requireContext(), NaverLoginCallback)
+    }
+
+    fun kakaoLoginClicked() {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
+            UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
+                handleKakaoResponse(token, error)
+            }
+        } else {
+            UserApiClient.instance.loginWithKakaoAccount(requireContext()) { token, error ->
+                handleKakaoResponse(token, error)
+            }
+        }
+    }
+
+    private fun handleKakaoResponse(token: OAuthToken?, error: Throwable?) {
+        if (error != null) {
+            Timber.e("카카오 로그인 실패: $error")
+            makeToast("카카오 로그인 실패")
+        } else if (token != null) {
+            Timber.d("카카오 로그인 성공, 토큰: ${token.accessToken}")
+            handleLoginWithKakao(token.accessToken)
+        }
+    }
+
+    private fun handleLoginWithNaver(accessToken: String) {
+        viewModel.loginWithNaver(accessToken) { isSuccess, loginResponse ->
+            handleLoginResponse(isSuccess, loginResponse, LoginType.NAVER)
+        }
+    }
+
+    private fun handleLoginWithKakao(accessToken: String) {
+        viewModel.handleKakaoLogin(accessToken) { isSuccess, loginResponse ->
+            handleLoginResponse(isSuccess, loginResponse, LoginType.KAKAO)
+        }
+    }
+
+    private fun handleLoginResponse(isSuccess: Boolean, loginResponse: LoginResponse?, loginType: LoginType) {
+        if (isSuccess && loginResponse != null) {
+            val signalUser = SignalUser(
+                loginId = loginResponse.userInfo.loginId,
+                accessToken = loginResponse.accessToken,
+                accessTokenExpireTime = loginResponse.accessTokenExpireTime,
+                type = loginResponse.userInfo.type,
+                userId = loginResponse.userInfo.userId,
+                userName = loginResponse.userInfo.name,
+                refreshToken = loginResponse.refreshToken,
+                refreshTokenExpireTime = loginResponse.refreshTokenExpireTime
+            )
+            Timber.tag("${loginType.name}Login").d("success")
+            Timber.tag("userInfo").d("loginResponse: $loginResponse")
+            successLogin(
+                signalUser,
+                loginResponse.userInfo.loginId,
+                loginResponse.userInfo.password
+            )
+        } else {
+            makeToast("${loginType.displayName} 로그인 실패")
+        }
+    }
 
     private fun initViews() {
         binding.btnSignup.setOnClickListener {
@@ -104,7 +149,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     }
                 }
             )
-
         }
     }
 
@@ -144,5 +188,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 }
             }
         }
+    }
+
+    enum class LoginType(val displayName: String) {
+        NAVER("네이버"),
+        KAKAO("카카오")
     }
 }

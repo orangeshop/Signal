@@ -59,9 +59,4 @@ interface UserApi {
         @Path("userId") userId: Long,
         @Part file: MultipartBody.Part
     ): Response<ProfileImageResponse>
-
-    @POST("/oauth/naver")
-    suspend fun naverLogin(
-        @Query("token") token: String
-    ): Response<LoginResponse>
 }
