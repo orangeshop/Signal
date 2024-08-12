@@ -101,7 +101,7 @@
                 android:id="@+id/chat_detail_add"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_video_call" />
+                android:src="@drawable/baseline_videocam_24" />
 
             <EditText
                 android:id="@+id/et_search"
