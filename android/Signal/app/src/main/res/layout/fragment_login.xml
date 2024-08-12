@@ -69,7 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/background_edit_text"
-                android:singleLine="true" />
+                android:fontFamily="@font/inter_bold"
+                android:singleLine="true"
+                tools:text="asdfsdfsa" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
-            android:textColorHint="@color/black"
+            app:endIconMode="password_toggle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_password">
@@ -100,16 +102,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/background_edit_text"
+                android:fontFamily="@font/inter_bold"
                 android:inputType="textPassword"
-                android:singleLine="true" />
+                android:singleLine="true"
+                tools:text="sdafafsd" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_naver"
             style="@style/Style.App.circleImageView"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:onClick="@{()->fragment.onNaverLoginClicked()}"
             android:scaleType="center"
             android:src="@drawable/naver_icon"
@@ -121,8 +125,8 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_kakao"
             style="@style/Style.App.circleImageView"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:onClick="@{()->fragment.kakaoLoginClicked()}"
             android:scaleType="centerCrop"
             android:src="@drawable/btn_kakao"

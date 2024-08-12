@@ -17,6 +17,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.time.ZoneId
@@ -42,15 +43,13 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageReadList = MutableLiveData<List<Pair<Long, Long>>>()
     val messageReadList: LiveData<List<Pair<Long, Long>>> = _messageReadList
 
-
     val todayTitleChecker = mutableListOf<Long>()
 
-
-    var chatRoomNumber : Long = 0
-    var chatRoomFromID : Long = 0
-    var chatRoomToID : Long = 0
-    var chatRoomTitle : String = ""
-    var chatRoomUrl : String = ""
+    var chatRoomNumber: Long = 0
+    var chatRoomFromID: Long = 0
+    var chatRoomToID: Long = 0
+    var chatRoomTitle: String = ""
+    var chatRoomUrl: String = ""
 
     var videoToID: Long = 0
     var videoToName: String = ""
@@ -78,7 +77,6 @@ class ChatHomeViewModel @Inject constructor(
             }
         }
     }
-
 
     fun deleteChat(id: Long) {
         viewModelScope.launch {
@@ -109,7 +107,6 @@ class ChatHomeViewModel @Inject constructor(
             chatUseCases.readMessage(id, userId)
         }
     }
-
 
     fun timeSetting(): String {
         return chatUseCases.timeSetting()
@@ -162,7 +159,7 @@ class ChatHomeViewModel @Inject constructor(
         return test.await()
     }
 
-    suspend fun loadReadMessage(chatId : Long){
+    suspend fun loadReadMessage(chatId: Long) {
         loadDetailList(chatId, 300)
         viewModelScope.launch {
 
@@ -269,6 +266,5 @@ class ChatHomeViewModel @Inject constructor(
             tmp = item.sendAt
         }
     }
-
 
 }

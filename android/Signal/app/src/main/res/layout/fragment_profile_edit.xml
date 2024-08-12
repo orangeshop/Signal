@@ -199,6 +199,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
+                        android:fontFamily="@font/gangwon_bold"
+                        android:switchTextAppearance="@style/ChipTextAppearance"
                         android:text="@string/junior"
                         android:textSize="24sp"
                         app:chipCornerRadius="30dp" />

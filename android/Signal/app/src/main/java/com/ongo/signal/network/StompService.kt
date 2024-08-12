@@ -9,13 +9,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class StompService @Inject constructor() {
+class StompService @Inject constructor(
+    authInterceptor: AuthInterceptor
+) {
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(
-            HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
+            authInterceptor
         ).build()
 
     private val client = StompClient(

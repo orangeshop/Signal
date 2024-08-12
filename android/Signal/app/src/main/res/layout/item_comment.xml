@@ -44,6 +44,17 @@
             app:layout_constraintTop_toTopOf="@id/iv_profile"
             tools:text="User Name" />
 
+        <TextView
+            android:id="@+id/tv_js"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_name"
+            app:layout_constraintStart_toEndOf="@id/tv_name"
+            app:layout_constraintTop_toTopOf="@id/tv_name"
+            tools:text="asfsa" />
+<!--        android:text='@{comment.type == "주니어" ? "J" : "S"}'-->
+
         <ImageView
             android:id="@+id/iv_popup"
             android:layout_width="wrap_content"
