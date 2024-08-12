@@ -21,6 +21,8 @@ class AuthInterceptor @Inject constructor(
 
         val response = chain.proceed(request)
 
+        Timber.d("인터셉터에서 가로챈 리퀘스트 ${request} \n 리스폰스 ${response}")
+
         if (response.code == 401) {
             response.close()
             Timber.d("토큰이 만료됐습니다.:")
