@@ -24,7 +24,7 @@ class ApplicationClass : Application() {
         )
 
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
-        var keyHash = Utility.getKeyHash(this)
+        val keyHash = Utility.getKeyHash(this)
         Timber.tag("keyHash").d(keyHash)
     }
 }
