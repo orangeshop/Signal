@@ -63,8 +63,8 @@ object NetworkModule {
     @Provides
     @Named("auth")
     fun provideAuthRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
-//        .baseUrl("http://13.125.47.74:8080/")  // EC2
-        .baseUrl("http://192.168.100.161:8080/") // 병현서버
+        .baseUrl("http://13.125.47.74:8080/")  // EC2
+//        .baseUrl("http://192.168.100.161:8080/") // 병현서버
 //        .baseUrl("http://192.168.100.95:8080/") // 인수서버
 //        .baseUrl("http://192.168.100.200:8080/") // 민수서버
         .addConverterFactory(GsonConverterFactory.create(gson))
@@ -87,8 +87,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideStompService(): StompService {
-        return StompService()
+    fun provideStompService(authInterceptor: AuthInterceptor): StompService {
+        return StompService(authInterceptor)
     }
 
     @Provides
