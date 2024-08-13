@@ -13,7 +13,7 @@ class AuthInterceptor @Inject constructor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
-        val accessToken = UserSession.accessToken
+        val accessToken = UserSession.accessToken ?: ""
 
         val request = originalRequest.newBuilder()
             .header("Authorization", "Bearer $accessToken")
