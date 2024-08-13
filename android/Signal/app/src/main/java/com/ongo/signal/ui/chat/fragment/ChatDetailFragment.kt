@@ -199,8 +199,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                             }
                         }
 
-
-//                        if (chatList.isNotEmpty() && check) {
                         if (chatList.isNotEmpty()) {
                             lifecycleScope.launch {
                                 chatDetailRv.scrollToPosition(chatList.lastIndex)
@@ -263,10 +261,13 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                     manager.apply {
                         val num = findLastVisibleItemPosition()
+                        Log.d(TAG, "onResume: ${num}")
                         delay(500)
                         chatDetailRv.scrollToPosition(
-                            if (num <= 15) 0 else num
+                            if (num < 5) 0 else num
                         )
+
+                        Log.d(TAG, "onResume: 1")
                     }
                 }
                 false

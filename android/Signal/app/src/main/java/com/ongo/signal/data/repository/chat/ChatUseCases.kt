@@ -1,6 +1,7 @@
 package com.ongo.signal.data.repository.chat
 
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
+import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 import com.ongo.signal.data.model.review.UserProfileResponse
@@ -24,6 +25,7 @@ interface ChatUseCases {
     suspend fun loadDetailListNetwork(id: Long) : List<ChatHomeChildDTO>
     suspend fun loadDetailListNoId(id: Long) : List<ChatHomeChildDTO>
 
+    suspend fun createChatRoom(chatRoom: ChatHomeCreateDTO)
 
     suspend fun stompSend(item: ChatHomeChildDTO, onSuccess: () -> Unit)
     suspend fun stompGet(chatRoomNumber: Long, onSuccess: (Long) -> Unit)

@@ -13,8 +13,9 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
+import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
@@ -24,9 +25,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_review) {
+
+    @Inject
+    lateinit var chatRepositoryImpl: ChatRepositoryImpl
 
     private lateinit var reviewAdapter: ReviewAdapter
     private val reviewViewModel: ReviewViewModel by activityViewModels()
@@ -69,8 +74,10 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
 
         if (userId != null) {
             if (writerId != null) {
-                CreateChatRoom.Create(userId, writerId)
-
+//                CreateChatRoom.Create(userId, writerId)
+                lifecycleScope.launch {
+                    chatRepositoryImpl.saveChatRoom(ChatHomeCreateDTO(fromId = userId, toId = writerId))
+                }
                 findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
 
             } else {

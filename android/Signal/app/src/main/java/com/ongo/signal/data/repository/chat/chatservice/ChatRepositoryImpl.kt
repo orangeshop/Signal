@@ -43,6 +43,7 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
 
+
     companion object {
         private var instance: ChatRepositoryImpl? = null
         fun getInstance(chatApi: ChatRoomApi): ChatRepositoryImpl {
