@@ -52,6 +52,72 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun autoLogin(onLogin: (SignalUser?, String, String) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Timber.d("자동 로그인 시작")
+            val isLogin = dataStoreClass.isLoginData.first()
+            Timber.d("자동 로그인 여부: $isLogin")
+            if (isLogin) {
+                try {
+                    val userLoginId = dataStoreClass.userLoginIdData.first()
+                    val userPassword = dataStoreClass.userEncodePasswordData.first()
+                    Timber.d("자동 로그인 - 아이디: $userLoginId, 비밀번호 길이: ${userPassword.length}")
+
+                    postAutoLoginRequest(
+                        request = LoginRequest(
+                            loginId = userLoginId,
+                            password = userPassword
+                        ),
+                        onSuccess = { isSuccess, signalUser ->
+                            Timber.d("자동 로그인 결과 - 성공 여부: $isSuccess, 사용자: ${signalUser?.userId}")
+                            onLogin(signalUser, userLoginId, userPassword)
+                        }
+                    )
+                } catch (e: Exception) {
+                    Timber.e("자동 로그인 중 예외 발생: ${e.message}")
+                    onLogin(null, "", "")
+                }
+            } else {
+                Timber.d("자동 로그인이 설정되지 않음")
+                onLogin(null, "", "")
+            }
+        }
+    }
+
+    private fun postAutoLoginRequest(
+        request: LoginRequest,
+        onSuccess: (Boolean, SignalUser?) -> Unit
+    ) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            authRepository.autoLogin(request).onSuccess { response ->
+                response?.let {
+                    if (response.status) {
+                        onSuccess(
+                            true,
+                            SignalUser(
+                                loginId = it.userInfo.loginId,
+                                accessToken = it.accessToken,
+                                accessTokenExpireTime = it.accessTokenExpireTime,
+                                type = it.userInfo.type,
+                                userId = it.userInfo.userId,
+                                userName = it.userInfo.name,
+                                refreshToken = it.refreshToken,
+                                refreshTokenExpireTime = it.refreshTokenExpireTime,
+                                userEncodePassword = it.userInfo.password
+                            )
+                        )
+                    } else {
+                        onSuccess(
+                            false,
+                            null
+                        )
+                    }
+
+                }
+            }
+        }
+    }
+
     fun postLoginRequest(
         request: LoginRequest,
         onSuccess: (Boolean, SignalUser?) -> Unit
@@ -70,7 +136,8 @@ class LoginViewModel @Inject constructor(
                                 userId = it.userInfo.userId,
                                 userName = it.userInfo.name,
                                 refreshToken = it.refreshToken,
-                                refreshTokenExpireTime = it.refreshTokenExpireTime
+                                refreshTokenExpireTime = it.refreshTokenExpireTime,
+                                userEncodePassword = it.userInfo.password
                             )
                         )
                     } else {
@@ -108,7 +175,8 @@ class LoginViewModel @Inject constructor(
         userPassword: String,
         profileImage: String = "",
         accessToken: String,
-        refreshToken: String
+        refreshToken: String,
+        userEncodePassword: String
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
             dataStoreClass.setIsLogin(true)
@@ -119,6 +187,23 @@ class LoginViewModel @Inject constructor(
             dataStoreClass.setProfileImage(profileImage)
             dataStoreClass.setAccessToken(accessToken)
             dataStoreClass.setRefreshToken(refreshToken)
+            dataStoreClass.setUserEncodePassword(userEncodePassword)
+        }
+    }
+
+    fun handleKakaoLogin(accessToken: String, onResult: (Boolean, LoginResponse?) -> Unit) {
+        viewModelScope.launch {
+            val result = authRepository.kakaoLogin(accessToken)
+            result.fold(
+                onSuccess = { loginResponse ->
+                    Timber.d("카카오 로그인 성공: $loginResponse")
+                    onResult(true, loginResponse)
+                },
+                onFailure = { error ->
+                    Timber.e(error, "카카오 로그인 실패")
+                    onResult(false, null)
+                }
+            )
         }
     }
 }

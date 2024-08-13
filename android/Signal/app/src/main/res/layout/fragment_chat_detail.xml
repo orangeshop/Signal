@@ -10,7 +10,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
         tools:context=".ui.chat.fragment.ChatDetailFragment">
 
         <LinearLayout
@@ -19,18 +18,16 @@
             android:layout_height="50dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@color/backgroundColor"
-        >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
                 android:id="@+id/chat_detail_title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="홍길동"
                 android:layout_gravity="center"
-            />
+                android:text="홍길동" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -51,7 +48,7 @@
             android:layout_height="wrap_content"
             android:max="100"
             android:progress="60"
-            android:progressTint="@color/mint"
+            android:progressTint="@color/purple"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,7 +101,7 @@
                 android:id="@+id/chat_detail_add"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_video_call" />
+                android:src="@drawable/baseline_videocam_24" />
 
             <EditText
                 android:id="@+id/et_search"
@@ -155,9 +152,7 @@
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:background="@drawable/background_cancel_button_ripple"
-                android:fontFamily="@font/inter_bold"
                 android:text="@string/accept"
-                android:textColor="@color/mint"
                 app:layout_constraintEnd_toStartOf="@id/declineButton"
                 app:layout_constraintStart_toStartOf="@id/incomingCallTitleTv"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />
@@ -167,9 +162,8 @@
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:background="@drawable/background_deny_button_ripple"
-                android:fontFamily="@font/inter_bold"
                 android:text="@string/deny"
-                android:textColor="@color/red"
+                android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/acceptButton"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />

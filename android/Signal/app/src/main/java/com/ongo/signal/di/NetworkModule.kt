@@ -87,8 +87,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideStompService(): StompService {
-        return StompService()
+    fun provideStompService(authInterceptor: AuthInterceptor): StompService {
+        return StompService(authInterceptor)
     }
 
     @Provides

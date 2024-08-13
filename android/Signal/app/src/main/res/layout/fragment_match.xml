@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/matchFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundColor">
+        android:layout_height="match_parent">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lav_loading"
@@ -32,9 +31,7 @@
             android:id="@+id/tv_what"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_extrabold"
             android:text="@string/what"
-            android:textColor="@color/white"
             android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,34 +39,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.37"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_mission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:fontFamily="@font/inter_extrabold"
             android:text="@string/type"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_what"
             app:layout_constraintStart_toEndOf="@id/tv_what"
             app:layout_constraintTop_toTopOf="@id/tv_what"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_want"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_extrabold"
             android:text="@string/tv_want"
-            android:textColor="@color/white"
             android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_what"
             app:layout_constraintStart_toEndOf="@id/tv_mission"
             app:layout_constraintTop_toTopOf="@id/tv_what"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/cg_chip"
@@ -108,14 +102,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:background="@drawable/background_button_registration"
-            android:fontFamily="@font/inter_bold"
             android:text="@string/regist"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cg_chip"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.ongo.signal.ui.match.DotCustomView
             android:id="@+id/cv_dot"
@@ -143,9 +136,8 @@
             android:id="@+id/tv_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_bold"
             android:text="@string/user"
-            android:textColor="@color/mint"
+            android:textColor="@color/purple"
             android:textSize="26sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -153,20 +145,20 @@
             app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.13" />
+            app:layout_constraintVertical_bias="0.13"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_click_guide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_bold"
             android:text="@string/go_matching"
-            android:textColor="@color/white"
             android:textSize="26sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tv_user"
             app:layout_constraintStart_toEndOf="@id/tv_user"
-            app:layout_constraintTop_toTopOf="@id/tv_user" />
+            app:layout_constraintTop_toTopOf="@id/tv_user"
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_possible_match"
@@ -179,7 +171,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_radar"
-            tools:listitem="@layout/item_possible_user" />
+            tools:listitem="@layout/item_possible_user"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

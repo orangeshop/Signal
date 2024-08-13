@@ -13,4 +13,12 @@ interface AuthRepository {
     suspend fun naverLogin(
         token: String
     ): Result<LoginResponse?>
+
+    suspend fun kakaoLogin(
+        token: String
+    ): Result<LoginResponse?>
+
+    suspend fun autoLogin(
+        request: LoginRequest
+    ): Result<LoginResponse?>
 }

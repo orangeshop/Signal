@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -97,7 +98,8 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 ) {
                     viewModel.otherUserId?.let { otherId ->
                         CreateChatRoom.Create(userId, otherId)
-                        findNavController().navigate(R.id.action_matchFragment_to_chatFragment)
+                        findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
+
                     }
 
                     dialog.dismiss()

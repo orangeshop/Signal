@@ -15,9 +15,12 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun postLogin(request: LoginRequest): Result<LoginResponse?> {
         val req = authApi.postLoginRequest(request)
         Timber.d("로그인 데이터 : $req \n ${req.body()}")
+        Timber.tag("로그인 데이터").d(request.toString())
         return if (req.isSuccessful) {
+            Timber.tag("로그인 데이터").d(req.body().toString())
             Result.success(req.body())
         } else {
+            Timber.tag("로그인 데이터").d(req.errorBody().toString())
             Result.failure(Exception())
         }
     }
@@ -60,6 +63,32 @@ class AuthRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Timber.e("네이버 로그인 중 예외 발생: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun kakaoLogin(token: String): Result<LoginResponse?> {
+        return try {
+            val req = authApi.kakaoLogin(token)
+            if (req.isSuccessful) {
+                Result.success(req.body())
+            } else {
+                Result.failure(Exception("카카오 로그인 실패: ${req.errorBody()} - ${req.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun autoLogin(request: LoginRequest): Result<LoginResponse?> {
+        return try {
+            val req = authApi.autoLogin(request)
+            if (req.isSuccessful) {
+                Result.success(req.body())
+            } else {
+                Result.failure(Exception("자동 로그인 실패: ${req.errorBody()}"))
+            }
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }

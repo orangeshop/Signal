@@ -23,7 +23,8 @@
         <ImageView
             android:id="@+id/iv_logo"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="24dp"
             android:scaleType="centerCrop"
             android:src="@drawable/temp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,19 +41,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.4" />
+            app:layout_constraintVertical_bias="0.3" />
 
         <TextView
             android:id="@+id/tv_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24sp"
+            android:layout_marginTop="32sp"
             android:text="@string/id"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_logo_message" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_id"
@@ -69,7 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/background_edit_text"
-                android:singleLine="true" />
+                android:fontFamily="@font/inter_bold"
+                android:singleLine="true"
+                tools:text="asdfsdfsa" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
+            app:endIconMode="password_toggle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_password">
@@ -99,27 +102,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/background_edit_text"
+                android:fontFamily="@font/inter_bold"
                 android:inputType="textPassword"
-                android:singleLine="true" />
+                android:singleLine="true"
+                tools:text="sdafafsd" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.navercorp.nid.oauth.view.NidOAuthLoginButton
-            android:id="@+id/nolb_login"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            app:layout_constraintEnd_toStartOf="@id/kakao_login"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_naver"
+            style="@style/Style.App.circleImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:onClick="@{()->fragment.onNaverLoginClicked()}"
+            android:scaleType="center"
+            android:src="@drawable/naver_icon"
+            app:layout_constraintBottom_toTopOf="@id/btn_login"
+            app:layout_constraintEnd_toStartOf="@id/iv_kakao"
             app:layout_constraintStart_toStartOf="@id/til_password"
             app:layout_constraintTop_toBottomOf="@id/til_password" />
 
-        <ImageView
-            android:id="@+id/kakao_login"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_kakao"
+            style="@style/Style.App.circleImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:onClick="@{()->fragment.kakaoLoginClicked()}"
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_kakao"
+            app:layout_constraintBottom_toBottomOf="@id/iv_naver"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@color/yellow"
-            app:layout_constraintStart_toEndOf="@id/nolb_login"
-            app:layout_constraintTop_toBottomOf="@id/til_password" />
+            app:layout_constraintStart_toEndOf="@id/iv_naver"
+            app:layout_constraintTop_toTopOf="@id/iv_naver" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_login"

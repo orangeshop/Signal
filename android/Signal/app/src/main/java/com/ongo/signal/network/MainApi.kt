@@ -2,6 +2,7 @@ package com.ongo.signal.network
 
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.data.model.main.BoardImagesDTO
+import com.ongo.signal.data.model.main.BoardLikeDTO
 import com.ongo.signal.data.model.main.BoardRequestDTO
 import com.ongo.signal.data.model.main.CommentDTO
 import com.ongo.signal.data.model.main.CommentDTOItem
@@ -99,6 +100,6 @@ interface MainApi {
     suspend fun boardLike(
         @Path("boardId") boardId: Long,
         @Query("userId") userId: Long
-    ): Response<Long>
+    ): Response<BoardLikeDTO>
 
 }

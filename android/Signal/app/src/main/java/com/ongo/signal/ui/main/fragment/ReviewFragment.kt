@@ -1,8 +1,10 @@
 package com.ongo.signal.ui.main.fragment
 
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.ongo.signal.databinding.FragmentReviewBinding
 import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.util.tierSetting
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -40,9 +43,13 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
 
         if(safeArgs.flagByRoot == true){
 
-            binding.btnChat.isEnabled = false
+            binding.btnChat.visibility = View.GONE
             writerId = safeArgs.flagByRootId
             writerName = safeArgs.flagByRootWriter
+        }
+
+        if(UserSession.userId == writerId){
+            binding.btnChat.visibility = View.GONE
         }
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
@@ -63,7 +70,9 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         if (userId != null) {
             if (writerId != null) {
                 CreateChatRoom.Create(userId, writerId)
-                findNavController().navigate(R.id.action_reviewFragment_to_chatFragment)
+
+                findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
+
             } else {
                 Timber.d("writerId is null")
             }
@@ -97,6 +106,8 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             }
 
             binding.tvUsername.text = userProfileResponse.name
+            val tierImageRes = tierSetting(userProfileResponse.score)
+            binding.ivUserTier.setImageResource(tierImageRes)
         }
     }
 

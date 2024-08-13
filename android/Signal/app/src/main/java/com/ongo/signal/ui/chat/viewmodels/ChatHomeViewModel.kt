@@ -51,9 +51,7 @@ class ChatHomeViewModel @Inject constructor(
     private val _messageReadList = MutableLiveData<List<Pair<Long, Long>>>()
     val messageReadList: LiveData<List<Pair<Long, Long>>> = _messageReadList
 
-
     val todayTitleChecker = mutableListOf<Long>()
-
 
     var chatRoomNumber: Long = 0
     var chatRoomFromID: Long = 0
@@ -88,7 +86,6 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-
     fun deleteChat(id: Long) {
         viewModelScope.launch {
             chatUseCases.deleteChat(id)
@@ -118,7 +115,6 @@ class ChatHomeViewModel @Inject constructor(
             chatUseCases.readMessage(id, userId)
         }
     }
-
 
     fun timeSetting(): String {
         return chatUseCases.timeSetting()
