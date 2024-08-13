@@ -404,17 +404,17 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     }
 
     override fun onServiceStarted() {
-
         if (isSender) {
-            playWebRtc()
-        } else {
             startActivity(Intent(requireContext(), CallActivity::class.java).apply {
                 putExtra("target", "${chatViewModel.videoToID}")
                 putExtra("targetName", chatViewModel.videoToName)
                 putExtra("isVideoCall", true)
                 putExtra("isCaller", false)
             })
+        } else {
+            playWebRtc()
         }
+        isSender = false
     }
 
     override fun onCallReceivedFirebase(fromId: Long, fromName: String, status: String) {
