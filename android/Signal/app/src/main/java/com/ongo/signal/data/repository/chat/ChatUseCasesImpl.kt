@@ -2,6 +2,7 @@ package com.ongo.signal.data.repository.chat
 
 import com.google.gson.Gson
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
+import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import com.ongo.signal.data.model.chat.ChatHomeDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 import com.ongo.signal.data.model.review.UserProfileResponse
@@ -64,6 +65,10 @@ class ChatUseCasesImpl @Inject constructor(
 
     override suspend fun loadDetailListNoId(limit: Long): List<ChatHomeChildDTO> {
         return chatRoomRepositoryImpl.getAllMessagesNoId(limit)
+    }
+
+    override suspend fun createChatRoom(chatRoom: ChatHomeCreateDTO) {
+        chatRepository.saveChatRoom(ChatHomeCreateDTO(chatRoom.fromId, chatRoom.toId))
     }
 
 

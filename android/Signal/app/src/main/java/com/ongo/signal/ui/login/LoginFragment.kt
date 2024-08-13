@@ -76,7 +76,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     private fun handleKakaoResponse(token: OAuthToken?, error: Throwable?) {
         if (error != null) {
             Timber.e("카카오 로그인 실패: $error")
-            makeToast("카카오 로그인 실패")
+            makeToast("카카오 로그인 실패 $error")
         } else if (token != null) {
             Timber.d("카카오 로그인 성공, 토큰: ${token.accessToken}")
             handleLoginWithKakao(token.accessToken)

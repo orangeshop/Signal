@@ -18,11 +18,12 @@ import com.google.android.gms.location.Priority
 import com.google.android.material.chip.Chip
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
-import com.ongo.signal.config.CreateChatRoom
 import com.ongo.signal.config.UserSession
+import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import com.ongo.signal.data.model.match.Dot
 import com.ongo.signal.data.model.match.MatchPossibleResponse
 import com.ongo.signal.data.model.match.MatchRegistrationRequest
+import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.databinding.FragmentMatchBinding
 import com.ongo.signal.ui.match.adapter.PossibleUserAdapter
 import com.ongo.signal.util.PermissionChecker
@@ -31,9 +32,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match) {
+
+    @Inject lateinit var chatRepositoryImpl: ChatRepositoryImpl
 
     private lateinit var radarView: RadarView
     private val checker = PermissionChecker(this)
@@ -41,6 +45,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
+
     private val viewModel: MatchViewModel by viewModels()
     private val possibleUserAdapter =
         PossibleUserAdapter(
@@ -97,7 +102,11 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     1
                 ) {
                     viewModel.otherUserId?.let { otherId ->
-                        CreateChatRoom.Create(userId, otherId)
+
+                        lifecycleScope.launch {
+                            chatRepositoryImpl.saveChatRoom(ChatHomeCreateDTO(fromId = userId, toId = otherId))
+                        }
+
                         findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
 
                     }
