@@ -194,12 +194,11 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                                     1
                                 )
                             ) {
-
                                 scrollPositionBottom()
                             }
                         }
 
-                        if (chatList.isNotEmpty()) {
+                        if (chatList.isNotEmpty() && check == true) {
                             lifecycleScope.launch {
                                 chatDetailRv.scrollToPosition(chatList.lastIndex)
                             }
@@ -207,6 +206,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         }
 
                         if (chatList.isNotEmpty() && check == false && chatList.get(chatList.lastIndex).isFromSender == isFrom && new_loading == false) {
+                            Log.d(TAG, "onResume: 4")
                             scrollPositionBottom()
                         }
                     }
@@ -253,21 +253,20 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                         val isKeyboardNowVisible = keypadHeight > screenHeight * 0.35
 
                         if (isKeyboardNowVisible != isKeyboardVisible) {
+                            Log.d(TAG, "onResume: asdasdasd")
                             isKeyboardVisible = isKeyboardNowVisible
                             onKeyboardVisibilityChanged(isKeyboardVisible) {
+
                             }
                         }
                     }
 
                     manager.apply {
                         val num = findLastVisibleItemPosition()
-                        Log.d(TAG, "onResume: ${num}")
                         delay(500)
                         chatDetailRv.scrollToPosition(
-                            if (num < 5) 0 else num
+                            if (num < 15) 0 else num
                         )
-
-                        Log.d(TAG, "onResume: 1")
                     }
                 }
                 false
@@ -276,7 +275,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             newMessage.setOnClickListener {
                 newMessage.visibility = View.GONE
                 newMessageTv.text = ""
-
                 scrollPositionBottom()
             }
 
@@ -439,7 +437,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                                         fromId = myId,
                                         toId = chatViewModel.videoToID,
                                         flag = 1
-                                    ){
+                                    ) {
                                         startVideoService()
                                     }
                                 }
