@@ -79,6 +79,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
         isSender = false
 
+        var flagNewMessage : Boolean = false
+
         loading()
 
         binding.apply {
@@ -184,7 +186,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                             if (isFrom != chatList[chatList.lastIndex].isFromSender
                                 && chatDetailRv.canScrollVertically(1)
-
+                                && flagNewMessage == false
                             ) {
                                 lifecycleScope.launch {
                                     newMessage.visibility = View.VISIBLE
@@ -220,12 +222,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if (!chatDetailRv.canScrollVertically(-1) && chatViewModel.messageList.value?.size ?: 0 >= 100) {
+                    if (!chatDetailRv.canScrollVertically(-1)) {
                         lifecycleScope.launch {
                             new_loading = true
+                            flagNewMessage = true
                             chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, list_num)
                             delay(500)
                             new_loading = false
+                            flagNewMessage = false
                             list_num += 100
                             chatViewModel.todayTitleSetting()
                         }
@@ -263,19 +267,18 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                     }
 
                     manager.apply {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            val num = findLastVisibleItemPosition()
-                            chatDetailRv.scrollToPosition(
-                                if (num < 10) 0 else num
-                            )
-                        }, 500)
-//                        val num = findLastVisibleItemPosition()
-////                        delay(500)
-//
-//
-//                        chatDetailRv.scrollToPosition(
-//                            if (num < 10) 0 else num
-//                        )
+//                        Handler(Looper.getMainLooper()).postDelayed({
+//                            val num = findLastVisibleItemPosition()
+//                            Log.d(TAG, "onResume: ${num}")
+//                            chatDetailRv.scrollToPosition(
+//                                if (num < 10) 0 else num
+//                            )
+//                        }, 800)
+                        val num = findLastVisibleItemPosition()
+                        delay(500)
+                        chatDetailRv.scrollToPosition(
+                            if (num < 14) 0 else num
+                        )
                     }
                 }
                 false
