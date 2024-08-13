@@ -38,6 +38,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:text="어르신들 사랑해요"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@id/iv_grade"
             app:layout_constraintEnd_toStartOf="@id/btn_matching"
             app:layout_constraintStart_toStartOf="@id/tv_user_id" />
