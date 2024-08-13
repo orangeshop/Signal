@@ -60,12 +60,12 @@ class StartActivity : AppCompatActivity() {
 
 
             lifecycleScope.launch {
-                if (dataStoreClass.isLoginData.first() == false) {
+                if (!dataStoreClass.isLoginData.first()) {
                     val intent = Intent(this@StartActivity, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
                 }else{
-                    viewModel.autoLogin() { signalUser, userLoginId, userPassword ->
+                    viewModel.autoLogin { signalUser, userLoginId, userPassword ->
                         lifecycleScope.launch {
                             if (successLogin(signalUser, userLoginId, userPassword).isCompleted) {
                                 val intent = Intent(this@StartActivity, MainActivity::class.java)
