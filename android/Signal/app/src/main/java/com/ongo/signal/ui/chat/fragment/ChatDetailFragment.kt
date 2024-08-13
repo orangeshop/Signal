@@ -1,9 +1,12 @@
 package com.ongo.signal.ui.chat.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context.AUDIO_SERVICE
 import android.content.Intent
 import android.graphics.Rect
-import android.os.Bundle
+import android.media.AudioDeviceInfo
+import android.media.AudioManager
+import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
@@ -19,18 +22,20 @@ import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeChildDTO
 import com.ongo.signal.data.model.chat.ChatHomeLocalCheckDTO
 import com.ongo.signal.databinding.FragmentChatDetailBinding
+import com.ongo.signal.service.FirebaseVideoReceivedListener
+import com.ongo.signal.service.SignalFirebaseService
 import com.ongo.signal.ui.MainActivity
 import com.ongo.signal.ui.chat.adapter.ChatDetailAdapter
 import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
-import com.ongo.signal.ui.my.MyPageFragmentDirections
 import com.ongo.signal.ui.video.CallActivity
 import com.ongo.signal.ui.video.repository.VideoRepository
 import com.ongo.signal.ui.video.service.VideoService
 import com.ongo.signal.ui.video.service.VideoServiceRepository
-import com.ongo.signal.ui.video.util.DataModel
-import com.ongo.signal.ui.video.util.DataModelType
+import com.ongo.signal.ui.video.service.VideoStartedListener
 import com.ongo.signal.ui.video.util.getCameraAndMicPermission
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -48,11 +53,12 @@ private const val TAG = "ChatDetailFragment_싸피"
  */
 @AndroidEntryPoint
 class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.fragment_chat_detail),
-    VideoService.Listener {
+    VideoStartedListener, FirebaseVideoReceivedListener {
 
     private lateinit var chatDetailAdapter: ChatDetailAdapter
     private val chatViewModel: ChatHomeViewModel by activityViewModels()
     private var isKeyboardVisible = false
+    private var isSender = false
 
     //video
     @Inject
@@ -62,12 +68,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     lateinit var videoServiceRepository: VideoServiceRepository
 
     override fun init() {
-        startVideoService()
-    }
-
-    private fun startVideoService() {
-        VideoService.listener = this
-        videoServiceRepository.startService(UserSession.userId.toString())
+//        VideoService.listener = this
+        VideoService.videoStartedListener = this
+        SignalFirebaseService.firebaseVideoReceivedListener = this
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -81,8 +84,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
             chatViewModel.connectedWebSocket(chatViewModel.chatRoomNumber)
             binding.chatDetailTitleTv.text = chatViewModel.chatRoomTitle
-
-
 
             lifecycleScope.launch {
                 chatDetailAdapter = ChatDetailAdapter(
@@ -134,7 +135,11 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
                         findNavController().navigate(
                             ChatDetailFragmentDirections
-                                .actionChatDetailFragmentToReviewFragment(flagByRoot = true, flagByRootId = if(UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID , flagByRootWriter = chatViewModel.chatRoomTitle)
+                                .actionChatDetailFragmentToReviewFragment(
+                                    flagByRoot = true,
+                                    flagByRootId = if (UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID,
+                                    flagByRootWriter = chatViewModel.chatRoomTitle
+                                )
                         )
                     },
                     otherNameSetting = {
@@ -149,7 +154,10 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             lifecycleOwner?.let {
                 chatViewModel.messageList.observe(it, Observer { chatList ->
                     chatDetailAdapter.submitList(chatList) {
-                        chatViewModel.readMessage(chatViewModel.chatRoomNumber, UserSession.userId!!)
+                        chatViewModel.readMessage(
+                            chatViewModel.chatRoomNumber,
+                            UserSession.userId!!
+                        )
                         val isFrom = UserSession.userId == chatViewModel.chatRoomFromID
 
                         for (message in chatList) {
@@ -295,9 +303,19 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             chatDetailAdd.setOnClickListener {
-                playWebRtc()
+                isSender = true
+                UserSession.userId?.let { myId ->
+                    chatViewModel.postProposeVideoCall(
+                        myId,
+                        chatViewModel.videoToID
+                    ) {}
+                }
             }
         }
+    }
+
+    private fun startVideoService() {
+        videoServiceRepository.startService(UserSession.userId.toString())
     }
 
     private fun onKeyboardVisibilityChanged(visible: Boolean, onSuccess: () -> Unit) {
@@ -332,44 +350,40 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         getCameraAndMicPermission {
             videoRepository.sendConnectionRequest("${chatViewModel.videoToID}", true) {
                 if (it) {
-                    Timber.d("성공적으로 영통 보냄")
                     startActivity(Intent(requireContext(), CallActivity::class.java).apply {
                         putExtra("target", "${chatViewModel.videoToID}")
                         putExtra("isVideoCall", true)
                         putExtra("isCaller", true)
                         putExtra("targetName", chatViewModel.videoToName)
                     })
-
                 }
             }
         }
     }
 
-    override fun onCallReceived(model: DataModel) {
-        requireActivity().runOnUiThread {
-            binding.apply {
-                val isVideoCall = model.type == DataModelType.StartVideoCall
-                val isVideoCallText = if (isVideoCall) "Video" else "Audio"
-                incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
-                incomingCallLayout.isVisible = true
-                acceptButton.setOnClickListener {
-                    getCameraAndMicPermission {
-                        incomingCallLayout.isVisible = false
-                        //create an intent to go to video call activity
-                        startActivity(Intent(requireContext(), CallActivity::class.java).apply {
-                            putExtra("target", model.sender)
-                            putExtra("targetName", chatViewModel.videoToName)
-                            putExtra("isVideoCall", isVideoCall)
-                            putExtra("isCaller", false)
-                        })
-                    }
-                }
-                declineButton.setOnClickListener {
-                    incomingCallLayout.isVisible = false
-                }
-            }
-        }
-    }
+//    override fun onCallReceived(model: DataModel) {
+//        requireActivity().runOnUiThread {
+//            binding.apply {
+//                val isVideoCall = model.type == DataModelType.StartVideoCall
+//                incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
+//                incomingCallLayout.isVisible = true
+//                acceptButton.setOnClickListener {
+//                    getCameraAndMicPermission {
+//                        incomingCallLayout.isVisible = false
+//                        startActivity(Intent(requireContext(), CallActivity::class.java).apply {
+//                            putExtra("target", model.sender)
+//                            putExtra("targetName", chatViewModel.videoToName)
+//                            putExtra("isVideoCall", isVideoCall)
+//                            putExtra("isCaller", false)
+//                        })
+//                    }
+//                }
+//                declineButton.setOnClickListener {
+//                    incomingCallLayout.isVisible = false
+//                }
+//            }
+//        }
+//    }
 
     override fun onPause() {
         super.onPause()
@@ -389,8 +403,74 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun onDestroy() {
         super.onDestroy()
-        videoServiceRepository.stopService()
+//        videoServiceRepository.stopService()
         (requireActivity() as? MainActivity)?.showBottomNavigation()
     }
+
+    override fun onServiceStarted() {
+        if (isSender) {
+            startActivity(Intent(requireContext(), CallActivity::class.java).apply {
+                putExtra("target", "${chatViewModel.videoToID}")
+                putExtra("targetName", chatViewModel.videoToName)
+                putExtra("isVideoCall", true)
+                putExtra("isCaller", false)
+            })
+        } else {
+            playWebRtc()
+        }
+        isSender = false
+    }
+
+    override fun onCallReceivedFirebase(fromId: Long, fromName: String, status: String) {
+        Timber.d("요청이 왔어요 ${fromId} ${fromName} ${status}")
+        when (status) {
+
+            "요청" -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.apply {
+                        incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
+                        incomingCallLayout.isVisible = true
+                        acceptButton.setOnClickListener {
+                            getCameraAndMicPermission {
+                                incomingCallLayout.isVisible = false
+                                UserSession.userId?.let { myId ->
+                                    chatViewModel.postProposeVideoCallAccept(
+                                        fromId = myId,
+                                        toId = chatViewModel.videoToID,
+                                        flag = 1
+                                    ){
+                                        startVideoService()
+                                    }
+                                }
+                            }
+                        }
+                        declineButton.setOnClickListener {
+                            UserSession.userId?.let { myId ->
+                                chatViewModel.postProposeVideoCallAccept(
+                                    fromId = myId,
+                                    toId = chatViewModel.videoToID,
+                                    flag = 0
+                                ) {
+                                    incomingCallLayout.isVisible = false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            "승낙" -> {
+                Timber.d("상대방에게 승낙이 왔어요")
+                startVideoService()
+            }
+
+            "거부" -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    makeToast("상대방이 영상통화를 거부하였습니다.")
+                }
+            }
+        }
+    }
+
 }
 

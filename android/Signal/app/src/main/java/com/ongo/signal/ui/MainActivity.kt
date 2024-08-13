@@ -14,7 +14,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -22,23 +21,15 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseActivity
-import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.ActivityMainBinding
 import com.ongo.signal.ui.chat.fragment.ChatFragment
 import com.ongo.signal.ui.main.fragment.MainFragment
 import com.ongo.signal.ui.match.MatchFragment
 import com.ongo.signal.ui.my.MyPageFragment
-import com.ongo.signal.ui.video.CallActivity
-import com.ongo.signal.ui.video.repository.VideoRepository
-import com.ongo.signal.ui.video.service.VideoService
-import com.ongo.signal.ui.video.service.VideoServiceRepository
-import com.ongo.signal.ui.video.util.DataModel
-import com.ongo.signal.ui.video.util.DataModelType
 import com.ongo.signal.ui.video.util.getCameraAndMicPermission
 import com.ongo.signal.util.PermissionChecker
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {

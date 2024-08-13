@@ -4,7 +4,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -28,6 +32,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.webrtc.SurfaceViewRenderer
 import javax.inject.Inject
 
+interface VideoStartedListener {
+    fun onServiceStarted()
+}
+
+
 @AndroidEntryPoint
 class VideoService : Service(), VideoRepository.Listener {
 
@@ -36,6 +45,7 @@ class VideoService : Service(), VideoRepository.Listener {
     private var isServiceRunning = false
     private var username: String? = null
 
+
     @Inject
     lateinit var videoRepository: VideoRepository
 
@@ -43,9 +53,11 @@ class VideoService : Service(), VideoRepository.Listener {
     private lateinit var rtcAudioManager: RTCAudioManager
     private var isPreviousCallStateVideo = true
 
+    private lateinit var audioManager: AudioManager
+
 
     companion object {
-        var listener: Listener? = null
+        var videoStartedListener: VideoStartedListener? = null
         var endCallListener: EndCallListener? = null
         var localSurfaceView: SurfaceViewRenderer? = null
         var remoteSurfaceView: SurfaceViewRenderer? = null
@@ -60,7 +72,36 @@ class VideoService : Service(), VideoRepository.Listener {
             NotificationManager::class.java
         )
 
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        requestAudioFocus()
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        audioManager.isSpeakerphoneOn = true
     }
+
+    private fun requestAudioFocus() {
+        val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            .setAcceptsDelayedFocusGain(true)
+            .setOnAudioFocusChangeListener { focusChange ->
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+
+                    }
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+
+                    }
+                }
+            }
+            .build()
+
+        audioManager.requestAudioFocus(audioFocusRequest)
+    }
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let { incomingIntent ->
@@ -175,13 +216,30 @@ class VideoService : Service(), VideoRepository.Listener {
             videoRepository.initFirebase()
             videoRepository.initWebrtcClient(username!!)
 
+            increaseVolume()
+
+            videoStartedListener?.onServiceStarted()
+        }
+    }
+
+    private fun increaseVolume() {
+        val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL)
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL)
+
+
+        if (currentVolume < maxVolume) {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_VOICE_CALL,
+                maxVolume,
+                AudioManager.FLAG_SHOW_UI
+            )
         }
     }
 
     private fun startServiceWithNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                "channel1", "foreground", NotificationManager.IMPORTANCE_HIGH
+                "channel1", "foreground", NotificationManager.IMPORTANCE_LOW
             )
 
             val intent = Intent()
@@ -192,8 +250,9 @@ class VideoService : Service(), VideoRepository.Listener {
             notificationManager.createNotificationChannel(notificationChannel)
             val notification = NotificationCompat.Builder(
                 this, "channel1"
-            ).setSmallIcon(R.mipmap.ic_app_icon)
+            ).setSmallIcon(R.drawable.temp)
                 .addAction(R.drawable.ic_end_call, "Exit", pendingIntent)
+                .setContentTitle("영상통화를 사용할 준비가 되었습니다.")
 
             startForeground(1, notification.build())
         }
@@ -209,7 +268,7 @@ class VideoService : Service(), VideoRepository.Listener {
             when (data.type) {
                 DataModelType.StartVideoCall,
                 DataModelType.StartAudioCall -> {
-                    listener?.onCallReceived(data)
+//                    listener?.onCallReceived(data)
                 }
 
                 else -> Unit
@@ -222,9 +281,6 @@ class VideoService : Service(), VideoRepository.Listener {
         endCallAndRestartRepository()
     }
 
-    interface Listener {
-        fun onCallReceived(model: DataModel)
-    }
 
     interface EndCallListener {
         fun onCallEnded()

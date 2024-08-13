@@ -2,6 +2,7 @@ package fastcampus.part1.webrtctest.webrtc
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaRecorder
 import android.media.projection.MediaProjection
 import android.util.DisplayMetrics
 import android.util.Log
@@ -26,6 +27,7 @@ import org.webrtc.SurfaceTextureHelper
 import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoCapturer
 import org.webrtc.VideoTrack
+import org.webrtc.audio.JavaAudioDeviceModule
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -82,7 +84,27 @@ class WebRTCClient @Inject constructor(
         PeerConnectionFactory.initialize(options)
     }
 
+    private val audioConstraints = MediaConstraints().apply {
+        optional.add(MediaConstraints.KeyValuePair("googAutoGainControl", "false"))
+        optional.add(MediaConstraints.KeyValuePair("googAutoGainControl2", "false"))
+        optional.add(MediaConstraints.KeyValuePair("googHighpassFilter", "false"))
+        optional.add(MediaConstraints.KeyValuePair("googNoiseSuppression", "true"))
+        optional.add(MediaConstraints.KeyValuePair("googEchoCancellation", "true"))
+    }
+
     private fun createPeerConnectionFactory(): PeerConnectionFactory {
+        val audioDeviceModule = JavaAudioDeviceModule.builder(context)
+            .setSampleRate(16000)
+            .setUseHardwareAcousticEchoCanceler(true)
+            .setUseHardwareNoiseSuppressor(true)
+            .setUseStereoInput(false)
+            .setUseStereoOutput(false)
+            .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
+            .createAudioDeviceModule().also {
+                it.setMicrophoneMute(false)
+                it.setSpeakerMute(false)
+            }
+
         return PeerConnectionFactory.builder()
             .setVideoDecoderFactory(
                 DefaultVideoDecoderFactory(eglBaseContext)
@@ -90,7 +112,9 @@ class WebRTCClient @Inject constructor(
                 DefaultVideoEncoderFactory(
                     eglBaseContext, true, true
                 )
-            ).setOptions(PeerConnectionFactory.Options().apply {
+            )
+            .setAudioDeviceModule(audioDeviceModule)
+            .setOptions(PeerConnectionFactory.Options().apply {
                 disableNetworkMonitor = false
                 disableEncryption = false
             }).createPeerConnectionFactory()

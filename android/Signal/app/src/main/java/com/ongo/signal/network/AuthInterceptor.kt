@@ -21,33 +21,33 @@ class AuthInterceptor @Inject constructor(
 
         val response = chain.proceed(request)
 
+        Timber.d("인터셉터에서 가로챈 리퀘스트 ${request} \n 리스폰스 ${response}")
+
         if (response.code == 401) {
             response.close()
             Timber.d("토큰이 만료됐습니다.:")
             synchronized(this) {
+                var nowToken = ""
                 UserSession.refreshToken?.let { refreshToken ->
-                    val newAccessToken = runBlocking {
-                        authRepository.renewalToken(refreshToken = refreshToken).onSuccess {
-                            it?.let { response ->
-                                response.accessToken
-                            } ?: ""
-                        }.onFailure {
-                            ""
-                        }
+                    runBlocking {
+                        authRepository.renewalToken(refreshToken = "Bearer $refreshToken")
+                            .onSuccess {
+                                it?.let { response ->
+                                    nowToken = response.accessToken
+                                }
+                            }
+
+                        return@runBlocking nowToken
                     }
-                    Timber.d("인터셉터에서 새로받은 token ${newAccessToken}")
-                    //
+
                     val newRequest = originalRequest.newBuilder()
-                        .header("Authorization", "Bearer ${newAccessToken}")
+                        .header("Authorization", "Bearer ${nowToken}")
                         .build()
 
                     return chain.proceed(newRequest)
-
                 }
-
             }
         }
-
         return response
     }
 }

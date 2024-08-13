@@ -96,11 +96,10 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun getMyProfile(
-        token: String,
         onSuccess: (MyProfileData) -> Unit
     ) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            myPageRepository.getMyProfile("Bearer $token").onSuccess { myProfileResponse ->
+            myPageRepository.getMyProfile().onSuccess { myProfileResponse ->
                 myProfileResponse?.let {
                     userData = myProfileResponse.myProfileData
                     onSuccess(userData)

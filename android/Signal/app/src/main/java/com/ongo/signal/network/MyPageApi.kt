@@ -20,9 +20,7 @@ interface MyPageApi {
     suspend fun getMyCommentSignal(@Path("userId") userId: Long): Response<List<BoardDTO>>
 
     @GET("user/mypage")
-    suspend fun getMyProfile(
-        @Header("Authorization") token: String,
-    ) : Response<MyProfileResponse>
+    suspend fun getMyProfile() : Response<MyProfileResponse>
 
     @PUT("user/{id}")
     suspend fun putUserProfile(

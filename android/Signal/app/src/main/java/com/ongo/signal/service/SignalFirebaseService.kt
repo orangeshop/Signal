@@ -11,7 +11,12 @@ import com.ongo.signal.R
 import com.ongo.signal.ui.MainActivity
 import timber.log.Timber
 
+interface FirebaseVideoReceivedListener {
+    fun onCallReceivedFirebase(fromId: Long, fromName: String, status: String)
+}
+
 class SignalFirebaseService : FirebaseMessagingService() {
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
     }
@@ -22,7 +27,7 @@ class SignalFirebaseService : FirebaseMessagingService() {
         Timber.d("메시지옴 제목 : ${messageTitle} 내용 : ${messageContent}")
         //승낙, 거부
 
-        if (messageTitle.contains("승낙") || messageTitle.contains("거부") || messageTitle.contains("요청")) {
+        if (messageTitle.contains("매칭")) {
             val nowMessage = messageContent.split(" ")
 
             val mainIntent = Intent(this, MainActivity::class.java).apply {
@@ -32,7 +37,10 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 putExtra("otherUserName", nowMessage[2])
             }
 
-            val guideTitle = when (messageTitle) {
+            val splitTitle = messageTitle.split(" ")
+            var guideTitle = ""
+            var guideContent = ""
+            guideTitle = when (splitTitle[1]) {
                 "요청" -> "매칭 신청"
 
                 "승낙" -> "매칭 성공"
@@ -40,7 +48,7 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 "거부" -> "매칭 거부"
                 else -> ""
             }
-            val guideContent = when (messageTitle) {
+            guideContent = when (splitTitle[1]) {
                 "요청" -> "${nowMessage[2]} 님께 매칭 신청이 왔습니다."
 
                 "승낙" -> "${nowMessage[2]} 님이 매칭을 수락하였습니다!"
@@ -67,6 +75,13 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(101, builder1.build())
 
+        } else if (messageTitle.contains("영통")) {
+            val nowMessage = messageContent.split(" ")
+            firebaseVideoReceivedListener?.onCallReceivedFirebase(
+                fromId = nowMessage[0].toLong(),
+                fromName = nowMessage[2],
+                status = messageTitle.split(" ")[1]
+            )
         } else {
             val mainIntent = Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -93,6 +108,10 @@ class SignalFirebaseService : FirebaseMessagingService() {
 
 
         }
+    }
+
+    companion object {
+        var firebaseVideoReceivedListener: FirebaseVideoReceivedListener? = null
     }
 
 }

@@ -12,7 +12,7 @@ interface MyPageRepository {
 
     suspend fun getMyCommentSignal(userId: Long): Response<List<BoardDTO>>
 
-    suspend fun getMyProfile(token: String): Result<MyProfileResponse?>
+    suspend fun getMyProfile(): Result<MyProfileResponse?>
 
     suspend fun putUserProfile(
         userId: Long,

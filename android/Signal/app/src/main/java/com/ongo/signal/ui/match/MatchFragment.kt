@@ -66,7 +66,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
             args.remove("matchNotification")
             args.remove("otherUserId")
             args.remove("otherUserName")
-            if (notyTitle == "요청") {
+            if (notyTitle == "매칭 요청") {
                 showMatchingDialog()
             }
         }
@@ -217,7 +217,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                 userName = response.user.name,
                 distance = response.dist,
                 quadrant = response.quadrant,
-//                profileImage = response.user.
+                profileImage = if (response.user.url.isNullOrBlank()) "https://github.com/user-attachments/assets/f463e225-6d1d-455f-9267-0d4e8602f565" else response.user.url
             )
         }
     }

@@ -21,8 +21,8 @@ class MyPageRepositoryImpl @Inject constructor(private val myPageApi: MyPageApi)
         return myPageApi.getMyCommentSignal(userId)
     }
 
-    override suspend fun getMyProfile(token: String): Result<MyProfileResponse?> {
-        val req = myPageApi.getMyProfile(token)
+    override suspend fun getMyProfile(): Result<MyProfileResponse?> {
+        val req = myPageApi.getMyProfile()
         Timber.d("프로필 받아옴 $req")
         return if (req.isSuccessful) {
             Result.success(req.body())

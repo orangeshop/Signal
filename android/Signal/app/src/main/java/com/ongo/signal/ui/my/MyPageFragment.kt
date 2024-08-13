@@ -35,7 +35,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_myp
 
     private fun getMyProfile() {
         UserSession.accessToken?.let {
-            viewModel.getMyProfile(it) { myProfileData ->
+            viewModel.getMyProfile{ myProfileData ->
                 Timber.d("프로필 받아옴 ${myProfileData}")
                 with(binding) {
                     if (myProfileData.profileImage == "null") {
