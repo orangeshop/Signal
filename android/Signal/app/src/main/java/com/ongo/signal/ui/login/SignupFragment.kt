@@ -101,7 +101,6 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
             val result = viewModel.checkUIState()
             if (result.first) {
                 viewModel.postSignup { userId ->
-
                     viewModel.uiState.imageFile?.let { imageFile ->
                         viewModel.postProfileImage(userId,imageFile) {
                             Timber.d("프사 처리하고 넘어가요")

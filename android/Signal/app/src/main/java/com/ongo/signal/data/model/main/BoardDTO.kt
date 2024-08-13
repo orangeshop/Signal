@@ -10,6 +10,7 @@ data class BoardDTO(
     val createdDate: String? = null,
     val id: Long = 0,
     val liked: Long = 0,
+    var isLiked: Boolean = false,
     val modifiedDate: String? = null,
     val reference: Long = 0,
     val title: String,

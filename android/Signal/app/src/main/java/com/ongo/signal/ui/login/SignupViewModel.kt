@@ -2,6 +2,7 @@ package com.ongo.signal.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kakao.sdk.user.model.User
 import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.login.SignupRequest
@@ -9,7 +10,9 @@ import com.ongo.signal.data.model.login.SignupUIState
 import com.ongo.signal.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.MultipartBody
 import timber.log.Timber
 import javax.inject.Inject
@@ -67,21 +70,30 @@ class SignupViewModel @Inject constructor(
                     type = uiState.type
                 )
             ).onSuccess { response ->
+                Timber.tag("userId").d("response: $response")
                 response?.let {
                     UserSession.userId = it.userInfo.userId
+                    UserSession.userLoginId = it.userInfo.loginId
                     UserSession.userName = it.userInfo.name
                     UserSession.accessToken = it.accessToken
                     UserSession.refreshToken = it.refreshToken
+                    UserSession.userEncodePassword = it.userInfo.password
 
+                    Timber.tag("userId").d("userId in postSignUp: ${it.userInfo.userId}")
                     saveUserData(
                         userId = UserSession.userId!!,
+                        userLoginId = UserSession.userLoginId!!,
                         userName = UserSession.userName!!,
                         accessToken = UserSession.accessToken!!,
                         refreshToken = UserSession.refreshToken!!,
+                        userEncodePassword = UserSession.userEncodePassword!!
                     )
 
+                    Timber.tag("UserData").d(UserSession.toString())
                     onSuccess(it.userInfo.userId)
                 }
+            }.onFailure {
+                Timber.d(it.message)
             }
         }
     }
@@ -141,19 +153,28 @@ class SignupViewModel @Inject constructor(
 
     private fun saveUserData(
         userId: Long,
+        userLoginId: String,
         userName: String,
         profileImage: String = "",
         accessToken: String,
         refreshToken: String,
+        userEncodePassword: String
     ) {
-        viewModelScope.launch(coroutineExceptionHandler) {
+        Timber.tag("userId").d("userId: $userId")
+        runBlocking{
             dataStoreClass.setIsLogin(true)
             dataStoreClass.setUserId(userId)
+            dataStoreClass.setUserLoginId(userLoginId)
             dataStoreClass.setUserName(userName)
             dataStoreClass.setProfileImage(profileImage)
             dataStoreClass.setAccessToken(accessToken)
             dataStoreClass.setRefreshToken(refreshToken)
+            dataStoreClass.setUserEncodePassword(userEncodePassword)
+            Timber.tag("userData").d(dataStoreClass.userLoginIdData.first())
+            Timber.tag("userData").d(dataStoreClass.userEncodePasswordData.first())
+            Timber.tag("userData").d(dataStoreClass.userIdData.first().toString())
         }
+        Timber.tag("userData").d("sadfsadfjkakfhsf")
     }
 
 

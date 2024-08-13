@@ -55,13 +55,16 @@
 
         <TextView
             android:id="@+id/tv_first_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="15dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="1"
             android:text="321353"
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_first"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_first"
             app:layout_constraintTop_toTopOf="@id/tv_first" />
 
@@ -92,13 +95,16 @@
 
         <TextView
             android:id="@+id/tv_second_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="15dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="1"
             android:text="321353"
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_second"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_second"
             app:layout_constraintTop_toTopOf="@id/tv_second" />
 
@@ -129,15 +135,18 @@
 
         <TextView
             android:id="@+id/tv_third_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="15dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
-            tools:text="321353"
+            android:maxLines="1"
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="@id/tv_third"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_third"
-            app:layout_constraintTop_toTopOf="@id/tv_third" />
+            app:layout_constraintTop_toTopOf="@id/tv_third"
+            tools:text="321353" />
 
         <!--        <androidx.recyclerview.widget.RecyclerView-->
         <!--            android:id="@+id/rv_third"-->

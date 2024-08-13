@@ -50,4 +50,13 @@ object BindingAdapters {
         val size = list?.size ?: 0
         view.text = " ($size)"
     }
+
+    @JvmStatic
+    @BindingAdapter("app:isLiked")
+    fun setThumbIcon(imageView: ImageView, isLiked: Boolean) {
+        imageView.setImageResource(
+            if (isLiked) R.drawable.baseline_thumb_up_alt_24_purple
+            else R.drawable.baseline_thumb_up_off_alt_24
+        )
+    }
 }
