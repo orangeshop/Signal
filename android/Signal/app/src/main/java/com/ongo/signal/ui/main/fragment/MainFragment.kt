@@ -64,6 +64,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
         observeBoards()
         observeComments()
         observeImageViewState()
+        observeHotBoards()
     }
 
     private fun observeComments() {
@@ -95,6 +96,16 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
                     binding.ivSearch.fadeIn()
                     binding.ivMic.fadeIn()
                     binding.ivRefresh.fadeOut()
+                }
+            }
+        }
+    }
+
+    private fun observeHotBoards() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            boardViewModel.hotBoards.collectLatest {
+                boardViewModel.hotBoards.collectLatest { hotBoards ->
+                    todayPostAdapter.notifyDataSetChanged()
                 }
             }
         }
