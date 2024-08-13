@@ -8,8 +8,8 @@
     <color name="textBlack">#373737</color>
     <color name="EditTextColor">#A1A1A1</color>
     <color name="red">#FF0000</color>
-    <color name="normal_dot">#F4EB35</color>
-    <color name="point_dot">#D1180B</color>
+    <color name="normal_dot">#B0EBB4</color>
+    <color name="point_dot">#E97777</color>
     <color name="backgroundColor">#121212</color>
     <color name="radar_color">#02EB25</color>
     <color name="color_translate">#00000000</color>

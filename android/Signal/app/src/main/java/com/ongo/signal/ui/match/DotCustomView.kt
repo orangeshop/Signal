@@ -46,7 +46,7 @@ class DotCustomView @JvmOverloads constructor(
             pointPaint.color = if (dot.isFocused) {
                 ContextCompat.getColor(context, R.color.point_dot)
             } else {
-                ContextCompat.getColor(context, R.color.radar_color)
+                ContextCompat.getColor(context, R.color.normal_dot)
             }
             canvas.drawCircle(dot.x, dot.y, pointRadius, pointPaint)
         }
