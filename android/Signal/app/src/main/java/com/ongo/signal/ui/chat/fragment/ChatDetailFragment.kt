@@ -3,6 +3,8 @@ package com.ongo.signal.ui.chat.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
@@ -65,6 +67,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun init() {
 //        VideoService.listener = this
+        UserSession.otherChatID = chatViewModel.videoToID
         VideoService.videoStartedListener = this
         SignalFirebaseService.firebaseVideoReceivedListener = this
     }
@@ -179,9 +182,9 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                          * */
                         if (chatList.isNotEmpty() && check == false) {
 
-                            if (isFrom != chatList[chatList.lastIndex].isFromSender && chatDetailRv.canScrollVertically(
-                                    1
-                                )
+                            if (isFrom != chatList[chatList.lastIndex].isFromSender
+                                && chatDetailRv.canScrollVertically(1)
+
                             ) {
                                 lifecycleScope.launch {
                                     newMessage.visibility = View.VISIBLE
@@ -217,7 +220,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if (!chatDetailRv.canScrollVertically(-1)) {
+                    if (!chatDetailRv.canScrollVertically(-1) && chatViewModel.messageList.value?.size ?: 0 >= 100) {
                         lifecycleScope.launch {
                             new_loading = true
                             chatViewModel.loadDetailList(chatViewModel.chatRoomNumber, list_num)
@@ -260,11 +263,19 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                     }
 
                     manager.apply {
-                        val num = findLastVisibleItemPosition()
-                        delay(500)
-                        chatDetailRv.scrollToPosition(
-                            if (num < 15) 0 else num
-                        )
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            val num = findLastVisibleItemPosition()
+                            chatDetailRv.scrollToPosition(
+                                if (num < 10) 0 else num
+                            )
+                        }, 500)
+//                        val num = findLastVisibleItemPosition()
+////                        delay(500)
+//
+//
+//                        chatDetailRv.scrollToPosition(
+//                            if (num < 10) 0 else num
+//                        )
                     }
                 }
                 false
@@ -409,6 +420,11 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         super.onDestroy()
 //        videoServiceRepository.stopService()
         (requireActivity() as? MainActivity)?.showBottomNavigation()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        UserSession.otherChatID = -1
     }
 
     override fun onServiceStarted() {

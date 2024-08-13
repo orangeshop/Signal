@@ -74,13 +74,10 @@ class StartActivity : AppCompatActivity() {
                             }
                         }
                     }
-
-
                 }
             }
 
         }, 400)
-
     }
 
     suspend private fun successLogin(
@@ -97,6 +94,10 @@ class StartActivity : AppCompatActivity() {
                 UserSession.accessToken = signalUser.accessToken
                 UserSession.refreshToken = signalUser.refreshToken
                 UserSession.userType = signalUser.type
+
+                if(UserSession.accessToken == null || UserSession.refreshToken == null){
+                    result.complete(false)
+                }
 
                 Timber.d("로그인 완료 유저 정보 ${UserSession.userId} ${UserSession.userName} ${UserSession.accessToken}")
 
