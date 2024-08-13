@@ -9,4 +9,5 @@ object UserSession {
     var profileImage: String? = null
     var userType: String? = null
     var userEncodePassword: String? = null
+    var otherChatID: Long = -1
 }

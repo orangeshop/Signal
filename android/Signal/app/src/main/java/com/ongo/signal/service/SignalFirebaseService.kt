@@ -4,10 +4,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ongo.signal.R
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.ui.MainActivity
 import timber.log.Timber
 
@@ -83,29 +85,32 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 status = messageTitle.split(" ")[1]
             )
         } else {
-            val mainIntent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            val nowTitle = messageTitle.split(" ")
+            val otherId = nowTitle[1].toLong()
+
+            if(UserSession.otherChatID != otherId) {
+                val mainIntent = Intent(this, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
+
+                val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
+                    this,
+                    0,
+                    mainIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+
+                val builder1 = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
+                    .setSmallIcon(R.drawable.app_icon)
+                    .setContentTitle(nowTitle[0])
+                    .setContentText(messageContent)
+                    .setAutoCancel(true)
+                    .setContentIntent(mainPendingIntent)
+
+                val notificationManager: NotificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.notify(101, builder1.build())
             }
-
-            val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
-                this,
-                0,
-                mainIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val builder1 = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
-                .setSmallIcon(R.drawable.app_icon)
-                .setContentTitle(messageTitle)
-                .setContentText(messageContent)
-                .setAutoCancel(true)
-                .setContentIntent(mainPendingIntent)
-
-
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(101, builder1.build())
-
 
         }
     }
