@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
@@ -71,7 +73,33 @@ class VideoService : Service(), VideoRepository.Listener {
         )
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        requestAudioFocus()
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        audioManager.isSpeakerphoneOn = true
+    }
 
+    private fun requestAudioFocus() {
+        val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            .setAcceptsDelayedFocusGain(true)
+            .setOnAudioFocusChangeListener { focusChange ->
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+
+                    }
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+
+                    }
+                }
+            }
+            .build()
+
+        audioManager.requestAudioFocus(audioFocusRequest)
     }
 
 
@@ -202,7 +230,7 @@ class VideoService : Service(), VideoRepository.Listener {
         if (currentVolume < maxVolume) {
             audioManager.setStreamVolume(
                 AudioManager.STREAM_VOICE_CALL,
-                currentVolume + 6,
+                maxVolume,
                 AudioManager.FLAG_SHOW_UI
             )
         }

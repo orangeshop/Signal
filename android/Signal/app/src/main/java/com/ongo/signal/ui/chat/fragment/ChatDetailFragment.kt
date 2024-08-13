@@ -1,8 +1,12 @@
 package com.ongo.signal.ui.chat.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context.AUDIO_SERVICE
 import android.content.Intent
 import android.graphics.Rect
+import android.media.AudioDeviceInfo
+import android.media.AudioManager
+import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
@@ -467,5 +471,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
         }
     }
+
 }
 
