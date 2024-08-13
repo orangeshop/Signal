@@ -30,6 +30,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     @Inject
     lateinit var videoRepository: VideoRepository
 
+    private var isLoginInProgress = false
+
+
     override fun init() {
         checkLogin()
         initViews()
@@ -50,25 +53,35 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     private fun setupNaverLoginButton() {
         NaverLoginCallback.setOnSuccessCallback { accessToken, _ ->
             handleLoginWithNaver(accessToken)
+            finishLoginProcess()
         }
 
         NaverLoginCallback.setOnFailureCallback { errorMessage ->
             makeToast(errorMessage)
+            finishLoginProcess()
         }
     }
 
     fun onNaverLoginClicked() {
+        if (isLoginInProgress) return
+
+        startLoginProcess()
         NaverIdLoginSDK.authenticate(requireContext(), NaverLoginCallback)
     }
 
     fun kakaoLoginClicked() {
+        if (isLoginInProgress) return
+
+        startLoginProcess()
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
             UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
                 handleKakaoResponse(token, error)
+                finishLoginProcess()
             }
         } else {
             UserApiClient.instance.loginWithKakaoAccount(requireContext()) { token, error ->
                 handleKakaoResponse(token, error)
+                finishLoginProcess()
             }
         }
     }
@@ -135,6 +148,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         }
 
         binding.btnLogin.setOnClickListener {
+            if (isLoginInProgress) return@setOnClickListener
+
+            startLoginProcess()
             if (binding.tietId.text.toString().isBlank() || binding.tietPassword.text.toString()
                     .isBlank()
             ) {
@@ -158,6 +174,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     } else {
                         makeToast("아이디나 비밀번호를 확인해주세요")
                     }
+                    finishLoginProcess()
                 }
             )
         }
@@ -194,14 +211,46 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             ) { isDone, reason ->
                 if (!isDone) {
                     makeToast(reason.toString())
+                    finishLoginProcess()
                 } else {
-                    val intent = Intent(requireContext(), MainActivity::class.java)
-                    startActivity(intent)
-                    requireActivity().finish()
+                    if (isAdded && !isDetached) {
+                        val intent = Intent(requireContext(), MainActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
+                    finishLoginProcess()
                 }
             }
         }
     }
+
+    private fun startLoginProcess() {
+        try {
+            binding?.let {
+                isLoginInProgress = true
+                it.btnLogin.isEnabled = false
+                it.ivNaver.isEnabled = false
+                it.ivKakao.isEnabled = false
+            }
+        } catch (e: NullPointerException) {
+            Timber.e("startLoginProcess 호출 중 NullPointerException 발생: ${e.message}")
+        }
+
+    }
+
+    private fun finishLoginProcess() {
+        try {
+            binding?.let {
+                isLoginInProgress = false
+                it.btnLogin.isEnabled = true
+                it.ivKakao.isEnabled = true
+                it.ivNaver.isEnabled = true
+            }
+        } catch (e: NullPointerException) {
+            Timber.e("finishLoginProcess 호출 중 NullPointerException 발생: ${e.message}")
+        }
+    }
+
 
     enum class LoginType(val displayName: String) {
         NAVER("네이버"),

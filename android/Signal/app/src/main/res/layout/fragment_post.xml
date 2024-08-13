@@ -54,7 +54,7 @@
                     android:layout_height="32dp"
                     android:onClick="@{(view) -> fragment.showPopupMenu(view)}"
                     android:src="@drawable/baseline_more_vert_mint_24"
-                    android:visibility="@{boardViewModel.selectedBoard.userId == userSession.userId ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{boardViewModel.selectedBoard.userId == userSession.userId ? View.VISIBLE : View.INVISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_title" />
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{boardViewModel.selectedBoard.getFormattedCreatedDate()}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_name"
-                    app:layout_constraintEnd_toEndOf="@id/iv_more" />
+                    app:layout_constraintEnd_toStartOf="@id/iv_more" />
 
                 <TextView
                     android:id="@+id/tv_content"
