@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/iv_popup_profile"
-        android:layout_width="36dp"
-        android:layout_height="46dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:src="@drawable/human"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

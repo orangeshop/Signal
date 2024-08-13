@@ -53,8 +53,8 @@ class BoardViewModel @Inject constructor(
     val pagingData = _pagingData.asStateFlow()
 
     init {
-        loadBoards()
         loadHotBoards()
+        loadBoards()
     }
 
     private fun loadBoards() = viewModelScope.launch(Dispatchers.IO) {
@@ -306,21 +306,20 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    private fun loadHotBoards() {
-        viewModelScope.launch {
-            runCatching {
-                boardRepository.getHotSignal()
-            }.onSuccess { response ->
-                if (response.isSuccessful) {
-                    val hotList = response.body() ?: emptyList()
-                    Timber.d("Loaded hot boards: $hotList")
-                    _hotBoards.emit(hotList)
-                } else {
-                    Timber.e("Failed to load hot boards: ${response.errorBody()?.string()}")
-                }
-            }.onFailure { e ->
-                Timber.e(e, "Failed to load hot boards")
+    private fun loadHotBoards() = viewModelScope.launch(Dispatchers.IO) {
+
+        runCatching {
+            boardRepository.getHotSignal()
+        }.onSuccess { response ->
+            if (response.isSuccessful) {
+                val hotList = response.body() ?: emptyList()
+                Timber.d("Loaded hot boards: $hotList")
+                _hotBoards.emit(hotList)
+            } else {
+                Timber.e("Failed to load hot boards: ${response.errorBody()?.string()}")
             }
+        }.onFailure { e ->
+            Timber.e(e, "Failed to load hot boards")
         }
     }
 }

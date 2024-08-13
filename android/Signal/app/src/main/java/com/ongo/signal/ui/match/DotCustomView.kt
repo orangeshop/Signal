@@ -99,6 +99,7 @@ class DotCustomView @JvmOverloads constructor(
         Glide.with(context)
             .asBitmap()
             .load(dot.profileImage)
+            .circleCrop()
             .into(object : com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
                 override fun onResourceReady(
                     resource: Bitmap,
@@ -180,7 +181,7 @@ class DotCustomView @JvmOverloads constructor(
         val screenHeight = displayMetrics.heightPixels
 
         val xOffset = (screenWidth * 0.13 + dot.userName.length.toDouble()).toInt()
-        val yOffset = (screenHeight * 0.08).toInt()
+        val yOffset = (screenHeight * 0.09).toInt()
 
         popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, x - xOffset, y - yOffset)
     }
