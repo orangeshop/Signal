@@ -1,12 +1,8 @@
 package com.ongo.signal.ui.chat.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context.AUDIO_SERVICE
 import android.content.Intent
 import android.graphics.Rect
-import android.media.AudioDeviceInfo
-import android.media.AudioManager
-import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
@@ -77,6 +73,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     override fun onResume() {
         super.onResume()
         (requireActivity() as? MainActivity)?.hideBottomNavigation()
+
+        isSender = false
 
         loading()
 
@@ -307,11 +305,18 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                     chatViewModel.postProposeVideoCall(
                         myId,
                         chatViewModel.videoToID
-                    ) {}
+                    ) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            Timber.d("이거 실행됨")
+                            binding.tvWating.visibility = View.VISIBLE
+                            binding.lavLoading.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
         }
     }
+
 
     private fun startVideoService() {
         videoServiceRepository.startService(UserSession.userId.toString())
@@ -420,6 +425,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         isSender = false
     }
 
+
     override fun onCallReceivedFirebase(fromId: Long, fromName: String, status: String) {
         Timber.d("요청이 왔어요 ${fromId} ${fromName} ${status}")
         when (status) {
@@ -459,12 +465,17 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
 
             "승낙" -> {
-                Timber.d("상대방에게 승낙이 왔어요")
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.tvWating.visibility = View.GONE
+                    binding.lavLoading.visibility = View.GONE
+                }
                 startVideoService()
             }
 
             "거부" -> {
                 CoroutineScope(Dispatchers.Main).launch {
+                    binding.tvWating.visibility = View.GONE
+                    binding.lavLoading.visibility = View.GONE
                     makeToast("상대방이 영상통화를 거부하였습니다.")
                 }
             }
