@@ -33,6 +33,7 @@ class MatchRepositoryImpl @Inject constructor(
 
     override suspend fun getMatchPossibleUser(locationId: Long): Result<List<MatchPossibleResponse>?> {
         val req = matchApi.getMatchPossibleUser(locationId)
+        Timber.d("매칭 파서블 답변 : ${req.body()}")
         return if (req.isSuccessful) {
             Result.success(req.body())
         } else {

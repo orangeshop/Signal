@@ -8,5 +8,4 @@ data class MatchPossibleUser(
     @SerializedName("name") val name: String,
     @SerializedName("comment") val comment: String = "안녕하세요",
     @SerializedName("score") val score: Int = 0,
-    @SerializedName("url") val url: String? = null,
 )
