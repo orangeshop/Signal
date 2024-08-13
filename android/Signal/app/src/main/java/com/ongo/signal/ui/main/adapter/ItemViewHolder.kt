@@ -3,6 +3,7 @@ package com.ongo.signal.ui.main.adapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.ongo.signal.R
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.main.BoardDTO
 import com.ongo.signal.databinding.ItemPostBinding
@@ -52,8 +53,16 @@ class ItemViewHolder(
             onItemClicked(board)
         }
 
+        updateThumbIcon(board.isLiked)
         chipAdapter.submitList(board.tags)
         postImageAdapter.submitList(board.imageUrls)
         binding.executePendingBindings()
+    }
+
+    private fun updateThumbIcon(isLiked: Boolean) {
+        binding.ivThumb.setImageResource(
+            if (isLiked) R.drawable.baseline_thumb_up_alt_24_purple
+            else R.drawable.baseline_thumb_up_off_alt_24
+        )
     }
 }

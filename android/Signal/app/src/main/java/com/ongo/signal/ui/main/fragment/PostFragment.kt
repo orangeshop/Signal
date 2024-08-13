@@ -1,6 +1,7 @@
 package com.ongo.signal.ui.main.fragment
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -46,7 +47,15 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         setupAdapters()
         observeViewModelData()
         loadInitialData()
-        Timber.tag("selectedBoard").d("selectedBoard type: ${boardViewModel.selectedBoard.value?.type}")
+//        val drawable = if (boardViewModel.selectedBoard.value?.isLiked == true)
+//            ContextCompat.getDrawable(requireContext(), R.drawable.baseline_thumb_up_alt_24_purple)
+//        else
+//            ContextCompat.getDrawable(requireContext(), R.drawable.baseline_thumb_up_off_alt_24)
+//
+//        binding.ivThumb.setImageDrawable(drawable)
+
+        Timber.tag("selectedBoard")
+            .d("selectedBoard type: ${boardViewModel.selectedBoard.value?.type}")
         Timber.tag("selectedBoard").d("userType: ${UserSession.userType}")
     }
 

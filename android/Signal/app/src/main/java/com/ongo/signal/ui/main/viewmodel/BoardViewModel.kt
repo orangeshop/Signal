@@ -80,7 +80,8 @@ class BoardViewModel @Inject constructor(
                 Timber.tag("onThumbClick").d(response.toString())
                 if (!response.isSuccessful) return@launch
                 val count = response.body()?.likedCount ?: return@launch
-                val newBoard = board.copy(liked = count)
+                val isLiked = response.body()?.isLiked ?: return@launch
+                val newBoard = board.copy(liked = count, isLiked = isLiked)
                 val pagingFlow = pagingData.value ?: return@launch
                 val newPagingFlow = pagingFlow.map { pagingData ->
                     pagingData.map { existingBoard ->
@@ -89,6 +90,8 @@ class BoardViewModel @Inject constructor(
                 }
                 _pagingData.value = newPagingFlow
 
+                Timber.tag("boardLike")
+                    .d("boardLike: ${board.liked} boardIsLiked: ${board.isLiked}")
                 withContext(Dispatchers.Main) {
                     bind(newBoard)
                 }
@@ -105,7 +108,8 @@ class BoardViewModel @Inject constructor(
             Timber.tag("onThumbClick").d(response.toString())
             if (!response.isSuccessful) return@launch
             val count = response.body()?.likedCount ?: return@launch
-            val newBoard = board.copy(liked = count)
+            val updatedIsLiked = !board.isLiked
+            val newBoard = board.copy(liked = count, isLiked = updatedIsLiked)
             val pagingFlow = pagingData.value ?: return@launch
             val newPagingFlow = pagingFlow.map { pagingData ->
                 pagingData.map { existingBoard ->
