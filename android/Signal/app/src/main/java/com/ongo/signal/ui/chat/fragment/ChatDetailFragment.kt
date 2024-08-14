@@ -432,7 +432,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     override fun onServiceStarted() {
         if (isSender) {
             CoroutineScope(Dispatchers.Main).launch {
-                delay(100)
                 startActivity(Intent(requireContext(), CallActivity::class.java).apply {
                     putExtra("target", "${chatViewModel.videoToID}")
                     putExtra("targetName", chatViewModel.videoToName)
@@ -442,7 +441,6 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             }
         } else {
             CoroutineScope(Dispatchers.Main).launch {
-                delay(100)
                 playWebRtc()
             }
         }

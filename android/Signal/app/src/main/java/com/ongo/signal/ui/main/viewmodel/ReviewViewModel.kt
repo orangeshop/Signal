@@ -42,9 +42,6 @@ class ReviewViewModel @Inject constructor(
                         || (it.proposeId == userId && it.acceptId == UserSession.userId)
             }
             _isReviewVisible.value = matchList.isNotEmpty()
-            Timber.tag("userId").d(userId.toString())
-            Timber.tag("UserSessionId").d(UserSession.userId.toString())
-            Timber.d(matchList.toString())
         }
     }
 
@@ -122,6 +119,4 @@ class ReviewViewModel @Inject constructor(
             }
         }
     }
-
-
 }

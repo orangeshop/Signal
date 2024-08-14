@@ -45,28 +45,39 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         val safeArgs: ReviewFragmentArgs by navArgs()
         writerId = boardViewModel.selectedBoard.value?.userId ?: UserSession.userId
 
+        observePermission()
+
         if (safeArgs.flagByRoot) {
             Timber.tag("reviewId").d("writerId: $writerId")
             binding.btnChat.visibility = View.GONE
             writerId = safeArgs.flagByRootId
+        }
+        writerId?.let { getMyProfile(it) }
+        writerId?.let {
+            reviewViewModel.checkReviewPermission(it)
+//            if (UserSession.userId == it || reviewViewModel.hasWrittenReview(it)) {
+//                binding.btnChat.visibility = View.GONE
+//                binding.ivReview.visibility = View.GONE
+//            }
         }
 
         if (UserSession.userId == writerId) {
             binding.btnChat.visibility = View.GONE
         }
 
-        Timber.tag("reviewId").d("writerId: $writerId")
-        writerId?.let {
-            reviewViewModel.checkReviewPermission(writerId!!)
-            getMyProfile(writerId!!)
-        }
-
         loadReviews()
+    }
+
+    private fun observePermission() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            reviewViewModel.reviewList.collectLatest { reviewList ->
+
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        reviewViewModel.checkReviewPermission(writerId!!)
         loadReviews()
     }
 
@@ -113,6 +124,7 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     }
 
     private fun getMyProfile(userId: Long) {
+        Timber.tag("reviewId").d("profile 가져 올 writerId: $userId")
         reviewViewModel.getUserProfile(userId) { userProfileResponse ->
             if (userProfileResponse.profileImage.isBlank()) {
                 binding.ivProfile.setImageResource(R.drawable.basic_profile)
@@ -142,7 +154,7 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             ReviewFragmentDirections
                 .actionReviewFragmentToMatchReviewFragment(
                     flagByRootReview = true,
-                    flagByRootId = if (UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID,
+                    flagByRootId = writerId!!,
                     flagByName = binding.tvUsername.text.toString()
                 )
         )
