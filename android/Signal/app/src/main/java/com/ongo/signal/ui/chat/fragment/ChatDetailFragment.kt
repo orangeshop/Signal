@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -456,8 +457,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             "요청" -> {
                 CoroutineScope(Dispatchers.Main).launch {
                     binding.apply {
-                        incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
-                        incomingCallLayout.isVisible = true
+                        initAnimation()
                         acceptButton.setOnClickListener {
                             getCameraAndMicPermission {
                                 incomingCallLayout.isVisible = false
@@ -503,6 +503,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 }
             }
         }
+    }
+
+    private fun initAnimation() {
+        binding.incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
+        binding.incomingCallLayout.isVisible = true
+        val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_slide_down)
+        val matchView = requireView().findViewById<View>(R.id.incomingCallLayout)
+        matchView.startAnimation(anim)
     }
 
 }
