@@ -57,32 +57,31 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/callingwaitbackground"
-
             android:gravity="center"
-            >
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
                 android:id="@+id/tv_wating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:text="상대방의 수락을 기다리고 있습니다"
                 android:textColor="@color/purple"
                 android:textSize="20sp"
-                android:visibility="gone"
-                android:layout_margin="10dp"
-            />
+                android:visibility="gone" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lav_loading"
                 android:layout_width="100dp"
                 android:layout_height="75dp"
-                android:visibility="gone"
                 android:layout_gravity="center_horizontal"
+                android:visibility="gone"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/loading_dot"
@@ -189,8 +188,8 @@
                 android:layout_height="40dp"
                 android:background="@drawable/background_cancel_button_ripple"
                 android:text="@string/accept"
-                app:layout_constraintEnd_toStartOf="@id/declineButton"
-                app:layout_constraintStart_toStartOf="@id/incomingCallTitleTv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/declineButton"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -200,8 +199,8 @@
                 android:background="@drawable/background_deny_button_ripple"
                 android:text="@string/deny"
                 android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/acceptButton"
+                app:layout_constraintEnd_toStartOf="@id/acceptButton"
+                app:layout_constraintStart_toStartOf="@id/incomingCallTitleTv"
                 app:layout_constraintTop_toBottomOf="@id/incomingCallTitleTv" />
 
             <View

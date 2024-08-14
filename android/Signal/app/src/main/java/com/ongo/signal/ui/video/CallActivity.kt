@@ -105,27 +105,27 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
         setupCameraToggleClicked()
         VideoService.endCallListener = this
 
-//        setSpeakerphoneOn(true)
+        setSpeakerphoneOn(true)
     }
 
-//    private fun setSpeakerphoneOn(on: Boolean) {
-//        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            val devices = audioManager.availableCommunicationDevices
-//            val speakerDevice = devices.find { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
-//
-//            if (on && speakerDevice != null) {
-//                audioManager.setCommunicationDevice(speakerDevice)
-//            } else {
-//                audioManager.clearCommunicationDevice()
-//            }
-//        } else {
-//            audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
-//            @Suppress("DEPRECATION")
-//            audioManager.isSpeakerphoneOn = on
-//        }
-//    }
+    private fun setSpeakerphoneOn(on: Boolean) {
+        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val devices = audioManager.availableCommunicationDevices
+            val speakerDevice = devices.find { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
+
+            if (on && speakerDevice != null) {
+                audioManager.setCommunicationDevice(speakerDevice)
+            } else {
+                audioManager.clearCommunicationDevice()
+            }
+        } else {
+            audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+            @Suppress("DEPRECATION")
+            audioManager.isSpeakerphoneOn = on
+        }
+    }
 
 
     private fun updateUiToScreenCaptureIsOn() {
@@ -179,7 +179,7 @@ class CallActivity : BaseActivity<ActivityCallBinding>(R.layout.activity_call),
 
     override fun onDestroy() {
         super.onDestroy()
-//        setSpeakerphoneOn(false)
+        setSpeakerphoneOn(false)
         VideoService.remoteSurfaceView?.release()
         VideoService.remoteSurfaceView = null
 
