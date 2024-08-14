@@ -3,6 +3,7 @@ package com.ongo.signal.ui.match
 import android.Manifest
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -94,9 +95,17 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
 
         tvUsername.text = viewModel.otherUserName
 
+        Log.d("싸피", "showMatchingDialog:")
+
         btnAccept.setOnClickListener {
             dialog.dismiss()
+
+            Log.d("싸피", "showMatchingDialog:")
+
             UserSession.userId?.let { userId ->
+
+                Log.d("싸피", "showMatchingDialog: ${userId}")
+
                 viewModel.postProposeAccept(
                     fromId = userId,
                     toId = viewModel.otherUserId!!,
@@ -105,10 +114,12 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                     viewModel.otherUserId?.let { otherId ->
 
                         lifecycleScope.launch {
+                            Log.d("싸피", "showMatchingDialog: ${userId} ${otherId}")
                             chatRepositoryImpl.saveChatRoom(ChatHomeCreateDTO(fromId = userId, toId = otherId))
+                            findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
+
                         }
                         makeToast("매칭을 수락하였습니다.")
-                        findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
 
                     }
 

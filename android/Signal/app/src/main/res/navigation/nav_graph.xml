@@ -63,7 +63,7 @@
     <fragment
         android:id="@+id/chatDetailFragment"
         android:name="com.ongo.signal.ui.chat.fragment.ChatDetailFragment"
-        android:label="chatDetailFragment" >
+        android:label="chatDetailFragment">
         <action
             android:id="@+id/action_chatDetailFragment_to_reviewFragment"
             app:destination="@id/reviewFragment" />
@@ -105,12 +105,11 @@
     <fragment
         android:id="@+id/profileEditFragment"
         android:name="com.ongo.signal.ui.my.ProfileEditFragment"
-        android:label="ProfileEditFragment" >
+        android:label="ProfileEditFragment">
 
         <argument
             android:name="profile_data"
-            app:argType="com.ongo.signal.data.model.my.MyProfileData"
-            />
+            app:argType="com.ongo.signal.data.model.my.MyProfileData" />
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
@@ -125,26 +124,23 @@
 
         <argument
             android:name="flagByRoot"
-            app:argType="boolean"
             android:defaultValue="false"
-            />
+            app:argType="boolean" />
 
         <argument
             android:name="flagByRootId"
-            app:argType="long"
             android:defaultValue="-1L"
-            />
+            app:argType="long" />
 
         <argument
             android:name="flagByRootWriter"
-            app:argType="string"
             android:defaultValue=""
-            />
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/mySignalFragment"
         android:name="com.ongo.signal.ui.my.MySignalFragment"
-        android:label="MySignalFragment" >
+        android:label="MySignalFragment">
         <action
             android:id="@+id/action_mySignalFragment_to_postFragment"
             app:destination="@id/postFragment" />
@@ -153,7 +149,7 @@
     <fragment
         android:id="@+id/myCommentSignalFragment"
         android:name="com.ongo.signal.ui.my.MyCommentSignalFragment"
-        android:label="MyCommentSignalFragment" >
+        android:label="MyCommentSignalFragment">
         <action
             android:id="@+id/action_myCommentSignalFragment_to_postFragment"
             app:destination="@id/postFragment" />
@@ -161,6 +157,22 @@
     <fragment
         android:id="@+id/matchReviewFragment"
         android:name="com.ongo.signal.ui.main.fragment.MatchReviewFragment"
-        android:label="MatchReviewFragment" />
+        android:label="MatchReviewFragment">
+
+        <argument
+            android:name="flagByRootReview"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <argument
+            android:name="flagByRootId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+
+        <argument
+            android:name="flagByName"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
 
 </navigation>

@@ -1,6 +1,5 @@
 package com.ongo.signal.ui.main.fragment
 
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,9 +16,10 @@ import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.databinding.FragmentReviewBinding
-import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
+import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
+import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
 import com.ongo.signal.util.tierSetting
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -32,56 +32,54 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
 
     @Inject
     lateinit var chatRepositoryImpl: ChatRepositoryImpl
-
     private lateinit var reviewAdapter: ReviewAdapter
     private val reviewViewModel: ReviewViewModel by activityViewModels()
     private val boardViewModel: BoardViewModel by activityViewModels()
+    private val chatViewModel: ChatHomeViewModel by activityViewModels()
+    private var writerId: Long? = 0L
 
     override fun init() {
         setUpAdapter()
         binding.fragment = this
         binding.reviewViewModel = reviewViewModel
         val safeArgs: ReviewFragmentArgs by navArgs()
+        writerId = boardViewModel.selectedBoard.value?.userId ?: UserSession.userId
 
-        var writerId = boardViewModel.selectedBoard.value?.userId ?: UserSession.userId
-        var writerName = boardViewModel.selectedBoard.value?.writer
-
-        if (safeArgs.flagByRoot == true) {
-
+        if (safeArgs.flagByRoot) {
             Timber.tag("reviewId").d("writerId: $writerId")
             binding.btnChat.visibility = View.GONE
             writerId = safeArgs.flagByRootId
-            writerName = safeArgs.flagByRootWriter
         }
 
         if (UserSession.userId == writerId) {
             binding.btnChat.visibility = View.GONE
         }
 
-        //user ID에 상대방 아이디를 넣으면 됩니다.
-        //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
-
         Timber.tag("reviewId").d("writerId: $writerId")
         writerId?.let {
-            reviewViewModel.checkReviewPermission(writerId)
-            getMyProfile(writerId)
+            reviewViewModel.checkReviewPermission(writerId!!)
+            getMyProfile(writerId!!)
         }
 
         loadReviews()
     }
 
+    override fun onResume() {
+        super.onResume()
+        reviewViewModel.checkReviewPermission(writerId!!)
+        loadReviews()
+    }
+
     fun makeChat() {
-        val writerId = boardViewModel.selectedBoard.value?.userId
         val userId = UserSession.userId
 
         if (userId != null) {
             if (writerId != null) {
-//                CreateChatRoom.Create(userId, writerId)
                 lifecycleScope.launch {
                     chatRepositoryImpl.saveChatRoom(
                         ChatHomeCreateDTO(
                             fromId = userId,
-                            toId = writerId
+                            toId = writerId!!
                         )
                     )
                 }
@@ -101,13 +99,14 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     }
 
     private fun loadReviews() {
-        val writerId = boardViewModel.selectedBoard.value?.userId ?: UserSession.userId
         lifecycleScope.launch {
+            Timber.tag("writerId").d("로드 할 writerId: $writerId")
             writerId?.let {
-                reviewViewModel.loadReview(writerId)
+                reviewViewModel.loadReview(writerId!!)
             }
 
             reviewViewModel.reviewList.collectLatest { review ->
+                Timber.tag("writerId").d("reviews: $review")
                 reviewAdapter.submitList(review)
             }
         }
@@ -139,6 +138,13 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     }
 
     fun onReview() {
-        findNavController().navigate(R.id.action_reviewFragment_to_matchReviewFragment)
+        findNavController().navigate(
+            ReviewFragmentDirections
+                .actionReviewFragmentToMatchReviewFragment(
+                    flagByRootReview = true,
+                    flagByRootId = if (UserSession.userId == chatViewModel.chatRoomToID) chatViewModel.chatRoomFromID else chatViewModel.chatRoomToID,
+                    flagByName = binding.tvUsername.text.toString()
+                )
+        )
     }
 }
