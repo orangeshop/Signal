@@ -7,6 +7,7 @@ import com.ssafy.signal.match.domain.MatchEntity;
 import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.review.domain.ReviewDto;
 import com.ssafy.signal.match.repository.MatchRepository;
+import com.ssafy.signal.review.domain.ReviewEntity;
 import com.ssafy.signal.review.repository.ReviewRepository;
 import com.ssafy.signal.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +80,16 @@ public class ReviewService {
                         .userId(user_id)
                         .build())
                 .stream()
-                .map(review-> review.asReviewDto(url,user.getName()))
+                .map(this::putUrlAndName)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private ReviewDto putUrlAndName(ReviewEntity review)
+    {
+        long writer_id = review.asReviewDto().getWriter_id();
+        Member writer = memberRepository.findById(writer_id).orElseThrow();
+        FileEntity file = fileRepository.findAllByUser(writer);
+        String url = file == null ? null : file.getFileUrl();
+        return review.asReviewDto(url,writer.getName());
     }
 }
