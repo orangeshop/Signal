@@ -47,7 +47,6 @@
             android:layout_height="36dp"
             android:onClick="@{()->fragment.onReview()}"
             android:src="@drawable/baseline_add_comment_24"
-            android:visibility="@{reviewViewModel.isReviewVisible ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/tv_username"
             app:layout_constraintEnd_toStartOf="@id/tv_username" />
 

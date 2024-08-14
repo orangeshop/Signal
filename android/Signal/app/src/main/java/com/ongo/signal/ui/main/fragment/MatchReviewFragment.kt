@@ -1,11 +1,13 @@
 package com.ongo.signal.ui.main.fragment
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -80,6 +82,8 @@ class MatchReviewFragment :
 
             Timber.tag("writerId").d("writerId: $writerId")
             reviewViewModel.writeReview(reviewRequest)
+
+            setFragmentResult("reviewSubmitted", Bundle())
             findNavController().popBackStack()
         } else {
             makeToast("리뷰 작성에 실패했습니다.")

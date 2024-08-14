@@ -2,6 +2,7 @@ package com.ongo.signal.ui.main.fragment
 
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,6 @@ import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.chat.ChatHomeCreateDTO
 import com.ongo.signal.data.repository.chat.chatservice.ChatRepositoryImpl
 import com.ongo.signal.databinding.FragmentReviewBinding
-import com.ongo.signal.ui.chat.viewmodels.ChatHomeViewModel
 import com.ongo.signal.ui.main.adapter.ReviewAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import com.ongo.signal.ui.main.viewmodel.ReviewViewModel
@@ -35,7 +35,6 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
     private lateinit var reviewAdapter: ReviewAdapter
     private val reviewViewModel: ReviewViewModel by activityViewModels()
     private val boardViewModel: BoardViewModel by activityViewModels()
-    private val chatViewModel: ChatHomeViewModel by activityViewModels()
     private var writerId: Long? = 0L
 
     override fun init() {
@@ -45,33 +44,36 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         val safeArgs: ReviewFragmentArgs by navArgs()
         writerId = boardViewModel.selectedBoard.value?.userId ?: UserSession.userId
 
-        observePermission()
-
         if (safeArgs.flagByRoot) {
-            Timber.tag("reviewId").d("writerId: $writerId")
             binding.btnChat.visibility = View.GONE
             writerId = safeArgs.flagByRootId
         }
         writerId?.let { getMyProfile(it) }
         writerId?.let {
             reviewViewModel.checkReviewPermission(it)
-//            if (UserSession.userId == it || reviewViewModel.hasWrittenReview(it)) {
-//                binding.btnChat.visibility = View.GONE
-//                binding.ivReview.visibility = View.GONE
-//            }
+            reviewViewModel.loadReview(it)
         }
 
         if (UserSession.userId == writerId) {
             binding.btnChat.visibility = View.GONE
         }
 
-        loadReviews()
+        observePermission()
+        setFragmentResultListener("reviewSubmitted") { _, _ ->
+            loadReviews()
+        }
     }
 
     private fun observePermission() {
         viewLifecycleOwner.lifecycleScope.launch {
-            reviewViewModel.reviewList.collectLatest { reviewList ->
-
+            reviewViewModel.canWriteReview.collectLatest { canWriteReview ->
+                Timber.d("canWriteReview: $canWriteReview")
+                Timber.d("canVisible: ${reviewViewModel.isReviewVisible.value}")
+                binding.ivReview.visibility = if (canWriteReview) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
             }
         }
     }

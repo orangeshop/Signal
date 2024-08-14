@@ -30,6 +30,9 @@ class ReviewViewModel @Inject constructor(
     private val _isReviewVisible = MutableStateFlow(false)
     val isReviewVisible: StateFlow<Boolean> = _isReviewVisible
 
+    private val _canWriteReview = MutableStateFlow(false)
+    val canWriteReview: StateFlow<Boolean> = _canWriteReview
+
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { coroutineContext, throwable ->
             Timber.d("${throwable.message}\n\n${throwable.stackTrace}")
@@ -41,7 +44,13 @@ class ReviewViewModel @Inject constructor(
                 (it.proposeId == UserSession.userId && it.acceptId == userId)
                         || (it.proposeId == userId && it.acceptId == UserSession.userId)
             }
+            Timber.d("MatchList for userId $userId: $matchList")
             _isReviewVisible.value = matchList.isNotEmpty()
+            Timber.d("isReviewVisible: ${_isReviewVisible.value}")
+            _isReviewVisible.value = matchList.isNotEmpty()
+            if (_isReviewVisible.value) {
+                loadReview(userId)
+            }
         }
     }
 
@@ -71,8 +80,10 @@ class ReviewViewModel @Inject constructor(
                     val errorMessage = response.errorBody()?.string() ?: "Unknown error"
                     Timber.e("Failed to load review: $errorMessage")
                 }
+                updateCanWriteReview(userId)
             }.onFailure { e ->
                 Timber.e(e, "Failed to load review")
+                updateCanWriteReview(userId)
             }
         }
     }
@@ -118,5 +129,18 @@ class ReviewViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun updateCanWriteReview(userId: Long) {
+        val hasPermission = _isReviewVisible.value
+        Timber.d("Review Visibility Permission (hasPermission): $hasPermission")
+
+        val hasWrittenReview = _reviewList.value.any {
+            it.writerId == UserSession.userId && it.userId == userId
+        }
+        Timber.d("Has Written Review (hasWrittenReview) permission: $hasWrittenReview for userId: $userId")
+
+        _canWriteReview.value = hasPermission && !hasWrittenReview
+        Timber.d("permission Can Write Review (canWriteReview): ${canWriteReview.value} for userId: $userId")
     }
 }

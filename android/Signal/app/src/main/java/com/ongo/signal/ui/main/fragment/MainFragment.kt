@@ -16,6 +16,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentMainBinding
 import com.ongo.signal.ui.main.adapter.TodayPostAdapter
 import com.ongo.signal.ui.main.viewmodel.BoardViewModel
@@ -58,6 +59,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
         setUpAdapter()
         observeViewModels()
+        Timber.d(UserSession.userId.toString())
     }
 
     private fun observeViewModels() {
