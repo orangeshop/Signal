@@ -3,6 +3,7 @@ package com.ongo.signal.ui.my
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -15,6 +16,7 @@ import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentMypageBinding
 import com.ongo.signal.ui.LoginActivity
 import com.ongo.signal.ui.MainActivity
+import com.ongo.signal.ui.main.viewmodel.BoardViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -22,10 +24,12 @@ import timber.log.Timber
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(R.layout.fragment_mypage) {
 
     private val viewModel: MyPageViewModel by viewModels()
+    private val boardViewModel: BoardViewModel by activityViewModels()
 
     override fun init() {
         initViews()
         binding.fragment = this
+        boardViewModel.clearBoard()
     }
 
     override fun onResume() {
