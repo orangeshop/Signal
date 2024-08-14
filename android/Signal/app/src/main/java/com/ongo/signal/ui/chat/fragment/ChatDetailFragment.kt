@@ -3,10 +3,9 @@ package com.ongo.signal.ui.chat.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -79,7 +78,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
         isSender = false
 
-        var flagNewMessage : Boolean = false
+        var flagNewMessage: Boolean = false
 
         loading()
 
@@ -432,14 +431,20 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun onServiceStarted() {
         if (isSender) {
-            startActivity(Intent(requireContext(), CallActivity::class.java).apply {
-                putExtra("target", "${chatViewModel.videoToID}")
-                putExtra("targetName", chatViewModel.videoToName)
-                putExtra("isVideoCall", true)
-                putExtra("isCaller", false)
-            })
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(100)
+                startActivity(Intent(requireContext(), CallActivity::class.java).apply {
+                    putExtra("target", "${chatViewModel.videoToID}")
+                    putExtra("targetName", chatViewModel.videoToName)
+                    putExtra("isVideoCall", true)
+                    putExtra("isCaller", false)
+                })
+            }
         } else {
-            playWebRtc()
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(100)
+                playWebRtc()
+            }
         }
         isSender = false
     }
@@ -452,8 +457,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
             "요청" -> {
                 CoroutineScope(Dispatchers.Main).launch {
                     binding.apply {
-                        incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
-                        incomingCallLayout.isVisible = true
+                        initAnimation()
                         acceptButton.setOnClickListener {
                             getCameraAndMicPermission {
                                 incomingCallLayout.isVisible = false
@@ -499,6 +503,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
                 }
             }
         }
+    }
+
+    private fun initAnimation() {
+        binding.incomingCallTitleTv.text = "상대방이 영상통화를 요청합니다."
+        binding.incomingCallLayout.isVisible = true
+        val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_slide_down)
+        val matchView = requireView().findViewById<View>(R.id.incomingCallLayout)
+        matchView.startAnimation(anim)
     }
 
 }
