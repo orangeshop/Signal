@@ -3,8 +3,6 @@ package com.ongo.signal.ui.chat.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
@@ -79,7 +77,7 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
         isSender = false
 
-        var flagNewMessage : Boolean = false
+        var flagNewMessage: Boolean = false
 
         loading()
 
@@ -432,14 +430,20 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun onServiceStarted() {
         if (isSender) {
-            startActivity(Intent(requireContext(), CallActivity::class.java).apply {
-                putExtra("target", "${chatViewModel.videoToID}")
-                putExtra("targetName", chatViewModel.videoToName)
-                putExtra("isVideoCall", true)
-                putExtra("isCaller", false)
-            })
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(100)
+                startActivity(Intent(requireContext(), CallActivity::class.java).apply {
+                    putExtra("target", "${chatViewModel.videoToID}")
+                    putExtra("targetName", chatViewModel.videoToName)
+                    putExtra("isVideoCall", true)
+                    putExtra("isCaller", false)
+                })
+            }
         } else {
-            playWebRtc()
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(100)
+                playWebRtc()
+            }
         }
         isSender = false
     }
