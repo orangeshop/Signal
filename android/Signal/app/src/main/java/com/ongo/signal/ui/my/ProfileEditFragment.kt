@@ -123,8 +123,12 @@ class ProfileEditFragment :
         }
 
         binding.cgChip.setOnCheckedStateChangeListener { group, checkedIds ->
-            if (checkedIds[0] == 1) viewModel.setType("주니어")
-            else viewModel.setType("시니어")
+            if (checkedIds.isNotEmpty()) {
+                when (checkedIds[0]) {
+                    R.id.chip_junior -> viewModel.setType("주니어")
+                    R.id.chip_senior -> viewModel.setType("시니어")
+                }
+            }
         }
     }
 
