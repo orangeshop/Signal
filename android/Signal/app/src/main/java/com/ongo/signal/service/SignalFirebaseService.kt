@@ -67,7 +67,7 @@ class SignalFirebaseService : FirebaseMessagingService() {
             )
 
             val builder1 = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
-                .setSmallIcon(R.drawable.app_icon)
+                .setSmallIcon(R.drawable.temp)
                 .setContentTitle(guideTitle)
                 .setContentText(guideContent)
                 .setAutoCancel(true)
@@ -101,7 +101,7 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 )
 
                 val builder1 = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
-                    .setSmallIcon(R.drawable.app_icon)
+                    .setSmallIcon(R.drawable.temp)
                     .setContentTitle(nowTitle[0])
                     .setContentText(messageContent)
                     .setAutoCancel(true)

@@ -45,7 +45,7 @@ class WebRTCClient @Inject constructor(
     private val peerConnectionFactory by lazy { createPeerConnectionFactory() }
     private var peerConnection: PeerConnection? = null
     private val iceServer = listOf(
-        PeerConnection.IceServer.builder("turn:a.relay.metered.ca:443?transport=tcp")
+        PeerConnection.IceServer.builder("")
             .setUsername("83eebabf8b4cce9d5dbcb649")
             .setPassword("2D7JvfkOQtBdYW3R").createIceServer()
     )
@@ -82,14 +82,6 @@ class WebRTCClient @Inject constructor(
             .setEnableInternalTracer(true).setFieldTrials("WebRTC-H264HighProfile/Enabled/")
             .createInitializationOptions()
         PeerConnectionFactory.initialize(options)
-    }
-
-    private val audioConstraints = MediaConstraints().apply {
-        optional.add(MediaConstraints.KeyValuePair("googAutoGainControl", "false"))
-        optional.add(MediaConstraints.KeyValuePair("googAutoGainControl2", "false"))
-        optional.add(MediaConstraints.KeyValuePair("googHighpassFilter", "false"))
-        optional.add(MediaConstraints.KeyValuePair("googNoiseSuppression", "true"))
-        optional.add(MediaConstraints.KeyValuePair("googEchoCancellation", "true"))
     }
 
     private fun createPeerConnectionFactory(): PeerConnectionFactory {

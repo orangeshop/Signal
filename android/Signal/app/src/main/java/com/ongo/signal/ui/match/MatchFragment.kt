@@ -95,6 +95,7 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
         tvUsername.text = viewModel.otherUserName
 
         btnAccept.setOnClickListener {
+            dialog.dismiss()
             UserSession.userId?.let { userId ->
                 viewModel.postProposeAccept(
                     fromId = userId,
@@ -106,25 +107,24 @@ class MatchFragment : BaseFragment<FragmentMatchBinding>(R.layout.fragment_match
                         lifecycleScope.launch {
                             chatRepositoryImpl.saveChatRoom(ChatHomeCreateDTO(fromId = userId, toId = otherId))
                         }
-
+                        makeToast("매칭을 수락하였습니다.")
                         findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
 
                     }
 
-                    dialog.dismiss()
                 }
             }
         }
 
         btnDeny.setOnClickListener {
+            dialog.dismiss()
             UserSession.userId?.let { userId ->
                 viewModel.postProposeAccept(
                     fromId = userId,
                     toId = viewModel.otherUserId!!,
                     0
                 ) {
-                    Timber.d("매칭이 거절되었습니다")
-                    dialog.dismiss()
+                    makeToast("매칭을 거절하였습니다.")
                 }
             }
         }
