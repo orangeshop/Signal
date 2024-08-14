@@ -43,23 +43,25 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
         binding.reviewViewModel = reviewViewModel
         val safeArgs: ReviewFragmentArgs by navArgs()
 
-        var writerId = boardViewModel.selectedBoard.value?.userId
+        var writerId = boardViewModel.selectedBoard.value?.userId ?: UserSession.userId
         var writerName = boardViewModel.selectedBoard.value?.writer
 
-        if(safeArgs.flagByRoot == true){
+        if (safeArgs.flagByRoot == true) {
 
+            Timber.tag("reviewId").d("writerId: $writerId")
             binding.btnChat.visibility = View.GONE
             writerId = safeArgs.flagByRootId
             writerName = safeArgs.flagByRootWriter
         }
 
-        if(UserSession.userId == writerId){
+        if (UserSession.userId == writerId) {
             binding.btnChat.visibility = View.GONE
         }
 
         //user ID에 상대방 아이디를 넣으면 됩니다.
         //나중에 프로필을 클릭한 상대의 userId가 들어가도록 수정
 
+        Timber.tag("reviewId").d("writerId: $writerId")
         writerId?.let {
             reviewViewModel.checkReviewPermission(writerId)
             getMyProfile(writerId)
@@ -76,9 +78,19 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
             if (writerId != null) {
 //                CreateChatRoom.Create(userId, writerId)
                 lifecycleScope.launch {
-                    chatRepositoryImpl.saveChatRoom(ChatHomeCreateDTO(fromId = userId, toId = writerId))
+                    chatRepositoryImpl.saveChatRoom(
+                        ChatHomeCreateDTO(
+                            fromId = userId,
+                            toId = writerId
+                        )
+                    )
                 }
-                findNavController().navigate(R.id.chatFragment, null, navOptions = NavOptions.Builder().setPopUpTo(findNavController().graph.startDestinationId, true).build())
+                findNavController().navigate(
+                    R.id.chatFragment,
+                    null,
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(findNavController().graph.startDestinationId, true).build()
+                )
 
             } else {
                 Timber.d("writerId is null")
