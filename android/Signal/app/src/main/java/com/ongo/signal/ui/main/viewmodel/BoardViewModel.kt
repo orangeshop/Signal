@@ -277,7 +277,13 @@ class BoardViewModel @Inject constructor(
             runCatching {
                 boardRepository.readBoardById(boardId)
             }.onSuccess { _ ->
-                loadBoards()
+                if (_selectedTag.value == null) {
+                    loadBoards()
+                    loadHotBoards()
+                } else {
+                    loadBoardsByTag(tag = _selectedTag.value!!)
+                    loadHotSignalByTag(tag = _selectedTag.value!!)
+                }
             }.onFailure { e ->
                 Timber.e(e, "Failed to update board comment count")
             }
