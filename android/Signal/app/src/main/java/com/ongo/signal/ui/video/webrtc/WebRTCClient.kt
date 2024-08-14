@@ -45,9 +45,10 @@ class WebRTCClient @Inject constructor(
     private val peerConnectionFactory by lazy { createPeerConnectionFactory() }
     private var peerConnection: PeerConnection? = null
     private val iceServer = listOf(
+        PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer(),
         PeerConnection.IceServer.builder("turn:a.relay.metered.ca:443?transport=udp")
             .setUsername("83eebabf8b4cce9d5dbcb649")
-            .setPassword("2D7JvfkOQtBdYW3R").createIceServer()
+            .setPassword("2D7JvfkOQtBdYW3R").createIceServer(),
     )
     private val localVideoSource by lazy { peerConnectionFactory.createVideoSource(false) }
     private val localAudioSource by lazy { peerConnectionFactory.createAudioSource(MediaConstraints()) }
@@ -84,11 +85,47 @@ class WebRTCClient @Inject constructor(
         PeerConnectionFactory.initialize(options)
     }
 
+    private val audioConstraints = MediaConstraints().apply {
+        optional.add(MediaConstraints.KeyValuePair("googAutoGainControl", "false"))
+        optional.add(MediaConstraints.KeyValuePair("googAutoGainControl2", "false"))
+        optional.add(MediaConstraints.KeyValuePair("googEchoCancellation", "true"))
+        optional.add(MediaConstraints.KeyValuePair("googNoiseSuppression", "true"))
+        optional.add(MediaConstraints.KeyValuePair("googHighpassFilter", "true"))
+    }
+
+//    private fun createPeerConnectionFactory(): PeerConnectionFactory {
+//        val audioDeviceModule = JavaAudioDeviceModule.builder(context)
+//            .setSampleRate(16000)
+//            .setUseHardwareAcousticEchoCanceler(true)
+//            .setUseHardwareNoiseSuppressor(true)
+//            .setUseStereoInput(false)
+//            .setUseStereoOutput(false)
+//            .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
+//            .createAudioDeviceModule().also {
+//                it.setMicrophoneMute(false)
+//                it.setSpeakerMute(false)
+//            }
+//
+//        return PeerConnectionFactory.builder()
+//            .setVideoDecoderFactory(
+//                DefaultVideoDecoderFactory(eglBaseContext)
+//            ).setVideoEncoderFactory(
+//                DefaultVideoEncoderFactory(
+//                    eglBaseContext, true, true
+//                )
+//            )
+//            .setAudioDeviceModule(audioDeviceModule)
+//            .setOptions(PeerConnectionFactory.Options().apply {
+//                disableNetworkMonitor = false
+//                disableEncryption = false
+//            }).createPeerConnectionFactory()
+//    }
+
     private fun createPeerConnectionFactory(): PeerConnectionFactory {
         val audioDeviceModule = JavaAudioDeviceModule.builder(context)
             .setSampleRate(16000)
-            .setUseHardwareAcousticEchoCanceler(true)
-            .setUseHardwareNoiseSuppressor(true)
+            .setUseHardwareAcousticEchoCanceler(false)
+            .setUseHardwareNoiseSuppressor(false)
             .setUseStereoInput(false)
             .setUseStereoOutput(false)
             .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
@@ -98,13 +135,8 @@ class WebRTCClient @Inject constructor(
             }
 
         return PeerConnectionFactory.builder()
-            .setVideoDecoderFactory(
-                DefaultVideoDecoderFactory(eglBaseContext)
-            ).setVideoEncoderFactory(
-                DefaultVideoEncoderFactory(
-                    eglBaseContext, true, true
-                )
-            )
+            .setVideoDecoderFactory(DefaultVideoDecoderFactory(eglBaseContext))
+            .setVideoEncoderFactory(DefaultVideoEncoderFactory(eglBaseContext, true, true))
             .setAudioDeviceModule(audioDeviceModule)
             .setOptions(PeerConnectionFactory.Options().apply {
                 disableNetworkMonitor = false
