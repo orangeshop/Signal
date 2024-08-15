@@ -421,11 +421,14 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
     override fun onDestroy() {
         super.onDestroy()
 //        videoServiceRepository.stopService()
+
         (requireActivity() as? MainActivity)?.showBottomNavigation()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        VideoService.videoStartedListener = null
+        SignalFirebaseService.firebaseVideoReceivedListener = null
         UserSession.otherChatID = -1
     }
 
@@ -452,8 +455,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
 
     override fun onCallReceivedFirebase(fromId: Long, fromName: String, status: String) {
         Timber.d("요청이 왔어요 ${fromId} ${fromName} ${status}")
-        when (status) {
 
+        when (status) {
             "요청" -> {
                 CoroutineScope(Dispatchers.Main).launch {
                     binding.apply {
@@ -512,6 +515,8 @@ class ChatDetailFragment : BaseFragment<FragmentChatDetailBinding>(R.layout.frag
         val matchView = requireView().findViewById<View>(R.id.incomingCallLayout)
         matchView.startAnimation(anim)
     }
+
+
 
 }
 
