@@ -13,8 +13,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.ongo.signal.R
 import com.ongo.signal.config.BaseFragment
+import com.ongo.signal.config.UserSession
 import com.ongo.signal.databinding.FragmentSignupBinding
 import com.ongo.signal.ui.MainActivity
+import com.ongo.signal.ui.video.repository.VideoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -23,9 +25,13 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_signup) {
+
+    @Inject
+    lateinit var videoRepository: VideoRepository
 
     private val viewModel: SignupViewModel by viewModels()
 
@@ -102,17 +108,37 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
             if (result.first) {
                 viewModel.postSignup { userId ->
                     viewModel.uiState.imageFile?.let { imageFile ->
-                        viewModel.postProfileImage(userId,imageFile) {
-                            Timber.d("프사 처리하고 넘어가요")
-                            val intent = Intent(requireContext(), MainActivity::class.java)
-                            startActivity(intent)
-                            requireActivity().finish()
+                        viewModel.postProfileImage(userId, imageFile) {
+                            videoRepository.login(
+                                UserSession.userId.toString(), viewModel.uiState.password
+                            ) { isDone, reason ->
+                                if (!isDone) {
+                                    makeToast(reason.toString())
+                                } else {
+                                    if (isAdded && !isDetached) {
+                                        val intent =
+                                            Intent(requireContext(), MainActivity::class.java)
+                                        startActivity(intent)
+                                        requireActivity().finish()
+                                    }
+                                }
+                            }
                         }
                     } ?: run {
-                        Timber.d("프사 없이 넘어가요")
-                        val intent = Intent(requireContext(), MainActivity::class.java)
-                        startActivity(intent)
-                        requireActivity().finish()
+                        videoRepository.login(
+                            UserSession.userId.toString(), viewModel.uiState.password
+                        ) { isDone, reason ->
+                            if (!isDone) {
+                                makeToast(reason.toString())
+                            } else {
+                                if (isAdded && !isDetached) {
+                                    val intent =
+                                        Intent(requireContext(), MainActivity::class.java)
+                                    startActivity(intent)
+                                    requireActivity().finish()
+                                }
+                            }
+                        }
                     }
                 }
             } else {
@@ -120,6 +146,7 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
             }
         }
     }
+
 
     private fun createFileFromUri(uri: Uri, context: Context): File {
         val inputStream = context.contentResolver.openInputStream(uri)

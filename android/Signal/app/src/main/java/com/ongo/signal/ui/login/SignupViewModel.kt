@@ -2,7 +2,6 @@ package com.ongo.signal.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kakao.sdk.user.model.User
 import com.ongo.signal.config.DataStoreClass
 import com.ongo.signal.config.UserSession
 import com.ongo.signal.data.model.login.SignupRequest
@@ -10,9 +9,7 @@ import com.ongo.signal.data.model.login.SignupUIState
 import com.ongo.signal.data.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.MultipartBody
 import timber.log.Timber
 import javax.inject.Inject
@@ -84,6 +81,8 @@ class SignupViewModel @Inject constructor(
                         userId = UserSession.userId!!,
                         userLoginId = UserSession.userLoginId!!,
                         userName = UserSession.userName!!,
+                        userPassword = uiState.password,
+                        profileImage = "",
                         accessToken = UserSession.accessToken!!,
                         refreshToken = UserSession.refreshToken!!,
                         userEncodePassword = UserSession.userEncodePassword!!
@@ -151,30 +150,27 @@ class SignupViewModel @Inject constructor(
         return passwordMatcher.matches(password)
     }
 
-    private fun saveUserData(
+    fun saveUserData(
         userId: Long,
         userLoginId: String,
         userName: String,
+        userPassword: String,
         profileImage: String = "",
         accessToken: String,
         refreshToken: String,
         userEncodePassword: String
     ) {
-        Timber.tag("userId").d("userId: $userId")
-        runBlocking{
+        viewModelScope.launch(coroutineExceptionHandler) {
             dataStoreClass.setIsLogin(true)
             dataStoreClass.setUserId(userId)
             dataStoreClass.setUserLoginId(userLoginId)
             dataStoreClass.setUserName(userName)
+            dataStoreClass.setUserPassword(userPassword)
             dataStoreClass.setProfileImage(profileImage)
             dataStoreClass.setAccessToken(accessToken)
             dataStoreClass.setRefreshToken(refreshToken)
             dataStoreClass.setUserEncodePassword(userEncodePassword)
-            Timber.tag("userData").d(dataStoreClass.userLoginIdData.first())
-            Timber.tag("userData").d(dataStoreClass.userEncodePasswordData.first())
-            Timber.tag("userData").d(dataStoreClass.userIdData.first().toString())
         }
-        Timber.tag("userData").d("sadfsadfjkakfhsf")
     }
 
 
