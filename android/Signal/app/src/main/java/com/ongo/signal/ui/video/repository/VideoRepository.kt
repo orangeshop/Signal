@@ -24,7 +24,7 @@ class VideoRepository @Inject constructor(
     private val gson: Gson
 ) : WebRTCClient.Listener {
 
-    private var target: String? = null
+    private var target: String = ""
     var listener: Listener? = null
     private var remoteView: SurfaceViewRenderer? = null
 
@@ -49,7 +49,7 @@ class VideoRepository @Inject constructor(
                                 event.data.toString()
                             )
                         )
-                        webRTCClient.answer(target!!)
+                        webRTCClient.answer(target)
                     }
 
                     DataModelType.Answer -> {
