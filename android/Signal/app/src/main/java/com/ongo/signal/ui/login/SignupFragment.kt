@@ -110,7 +110,7 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
                     viewModel.uiState.imageFile?.let { imageFile ->
                         viewModel.postProfileImage(userId, imageFile) {
                             videoRepository.login(
-                                UserSession.userId.toString(), viewModel.uiState.password
+                                UserSession.userId.toString(), UserSession.userEncodePassword!!
                             ) { isDone, reason ->
                                 if (!isDone) {
                                     makeToast(reason.toString())
