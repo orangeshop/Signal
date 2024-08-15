@@ -16,6 +16,7 @@ import com.ssafy.signal.member.dto.findMemberDto;
 import com.ssafy.signal.member.jwt.AccessTokenBlackList;
 import com.ssafy.signal.member.jwt.token.TokenProvider;
 import com.ssafy.signal.member.jwt.token.dto.TokenInfo;
+import com.ssafy.signal.member.principle.UserPrinciple;
 import com.ssafy.signal.member.repository.MemberRepository;
 import com.ssafy.signal.member.repository.TokenBlacklistRepository;
 import jakarta.transaction.Transactional;
@@ -253,7 +254,8 @@ public class MemberService implements UserDetailsService {
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with loginId: " + loginId));
-        return new org.springframework.security.core.userdetails.User(member.getLoginId(), member.getPassword(), new ArrayList<>());
+//        return new org.springframework.security.core.userdetails.User(member.getLoginId(), member.getPassword(), new ArrayList<>());
+        return new UserPrinciple(member.getLoginId(), member.getLoginId(), new ArrayList<>());
     }
 
     private void checkPasswordStrength(String password) {

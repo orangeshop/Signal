@@ -91,7 +91,7 @@ public class MemberController {
             log.info("Account successfully created: {}", member1);
 
             TokenInfo tokenInfoDto = memberService.loginMember(member.getLoginId(), member.getPassword());
-            log.info("Token issued for account: {}", tokenInfoDto.getTokenId());
+//            log.info("Token issued for account: {}", tokenInfoDto.getTokenId());
 
             return tokenInfoDto;
 
@@ -146,6 +146,7 @@ public class MemberController {
         if (token != null) {
             // 현재 로그인한 사용자를 확인하고 회원 탈퇴 처리
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            log.info(String.valueOf(authentication.isAuthenticated()));
             if (authentication != null && authentication.isAuthenticated()) {
                 String loginId = authentication.getName();
 
@@ -174,7 +175,7 @@ public class MemberController {
         }
 
         TokenInfo tokenInfoDto = memberService.loginMember(memberLoginDto.getLoginId(), memberLoginDto.getPassword());
-        log.info("Token issued for account: {}", tokenInfoDto.getAccessToken());
+//        log.info("Token issued for account: {}", tokenInfoDto.getAccessToken());
 
 //        return new ApiResponseJson(HttpStatus.OK, tokenInfoDto);
         return tokenInfoDto;

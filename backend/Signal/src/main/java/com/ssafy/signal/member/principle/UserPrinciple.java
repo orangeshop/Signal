@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
@@ -13,8 +14,8 @@ public class UserPrinciple extends User {
 
 
     public UserPrinciple(String loginId, String username, Collection<? extends GrantedAuthority> authorities) {
-        super(username, PASSWORD_ERASED_VALUE, authorities);
-        this.loginId = loginId;
+        super(username != null ? username : "", PASSWORD_ERASED_VALUE, authorities != null ? authorities : new ArrayList<>());
+        this.loginId = loginId != null ? loginId : "";
     }
 
     @Override
