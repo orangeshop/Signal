@@ -126,7 +126,7 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(R.layout.fragment_sig
                         }
                     } ?: run {
                         videoRepository.login(
-                            UserSession.userId.toString(), viewModel.uiState.password
+                            UserSession.userId.toString(), UserSession.userEncodePassword!!
                         ) { isDone, reason ->
                             if (!isDone) {
                                 makeToast(reason.toString())
