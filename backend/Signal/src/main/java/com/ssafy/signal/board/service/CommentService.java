@@ -1,60 +1,85 @@
 package com.ssafy.signal.board.service;
 
+import com.ssafy.signal.board.domain.BoardDto;
 import com.ssafy.signal.board.domain.BoardEntity;
 import com.ssafy.signal.board.domain.CommentDto;
 import com.ssafy.signal.board.domain.CommentEntity;
 import com.ssafy.signal.board.repository.BoardRepository;
 import com.ssafy.signal.board.repository.CommentRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ssafy.signal.file.domain.FileEntity;
+import com.ssafy.signal.file.repository.FileRepository;
+import com.ssafy.signal.member.domain.Member;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
+    private final FileRepository fileRepository;
 
-    @Autowired
-    private BoardRepository boardRepository;
-
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CommentDto> getCommentsByBoardId(Long boardId) {
         List<CommentEntity> commentEntities = commentRepository.findByBoardId(boardId);
         List<CommentDto> commentDtoList = new ArrayList<>();
 
         for (CommentEntity commentEntity : commentEntities) {
-            commentDtoList.add(this.convertEntityToDto(commentEntity));
+            // userId를 기준으로 FileEntity에서 파일 정보 조회
+            Optional<FileEntity> optionalFileEntity = fileRepository.findByUser_UserId(commentEntity.getUserId().getUserId());
+            String url = optionalFileEntity.map(FileEntity::getFileUrl).orElse(null);
+
+            // CommentDto 생성 시 url을 포함
+            CommentDto commentDto = commentEntity.asCommentDto(url);
+            commentDtoList.add(commentDto);
         }
+
         return commentDtoList;
     }
 
     @Transactional
-    public Long saveComment(CommentDto commentDto) {
+    public CommentDto saveComment(CommentDto commentDto) {
         BoardEntity boardEntity = boardRepository.findById(commentDto.getBoardId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
-        CommentEntity commentEntity = commentDto.toEntity(boardEntity);
-        return commentRepository.save(commentEntity).getId();
+        return commentRepository.save(commentDto.toEntity()).asCommentDto();
     }
 
     @Transactional
-    public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
+    public ResponseEntity<String> deleteComment(Long boardId, Long id) {
+        try {
+            commentRepository.deleteByBoardIdAndId(boardId, id);
+            return ResponseEntity.ok("Comment successfully deleted.");
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    private CommentDto convertEntityToDto(CommentEntity commentEntity) {
-        return CommentDto.builder()
-                .id(commentEntity.getId())
-                .boardId(commentEntity.getBoard().getId())
-                .writer(commentEntity.getWriter())
-                .content(commentEntity.getContent())
-                .createdDate(commentEntity.getCreatedDate())
-                .modifiedDate(commentEntity.getModifiedDate())
-                .build();
+    @Transactional
+    public CommentDto updateComment(Long boardId, Long id, CommentDto updatedCommentDto) {
+        Optional<CommentEntity> commentEntityOptional = commentRepository.findByBoardIdAndId(boardId, id);
+        if (commentEntityOptional.isEmpty()) {
+            throw new EntityNotFoundException("Comment not found with boardId: " + boardId + " and id: " + id);
+        }
+
+        CommentEntity commentEntity = commentEntityOptional.get();
+        commentEntity.updateFromDto(updatedCommentDto);
+
+        commentRepository.save(commentEntity);
+
+        return commentEntity.asCommentDto();
+    }
+
+
+    public CommentEntity getCommentById(Long id) {
+        return commentRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Member not found with id: " + id));
     }
 }
