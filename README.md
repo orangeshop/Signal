@@ -72,6 +72,11 @@ https://www.notion.so/ab2b24d6f5804166a9dd827357f19661
 ## 프로젝트 Figma 이미지
 ![image](figma.PNG)
 
+## E2E Test 결과
+![image](membertest.PNG)
+![image](metchtest.PNG)
+![image](chattest.PNG)
+
 ## commit convention
 - ⭐feat : 기능 (새로운 기능)
 - 🛠fix : 버그 (버그 수정)
