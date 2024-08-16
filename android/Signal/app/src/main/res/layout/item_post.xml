@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="board"
+            type="com.ongo.signal.data.model.main.BoardDTO" />
+
+        <variable
+            name="boardViewModel"
+            type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
+
+        <variable
+            name="userSession"
+            type="com.ongo.signal.config.UserSession" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{board.title}"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Sample Title" />
+
+        <ImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:profile="@{board.member.profileImage}"
+            tools:src="@drawable/baseline_more_vert_mint_24" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{board.writer}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_profile"
+            app:layout_constraintStart_toEndOf="@id/iv_profile"
+            app:layout_constraintTop_toTopOf="@id/iv_profile"
+            tools:text="User Name" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{board.getFormattedCreatedDate()}"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_name"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
+            tools:text="2024-07-16" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="20dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/gangwon"
+            android:maxLines="3"
+            android:text="@{board.content}"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="@id/iv_profile"
+            app:layout_constraintTop_toBottomOf="@id/iv_profile"
+            tools:text="Sample content goes here." />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_images"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="@id/iv_profile"
+            app:layout_constraintTop_toBottomOf="@id/tv_content"
+            app:spanCount="2"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_image_post" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="@id/iv_profile"
+            app:layout_constraintTop_toBottomOf="@id/rv_images"
+            tools:listitem="@layout/item_chip"
+            tools:orientation="horizontal" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/color_translate"
+            app:layout_constraintBottom_toBottomOf="@id/rv_chips"
+            app:layout_constraintEnd_toEndOf="@id/rv_images"
+            app:layout_constraintStart_toStartOf="@id/rv_images"
+            app:layout_constraintTop_toTopOf="@id/rv_images" />
+
+
+        <ImageView
+            android:id="@+id/iv_thumb"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="15dp"
+            android:padding="4dp"
+            android:src="@drawable/baseline_thumb_up_off_alt_24"
+            app:layout_constraintStart_toStartOf="@id/iv_profile"
+            app:layout_constraintTop_toBottomOf="@id/rv_chips" />
+
+        <TextView
+            android:id="@+id/tv_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{String.valueOf(board.liked)}"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
+            app:layout_constraintStart_toEndOf="@id/iv_thumb"
+            app:layout_constraintTop_toTopOf="@id/iv_thumb" />
+
+        <ImageView
+            android:id="@+id/iv_comment"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:padding="4dp"
+            android:src="@drawable/baseline_chat_24"
+            app:layout_constraintStart_toEndOf="@id/tv_like"
+            app:layout_constraintTop_toTopOf="@id/iv_thumb" />
+
+        <TextView
+            android:id="@+id/tv_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{String.valueOf(board.getCommentCount())}"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_comment"
+            app:layout_constraintStart_toEndOf="@id/iv_comment"
+            app:layout_constraintTop_toTopOf="@id/iv_comment" />
+
+        <ImageView
+            android:id="@+id/iv_tts"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/baseline_headset_mint_24"
+            app:layout_constraintBottom_toBottomOf="@id/iv_comment"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
+            app:layout_constraintTop_toTopOf="@id/iv_comment" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginTop="24dp"
+            android:background="#808080"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_tts" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

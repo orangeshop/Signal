@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="board"
+            type="com.ongo.signal.data.model.main.BoardDTO" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#F7F7F7"
+        app:strokeColor="@color/purple">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{board.title}"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="제목입니다." />
+
+            <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/baseline_add_mint_24"
+                app:layout_constraintStart_toStartOf="@id/tv_title"
+                app:layout_constraintTop_toBottomOf="@id/tv_title"
+                app:profile="@{board.member.profileImage}" />
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@{board.writer}"
+                app:layout_constraintBottom_toBottomOf="@id/iv_profile"
+                app:layout_constraintStart_toEndOf="@id/iv_profile"
+                app:layout_constraintTop_toTopOf="@id/iv_profile"
+                tools:text="유저이름" />
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/gangwon_bold"
+                android:text="@{board.content}"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/iv_profile"
+                app:layout_constraintTop_toBottomOf="@id/iv_profile"
+                tools:text="dasfsdfa" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcd_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="@id/tv_content"
+                app:layout_constraintStart_toStartOf="@id/tv_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_content"
+                app:strokeWidth="0dp">
+
+                <ImageView
+                    android:id="@+id/iv_content"
+                    imageUrls="@{board.imageUrls}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    tools:src="@mipmap/ic_app_icon" />
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <ImageView
+                android:id="@+id/iv_thumb"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:padding="4dp"
+                android:src="@drawable/baseline_thumb_up_off_alt_24"
+                app:layout_constraintStart_toStartOf="@id/mcd_image"
+                app:layout_constraintTop_toBottomOf="@id/mcd_image" />
+
+            <TextView
+                android:id="@+id/tv_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{String.valueOf(board.liked)}"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_thumb"
+                app:layout_constraintStart_toEndOf="@id/iv_thumb"
+                app:layout_constraintTop_toTopOf="@id/iv_thumb" />
+
+            <ImageView
+                android:id="@+id/iv_comment"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:padding="4dp"
+                android:src="@drawable/baseline_chat_24"
+                app:layout_constraintStart_toEndOf="@id/tv_like"
+                app:layout_constraintTop_toTopOf="@id/iv_thumb" />
+
+            <TextView
+                android:id="@+id/tv_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{String.valueOf(board.getCommentCount())}"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_comment"
+                app:layout_constraintStart_toEndOf="@id/iv_comment"
+                app:layout_constraintTop_toTopOf="@id/iv_comment" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

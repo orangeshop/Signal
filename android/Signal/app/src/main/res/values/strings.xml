@@ -1,3 +1,72 @@
 <resources>
     <string name="app_name">Signal</string>
+    <string name="id">아이디</string>
+    <string name="logo_message">우리들을 연결하는 신호</string>
+    <string name="password">비밀번호</string>
+    <string name="login">로그인</string>
+    <string name="signup">회원 가입</string>
+    <string name="password_check">비밀번호 확인</string>
+    <string name="name">이름</string>
+    <string name="complete">완료</string>
+    <string name="title">제목</string>
+    <string name="hint_content">내용을 입력해주세요</string>
+    <string name="senior">시니어</string>
+    <string name="junior">주니어</string>
+    <string name="regist">등록</string>
+    <string name="my_page">마이 페이지</string>
+    <string name="edit_profile">프로필 수정</string>
+    <string name="my_signal">내가 쓴 시그널</string>
+    <string name="my_comment_signal">내가 댓글을 남긴 시그널</string>
+    <string name="info">정보</string>
+    <string name="logout">로그아웃</string>
+    <string name="edit">수정</string>
+    <string name="delete">삭제</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="type">타입</string>
+    <string name="tv_want">을 원하시나요?</string>
+    <string name="mission">미션</string>
+    <string name="what">어떤</string>
+    <string name="eating">밥 먹기</string>
+    <string name="drink_coffee">커피 마시기</string>
+    <string name="matching">매칭</string>
+    <string name="user">사용자</string>
+    <string name="go_matching">를 클릭해서 매칭해보세요!</string>
+    <string name="chat">채팅하기</string>
+    <string name="one_line_review">한줄평 남기기</string>
+    <string name="registration_review">리뷰 등록</string>
+    <string name="hotSignal">화제의 시그널</string>
+    <string name="realtime_signal">실시간 시그널</string>
+    <string name="view_profile">프로필보기</string>
+    <string name="reviewList">리뷰목록</string>
+    <string name="tag1">자유</string>
+    <string name="tag2">생활</string>
+    <string name="tag3">건강</string>
+    <string name="tag4">교육</string>
+    <string name="tag5">뉴스</string>
+    <string name="tag6">여행</string>
+    <string name="tag7">음식</string>
+    <string name="tag8">스포츠</string>
+    <string name="tag9">가족</string>
+    <string name="accept_matching">매칭 신청</string>
+    <string name="accept">수락</string>
+    <string name="deny">거절</string>
+    <string name="by_propose">님이 매칭을 신청하셨습니다.</string>
+    <string name="signal">시그널</string>
+    <string name="review">리뷰</string>
+    <string name="comment">나의 한마디</string>
+    <string name="chatting">채팅</string>
+    <string name="home">홈</string>
+
+    <string-array name="tag_array">
+        <item>자유</item>
+        <item>생활</item>
+        <item>건강</item>
+        <item>교육</item>
+        <item>뉴스</item>
+        <item>여행</item>
+        <item>음식</item>
+        <item>스포츠</item>
+        <item>가족</item>
+    </string-array>
+
 </resources>

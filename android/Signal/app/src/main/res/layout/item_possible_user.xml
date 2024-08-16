@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/background_possible_user_ripple">
+
+        <ImageView
+            android:id="@+id/iv_grade"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/human"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="최지훈"
+            android:textColor="@color/purple"
+            app:layout_constraintStart_toEndOf="@id/iv_grade"
+            app:layout_constraintTop_toTopOf="@id/iv_grade" />
+
+        <TextView
+            android:id="@+id/tv_introduce"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:text="어르신들 사랑해요"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toBottomOf="@id/iv_grade"
+            app:layout_constraintEnd_toStartOf="@id/btn_matching"
+            app:layout_constraintStart_toStartOf="@id/tv_user_id" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_matching"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_cancel_button_ripple"
+            android:paddingHorizontal="8dp"
+            android:text="@string/accept_matching"
+            android:textColor="@color/purple"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_grade"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_grade" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

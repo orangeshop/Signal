@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="boardViewModel"
+            type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.ongo.signal.ui.main.fragment.WritePostFragment" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.65" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="20dp"
+            android:padding="4dp"
+            app:layout_constraintEnd_toStartOf="@id/iv_title_mic"
+            app:layout_constraintStart_toStartOf="@id/gl"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/title"
+            android:padding="10dp"
+            android:text="@{boardViewModel.selectedBoard != null ? boardViewModel.selectedBoard.title : boardViewModel.title}"
+            app:layout_constraintEnd_toStartOf="@id/gl"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_title_mic"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:onClick="@{() -> fragment.setupListeners()}"
+            android:src="@drawable/baseline_mic_24"
+            app:layout_constraintBottom_toBottomOf="@id/et_title"
+            app:layout_constraintEnd_toEndOf="@id/btn_regist"
+            app:layout_constraintTop_toTopOf="@id/et_title" />
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="start"
+            android:hint="@string/hint_content"
+            android:padding="10dp"
+            android:text="@{boardViewModel.selectedBoard != null ? boardViewModel.selectedBoard.content : boardViewModel.content}"
+            app:layout_constraintBottom_toTopOf="@id/tv_reply"
+            app:layout_constraintEnd_toStartOf="@id/iv_content_mic"
+            app:layout_constraintStart_toStartOf="@id/et_title"
+            app:layout_constraintTop_toBottomOf="@id/et_title" />
+
+        <ImageView
+            android:id="@+id/iv_content_mic"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:onClick="@{() -> fragment.setupListeners()}"
+            android:src="@drawable/baseline_mic_24"
+            app:layout_constraintBottom_toBottomOf="@id/et_content"
+            app:layout_constraintEnd_toEndOf="@id/btn_regist" />
+
+        <TextView
+            android:id="@+id/tv_reply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="누구에게 답변을 받고 싶나요?"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/cg_chip"
+            app:layout_constraintStart_toStartOf="@id/et_title" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cg_chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            app:layout_constraintBottom_toTopOf="@id/view_line"
+            app:layout_constraintStart_toStartOf="@id/et_title">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_senior"
+                style="@style/CustomChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/senior"
+                android:textSize="12sp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_junior"
+                style="@style/CustomChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/junior"
+                android:textSize="12sp" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="0dp"
+            android:layout_height="0.7dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/gray"
+            app:layout_constraintBottom_toTopOf="@id/rv_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/iv_image"
+            app:layout_constraintEnd_toStartOf="@id/iv_content_mic"
+            app:layout_constraintStart_toStartOf="@id/et_title"
+            app:spanCount="10"
+            tools:listitem="@layout/item_image_uri" />
+
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="15dp"
+            android:onClick="@{(view)->fragment.showImagePickerPopupMenu(view)}"
+            android:src="@drawable/baseline_image_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_regist"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/background_button_registration"
+            android:onClick="@{() -> fragment.onRegisterButtonClick()}"
+            android:text="@string/regist"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/iv_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

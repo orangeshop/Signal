@@ -6,5 +6,22 @@
     <color name="yellow">#FFCC00</color>
     <color name="gray">#D9D9D9</color>
     <color name="textBlack">#373737</color>
-    <color name="MyPageTextColor">#A1A1A1</color>
+    <color name="EditTextColor">#A1A1A1</color>
+    <color name="red">#FF0000</color>
+    <color name="normal_dot">#B0EBB4</color>
+    <color name="point_dot">#E97777</color>
+    <color name="backgroundColor">#121212</color>
+    <color name="radar_color">#02EB25</color>
+    <color name="color_translate">#00000000</color>
+    <color name="rippleColor">#40FFFFFF</color>
+    <color name="impossible_red">#DC160C</color>
+    <color name="purple">#AFACFB</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="faded_white">#57FFFFFF</color>
+    <color name="faded_black">#57000000</color>
+    <color name="light_green">#3AAE09</color>
 </resources>

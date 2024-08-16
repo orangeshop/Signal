@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.ongo.signal.ui.main.viewmodel.BoardViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_hot_signal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="sadfkjlasdflk"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--        <com.airbnb.lottie.LottieAnimationView-->
+        <!--            android:id="@+id/lav_fire"-->
+        <!--            android:layout_width="48dp"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_marginStart="4dp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/tv_hot_signal"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/tv_hot_signal"-->
+        <!--            app:layout_constraintTop_toTopOf="@id/tv_hot_signal"-->
+        <!--            app:lottie_autoPlay="true"-->
+        <!--            app:lottie_loop="true"-->
+        <!--            app:lottie_rawRes="@raw/fire"-->
+        <!--            app:lottie_speed="0.5" />-->
+
+
+        <TextView
+            android:id="@+id/tv_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="12dp"
+            android:text="1"
+            android:textColor="@color/purple"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/tv_second"
+            app:layout_constraintStart_toStartOf="@id/tv_second"
+            app:layout_constraintTop_toBottomOf="@id/tv_hot_signal" />
+
+        <TextView
+            android:id="@+id/tv_first_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="15dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="321353"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_first"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_first"
+            app:layout_constraintTop_toTopOf="@id/tv_first" />
+
+        <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:id="@+id/rv_first"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="5dp"-->
+        <!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="@id/tv_first_title"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/tv_first_title"-->
+        <!--            tools:listitem="@layout/item_tag"-->
+        <!--            tools:orientation="horizontal" />-->
+
+        <TextView
+            android:id="@+id/tv_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="2"
+            android:textColor="@color/purple"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
+            app:layout_constraintTop_toBottomOf="@id/tv_first" />
+
+        <TextView
+            android:id="@+id/tv_second_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="15dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="321353"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_second"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_second"
+            app:layout_constraintTop_toTopOf="@id/tv_second" />
+
+        <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:id="@+id/rv_second"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="5dp"-->
+        <!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="@id/tv_second_title"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/tv_second_title"-->
+        <!--            tools:listitem="@layout/item_tag"-->
+        <!--            tools:orientation="horizontal" />-->
+
+        <TextView
+            android:id="@+id/tv_third"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="3"
+            android:textColor="@color/purple"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
+            app:layout_constraintTop_toBottomOf="@id/tv_second" />
+
+        <TextView
+            android:id="@+id/tv_third_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="15dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_third"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_third"
+            app:layout_constraintTop_toTopOf="@id/tv_third"
+            tools:text="321353" />
+
+        <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:id="@+id/rv_third"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="5dp"-->
+        <!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="@id/tv_third_title"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/tv_third_title"-->
+        <!--            tools:itemCount="8"-->
+        <!--            tools:listitem="@layout/item_tag"-->
+        <!--            tools:orientation="horizontal" />-->
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginTop="24dp"
+            android:background="#808080"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_third" />
+
+        <TextView
+            android:id="@+id/tv_today_signal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="12dp"
+            android:text="asdfsadfadf"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_hot_signal"
+            app:layout_constraintTop_toBottomOf="@id/view_line" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

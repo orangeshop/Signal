@@ -1,0 +1,8 @@
+<!-- res/drawable/background_with_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/backgroundColor" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/mint" />
+    <corners android:radius="4dp" /> <!-- 모서리 둥글기 (필요에 따라 조정) -->
+</shape>
