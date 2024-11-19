@@ -26,8 +26,6 @@ class SignalFirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         val messageTitle = remoteMessage.data.get("title").toString()
         val messageContent = remoteMessage.data.get("body").toString()
-        Timber.d("메시지옴 제목 : ${messageTitle} 내용 : ${messageContent}")
-        //승낙, 거부
 
         if (messageTitle.contains("매칭")) {
             val nowMessage = messageContent.split(" ")
@@ -36,6 +34,8 @@ class SignalFirebaseService : FirebaseMessagingService() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 putExtra("matchNotification", messageTitle)
                 putExtra("otherUserId", nowMessage[0].toLong())
+        Timber.d("메시지옴 제목 : ${messageTitle} 내용 : ${messageContent}")
+        //승낙, 거부
                 putExtra("otherUserName", nowMessage[2])
             }
 

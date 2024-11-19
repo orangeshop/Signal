@@ -34,7 +34,7 @@ firebase-bom = "33.1.2"
 firebaseMessagingKtx = "24.0.0"
 firebase-database = "20.2.2"
 #location
-locations = "21.0.1"
+locations = "21.3.0"
 #datastore
 datastore = "1.1.1"
 #webrtc
